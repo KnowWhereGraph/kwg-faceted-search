@@ -62,7 +62,7 @@ INSERT DATA {
     {
       "fieldName": "location",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/locatedAt"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/locatedAt"
       ],
       "indexed": true,
       "stored": true,
@@ -104,7 +104,7 @@ INSERT DATA {
   ],
   "languages": [],
   "types": [
-    "http://128.111.106.227/lod/ontology/Hazard"
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Hazard"
   ],
   "readonly": false,
   "detectFields": false,
@@ -134,9 +134,8 @@ INSERT DATA {
     {
       "fieldName": "expertise",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/hasExpertise",
-        "http://www.w3.org/2000/01/rdf-schema#label",
-        "http://128.111.106.227/lod/ontology/hasSuperTopic"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/hasExpertise",
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -150,7 +149,7 @@ INSERT DATA {
     {
       "fieldName": "affiliation",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/affiliation",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/affiliation",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -165,7 +164,7 @@ INSERT DATA {
     {
       "fieldName": "department",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/department",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/department",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -180,7 +179,7 @@ INSERT DATA {
     {
       "fieldName": "firstname",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/firstName"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/firstName"
       ],
       "indexed": true,
       "stored": true,
@@ -194,7 +193,7 @@ INSERT DATA {
     {
       "fieldName": "lastname",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/lastName"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/lastName"
       ],
       "indexed": true,
       "stored": true,
@@ -208,7 +207,7 @@ INSERT DATA {
     {
       "fieldName": "fullname",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/fullName"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/fullName"
       ],
       "indexed": true,
       "stored": true,
@@ -222,7 +221,7 @@ INSERT DATA {
     {
       "fieldName": "personalpage",
       "propertyChain": [
-        "http://128.111.106.227/lod/ontology/personalPage"
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/personalPage"
       ],
       "indexed": true,
       "stored": true,
@@ -236,7 +235,7 @@ INSERT DATA {
   ],
   "languages": [],
   "types": [
-    "http://128.111.106.227/lod/ontology/Expert"
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Expert"
   ],
   "readonly": false,
   "detectFields": false,
