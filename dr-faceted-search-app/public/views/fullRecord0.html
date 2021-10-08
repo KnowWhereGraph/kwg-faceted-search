@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Record</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/full_record.css">
+
+    
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+
+    <script src="../js/fullRecord.js"></script>
+    <script src="../js/script.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a id="knowwheregraph" href="#"><img src="../images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
+        
+        <div id="direct_relief_container">
+            <img src="../images/dr-icon.svg" alt="DirectReliefImg">
+        </div>
+
+        <ul class="nav">
+            <li class="nav-item">
+                <a href="#">
+                    <span class="item">About</span>
+                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <span class="item">Explore</span>
+                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="navbarDropdown">
+                    <span class="item">Search</span>
+                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+
+                <div class="search-dropdown-input">
+                    <div class="input-group mb-3">
+                        <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" type="button">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="spatial-search">
+                        <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">
+                            <div>
+                                <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
+                            </div>
+                        </button>    
+                    </div>
+                </div>
+                
+            </li>
+            <li class="nav-item">
+                <span class="item">Tools</span>
+                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+            </li>
+            <li class="nav-item">
+                <span class="item">Contact</span>
+                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+            </li>
+        </ul>
+
+        <div class="nav-path">
+            <!-- <span id="explore-expertise">Explore/Expertise Topic Groups/Diseases/Covid-19/</span> -->
+            <ul id="explore-expertise1" class="breadcrumb">
+                <li><a href="#">Explore </a></li>
+                <li><a href="#">Expertise Topic Groups </a></li>
+                <li><a href="#">Diseases </a></li>
+                <li><a href="#">Covid-19 </a></li>
+                <li><a href="#" id="curr_page">Alejandro Feged</a></li>
+            </ul>
+            <!-- <span id="explore-expert">Alejandro Feged</span> -->
+        </div>
+
+        <div class="display-expert">
+            <span id="expert-name">Alejandro Feged</span>
+        </div>
+
+    </header>
+    <!-- Main Content -->
+    <main>
+
+        <div class="container">
+            <div id="left-side">
+                <ul class="attributes">
+                    <li class="attr" id="rdf-type-attr">rdf:type</li>
+                    <li class="attr" id="rdf-label-attr">rdfs:label</li>
+                    <li class="attr" id="affiliation-attr">Affiliation</li>
+                    <li class="attr" id="department-attr">Department</li>
+                    <li class="attr" id="first-name-attr">First Name</li>
+                    <li class="attr" id="full-name-attr">Full Name</li>
+                    <li class="attr" id="expertises-attr">Expertises</li>
+                    <li class="attr" id="last-name-attr">Last Name</li>
+                    <li class="attr" id="web-page-attr">Web Page</li>
+                </ul>
+            </div>
+            <div id="right-side">
+                <ul class="values">
+                    <li class="val" id="rdf-type-val">
+                        <a href="#">Expert</a>
+                    </li>
+                    <li class="val" id="rdf-label-val">
+                        <span>Alejandro Feged</span>
+                    </li>
+                    <li class="val" id="affiliation-val">
+                        <span><a href="#">Universidad del Rosario</a></span>
+                    </li>
+                    <li class="val" id="department-val">
+                        <span><a href="#">International Political Urban Studies</a></span>
+                    </li>
+                    <li class="val" id="first-name-val">
+                        <span>Alejandro</span>
+                    </li>
+                    <li class="val" id="full-name-val">
+                        <span>Alejandro Feged</span>
+                    </li>
+                    <li class="val" id="expertises-val">
+                        <a href="#">Antropology</a><br>
+                        <a href="#">Colombia</a><br>
+                        <a href="#">Covid-19</a><br>
+                        <a href="#">Crime</a><br>
+                        <a href="#">Demography</a><br>
+                        <a href="#">Forest</a><br>
+                        <a href="#">Malaria</a><br>
+                        <a href="#">Periurban</a><br>
+                    </li>
+                    <li class="val" id="last-name-val">
+                        <span>Feged</span>
+                    </li>
+                    <li class="val" id="web-page-val">
+                        <a href="#">https://pure.urosario.edu.co/en/persons/alejandro-feged-rivadeneira</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="input-box">
+            <span id="stay-informed-about">Stay informed about KnowWhereGraph</span>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter your email">
+                <button class="btn" type="submit">Submit</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="icons-footer">
+                <img src="../images/kwg-icon.png" alt="knowwheregraph" id="kwg-icon-footer">
+                <p id="expert-sys-is-the">Expert System is the platform to manage experts and their expertises. It is supported by technologies of linked data and machine learning.</p>
+                <div id="funded">
+                    <span>Funded By</span>
+                    <img src="../images/nsf-icon.svg" alt="" id="nsf-icon">
+                </div>
+            </div>
+            
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</body>
+</html>

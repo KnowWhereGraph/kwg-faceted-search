@@ -1,0 +1,380 @@
+html,
+body,
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+
+/* Header */
+
+header {
+    width: 100%;
+    height: 275px;
+    padding: 0;
+    background-color: #00021F;
+    background-image: url('../images/header-bg.png'); 
+    background-repeat: repeat-x;
+    position: relative;
+}
+
+header img#knowwheregraph-icon {
+    float: left;
+    width: 153px;
+    height: 59px;
+    margin-top: 39px;
+    margin-left: 41px;
+}
+
+header div#direct_relief_container {
+    margin-top: 44px;
+    margin-left: 31px;
+    float: left;
+}
+
+header div#direct_relief_container p{
+    color: #DF6C37;
+}
+
+header div.nav-path {
+    position: absolute;
+    top: 144px;
+    left: 41px;
+}
+
+header div.nav-path span, 
+header div.nav-path ul{
+    color: #FFFFFF;
+    opacity: 0.5;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 17px;
+}
+
+div.nav-path .breadcrumb > li + li:before{
+    color: #FFFFFF;
+    content: "\00a0/\00a0";
+    opacity: 0.5;
+}
+
+div.nav-path ul li a{
+    text-decoration: none;
+    color: #FFFFFF;
+    opacity: 0.5;
+    font-size: 14px;
+    font-family: sans-serif;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 17px;
+}
+
+div.nav-path ul#explore-expertise1 li a#curr_page{
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+header div.display-expert {
+    position: absolute;
+    top: 180px;
+    left: 41px;
+}
+
+header div.display-expert span#expert-name {
+    color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 38px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 46px;
+}
+
+ul.nav {
+    height: 21px;
+    float: right;
+    margin-top: 47px;
+    margin-right: 57px;
+}
+
+ul.nav li {
+    padding-left: 33px; 
+    line-height: 18px;
+    position: relative;
+}
+
+ul.nav li a{
+    text-decoration: none;
+}
+
+
+header div.search-dropdown-input{
+    width: 333px;
+    height: 134px;
+    border-radius: 5px;
+    background-color: #D7D7DC;
+    position: absolute;
+    /* visibility: hidden; */
+    display: none;
+    margin-left: -117px;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+input#input-query{
+    font-style: italic;
+    font-size: 12px;
+}
+
+div.search-dropdown-input div.input-group button{
+    background-color: black;
+    color: #FFFFFF;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+
+}
+
+div.spatial-search{
+    padding: 0px;
+}
+
+div.spatial-search div{
+    /* background-color: red; */
+}
+
+div.spatial-search div i{
+    float: left;
+    font-size: 20px;
+    margin-top: -1px;
+}
+
+div.spatial-search button#spatial-query{
+    color: #00021F;
+    background-color: #C1C1C9;
+    border: 0px;
+    width: 293px;
+    height: 36px;
+    font-family: sans-serif;
+}
+
+ul li span.item {
+    color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 21px;
+    text-align: right;
+
+}
+
+ul li img {
+    padding-left: 6px;
+    /* position: absolute; */
+    margin-top: -4px;
+
+}
+
+
+/* Main Content */
+
+main {
+    width: 100%;
+    height: 973px;
+    background-color: #CFCFD5;
+    position: relative;
+}
+
+main div.container {
+    display: block;
+    height: 881px;
+    border-radius: 5px;
+    padding: 0px;
+    background-color: #FFFFFF;
+    box-shadow: 0 10px 64px 0 rgba(0, 0, 0, 0.05);
+    position: relative;
+    top: 46px;
+    left: 0px;
+    right: 0px;
+}
+
+main div.container div#left-side {
+    width: 300px;
+    height: 881px;
+    border-radius: 5px 0 0 5px;
+    background-color: #F2F2F4;
+}
+
+main div#left-side ul{
+    padding-right: 30px;
+    position: relative;
+    top: 68px;
+}
+
+main div#left-side li , div#bottom-left-side li{
+    color: #00021F;
+    font-family: sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 26px;
+    text-align: right;
+    padding-bottom: 30px;
+}
+
+main div.container div#right-side{
+    position: absolute;
+    top: 68px;
+    left: 330px;
+    font-size: 22px;
+    font-family: sans-serif;
+    font-weight: 500;
+    letter-spacing: 0px;
+    line-height: 26px;
+}
+
+div#right-side li {
+    padding-bottom: 30px;
+}
+
+main div.container div#right-side li a,
+div#bottom-right-side li a{
+    color: #DF6C37;
+    font-weight: 600;
+}
+
+div#left-side li#expertises-attr {
+    padding-bottom: 212px;
+}
+
+
+/* Footer */
+
+footer {
+    height: 354px;
+    background-color: sandybrown;
+    clear: left;
+}
+
+footer div.input-box {
+    height: 98px;
+    background-color: #DF6C37;
+}
+
+footer div.input-box span {
+    position: relative;
+    top: 40px;
+    left: 122.5px;
+    color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 16px;
+}
+
+footer div div.form-group {
+    width: 524px;
+    /* height: 52px; */
+    float: right;
+    right: 123px;
+    position: relative;
+    top: 22px;
+    padding: 0px;
+    border: 0px;
+}
+
+footer div div input {
+    padding: 0px;
+    height: 52px;
+}
+
+input.form-control::-webkit-input-placeholder{
+    color: #00021F;
+    opacity: 0.8;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 16px;
+}
+
+div.form-group button {
+    width: 114px;
+    height: 40px;
+    background-color: #00021F;
+    color: #FFFFFF;
+    border-radius: 3px;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+    padding: 0px;
+    position: absolute;
+    right: 8px;
+    top: 6px;
+}
+
+footer div.footer{
+    height: 256px;
+    background-color: #00021F;
+    padding-top: 74px;
+}
+
+footer div.footer div.icons-footer {
+    width: 954px;
+    height: 108px;
+    margin: 0 auto;
+    position: relative;
+}
+
+div.icons-footer img#kwg-icon-footer {
+    width: 199px;
+    height: 77px;
+    position: absolute;
+    top: 16px;
+    
+}
+
+div.icons-footer p {
+    width: 500px;
+    /* height: 48px; */
+    color: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 16px;
+    position: absolute;
+    left: 301px;
+    top: 30px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+div.icons-footer div#funded{
+    width: 83px;
+    height: 108px;
+    position: absolute;
+    right: 0px;
+}
+
+div.icons-footer img#nsf-icon {
+    width: 83px;
+    height: 83px;
+    margin-top: 9px;
+}
+
+div.icons-footer div#funded span {
+    display: block;
+    width: 82px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-family: sans-serif;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 16px;
+    margin: 0 auto;
+    text-align: center;
+}
