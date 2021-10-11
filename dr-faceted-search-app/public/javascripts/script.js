@@ -3,8 +3,7 @@ var kwgApp = angular.module('kwgApp', ['ngRoute']);
 kwgApp.config(function($routeProvider){
     $routeProvider
     .when('/', {
-        // templateUrl: 'pages/full_record.html',
-        templateUrl: 'pages/full_record_place.html',
+        templateUrl: '../views/full_record_place.html',
         controller: 'mainController'
     });
 });
