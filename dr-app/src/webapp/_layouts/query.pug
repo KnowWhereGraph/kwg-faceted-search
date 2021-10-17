@@ -1,0 +1,33 @@
+doctype html
+html(lang="en")
+	head
+		title graphy 🍌 demo
+		link(rel='stylesheet', type='text/css', href='/style/query.css')
+		script(src='/script/query.js')
+	body
+		#controls.select
+			#graph-selection
+				.prescribed
+					.title Select an RDF graph to query
+					.list
+				//- .magnet
+				//- 	.title Or enter the magnet URI of a WebTorrent
+				//- 	.uri
+				//- 		input(type='text')
+				//- .seed
+				//- 	a.title(href="/seed") Want to seed your own dataset?
+			#monitor
+		#query
+			.code
+				#help
+					span.run
+						button(title="cmd/ctrl + enter") Fetch all rows at once
+					span.yield
+						button(title="shift + enter") Fetch rows iteratively
+				#editor
+				#documentation
+					a(href='/query/documentation',target='_blank') Documentation
+			#console
+				.status
+				#results
+					.result-set

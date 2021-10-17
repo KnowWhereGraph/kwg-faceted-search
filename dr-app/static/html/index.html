@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Expert System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <!-- <link rel="stylesheet" media="screen and (max-width: Xpx) and (min-width: Ypx)" href="style.css" /> -->
+
+  <link rel="shortcut icon" href="./favicon.png">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans:400,700%7CPT+Serif:400,700" />
+  <link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css'>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/circleButton.css">
+  <link rel="stylesheet" href="css/general.css">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale.v2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.5/d3-legend.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!--   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+ -->  <!-- <script src="./keyword-graph/categories/sparql.js"></script> -->
+  <script src="./js/keywordGraph.js"></script>
+  <?xml version="1.0" encoding="utf-8"?>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116918494-1"></script>
+
+</head>
+
+<body>
+ 
+  <header id="header" class="header block">
+
+    <div class="container">
+      <div >
+        <div class="left_container col-sm-6 header-mobile-menu" style="padding-left: -250px;">
+                 <img src="images/logo_new.png" class = "logo"/>
+        </div>
+
+      <div class="header-menu clearfix menu" id="menu" style="padding: 18px 0;">
+        <ul class="nav navbar-nav navbar-right">
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="#About" onclick="toggle_menu(false)">About Expert System</a>
+              </li>
+<!--               <li>
+                <a href="http://ld.iospress.nl/license" target="_blank" onclick="toggle_menu(false)">License</a>
+              </li> -->
+            </ul>
+          </li>
+
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+<!--                 <a href="http://ld.iospress.nl/browse/#iospress-organization:Publisher.IOS_Press" target="_blank" onclick="toggle_menu(false)">Explore Dataset</a> -->
+<!--               <li>
+                <a href="#">Explore Data <span class="caret"></span></a>
+                <ul class="dropdown-menu" onclick="toggle_menu(true)">
+                  <li>  <a href="http://localhost:3001/browse/#directrelief:Expertise" target="_blank" onclick="toggle_menu(false)">Explore from Expertise</a></li>
+                  <li>  <a href="http://localhost:3001/browse/#directrelief:City" target="_blank" onclick="toggle_menu(false)">Explore from City</a></li>
+                </ul>
+              </li> -->
+                  <li>  <a href="/browse/#kwg-ont:ExpertiseTopic" target="_blank" onclick="toggle_menu(false)">Explore from Expertise</a></li>
+                  <li>  <a href="/browse/#kwg-ont:Place" target="_blank" onclick="toggle_menu(false)">Explore from Place</a></li>
+                  <li>  <a href="/browse/#kwg-ont:Hazard" target="_blank" onclick="toggle_menu(false)">Explore from Hazard</a></li>
+
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <!--                 <a href="http://stko-roy.geog.ucsb.edu/browse/#directrelief:Expertise" target="_blank" onclick="toggle_menu(false)">Explore Dataset</a> -->
+              <li>
+<!--                 <a href="http://yasgui.org/short/YV941HkLw" target="_blank" onclick="toggle_menu(false)">Query Interface</a> -->
+                <a href="http://stko-roy.geog.ucsb.edu:7202/sparql" target="_blank" onclick="toggle_menu(false)">Query Interface</a>
+              </li>
+              <li>
+<!--                 <a href="http://yasgui.org/short/YV941HkLw" target="_blank" onclick="toggle_menu(false)">Query Interface</a> -->
+                <a href="http://stko-roy.geog.ucsb.edu:3006" target="_blank" onclick="toggle_menu(false)">Similarity Interface</a>
+              </li>
+
+            </ul>
+          </li>
+
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contact
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="mailto:ruizhu@geog.ucsb.edu" target="_blank" onclick="toggle_menu()">Contact us</a>
+              </li>
+              <li>
+                <a href="#feedback" onclick="toggle_menu()">Feedback</a>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+     </div> 
+    </div>
+  </header>
+
+
+  <div class="container side_text welcome_text" id="About">
+
+    <h1 class="portal_text">
+      <strong>Welcome to the Expert System for Humanitarian Relief</strong>
+    </h1>
+    <p style="font-style: italic;">
+      Note: This platform is in BETA, if you have any feedback, please don't hesitate to
+      <a href="#feedback">get back to us.</a>
+
+    </p>
+
+    <!--<h2><strong>About IOS Press Linked Data</strong></h2>-->
+    <p>
+      This platform is a prototype of the Expert System designed to support the non-profit organization
+      - <a href="https://www.directrelief.org/" target="_top">Direct Relief</a> - to manage experts in response
+      to disasters. The ultimate goal is to efficiently find the <i>right</i> experts with the <i>right</i> expertises at the <i>right</i> place and at the <i>right</i> time. 
+      This prototype is built based on the network of experts who are working on the <a href="https://www.covid19mobility.org/">COVID-19 Mobility Data</a>.  
+    </p>
+    <p>
+      There are three components of this system. The <a href="http://stko-roy.geog.ucsb.edu:7202/sparql">graph query endpoint</a> allows one to use <a href="https://www.w3.org/TR/rdf-sparql-query/">SPARQL query language</a> to retrive information from the built-in Expert Knowledge Graph. The <a href="http://stko-roy.geog.ucsb.edu:3006">similarity interface</a> enables a user to compare experts based on their representative works. And the <a href="http://stko-roy.geog.ucsb.edu/browse/#kwg-ont:ExpertiseTopic"> expert explore interface</a> provides a search engine empowered by the principle of <i>follow-your-nose</i> search. Users can choose to start the search based on either <a href="http://stko-roy.geog.ucsb.edu/browse/#kwg-ont:ExpertiseTopic">Expertise Topic </a>, <a href="http://stko-roy.geog.ucsb.edu/browse/#kwg-ont:Hazard"> Hazard </a>, or <a href="http://stko-roy.geog.ucsb.edu/browse/#kwg-ont:Place">Place</a>.
+
+    </p>
+    <p>
+      This prototype is part of the KnowWhereGraph project, which is funded by the <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2033521&HistoricalAwards=false">NSF Convergence Accelarator Program</a> with award number: 2033521.  
+    </p>
+  
+    <p>
+      Feel free to contact us if you have any questions. We are also looking forward to any types of collabrations. Please
+      <a href="mailto:ruizhu@geog.ucsb.edu" target="_top">email us</a> or
+      <a href="#feedback">fill in the form</a> below and we will get back to you at our earliest convenience.
+    </p>
+
+    <p style="font-style: italic; font-size: 25px" > 
+      News: Want to contribute to humanitairian relief? Join our network by filling out this <a href ="https://stko-roy.geog.ucsb.edu:4000/">survey</a>. 
+    </p>
+
+  </div>
+
+  <div style="background-color: #F5F5F5;">
+
+    <div class="form-container" id="feedback">
+      <h1>Feedback form</h1>
+      <p>Please let us know what you think, so we can further improve our platform!</p>
+      <br>
+      <form method="post" id="feedback-form" name="feedbackForm">
+        <div class="name">
+          <div class="form-group">
+            <!-- <label for="inputName">Name</label> -->
+            <input type="text" class="form-control" id="inputName" placeholder="Name" />
+          </div>
+          <div class="form-group">
+            <!-- <label for="inputEmail">Email address</label> -->
+            <input type="email" class="form-control" id="inputEmail" placeholder="Email" required/>
+          </div>
+        </div>
+        <div class="name">
+          <div class="form-group">
+            <!-- <label for="subject">Subject</label> -->
+            <select class="form-control selectpicker" id="subject">
+              <option value="" selected disabled>Subject</option>
+              <option>Usability</option>
+              <option>Missing or New Data</option>
+              <option>Wrong Data</option>
+              <option>Suggestions</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <!-- <div class="form-group">
+            <label for="inputEmail">Email address</label>
+            <input type="text" class="form-control" id="inputUrl" placeholder="URL" />
+          </div> -->
+        </div>
+        <div class="form-group textarea-form-class">
+          <!-- <label for="comments">Comments</label> -->
+          <textarea class="form-control textarea" id="feedback-comments" rows="5" placeholder="Comments" value="" required></textarea>
+        </div>
+        <div id="feedback_captcha_container"></div>
+        <div class="form-group send">
+          <input class="btn btn-primary" id="submitBtn" type="submit" value="Send Feedback" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="licence Ld" id="licence">   
+    <div class="container">
+      <form method="post" id="stay-informed-form" name="stayInformedForm">
+        <div class="row">
+          <div class="column licence_text">
+            <h4 class="side-text">Stay informed about KnowWhereGraph</h4>
+          </div>
+          <div id="stay_informed_captcha_container"></div>
+          <div class="column" id="email">
+            <input type="text" class="email" placeholder="Email" id="stayInformedEmail" required/>
+          </div>
+          <div class="column staybtn">
+            <input class="btn btn-primary submit" id="stayInformedBtn" type="submit" value="Submit" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <footer class="footer footer-menu">
+    <div class="container" style="max-width:1200px;">
+      <div class="row">
+        <div class="col-xs-3 col-sm-3 left-one">
+          <div id="navigation">
+            <!-- <label>Navigation</label> -->
+            <ul class="site_menu" id="site">
+              <li>
+                <a href="#">
+                  <img src="images/kwg.png" class="logo" width="300" height="90" />
+                </a>
+                <li>
+                  <p style="font-size:18px; text-align:center;">
+                    <a href="#" target="_blank">&copy; KnowWhereGraph </a>
+<!--                   <a href="http://ld.iospress.nl/license" target="_blank">Disclaimer</a>
+ -->                  </p>
+                </li>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <div class="col-xs-7 col-sm-7 middle-one">
+          <div id="text1">
+            <ul class="site_menu" id="site site_text">
+              <li>
+                <p class="ld-connect-text" style="line-height:1.4em;">
+                  <b>Expert System</b> is a platform to manage experts and their expertises. It is supported by technologies of Linked Data and machine learning. 
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div id="text2">
+            <!-- <label>Text 2</label> -->
+            <div class="col-sm-3 site-map" style="padding:2px">
+              <ul>
+                <li>
+                  <strong>About</strong>
+                </li>
+                <li>
+                  <a href="/#About">About LD Connect</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-3 site-map" style="padding:2px">
+              <ul>
+                <li>
+                  <strong>Explore</strong>
+                </li>
+                <li>
+                  <a a href="/browse/#kwg-ont:ExpertiseTopic" style="text-decoration: none; cursor: pointer;">Explore from Expertise </a>
+                </li>
+                <li>
+                  <a a href="/browse/#kwg-ont:Place" style="text-decoration: none; cursor: pointer;">Explore from Place</a>
+                </li>
+                <li>
+                  <a a href="/browse/#kwg-ont:Hazard" style="text-decoration: none; cursor: pointer;">Explore from Hazard</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-3 site-map" style="padding:2px">
+              <ul>
+                <li>
+                  <strong>Tools</strong>
+                </li>
+                <li>
+                  <a href="http://stko-roy.geog.ucsb.edu:7202/sparql" target="_blank" href="" style=" cursor: pointer;">Query Interface</a>
+                </li>
+                <li>
+                  <a href="http://stko-roy.geog.ucsb.edu:3006" style="cursor: pointer;">Similarity Interface</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-3 site-map" style="padding:2px">
+              <ul>
+                <li>
+                  <strong>Contact</strong>
+                </li>
+                <li>
+                  <a href="mailto:ruizhu@geog.ucsb.edu" style="cursor: pointer;">Contact Us</a>
+                </li>
+                <li>
+                  <a href="#feedback" style="cursor: pointer;">Feedback</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-2 col-sm-2 right-one">
+          <div id="navigation">
+            <ul style="list-style:none; padding-top: 35px;">
+              <li style="float: none;">
+                <p class="powered-by">Funded by</p>
+              </li>
+            </ul>
+            <ul>
+              <li style="float: none;">
+                <img src="images/nsf_ca.png" width="300" height="80">
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
+  <script src="js/index.js"></script>
+  <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>
+  <script src="https://www.google.com/recaptcha/api.js?onload=loadCaptcha" async defer></script>
+</body>
+
+</html>

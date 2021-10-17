@@ -1,0 +1,15 @@
+node_modules
+coverage
+dist
+scrap
+plugins/*
+fetch
+data
+src/webapp/_resources
+
+.git-*
+!plugins/package.json
+
+.env
+package-lock.json
+build/
