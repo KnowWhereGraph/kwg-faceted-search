@@ -118,7 +118,6 @@ header div.search-dropdown-input{
     border-radius: 5px;
     background-color: #D7D7DC;
     position: absolute;
-    /* visibility: hidden; */
     display: none;
     margin-left: -117px;
     margin-top: 20px;
@@ -149,7 +148,7 @@ div.spatial-search div{
 div.spatial-search div i{
     float: left;
     font-size: 20px;
-    margin-top: -1px;
+    line-height: 100%;
 }
 
 div.spatial-search button#spatial-query{
@@ -189,7 +188,7 @@ main {
     position: relative;
 }
 
-main div.container {
+main div#fr {
     display: block;
     height: 881px;
     border-radius: 5px;
@@ -242,7 +241,8 @@ div#right-side li {
 }
 
 main div.container div#right-side li a,
-div#bottom-right-side li a{
+div#bottom-right-side li a,
+table a{
     color: #DF6C37;
     font-weight: 600;
 }

@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Record</title>
+    <title>Faceted-search</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     
     <link rel="stylesheet" href="../css/full_record.css">
     <link rel="stylesheet" href="../css/full_record_place.css">
+    <link rel="stylesheet" href="../css/results_filters.css">
+    <link rel="stylesheet" href="../css/explore.css">
     
     <!-- JQuery -->
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
@@ -20,8 +22,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
 
     <!-- Kwg -->
-    <script src="../js/fullRecord.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="js/fullRecord.js"></script>
+    <script src="js/script.js"></script>
     
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -34,6 +36,7 @@
 
 </head>
 <body ng-controller="mainController">
+    <!-- Instead of using fullRecord0.html without SPA, we use angular.js template to achieve SPA -->
     <!-- Header -->
     <header>
         <a id="knowwheregraph" href="#"><img src="../images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
@@ -56,12 +59,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" id="navbarDropdown">
+                <a href="#%" id="navbarDropdown">
                     <span class="item">Search</span>
                     <img src="../images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
 
-                <div class="search-dropdown-input">
+                <div class="search-dropdown-input" id="search-dropdown">
                     <div class="input-group mb-3">
                         <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
                         <div class="input-group-append">
@@ -81,11 +84,11 @@
             </li>
             <li class="nav-item">
                 <span class="item">Tools</span>
-                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
             </li>
             <li class="nav-item">
                 <span class="item">Contact</span>
-                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
             </li>
         </ul>
 
@@ -107,9 +110,12 @@
 
     </header>
     <!-- Main Content -->
-    <main>
+    <div ng-view>
+
+    </div>
+    <!-- <main>
         <div ng-view></div>
-    </main>
+    </main> -->
     
     <!-- Footer -->
     <footer>

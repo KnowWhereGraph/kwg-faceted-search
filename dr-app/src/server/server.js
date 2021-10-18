@@ -220,7 +220,7 @@ k_app.use('/asset', express.static(path.join(PD_ROOT, 'static/asset')));
 
 //
 k_app.get('/', (d_req, d_res) => {
-	d_res.sendFile(path.join(PD_ROOT, 'static/html/homepage.html'));
+	d_res.sendFile(path.join(PD_ROOT, 'static/html/fullRecord0.html'));
 });
 
 // browse some source

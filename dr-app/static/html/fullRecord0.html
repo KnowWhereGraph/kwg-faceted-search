@@ -8,7 +8,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/full_record.css">
+    <link rel="stylesheet" href="css/full_record.css">
 
     
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
@@ -16,35 +16,36 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
 
-    <script src="../js/fullRecord.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="/js/fullRecord.js"></script>
+    <script src="/js/script.js"></script>
 </head>
 <body>
+    <!-- This webpage does not add angular.js template function -->
     <!-- Header -->
     <header>
-        <a id="knowwheregraph" href="#"><img src="../images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
+        <a id="knowwheregraph" href="#"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
         
         <div id="direct_relief_container">
-            <img src="../images/dr-icon.svg" alt="DirectReliefImg">
+            <img src="images/dr-icon.svg" alt="DirectReliefImg">
         </div>
 
         <ul class="nav">
             <li class="nav-item">
                 <a href="#">
                     <span class="item">About</span>
-                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#">
                     <span class="item">Explore</span>
-                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" id="navbarDropdown">
                     <span class="item">Search</span>
-                    <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
 
                 <div class="search-dropdown-input">
@@ -67,11 +68,11 @@
             </li>
             <li class="nav-item">
                 <span class="item">Tools</span>
-                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
             </li>
             <li class="nav-item">
                 <span class="item">Contact</span>
-                <img src="../images/dropdown.svg" alt="" class="dropdown-img">
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
             </li>
         </ul>
 
@@ -112,16 +113,16 @@
             <div id="right-side">
                 <ul class="values">
                     <li class="val" id="rdf-type-val">
-                        <a href="#">Expert</a>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/browse/#kwg-ont:Expert');">Expert</a>
                     </li>
                     <li class="val" id="rdf-label-val">
                         <span>Alejandro Feged</span>
                     </li>
                     <li class="val" id="affiliation-val">
-                        <span><a href="#">Universidad del Rosario</a></span>
+                        <span><a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/browse/#kwgr:university.Universidad_del_Rosario');">Universidad del Rosario</a></span>
                     </li>
                     <li class="val" id="department-val">
-                        <span><a href="#">International Political Urban Studies</a></span>
+                        <span><a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/department.International');">International Political Urban Studies</a></span>
                     </li>
                     <li class="val" id="first-name-val">
                         <span>Alejandro</span>
@@ -130,20 +131,20 @@
                         <span>Alejandro Feged</span>
                     </li>
                     <li class="val" id="expertises-val">
-                        <a href="#">Antropology</a><br>
-                        <a href="#">Colombia</a><br>
-                        <a href="#">Covid-19</a><br>
-                        <a href="#">Crime</a><br>
-                        <a href="#">Demography</a><br>
-                        <a href="#">Forest</a><br>
-                        <a href="#">Malaria</a><br>
-                        <a href="#">Periurban</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.anthropology');">Antropology</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.columbia');">Colombia</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19');">Covid-19</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.crime');">Crime</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.demography');">Demography</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.forest');">Forest</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.malaria');">Malaria</a><br>
+                        <a href="#" onclick="javascript:window.open('http://stko-roy.geog.ucsb.edu/lod/resource/topic.periurban');">Periurban</a><br>
                     </li>
                     <li class="val" id="last-name-val">
                         <span>Feged</span>
                     </li>
                     <li class="val" id="web-page-val">
-                        <a href="#">https://pure.urosario.edu.co/en/persons/alejandro-feged-rivadeneira</a>
+                        <a href="#" onclick="javascript:window.open('https://pure.urosario.edu.co/en/persons/alejandro-feged-rivadeneira');">https://pure.urosario.edu.co/en/persons/alejandro-feged-rivadeneira</a>
                     </li>
                 </ul>
             </div>
@@ -161,11 +162,11 @@
         </div>
         <div class="footer">
             <div class="icons-footer">
-                <img src="../images/kwg-icon.png" alt="knowwheregraph" id="kwg-icon-footer">
+                <img src="images/kwg-icon.png" alt="knowwheregraph" id="kwg-icon-footer">
                 <p id="expert-sys-is-the">Expert System is the platform to manage experts and their expertises. It is supported by technologies of linked data and machine learning.</p>
                 <div id="funded">
                     <span>Funded By</span>
-                    <img src="../images/nsf-icon.svg" alt="" id="nsf-icon">
+                    <img src="images/nsf-icon.svg" alt="" id="nsf-icon">
                 </div>
             </div>
             
