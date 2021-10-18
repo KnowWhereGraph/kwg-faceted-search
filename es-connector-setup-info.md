@@ -9,10 +9,11 @@ Type the following SPARQL queries for the index creation.
 #### SPARQL Query
 
 ```SPARQL
+
 PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
 INSERT DATA {
-	inst:dr_index :createConnector '''
+	inst:dr_index-copy :createConnector '''
 {
   "fields": [
     {
@@ -161,7 +162,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "phenomenonTime",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/phenomenonTime",
@@ -176,7 +177,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "superTopic",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasSuperTopic",
@@ -191,7 +192,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "topic",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasTopic",
@@ -206,7 +207,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "narrative",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasNarrative"
@@ -220,7 +221,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "impact",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasImpact",
@@ -235,7 +236,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "source",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasSource",
@@ -250,7 +251,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "featureOfInterest",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/hasFeatureOfInterest",
@@ -265,7 +266,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "fipsCode",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/fipsCode"
@@ -279,7 +280,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "nwsCode",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/nwsCode"
@@ -293,11 +294,11 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "sameAs",
       "propertyChain": [
         "http://www.w3.org/2002/07/owl#sameAs",
-		"http://www.w3.org/2000/01/rdf-schema#label"
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -308,11 +309,11 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "member",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/hasMember",
-		"http://www.w3.org/2000/01/rdf-schema#label"
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -323,21 +324,7 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
-      "fieldName": "simpleResult",
-      "propertyChain": [
-        "http://www.w3.org/ns/sosa/hasSimpleResult"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-	{
+    {
       "fieldName": "observableProperty",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/observableProperty"
@@ -351,11 +338,11 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-	{
+    {
       "fieldName": "jobTitle",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasTitle",
-		"http://www.w3.org/2000/01/rdf-schema#label"
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -371,22 +358,22 @@ INSERT DATA {
   "types": [
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Expert",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Department",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/Affiliation",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/Organization",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/Expertise",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/Place",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/Hazard",
-	"http://www.w3.org/ns/sosa/Observation",
-	"http://www.w3.org/ns/sosa/ObservableProperty",
-	"http://www.w3.org/ns/sosa/ObservationCollection",
-	"http://stko-roy.geog.ucsb.edu/lod/ontology/JobTitle"
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Affiliation",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Organization",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Expertise",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Place",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Hazard",
+    "http://www.w3.org/ns/sosa/Observation",
+    "http://www.w3.org/ns/sosa/ObservableProperty",
+    "http://www.w3.org/ns/sosa/ObservationCollection",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/JobTitle"
   ],
   "readonly": false,
   "detectFields": false,
   "importGraph": false,
-  "elasticsearchNode": "http://128.111.106.227:9200",
+  "elasticsearchNode": "http://stko-kwg.geog.ucsb.edu:9200",
   "elasticsearchBasicAuthUser": "elastic",
-  "elasticsearchBasicAuthPassword": "knowwheregraph",
+  "elasticsearchBasicAuthPassword": "JDC6sh1kaK6g1OZS1FJP",
   "elasticsearchClusterSniff": true,
   "manageIndex": true,
   "manageMapping": true,
@@ -395,4 +382,5 @@ INSERT DATA {
 }
 ''' .
 }
+
 ```
