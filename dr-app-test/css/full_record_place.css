@@ -1,0 +1,59 @@
+main div#fr-place {
+    display: block;
+    height: 800px;
+    border-radius: 5px;
+    padding: 0px;
+    background-color: #FFFFFF;
+    box-shadow: 0 10px 64px 0 rgba(0, 0, 0, 0.05);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+div#fr-place div#top-map{
+    height: 400px;
+    /* background-color: rebeccapurple; */
+}
+
+#mapid{
+    height: 100%;
+}
+
+div#fr-place div.bottom-side div#bottom-left-side{
+    width: 30%;
+    height: 400px;
+    background-color: #F2F2F4;
+    float: left;
+    position:relative;
+}
+
+/* div#fr-place div.bottom-side div#bottom-right-side{
+    width: 70%;
+    height: 400px;
+    background-color: green;
+} */
+
+div#bottom-left-side ul{
+    position: absolute;
+    /* customized size, not according to the UI */
+    right: 60px;
+    top: 90px;
+}
+
+div#bottom-right-side ul{
+    font-size: 22px;
+    font-family: sans-serif;
+    font-weight: bold;
+    letter-spacing: 0px;
+    line-height: 26px;
+    position: relative;
+    top: 90px;
+    left: 60px;
+}
+
+div#bottom-right-side ul li{
+    padding-bottom: 30px;
+}

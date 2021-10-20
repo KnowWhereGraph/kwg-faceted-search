@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="kwgApp">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faceted-search</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="css/homepage.css">
+    <link rel="stylesheet" href="css/full_record.css">
+    <!-- <link rel="stylesheet" href="css/full_record_place.css"> -->
+    <!-- <link rel="stylesheet" href="css/results_filters.css"> -->
+    <!-- <link rel="stylesheet" href="css/explore.css"> -->
+    
+    <!-- JQuery -->
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    
+    <!-- Angular.js-->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+
+    <!-- Kwg -->
+    <script src="js/fullRecord.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/query.js"></script>
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   
+
+</head>
+<body ng-controller="mainController">
+    <!-- Instead of using fullRecord0.html without SPA, we use angular.js template to achieve SPA -->
+    <!-- Header -->
+    <header>
+        <a id="knowwheregraph" href="#"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
+        
+        <div id="direct_relief_container">
+            <img src="images/dr-icon.svg" alt="DirectReliefImg">
+        </div>
+
+        <ul class="nav">
+            <li class="nav-item">
+                <a href="#">
+                    <span class="item">About</span>
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#">
+                    <span class="item">Explore</span>
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#%" id="navbarDropdown">
+                    <span class="item">Search</span>
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                </a>
+
+                <div class="search-dropdown-input" id="search-dropdown">
+                    <div class="input-group mb-3">
+                        <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" type="button">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="spatial-search">
+                        <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">
+                            <div>
+                                <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
+                            </div>
+                        </button>    
+                    </div>
+                </div>
+                
+            </li>
+            <li class="nav-item">
+                <span class="item">Tools</span>
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
+            </li>
+            <li class="nav-item">
+                <span class="item">Contact</span>
+                <img src="images/dropdown.svg" alt="" class="dropdown-img">
+            </li>
+        </ul>
+
+        <div class="nav-path">
+            <!-- <span id="explore-expertise">Explore/Expertise Topic Groups/Diseases/Covid-19/</span> -->
+            <ul id="explore-expertise1" class="breadcrumb">
+                <li><a href="#">Explore </a></li>
+                <li><a href="#">Expertise Topic Groups </a></li>
+                <li><a href="#">Diseases </a></li>
+                <li><a href="#">Covid-19 </a></li>
+                <li><a href="#" id="curr_page">Alejandro Feged</a></li>
+            </ul>
+            <!-- <span id="explore-expert">Alejandro Feged</span> -->
+        </div>
+
+        <div class="display-expert">
+            <span id="expert-name">Alejandro Feged</span>
+        </div>
+
+    </header>
+    <!-- Main Content -->
+    <div ng-view></div>
+    <!-- <main>
+        <div ng-view></div>
+    </main> -->
+    
+    <!-- Footer -->
+    <footer>
+        <div class="input-box">
+            <span id="stay-informed-about">Stay informed about KnowWhereGraph</span>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter your email">
+                <button class="btn" type="submit">Submit</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="icons-footer">
+                <img src="images/kwg-icon.png" alt="knowwheregraph" id="kwg-icon-footer">
+                <p id="expert-sys-is-the">Expert System is the platform to manage experts and their expertises. It is supported by technologies of linked data and machine learning.</p>
+                <div id="funded">
+                    <span>Funded By</span>
+                    <img src="images/nsf-icon.svg" alt="" id="nsf-icon">
+                </div>
+            </div>
+            
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script src="js/fullRecord_place.js"></script>
+</body>
+</html>
