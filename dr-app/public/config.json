@@ -1,0 +1,18 @@
+{
+    "description":"configuration file used for full-text search",
+    "info": [
+        {
+            "class":"http://stko-roy.geog.ucsb.edu/lod/ontology/Place",
+            "subclass": [
+                "http://stko-roy.geog.ucsb.edu/lod/ontology/City",
+                "http://stko-roy.geog.ucsb.edu/lod/ontology/State",
+                "http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone",
+                "http://stko-roy.geog.ucsb.edu/lod/ontology/Marine",
+                "http://stko-roy.geog.ucsb.edu/lod/ontology/County"
+            ],
+            "properties": [
+                "http://www.opengis.net/ont/geosparql#Point"
+            ]
+        }
+    ]
+}
