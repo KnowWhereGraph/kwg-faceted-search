@@ -34,6 +34,8 @@ const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGra
 async function query(srq_query) {
 	let d_form = new FormData();
 	d_form.append('query',  S_PREFIXES+srq_query);
+    let username = 'admin';
+    let password = 'kwg2021-roy';
 
 	let d_res = await fetch(P_ENDPOINT, {
 		method: 'POST',
@@ -41,6 +43,7 @@ async function query(srq_query) {
 		headers: {
 			Accept: 'application/sparql-results+json',
 			'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + btoa(username + ":" + password),
 		},
 		body: new URLSearchParams([
 			...(d_form),
@@ -84,7 +87,7 @@ async function query(srq_query) {
     `);
 
     for (let row of a_hazardTypes) {
-        h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value
+        h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
 })();
@@ -123,17 +126,17 @@ async function getPlaceType(place_type_iri) {
     return a_places;
 }
 
-// query expert full records
-async function getExpertFullRecord(expertise_iri_list, location_iri_list) {
-    let expert_full_record = [];
-    let a_fullrecord = await query(/* syntax: sparql */ `
-        select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?fullname ?webpage
+// query expert table record
+async function getExpertTableRecord(expertise_iri_list, location_iri_list) {
+    let expert_table_record = [];
+    let a_tablerecord = await query(/* syntax: sparql */ `
+        select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?tablename ?webpage
         {
             ?expert kwg-ont:affiliation ?affiliation;
                     kwg-ont:department ?department;
                     kwg-ont:firstName ?firstname;
                     kwg-ont:lastName ?lastname;
-                    kwg-ont:fullName ?fullname;
+                    kwg-ont:tableName ?tablename;
                     kwg-ont:personalPage ?webpage;
                     kwg-ont:hasExpertise ?expertise.
             ?type rdfs:label ?type_name.
@@ -145,13 +148,13 @@ async function getExpertFullRecord(expertise_iri_list, location_iri_list) {
             FILTER (?affiliation_loc in (${location_iri_list.map((location) => `<${location}>`).join(',')}))
         } 
     `);
-    return a_fullrecord;
+    return a_tablerecord;
 }
 
-// query hazard full records
-async function getHazardFullRecord(place_iri_list, date_iri_list, hazard_iri_list) {
-    let hazard_full_record = [];
-    let a_fullrecord = await query(/* syntax: sparql */ `
+// query hazard table records
+async function getHazardTableRecord(place_iri_list, date_iri_list, hazard_iri_list) {
+    let hazard_table_record = [];
+    let a_tablerecord = await query(/* syntax: sparql */ `
         select ?hazard ?hazard_name ?place ?place_name ?date ?date_name
         {
             ?hazard kwg-ont:locatedAt ?place;
@@ -165,13 +168,13 @@ async function getHazardFullRecord(place_iri_list, date_iri_list, hazard_iri_lis
             filter (?hazard_type in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
         }
     `);
-    return a_fullrecord;
+    return a_tablerecord;
 }
 
-// query place full records
-async function getPlaceFullRecord(place_iri_list) {
-    let place_full_record = [];
-    let a_fullrecord = await query(/* syntax: sparql */ `
+// query place table records
+async function getPlaceTableRecord(place_iri_list) {
+    let place_table_record = [];
+    let a_tablerecord = await query(/* syntax: sparql */ `
         select ?place ?place_name ?geometry ?geometry_wkt
         {
             ?place rdfs:label ?place_name;
@@ -180,5 +183,5 @@ async function getPlaceFullRecord(place_iri_list) {
             filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
         }
     `);
-    return a_fullrecord;
+    return a_tablerecord;
 }
