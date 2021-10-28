@@ -31,6 +31,107 @@ for(let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 // SPARQL endpoint
 const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1';
 
+// define the configuration for full-text search
+const full_text_config = {
+    "description":"configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
+    "info": [
+        {
+            "class":"kwg-ont:Place",
+            "subclasses":
+            [
+                "kwg-ont:City",
+                "kwg-ont:State",
+                "kwg-ont:NWSZone",
+                "kwg-ont:Marine",
+                "kwg-ont:County"
+            ],
+            "properties":
+            {
+                "geo:hasGeometry":"geo:Point",
+                "kwg-ont:subDivision":"kwg-ont:County",
+                "kwg-ont:contains":"kwg-ont:NWSZone"
+            },
+            "inverse-properties":
+            {
+                "kwg-ont:locatedAt":
+                [
+                    "kwg-ont:Organization",
+                    "kwg-ont:Hazard"
+                ]
+            }
+        },
+        {
+            "class":"kwg-ont:Expert",
+            "properties":
+            {
+                "kwg-ont:hasAffiliation":"kwg-ont:Organization",
+                "kwg-ont:department":"kwg-ont:Department"
+            }
+        },
+        {
+            "class":"kwg-ont:Hazard",
+            "subclasses":
+            [
+                "kwg-ont:Hail",
+                "kwg-ont:ThunderstormWind",
+                "kwg-ont:Tornado",
+                "kwg-ont:HeavySnow",
+                "kwg-ont:HeavyRain",
+                "kwg-ont:ExtremeColdWindChill",
+                "kwg-ont:Waterspout",
+                "kwg-ont:FunnelCloud",
+                "kwg-ont:RipCurrent",
+                "kwg-ont:Avalanche",
+                "kwg-ont:HighWind",
+                "kwg-ont:IceStorm",
+                "kwg-ont:Blizzard",
+                "kwg-ont:HighSurf",
+                "kwg-ont:Flood",
+                "kwg-ont:Wildfire",
+                "kwg-ont:Drought",
+                "kwg-ont:WinterStorm",
+                "kwg-ont:WinterWeather",
+                "kwg-ont:DenseFog",
+                "kwg-ont:FlashFlood",
+                "kwg-ont:StormSurgeTide",
+                "kwg-ont:DustStorm",
+                "kwg-ont:StrongWind",
+                "kwg-ont:ExcessiveHeat",
+                "kwg-ont:Lightning",
+                "kwg-ont:DebrisFlow",
+                "kwg-ont:FrostFreeze",
+                "kwg-ont:Sleet",
+                "kwg-ont:Lake-EffectSnow",
+                "kwg-ont:ColdWindChill",
+                "kwg-ont:Heat",
+                "kwg-ont:DustDevil",
+                "kwg-ont:TropicalStorm",
+                "kwg-ont:MarineThunderstormWind",
+                "kwg-ont:FreezingFog",
+                "kwg-ont:MarineHail",
+                "kwg-ont:CoastalFlood",
+                "kwg-ont:MarineHighWind",
+                "kwg-ont:AstronomicalLowTide",
+                "kwg-ont:MarineStrongWind",
+                "kwg-ont:Sneakerwave",
+                "kwg-ont:LakeshoreFlood",
+                "kwg-ont:TropicalDepression",
+                "kwg-ont:MarineTropicalStorm",
+                "kwg-ont:DenseSmoke",
+                "kwg-ont:MarineHurricaneTyphoon",
+                "kwg-ont:MarineTropicalDepression",
+                "kwg-ont:Hurricane"
+            ],
+            "properties":
+            {
+                "kwg-ont:hasImpact":"sosa:ObservationCollection",
+                "sosa:isFeatureOfInterest":"sosa:ObservationCollection",
+                "sosa:phenomenonTime":"time:Interval"
+            }
+        }
+    ]
+};
+
 async function query(srq_query) {
 	let d_form = new FormData();
 	d_form.append('query',  S_PREFIXES+srq_query);
@@ -90,6 +191,23 @@ async function query(srq_query) {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
+    let keyword = 'boston';
+    let a_fulltext = await query(/* syntax: sparql */ `
+        select ?entity {
+            ?search a elastic-index:dr_index;
+            elastic:query "${keyword}";
+            elastic:entities ?entity .
+        }
+    `);
+
+    let a_fulltext_property2class = [];
+    for (let i = 0; i < a_fulltext.length; i++)
+    {
+        let property = a_fulltext[i].entity.value;
+        
+    }
+    console.log(a_fulltext_values);
+    
 })();
 
 // functions that respond to onclick events
@@ -127,7 +245,7 @@ async function getPlaceType(place_type_iri) {
 }
 
 // query expert table record
-async function getExpertTableRecord(expertise_iri_list, location_iri_list) {
+async function getExpertTableRecord(expert_iri_list, expertise_iri_list, location_iri_list) {
     let expert_table_record = [];
     let a_tablerecord = await query(/* syntax: sparql */ `
         select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?tablename ?webpage
@@ -144,18 +262,19 @@ async function getExpertTableRecord(expertise_iri_list, location_iri_list) {
             ?department rdfs:label ?department_name.
             ?affiliation kwg-ont:locatedAt ?affiliation_loc;
                         rdfs:label ?affiliation_name.
-            FILTER (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
-            FILTER (?affiliation_loc in (${location_iri_list.map((location) => `<${location}>`).join(',')}))
+            filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
+            filter (?affiliation_loc in (${location_iri_list.map((location) => `<${location}>`).join(',')}))
+            filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))
         } 
     `);
     return a_tablerecord;
 }
 
 // query hazard table records
-async function getHazardTableRecord(place_iri_list, date_iri_list, hazard_iri_list) {
+async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place_iri_list, date_iri_list) {
     let hazard_table_record = [];
     let a_tablerecord = await query(/* syntax: sparql */ `
-        select ?hazard ?hazard_name ?place ?place_name ?date ?date_name
+        select ?hazard ?hazard_name ?hazard_type ?place ?place_name ?date ?date_name
         {
             ?hazard kwg-ont:locatedAt ?place;
                 sosa:phenomenonTime ?date;
@@ -165,7 +284,8 @@ async function getHazardTableRecord(place_iri_list, date_iri_list, hazard_iri_li
             ?place rdfs:label ?place_name.
             filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
             filter (?date in (${date_iri_list.map((date) => `<${date}>`).join(',')}))
-            filter (?hazard_type in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
+            filter (?hazard_type in (${hazard_type_iri_list.map((hazard_type) => `<${hazard_type}>`).join(',')}))
+            filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
         }
     `);
     return a_tablerecord;
@@ -184,4 +304,16 @@ async function getPlaceTableRecord(place_iri_list) {
         }
     `);
     return a_tablerecord;
+}
+
+// full-text search
+async function fullTextSearch(keyword)
+{
+    let a_fulltext = await query(/* syntax: sparql */ `
+        select ?entity {
+            ?search a elastic-index:dr_index;
+            elastic:query "${keyword}";
+            elastic:entities ?entity .
+        }
+    `);
 }
