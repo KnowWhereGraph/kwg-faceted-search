@@ -1,18 +1,99 @@
 {
-    "description":"configuration file used for full-text search",
+    "description":"a configuration file used for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
     "info": [
         {
-            "class":"http://stko-roy.geog.ucsb.edu/lod/ontology/Place",
-            "subclass": [
-                "http://stko-roy.geog.ucsb.edu/lod/ontology/City",
-                "http://stko-roy.geog.ucsb.edu/lod/ontology/State",
-                "http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone",
-                "http://stko-roy.geog.ucsb.edu/lod/ontology/Marine",
-                "http://stko-roy.geog.ucsb.edu/lod/ontology/County"
+            "class":"kwg-ont:Place",
+            "subclasses":
+            [
+                "kwg-ont:City",
+                "kwg-ont:State",
+                "kwg-ont:NWSZone",
+                "kwg-ont:Marine",
+                "kwg-ont:County"
             ],
-            "properties": [
-                "http://www.opengis.net/ont/geosparql#Point"
-            ]
+            "properties":
+            {
+                "geo:hasGeometry":"geo:Point",
+                "kwg-ont:subDivision":"kwg-ont:County",
+                "kwg-ont:contains":"kwg-ont:NWSZone"
+            },
+            "inverse-properties":
+            {
+                "kwg-ont:locatedAt":
+                [
+                    "kwg-ont:Organization",
+                    "kwg-ont:Hazard"
+                ]
+            }
+        },
+        {
+            "class":"kwg-ont:Expert",
+            "properties":
+            {
+                "kwg-ont:hasAffiliation":"kwg-ont:Organization",
+                "kwg-ont:department":"kwg-ont:Department"
+            }
+        },
+        {
+            "class":"kwg-ont:Hazard",
+            "subclasses":
+            [
+                "kwg-ont:Hail",
+                "kwg-ont:ThunderstormWind",
+                "kwg-ont:Tornado",
+                "kwg-ont:HeavySnow",
+                "kwg-ont:HeavyRain",
+                "kwg-ont:ExtremeColdWindChill",
+                "kwg-ont:Waterspout",
+                "kwg-ont:FunnelCloud",
+                "kwg-ont:RipCurrent",
+                "kwg-ont:Avalanche",
+                "kwg-ont:HighWind",
+                "kwg-ont:IceStorm",
+                "kwg-ont:Blizzard",
+                "kwg-ont:HighSurf",
+                "kwg-ont:Flood",
+                "kwg-ont:Wildfire",
+                "kwg-ont:Drought",
+                "kwg-ont:WinterStorm",
+                "kwg-ont:WinterWeather",
+                "kwg-ont:DenseFog",
+                "kwg-ont:FlashFlood",
+                "kwg-ont:StormSurgeTide",
+                "kwg-ont:DustStorm",
+                "kwg-ont:StrongWind",
+                "kwg-ont:ExcessiveHeat",
+                "kwg-ont:Lightning",
+                "kwg-ont:DebrisFlow",
+                "kwg-ont:FrostFreeze",
+                "kwg-ont:Sleet",
+                "kwg-ont:Lake-EffectSnow",
+                "kwg-ont:ColdWindChill",
+                "kwg-ont:Heat",
+                "kwg-ont:DustDevil",
+                "kwg-ont:TropicalStorm",
+                "kwg-ont:MarineThunderstormWind",
+                "kwg-ont:FreezingFog",
+                "kwg-ont:MarineHail",
+                "kwg-ont:CoastalFlood",
+                "kwg-ont:MarineHighWind",
+                "kwg-ont:AstronomicalLowTide",
+                "kwg-ont:MarineStrongWind",
+                "kwg-ont:Sneakerwave",
+                "kwg-ont:LakeshoreFlood",
+                "kwg-ont:TropicalDepression",
+                "kwg-ont:MarineTropicalStorm",
+                "kwg-ont:DenseSmoke",
+                "kwg-ont:MarineHurricaneTyphoon",
+                "kwg-ont:MarineTropicalDepression",
+                "kwg-ont:Hurricane"
+            ],
+            "properties":
+            {
+                "kwg-ont:hasImpact":"sosa:ObservationCollection",
+                "sosa:isFeatureOfInterest":"sosa:ObservationCollection",
+                "sosa:phenomenonTime":"time:Interval"
+            }
         }
     ]
 }
