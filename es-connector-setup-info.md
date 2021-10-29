@@ -13,10 +13,26 @@ Type the following SPARQL queries for the index creation.
 PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
 INSERT DATA {
-	inst:dr_index-copy :createConnector '''
+	inst:dr_index_new :createConnector '''
 {
   "fields": [
     {
+
+      "fieldName": "label",
+      "propertyChain": [
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+
       "fieldName": "expertise",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasExpertise",
@@ -361,12 +377,64 @@ INSERT DATA {
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Affiliation",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Organization",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Expertise",
-    "http://stko-roy.geog.ucsb.edu/lod/ontology/Place",
-    "http://stko-roy.geog.ucsb.edu/lod/ontology/Hazard",
     "http://www.w3.org/ns/sosa/Observation",
     "http://www.w3.org/ns/sosa/ObservableProperty",
     "http://www.w3.org/ns/sosa/ObservationCollection",
-    "http://stko-roy.geog.ucsb.edu/lod/ontology/JobTitle"
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/JobTitle",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/City",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/State",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Marine",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/County",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Hail",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Tornado",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/HeavySnow",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/HeavyRain",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/ExtremeColdWindChill",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Waterspout",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/FunnelCloud",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/RipCurrent",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Avalanche",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/HighWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/IceStorm",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Blizzard",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/HighSurf",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Flood",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Drought",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/WinterStorm",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/WinterWeather",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/DenseFog",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/FlashFlood",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/StormSurgeTide",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/DustStorm",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/StrongWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/ExcessiveHeat",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Lightning",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/DebrisFlow",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/FrostFreeze",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Sleet",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Lake-EffectSnow",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/ColdWindChill",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Heat",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/DustDevil",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/TropicalStorm",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineThunderstormWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/FreezingFog",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineHail",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/CoastalFlood",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineHighWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/AstronomicalLowTide",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineStrongWind",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Sneakerwave",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/LakeshoreFlood",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/TropicalDepression",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineTropicalStorm",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/DenseSmoke",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineHurricaneTyphoon",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/MarineTropicalDepression",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Hurricane"
   ],
   "readonly": false,
   "detectFields": false,
