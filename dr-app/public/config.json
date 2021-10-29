@@ -1,16 +1,8 @@
 {
-    "description":"a configuration file used for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
+    "description":"configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
     "info": [
         {
-            "class":"kwg-ont:Place",
-            "subclasses":
-            [
-                "kwg-ont:City",
-                "kwg-ont:State",
-                "kwg-ont:NWSZone",
-                "kwg-ont:Marine",
-                "kwg-ont:County"
-            ],
+            "class":"Place",
             "properties":
             {
                 "geo:hasGeometry":"geo:Point",
@@ -19,75 +11,20 @@
             },
             "inverse-properties":
             {
-                "kwg-ont:locatedAt":
-                [
-                    "kwg-ont:Organization",
-                    "kwg-ont:Hazard"
-                ]
+                "kwg-ont:Organization":"kwg-ont:locatedAt",
+                "kwg-ont:Hazard":"kwg-ont:locatedAt"
             }
         },
         {
-            "class":"kwg-ont:Expert",
+            "class":"Expert",
             "properties":
             {
-                "kwg-ont:hasAffiliation":"kwg-ont:Organization",
+                "kwg-ont:affiliation":"kwg-ont:Organization",
                 "kwg-ont:department":"kwg-ont:Department"
             }
         },
         {
-            "class":"kwg-ont:Hazard",
-            "subclasses":
-            [
-                "kwg-ont:Hail",
-                "kwg-ont:ThunderstormWind",
-                "kwg-ont:Tornado",
-                "kwg-ont:HeavySnow",
-                "kwg-ont:HeavyRain",
-                "kwg-ont:ExtremeColdWindChill",
-                "kwg-ont:Waterspout",
-                "kwg-ont:FunnelCloud",
-                "kwg-ont:RipCurrent",
-                "kwg-ont:Avalanche",
-                "kwg-ont:HighWind",
-                "kwg-ont:IceStorm",
-                "kwg-ont:Blizzard",
-                "kwg-ont:HighSurf",
-                "kwg-ont:Flood",
-                "kwg-ont:Wildfire",
-                "kwg-ont:Drought",
-                "kwg-ont:WinterStorm",
-                "kwg-ont:WinterWeather",
-                "kwg-ont:DenseFog",
-                "kwg-ont:FlashFlood",
-                "kwg-ont:StormSurgeTide",
-                "kwg-ont:DustStorm",
-                "kwg-ont:StrongWind",
-                "kwg-ont:ExcessiveHeat",
-                "kwg-ont:Lightning",
-                "kwg-ont:DebrisFlow",
-                "kwg-ont:FrostFreeze",
-                "kwg-ont:Sleet",
-                "kwg-ont:Lake-EffectSnow",
-                "kwg-ont:ColdWindChill",
-                "kwg-ont:Heat",
-                "kwg-ont:DustDevil",
-                "kwg-ont:TropicalStorm",
-                "kwg-ont:MarineThunderstormWind",
-                "kwg-ont:FreezingFog",
-                "kwg-ont:MarineHail",
-                "kwg-ont:CoastalFlood",
-                "kwg-ont:MarineHighWind",
-                "kwg-ont:AstronomicalLowTide",
-                "kwg-ont:MarineStrongWind",
-                "kwg-ont:Sneakerwave",
-                "kwg-ont:LakeshoreFlood",
-                "kwg-ont:TropicalDepression",
-                "kwg-ont:MarineTropicalStorm",
-                "kwg-ont:DenseSmoke",
-                "kwg-ont:MarineHurricaneTyphoon",
-                "kwg-ont:MarineTropicalDepression",
-                "kwg-ont:Hurricane"
-            ],
+            "class":"Hazard",
             "properties":
             {
                 "kwg-ont:hasImpact":"sosa:ObservationCollection",

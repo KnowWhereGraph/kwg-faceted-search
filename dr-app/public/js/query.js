@@ -19,6 +19,7 @@ const H_PREFIXES = {
 	'kwg-ont':'http://stko-roy.geog.ucsb.edu/lod/ontology/',
 	geo: 'http://www.opengis.net/ont/geosparql#',
 	ago: 'http://awesemantic-geo.link/ontology/',
+    sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#'
 };
@@ -36,15 +37,7 @@ const full_text_config = {
     "description":"configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
     "info": [
         {
-            "class":"kwg-ont:Place",
-            "subclasses":
-            [
-                "kwg-ont:City",
-                "kwg-ont:State",
-                "kwg-ont:NWSZone",
-                "kwg-ont:Marine",
-                "kwg-ont:County"
-            ],
+            "class":"Place",
             "properties":
             {
                 "geo:hasGeometry":"geo:Point",
@@ -53,75 +46,20 @@ const full_text_config = {
             },
             "inverse-properties":
             {
-                "kwg-ont:locatedAt":
-                [
-                    "kwg-ont:Organization",
-                    "kwg-ont:Hazard"
-                ]
+                "kwg-ont:Organization":"kwg-ont:locatedAt",
+                "kwg-ont:Hazard":"kwg-ont:locatedAt"
             }
         },
         {
-            "class":"kwg-ont:Expert",
+            "class":"Expert",
             "properties":
             {
-                "kwg-ont:hasAffiliation":"kwg-ont:Organization",
+                "kwg-ont:affiliation":"kwg-ont:Organization",
                 "kwg-ont:department":"kwg-ont:Department"
             }
         },
         {
-            "class":"kwg-ont:Hazard",
-            "subclasses":
-            [
-                "kwg-ont:Hail",
-                "kwg-ont:ThunderstormWind",
-                "kwg-ont:Tornado",
-                "kwg-ont:HeavySnow",
-                "kwg-ont:HeavyRain",
-                "kwg-ont:ExtremeColdWindChill",
-                "kwg-ont:Waterspout",
-                "kwg-ont:FunnelCloud",
-                "kwg-ont:RipCurrent",
-                "kwg-ont:Avalanche",
-                "kwg-ont:HighWind",
-                "kwg-ont:IceStorm",
-                "kwg-ont:Blizzard",
-                "kwg-ont:HighSurf",
-                "kwg-ont:Flood",
-                "kwg-ont:Wildfire",
-                "kwg-ont:Drought",
-                "kwg-ont:WinterStorm",
-                "kwg-ont:WinterWeather",
-                "kwg-ont:DenseFog",
-                "kwg-ont:FlashFlood",
-                "kwg-ont:StormSurgeTide",
-                "kwg-ont:DustStorm",
-                "kwg-ont:StrongWind",
-                "kwg-ont:ExcessiveHeat",
-                "kwg-ont:Lightning",
-                "kwg-ont:DebrisFlow",
-                "kwg-ont:FrostFreeze",
-                "kwg-ont:Sleet",
-                "kwg-ont:Lake-EffectSnow",
-                "kwg-ont:ColdWindChill",
-                "kwg-ont:Heat",
-                "kwg-ont:DustDevil",
-                "kwg-ont:TropicalStorm",
-                "kwg-ont:MarineThunderstormWind",
-                "kwg-ont:FreezingFog",
-                "kwg-ont:MarineHail",
-                "kwg-ont:CoastalFlood",
-                "kwg-ont:MarineHighWind",
-                "kwg-ont:AstronomicalLowTide",
-                "kwg-ont:MarineStrongWind",
-                "kwg-ont:Sneakerwave",
-                "kwg-ont:LakeshoreFlood",
-                "kwg-ont:TropicalDepression",
-                "kwg-ont:MarineTropicalStorm",
-                "kwg-ont:DenseSmoke",
-                "kwg-ont:MarineHurricaneTyphoon",
-                "kwg-ont:MarineTropicalDepression",
-                "kwg-ont:Hurricane"
-            ],
+            "class":"Hazard",
             "properties":
             {
                 "kwg-ont:hasImpact":"sosa:ObservationCollection",
@@ -135,8 +73,6 @@ const full_text_config = {
 async function query(srq_query) {
 	let d_form = new FormData();
 	d_form.append('query',  S_PREFIXES+srq_query);
-    let username = 'admin';
-    let password = 'kwg2021-roy';
 
 	let d_res = await fetch(P_ENDPOINT, {
 		method: 'POST',
@@ -144,7 +80,7 @@ async function query(srq_query) {
 		headers: {
 			Accept: 'application/sparql-results+json',
 			'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + btoa(username + ":" + password),
+            //'Authorization': 'Basic ' + btoa(username + ":" + password),
 		},
 		body: new URLSearchParams([
 			...(d_form),
@@ -191,23 +127,6 @@ async function query(srq_query) {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
-    let keyword = 'boston';
-    let a_fulltext = await query(/* syntax: sparql */ `
-        select ?entity {
-            ?search a elastic-index:dr_index;
-            elastic:query "${keyword}";
-            elastic:entities ?entity .
-        }
-    `);
-
-    let a_fulltext_property2class = [];
-    for (let i = 0; i < a_fulltext.length; i++)
-    {
-        let property = a_fulltext[i].entity.value;
-        
-    }
-    console.log(a_fulltext_values);
-    
 })();
 
 // functions that respond to onclick events
@@ -245,7 +164,7 @@ async function getPlaceType(place_type_iri) {
 }
 
 // query expert table record
-async function getExpertTableRecord(expert_iri_list, expertise_iri_list, location_iri_list) {
+async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_iri_list) {
     let expert_table_record = [];
     let a_tablerecord = await query(/* syntax: sparql */ `
         select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?tablename ?webpage
@@ -263,7 +182,7 @@ async function getExpertTableRecord(expert_iri_list, expertise_iri_list, locatio
             ?affiliation kwg-ont:locatedAt ?affiliation_loc;
                         rdfs:label ?affiliation_name.
             filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
-            filter (?affiliation_loc in (${location_iri_list.map((location) => `<${location}>`).join(',')}))
+            filter (?affiliation_loc in (${place_iri_list.map((location) => `<${location}>`).join(',')}))
             filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))
         } 
     `);
@@ -307,13 +226,131 @@ async function getPlaceTableRecord(place_iri_list) {
 }
 
 // full-text search
-async function fullTextSearch(keyword)
+// place_iri_list_selected is an Array consisting of places selected by users as facets
+// we need to filter those selected places from places acquired from full-text search
+async function getFullTextSearchResult(keyword, expertises_iri_selected, place_iri_list_selected, hazards_type_iri_selected, dates_iri_selected)
 {
+    let place_iri_list = [];
+    let expert_iri_list = [];
+    let hazard_iri_list = [];
+
+    let property_key_list = {"Place":{},"Expert":{},"Hazard":{}};
+    let inverse_property_key_list = {"Place":{}};
+
     let a_fulltext = await query(/* syntax: sparql */ `
-        select ?entity {
+        select ?entity ?type ?label {
             ?search a elastic-index:dr_index;
             elastic:query "${keyword}";
             elastic:entities ?entity .
+            ?entity rdfs:label ?label;
+			        rdf:type ?type.
         }
     `);
+
+    
+    for (let i = 0; i < a_fulltext.length; i++)
+    {
+        let property = a_fulltext[i].type.value;
+        let obj = a_fulltext[i].entity.value;
+
+        for(let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
+            property = property.replace(p_prefix_iri,si_prefix+':');
+        }
+
+        // add keys of properties of Hazard, Expert and Place
+        for (let j = 0; j < full_text_config.info.length; j++)
+        {
+            for (var key in full_text_config.info[j].properties)
+            {
+                if (full_text_config.info[j].properties[key] == property)
+                {
+                    try
+                    {
+                        property_key_list[full_text_config.info[j].class][key].push(obj);
+                    }
+                    catch (e)
+                    {
+                        property_key_list[full_text_config.info[j].class][key] = [obj];
+                    }
+                }
+            }
+        }
+        // add keys of inverse-properties of Place
+        for (var key in full_text_config.info[0]['inverse-properties'])
+        {
+            if (key == property)
+            {
+                try
+                {
+                    inverse_property_key_list[full_text_config.info[0].class][full_text_config.info[0]["inverse-properties"][key]].push(obj);
+                }
+                catch (e)
+                {
+                    inverse_property_key_list[full_text_config.info[0].class][full_text_config.info[0]["inverse-properties"][key]] = [obj];
+                }
+            }
+        }
+
+
+
+        // query subjects for predicates like kwg-ont:affiliation
+        for (var top_key in property_key_list)
+        {
+            for (var key in property_key_list[top_key])
+            {
+                a_topkeyAsSubject = await query(/* syntax: sparql */ `
+                    select ?s
+                    {
+                        ?s ${key} ?o.
+                        values ?o {${property_key_list[top_key][key].map((object) => `<${object}>`).join(' ')}}
+                    }
+                `);
+                for (let j = 0; j < a_topkeyAsSubject.length; j++)
+                {
+                    if (top_key == 'Place')
+                    {
+                        place_iri_list.push(a_topkeyAsSubject[j].s.value);
+                    }
+                    if (top_key == 'Expert')
+                    {
+                        expert_iri_list.push(a_topkeyAsSubject[j].s.value);
+                    }
+                    if (top_key == 'Hazard')
+                    {
+                        hazard_iri_list.push(a_topkeyAsSubject[j].s.value);
+                    }
+                }
+            }
+        }
+
+
+        // query objects for predicates like kwg-ont:locatedAt
+        for (var key in inverse_property_key_list['Place'])
+        {
+            a_placeAsObject = await query(/* syntax: sparql */ `
+                select ?o
+                {
+                    ?s ${key} ?o.
+                    values ?s {${inverse_property_key_list['Place'][key].map((subject) => `<${subject}>`).join(' ')}}
+                }
+            `);
+            for (let j = 0; j < a_placeAsObject.length; j++)
+            {
+                place_iri_list.push(a_placeAsObject[j].o.value);
+            }
+        }
+
+    }
+
+    const experts_iri_fulltext = Array.from(new Set(expert_iri_list));
+    const places_iri_fulltext = Array.from(new Set(place_iri_list));
+    const places_iri_filtered = places_iri_fulltext.filter(x => place_iri_list_selected.indexOf(x) != -1); // filter places
+    const hazards_iri_fulltext = Array.from(new Set(hazard_iri_list));
+
+    let search_result = {
+        "Place":getPlaceTableRecord(places_iri_filtered),
+        "Expert":getExpertTableRecord(experts_iri_fulltext,expertises_iri_selected, places_iri_filtered),
+        "Hazard":getHazardTableRecord(hazards_iri_fulltext, hazards_type_iri_selected, places_iri_filtered, dates_iri_selected)
+    }
+    return search_result;
 }
