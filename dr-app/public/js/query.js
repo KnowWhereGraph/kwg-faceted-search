@@ -18,6 +18,7 @@ const H_PREFIXES = {
 	kwgr: 'http://stko-roy.geog.ucsb.edu/lod/resource/',
 	'kwg-ont':'http://stko-roy.geog.ucsb.edu/lod/ontology/',
 	geo: 'http://www.opengis.net/ont/geosparql#',
+    time: 'http://www.w3.org/2006/time#',
 	ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
@@ -190,7 +191,7 @@ async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_i
 }
 
 // query hazard table records
-async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place_iri_list, date_iri_list) {
+async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place_iri_list, start_year, end_year) {
     let hazard_table_record = [];
     let a_tablerecord = await query(/* syntax: sparql */ `
         select ?hazard ?hazard_name ?hazard_type ?place ?place_name ?date ?date_name
@@ -199,10 +200,15 @@ async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place
                 sosa:phenomenonTime ?date;
                 rdf:type ?hazard_type;
                 rdfs:label ?hazard_name.
-            ?date rdfs:label ?date_name.
+            ?date rdfs:label ?date_name;
+                time:hasBeginning ?start_date;
+                time:hasEnd ?end_date.
+            ?start_date rdfs:label ?start_date_label.
+            ?end_date rdfs:label ?end_date_label.
             ?place rdfs:label ?place_name.
             filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
-            filter (?date in (${date_iri_list.map((date) => `<${date}>`).join(',')}))
+            filter (?start_date_label >= ${start_year+'-01-01-0000 EST'})
+            filter (?end_date_label <= ${end_year+'-12-31-2400 EST'})
             filter (?hazard_type in (${hazard_type_iri_list.map((hazard_type) => `<${hazard_type}>`).join(',')}))
             filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
         }
@@ -228,7 +234,7 @@ async function getPlaceTableRecord(place_iri_list) {
 // full-text search
 // place_iri_list_selected is an Array consisting of places selected by users as facets
 // we need to filter those selected places from places acquired from full-text search
-async function getFullTextSearchResult(keyword, expertises_iri_selected, place_iri_list_selected, hazards_type_iri_selected, dates_iri_selected)
+async function getFullTextSearchResult(keyword, expertises_iri_selected, place_iri_list_selected, hazards_type_iri_selected, start_year, end_year)
 {
     let place_iri_list = [];
     let expert_iri_list = [];
@@ -350,7 +356,7 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_i
     let search_result = {
         "Place":getPlaceTableRecord(places_iri_filtered),
         "Expert":getExpertTableRecord(experts_iri_fulltext,expertises_iri_selected, places_iri_filtered),
-        "Hazard":getHazardTableRecord(hazards_iri_fulltext, hazards_type_iri_selected, places_iri_filtered, dates_iri_selected)
+        "Hazard":getHazardTableRecord(hazards_iri_fulltext, hazards_type_iri_selected, places_iri_filtered, start_year, end_year)
     }
     return search_result;
 }
