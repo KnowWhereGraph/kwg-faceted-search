@@ -171,6 +171,7 @@ async function query(srq_query) {
 // functions that respond to onclick events
 // query expertise subtopics
 async function getSubTopic(super_topic_iri) {
+    let h_subTopics = [];
     let a_topics = await query(/* syntax: sparql */ `
         select ?topic ?topic_label where { 
             ?topic rdf:type kwg-ont:Topic;
@@ -179,11 +180,16 @@ async function getSubTopic(super_topic_iri) {
             values ?super_topic {<${super_topic_iri}>}.
         }
     `);
-    return a_topics;
+    for (let row of a_topics) 
+    {
+        h_subTopics.push({'topic':row.topic.value, 'topic_label':row.super_topic_label.value});
+    }
+    return h_subTopics;
 }
 
 // query place instances of a chosen place type
 async function getPlaceInstance(place_type_iri) {
+    let h_places = [];
     let a_places = await query(/* syntax: sparql */ `
         select ?place ?place_label where { 
             ?place rdf:type ?place_type;
@@ -191,11 +197,16 @@ async function getPlaceInstance(place_type_iri) {
             values ?place_type {<${place_type_iri}>}.
         }
     `);
-    return a_places;
+    for (let row of a_places)
+    {
+        h_places.push({'place':row.place.value, 'place_label':row.place_label.value});
+    }
+    return h_places;
 }
 
 // query expert table record
 async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_iri_list) {
+    let h_expertTable = [];
     let query_string = `
         select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?fullname ?webpage
         {
@@ -225,13 +236,30 @@ async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_i
         query_string += `filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))`;
 
     }
-    return await query(query_string+`}`);
+    let a_expertTable = await query(query_string+`}`);
+    for (let row of a_expertTable)
+    {
+        h_expertTable.push({
+            'affiliation':row.affiliation.value,
+            'affiliation_name':row.affiliation_name.value,
+            'department':row.department.value,
+            'department_name':row.department_name.value,
+            'expertise':row.expertise.value,
+            'expertise_name':row.expertise_name.value,
+            'firstname':row.firstname.value,
+            'lastname':row.lastname.value,
+            'fullname':row.fullname.value,
+            'webpage':row.webpage.value
+        });
+    }
+    return h_expertTable;
 }
 
 // query hazard table records
 async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place_iri_list, start_year, end_year) {
+    let h_hazardTable = [];
     let query_string = `
-        select ?hazard ?hazard_name ?hazard_type ?place ?place_name ?date ?date_name
+        select ?hazard ?hazard_name ?hazard_type ?hazard_type_name ?place ?place_name ?date ?date_name
         {
             ?hazard kwg-ont:locatedAt ?place;
                 sosa:phenomenonTime ?date;
@@ -243,6 +271,7 @@ async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place
             ?start_date rdfs:label ?start_date_label.
             ?end_date rdfs:label ?end_date_label.
             ?place rdfs:label ?place_name.
+            ?hazard_type rdfs:label ?hazard_type_name.
     `;
     if (place_iri_list.length != 0)
     {
@@ -264,11 +293,26 @@ async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place
     {
         query_string += `filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))`;
     }
-    return await query(query_string+`}`);
+    let a_hazardTable = await query(query_string+`}`);
+    for (let row of a_hazardTable)
+    {
+        h_hazardTable.push({
+            'hazard':row.hazard.value,
+            'hazard_name':row.hazard_name.value,
+            'hazard_type':row.hazard_type.value,
+            'hazard_type_name':row.hazard_type_name.value,
+            'place':row.place.value,
+            'place_name':row.place_name.value,
+            'date':row.date.value,
+            'date_name':row.date_name.value
+        });
+    }
+    return h_hazardTable;
 }
 
 // query place table records
 async function getPlaceTableRecord(place_iri_list) {
+    let h_placeTable = [];
     let query_string = `
         select ?place ?place_name ?geometry ?geometry_wkt
         {
@@ -280,7 +324,17 @@ async function getPlaceTableRecord(place_iri_list) {
     {
         query_string += `filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))`;
     }
-    return await query(query_string+`}`);
+    let a_placeTable = await query(query_string+`}`);
+    for (let row of a_placeTable)
+    {
+        h_placeTable.push({
+            'place':row.place.value,
+            'place_name':row.place_name.value,
+            'geometry':row.geometry.value,
+            'geometry_wkt':row.geometry_wkt.value
+        });
+    }
+    return h_placeTable;
 }
 
 // full-text search
