@@ -196,15 +196,14 @@ async function getPlaceInstance(place_type_iri) {
 
 // query expert table record
 async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_iri_list) {
-    let expert_table_record = [];
-    let a_tablerecord = await query(/* syntax: sparql */ `
-        select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?tablename ?webpage
+    let query_string = `
+        select ?affiliation ?affiliation_name ?department ?department_name ?expertise ?expertise_name ?firstname ?lastname ?fullname ?webpage
         {
             ?expert kwg-ont:affiliation ?affiliation;
                     kwg-ont:department ?department;
                     kwg-ont:firstName ?firstname;
                     kwg-ont:lastName ?lastname;
-                    kwg-ont:tableName ?tablename;
+                    kwg-ont:fullName ?fullname;
                     kwg-ont:personalPage ?webpage;
                     kwg-ont:hasExpertise ?expertise.
             ?type rdfs:label ?type_name.
@@ -212,18 +211,26 @@ async function getExpertTableRecord(expert_iri_list, expertise_iri_list, place_i
             ?department rdfs:label ?department_name.
             ?affiliation kwg-ont:locatedAt ?affiliation_loc;
                         rdfs:label ?affiliation_name.
-            filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
-            filter (?affiliation_loc in (${place_iri_list.map((location) => `<${location}>`).join(',')}))
-            filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))
-        } 
-    `);
-    return a_tablerecord;
+    `;
+    if (expertise_iri_list.length != 0)
+    {
+        query_string += `filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))`;
+    }
+    if (place_iri_list.length != 0)
+    {
+        query_string += `filter (?affiliation_loc in (${place_iri_list.map((location) => `<${location}>`).join(',')}))`;
+    }
+    if (expert_iri_list.length != 0)
+    {
+        query_string += `filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))`;
+
+    }
+    return await query(query_string+`}`);
 }
 
 // query hazard table records
 async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place_iri_list, start_year, end_year) {
-    let hazard_table_record = [];
-    let a_tablerecord = await query(/* syntax: sparql */ `
+    let query_string = `
         select ?hazard ?hazard_name ?hazard_type ?place ?place_name ?date ?date_name
         {
             ?hazard kwg-ont:locatedAt ?place;
@@ -236,29 +243,44 @@ async function getHazardTableRecord(hazard_iri_list, hazard_type_iri_list, place
             ?start_date rdfs:label ?start_date_label.
             ?end_date rdfs:label ?end_date_label.
             ?place rdfs:label ?place_name.
-            filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
-            filter (?start_date_label >= ${start_year+'-01-01-0000 EST'})
-            filter (?end_date_label <= ${end_year+'-12-31-2400 EST'})
-            filter (?hazard_type in (${hazard_type_iri_list.map((hazard_type) => `<${hazard_type}>`).join(',')}))
-            filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
-        }
-    `);
-    return a_tablerecord;
+    `;
+    if (place_iri_list.length != 0)
+    {
+        query_string += `filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))`;
+    }
+    if (start_year != '')
+    {
+        query_string += `filter (?start_date_label >= ${start_year+'-01-01-0000 EST'})`;
+    }
+    if (end_year != '')
+    {
+        query_string += `filter (?end_date_label <= ${end_year+'-12-31-2400 EST'})`;
+    }
+    if (hazard_type_iri_list.length != 0)
+    {
+        query_string += `filter (?hazard_type in (${hazard_type_iri_list.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
+    }
+    if (hazard_iri_list.length != 0)
+    {
+        query_string += `filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))`;
+    }
+    return await query(query_string+`}`);
 }
 
 // query place table records
 async function getPlaceTableRecord(place_iri_list) {
-    let place_table_record = [];
-    let a_tablerecord = await query(/* syntax: sparql */ `
+    let query_string = `
         select ?place ?place_name ?geometry ?geometry_wkt
         {
             ?place rdfs:label ?place_name;
                 geo:hasGeometry ?geometry.
-            ?geometry geo:asWKT ?geometry_wkt
-            filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
-        }
-    `);
-    return a_tablerecord;
+            ?geometry geo:asWKT ?geometry_wkt.
+    `;
+    if (place_iri_list.length != 0)
+    {
+        query_string += `filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))`;
+    }
+    return await query(query_string+`}`);
 }
 
 // full-text search
