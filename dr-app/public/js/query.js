@@ -1,5 +1,5 @@
 // query.js contains the javascript codes that query data from KnowWhereGraph.
-// Right now the endpoint is set to be KnowWhereGraph-v1 from stko-roy.
+// Right now the endpoint is set to be KnowWhereGraph-V1 from stko-roy.
 
 // store expertise super topics, place types and hazard types
 const h_superTopics = {};
@@ -39,34 +39,72 @@ const full_text_config = {
     "info": [
         {
             "class":"Place",
-            "properties":
-            {
-                "geo:hasGeometry":"geo:Point",
-                "kwg-ont:subDivision":"kwg-ont:County",
-                "kwg-ont:contains":"kwg-ont:NWSZone"
-            },
-            "inverse-properties":
-            {
-                "kwg-ont:Organization":"kwg-ont:locatedAt",
-                "kwg-ont:Hazard":"kwg-ont:locatedAt"
-            }
+            "subclasses":
+            [
+                "City",
+                "State",
+                "NWSZone",
+                "Marine",
+                "County"
+            ]
         },
         {
-            "class":"Expert",
-            "properties":
-            {
-                "kwg-ont:affiliation":"kwg-ont:Organization",
-                "kwg-ont:department":"kwg-ont:Department"
-            }
+            "class":"Expert"
         },
         {
             "class":"Hazard",
-            "properties":
-            {
-                "kwg-ont:hasImpact":"sosa:ObservationCollection",
-                "sosa:isFeatureOfInterest":"sosa:ObservationCollection",
-                "sosa:phenomenonTime":"time:Interval"
-            }
+            "subclasses":
+            [
+                "Hail",
+                "ThunderstormWind",
+                "Tornado",
+                "HeavySnow",
+                "HeavyRain",
+                "ExtremeColdWindChill",
+                "Waterspout",
+                "FunnelCloud",
+                "RipCurrent",
+                "Avalanche",
+                "HighWind",
+                "IceStorm",
+                "Blizzard",
+                "HighSurf",
+                "Flood",
+                "Wildfire",
+                "Drought",
+                "WinterStorm",
+                "WinterWeather",
+                "DenseFog",
+                "FlashFlood",
+                "StormSurgeTide",
+                "DustStorm",
+                "StrongWind",
+                "ExcessiveHeat",
+                "Lightning",
+                "DebrisFlow",
+                "FrostFreeze",
+                "Sleet",
+                "Lake-EffectSnow",
+                "ColdWindChill",
+                "Heat",
+                "DustDevil",
+                "TropicalStorm",
+                "MarineThunderstormWind",
+                "FreezingFog",
+                "MarineHail",
+                "CoastalFlood",
+                "MarineHighWind",
+                "AstronomicalLowTide",
+                "MarineStrongWind",
+                "Sneakerwave",
+                "LakeshoreFlood",
+                "TropicalDepression",
+                "MarineTropicalStorm",
+                "DenseSmoke",
+                "MarineHurricaneTyphoon",
+                "MarineTropicalDepression",
+                "Hurricane"
+            ]
         }
     ]
 };
@@ -132,8 +170,7 @@ async function query(srq_query) {
 
 // functions that respond to onclick events
 // query expertise subtopics
-async function getSuperTopic(super_topic_iri) {
-    //let h_topics = {};
+async function getSubTopic(super_topic_iri) {
     let a_topics = await query(/* syntax: sparql */ `
         select ?topic ?topic_label where { 
             ?topic rdf:type kwg-ont:Topic;
@@ -142,15 +179,11 @@ async function getSuperTopic(super_topic_iri) {
             values ?super_topic {<${super_topic_iri}>}.
         }
     `);
-    // for (let row of a_topics) {
-    //     h_topics[row.topic.value] = row.topic_label.value;
-    // }
     return a_topics;
 }
 
 // query place instances of a chosen place type
-async function getPlaceType(place_type_iri) {
-    // let h_places = {};
+async function getPlaceInstance(place_type_iri) {
     let a_places = await query(/* syntax: sparql */ `
         select ?place ?place_label where { 
             ?place rdf:type ?place_type;
@@ -158,9 +191,6 @@ async function getPlaceType(place_type_iri) {
             values ?place_type {<${place_type_iri}>}.
         }
     `);
-    // for (let row of a_places) {
-    //     h_places[row.place.value] = row.place_label.value;
-    // }
     return a_places;
 }
 
@@ -236,16 +266,11 @@ async function getPlaceTableRecord(place_iri_list) {
 // we need to filter those selected places from places acquired from full-text search
 async function getFullTextSearchResult(keyword, expertises_iri_selected, place_iri_list_selected, hazards_type_iri_selected, start_year, end_year)
 {
-    let place_iri_list = [];
-    let expert_iri_list = [];
-    let hazard_iri_list = [];
-
-    let property_key_list = {"Place":{},"Expert":{},"Hazard":{}};
-    let inverse_property_key_list = {"Place":{}};
+    let instance2class_list = {"Place":[],"Expert":[],"Hazard":[]};
 
     let a_fulltext = await query(/* syntax: sparql */ `
         select ?entity ?type ?label {
-            ?search a elastic-index:dr_index;
+            ?search a elastic-index:dr_index_new;
             elastic:query "${keyword}";
             elastic:entities ?entity .
             ?entity rdfs:label ?label;
@@ -253,105 +278,46 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_i
         }
     `);
 
-    
     for (let i = 0; i < a_fulltext.length; i++)
     {
-        let property = a_fulltext[i].type.value;
-        let obj = a_fulltext[i].entity.value;
+        let instance_type = a_fulltext[i].type.value;
+        let instance_iri = a_fulltext[i].entity.value;
 
         for(let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
-            property = property.replace(p_prefix_iri,si_prefix+':');
+            instance_type = instance_type.replace(p_prefix_iri,'');
         }
 
-        // add keys of properties of Hazard, Expert and Place
+        let isfound_class = false;
         for (let j = 0; j < full_text_config.info.length; j++)
         {
-            for (var key in full_text_config.info[j].properties)
+            if (instance_type == full_text_config.info[j].class)
             {
-                if (full_text_config.info[j].properties[key] == property)
+                instance2class_list[full_text_config.info[j].class].push(instance_iri);
+                break;
+            }
+            if (full_text_config.info[j].subclasses)
+            {
+                for (let k = 0; k < full_text_config.info[j].subclasses.length; k++)
                 {
-                    try
+                    if (instance_type  == full_text_config.info[j].subclasses[k])
                     {
-                        property_key_list[full_text_config.info[j].class][key].push(obj);
-                    }
-                    catch (e)
-                    {
-                        property_key_list[full_text_config.info[j].class][key] = [obj];
+                        instance2class_list[full_text_config.info[j].class].push(instance_iri);
+                        isfound_class = true;
+                        break;
                     }
                 }
+ 
+            }
+            if (isfound_class)
+            {
+                break;
             }
         }
-        // add keys of inverse-properties of Place
-        for (var key in full_text_config.info[0]['inverse-properties'])
-        {
-            if (key == property)
-            {
-                try
-                {
-                    inverse_property_key_list[full_text_config.info[0].class][full_text_config.info[0]["inverse-properties"][key]].push(obj);
-                }
-                catch (e)
-                {
-                    inverse_property_key_list[full_text_config.info[0].class][full_text_config.info[0]["inverse-properties"][key]] = [obj];
-                }
-            }
-        }
-
-
-
-        // query subjects for predicates like kwg-ont:affiliation
-        for (var top_key in property_key_list)
-        {
-            for (var key in property_key_list[top_key])
-            {
-                a_topkeyAsSubject = await query(/* syntax: sparql */ `
-                    select ?s
-                    {
-                        ?s ${key} ?o.
-                        values ?o {${property_key_list[top_key][key].map((object) => `<${object}>`).join(' ')}}
-                    }
-                `);
-                for (let j = 0; j < a_topkeyAsSubject.length; j++)
-                {
-                    if (top_key == 'Place')
-                    {
-                        place_iri_list.push(a_topkeyAsSubject[j].s.value);
-                    }
-                    if (top_key == 'Expert')
-                    {
-                        expert_iri_list.push(a_topkeyAsSubject[j].s.value);
-                    }
-                    if (top_key == 'Hazard')
-                    {
-                        hazard_iri_list.push(a_topkeyAsSubject[j].s.value);
-                    }
-                }
-            }
-        }
-
-
-        // query objects for predicates like kwg-ont:locatedAt
-        for (var key in inverse_property_key_list['Place'])
-        {
-            a_placeAsObject = await query(/* syntax: sparql */ `
-                select ?o
-                {
-                    ?s ${key} ?o.
-                    values ?s {${inverse_property_key_list['Place'][key].map((subject) => `<${subject}>`).join(' ')}}
-                }
-            `);
-            for (let j = 0; j < a_placeAsObject.length; j++)
-            {
-                place_iri_list.push(a_placeAsObject[j].o.value);
-            }
-        }
-
     }
-
-    const experts_iri_fulltext = Array.from(new Set(expert_iri_list));
-    const places_iri_fulltext = Array.from(new Set(place_iri_list));
+    const experts_iri_fulltext = Array.from(new Set(instance2class_list['Expert']));
+    const places_iri_fulltext = Array.from(new Set(instance2class_list['Place']));
     const places_iri_filtered = places_iri_fulltext.filter(x => place_iri_list_selected.indexOf(x) != -1); // filter places
-    const hazards_iri_fulltext = Array.from(new Set(hazard_iri_list));
+    const hazards_iri_fulltext = Array.from(new Set(instance2class_list['Hazard']));
 
     let search_result = {
         "Place":getPlaceTableRecord(places_iri_filtered),

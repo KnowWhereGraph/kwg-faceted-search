@@ -3,34 +3,72 @@
     "info": [
         {
             "class":"Place",
-            "properties":
-            {
-                "geo:hasGeometry":"geo:Point",
-                "kwg-ont:subDivision":"kwg-ont:County",
-                "kwg-ont:contains":"kwg-ont:NWSZone"
-            },
-            "inverse-properties":
-            {
-                "kwg-ont:Organization":"kwg-ont:locatedAt",
-                "kwg-ont:Hazard":"kwg-ont:locatedAt"
-            }
+            "subclasses":
+            [
+                "City",
+                "State",
+                "NWSZone",
+                "Marine",
+                "County"
+            ]
         },
         {
-            "class":"Expert",
-            "properties":
-            {
-                "kwg-ont:affiliation":"kwg-ont:Organization",
-                "kwg-ont:department":"kwg-ont:Department"
-            }
+            "class":"Expert"
         },
         {
             "class":"Hazard",
-            "properties":
-            {
-                "kwg-ont:hasImpact":"sosa:ObservationCollection",
-                "sosa:isFeatureOfInterest":"sosa:ObservationCollection",
-                "sosa:phenomenonTime":"time:Interval"
-            }
+            "subclasses":
+            [
+                "Hail",
+                "ThunderstormWind",
+                "Tornado",
+                "HeavySnow",
+                "HeavyRain",
+                "ExtremeColdWindChill",
+                "Waterspout",
+                "FunnelCloud",
+                "RipCurrent",
+                "Avalanche",
+                "HighWind",
+                "IceStorm",
+                "Blizzard",
+                "HighSurf",
+                "Flood",
+                "Wildfire",
+                "Drought",
+                "WinterStorm",
+                "WinterWeather",
+                "DenseFog",
+                "FlashFlood",
+                "StormSurgeTide",
+                "DustStorm",
+                "StrongWind",
+                "ExcessiveHeat",
+                "Lightning",
+                "DebrisFlow",
+                "FrostFreeze",
+                "Sleet",
+                "Lake-EffectSnow",
+                "ColdWindChill",
+                "Heat",
+                "DustDevil",
+                "TropicalStorm",
+                "MarineThunderstormWind",
+                "FreezingFog",
+                "MarineHail",
+                "CoastalFlood",
+                "MarineHighWind",
+                "AstronomicalLowTide",
+                "MarineStrongWind",
+                "Sneakerwave",
+                "LakeshoreFlood",
+                "TropicalDepression",
+                "MarineTropicalStorm",
+                "DenseSmoke",
+                "MarineHurricaneTyphoon",
+                "MarineTropicalDepression",
+                "Hurricane"
+            ]
         }
     ]
 }
