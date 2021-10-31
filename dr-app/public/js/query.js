@@ -132,11 +132,9 @@ async function query(srq_query) {
 // query expertise super topics, place types and hazard types
 (async() => {
     let a_superTopics = await query(/* syntax: sparql */ `
-        select distinct ?super_topic ?super_topic_label where { 
-            ?topic rdf:type kwg-ont:Topic;
-                rdfs:label ?topic_label;
-                kwg-ont:hasSuperTopic ?super_topic.
-            ?super_topic rdfs:label ?super_topic_label.
+        select ?super_topic ?super_topic_label where { 
+            ?super_topic rdf:type kwg-ont:ExpertiseTopic;
+                rdfs:label ?super_topic_label.
         }
     `);
 
@@ -174,15 +172,15 @@ async function getSubTopic(super_topic_iri) {
     let h_subTopics = [];
     let a_topics = await query(/* syntax: sparql */ `
         select ?topic ?topic_label where { 
-            ?topic rdf:type kwg-ont:Topic;
-                rdfs:label ?topic_label;
-                kwg-ont:hasSuperTopic ?super_topic.
+            ?super_topic kwg-ont:subTopic ?topic.
+            ?topic rdfs:label ?topic_label.
             values ?super_topic {<${super_topic_iri}>}.
         }
     `);
+    
     for (let row of a_topics) 
     {
-        h_subTopics.push({'topic':row.topic.value, 'topic_label':row.super_topic_label.value});
+        h_subTopics.push({'topic':row.topic.value, 'topic_label':row.topic_label.value});
     }
     return h_subTopics;
 }
