@@ -1,74 +1,106 @@
 {
-    "description":"configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
-    "info": [
+    "description":"configuration for full-text search on KnowWhereGraph",
+    "repository": [
         {
-            "class":"Place",
-            "subclasses":
-            [
-                "City",
-                "State",
-                "NWSZone",
-                "Marine",
-                "County"
+            "endpoint":"http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1",
+            "info": [
+                {
+                    "class":"Place",
+                    "subclasses":
+                    [
+                        "City",
+                        "State",
+                        "NWSZone",
+                        "Marine",
+                        "County"
+                    ]
+                },
+                {
+                    "class":"Expert"
+                },
+                {
+                    "class":"Hazard",
+                    "subclasses":
+                    [
+                        "Hail",
+                        "ThunderstormWind",
+                        "Tornado",
+                        "HeavySnow",
+                        "HeavyRain",
+                        "ExtremeColdWindChill",
+                        "Waterspout",
+                        "FunnelCloud",
+                        "RipCurrent",
+                        "Avalanche",
+                        "HighWind",
+                        "IceStorm",
+                        "Blizzard",
+                        "HighSurf",
+                        "Flood",
+                        "Wildfire",
+                        "Drought",
+                        "WinterStorm",
+                        "WinterWeather",
+                        "DenseFog",
+                        "FlashFlood",
+                        "StormSurgeTide",
+                        "DustStorm",
+                        "StrongWind",
+                        "ExcessiveHeat",
+                        "Lightning",
+                        "DebrisFlow",
+                        "FrostFreeze",
+                        "Sleet",
+                        "Lake-EffectSnow",
+                        "ColdWindChill",
+                        "Heat",
+                        "DustDevil",
+                        "TropicalStorm",
+                        "MarineThunderstormWind",
+                        "FreezingFog",
+                        "MarineHail",
+                        "CoastalFlood",
+                        "MarineHighWind",
+                        "AstronomicalLowTide",
+                        "MarineStrongWind",
+                        "Sneakerwave",
+                        "LakeshoreFlood",
+                        "TropicalDepression",
+                        "MarineTropicalStorm",
+                        "DenseSmoke",
+                        "MarineHurricaneTyphoon",
+                        "MarineTropicalDepression",
+                        "Hurricane"
+                    ]
+                }
             ]
         },
         {
-            "class":"Expert"
+            "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG",
+            "info":[
+                {
+                    "class":"KWGCellLevel9"
+                }
+            ]
         },
         {
-            "class":"Hazard",
-            "subclasses":
-            [
-                "Hail",
-                "ThunderstormWind",
-                "Tornado",
-                "HeavySnow",
-                "HeavyRain",
-                "ExtremeColdWindChill",
-                "Waterspout",
-                "FunnelCloud",
-                "RipCurrent",
-                "Avalanche",
-                "HighWind",
-                "IceStorm",
-                "Blizzard",
-                "HighSurf",
-                "Flood",
-                "Wildfire",
-                "Drought",
-                "WinterStorm",
-                "WinterWeather",
-                "DenseFog",
-                "FlashFlood",
-                "StormSurgeTide",
-                "DustStorm",
-                "StrongWind",
-                "ExcessiveHeat",
-                "Lightning",
-                "DebrisFlow",
-                "FrostFreeze",
-                "Sleet",
-                "Lake-EffectSnow",
-                "ColdWindChill",
-                "Heat",
-                "DustDevil",
-                "TropicalStorm",
-                "MarineThunderstormWind",
-                "FreezingFog",
-                "MarineHail",
-                "CoastalFlood",
-                "MarineHighWind",
-                "AstronomicalLowTide",
-                "MarineStrongWind",
-                "Sneakerwave",
-                "LakeshoreFlood",
-                "TropicalDepression",
-                "MarineTropicalStorm",
-                "DenseSmoke",
-                "MarineHurricaneTyphoon",
-                "MarineTropicalDepression",
-                "Hurricane"
+            "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V2",
+            "info":[
+                {
+                    "class":"AdministrativeRegion",
+                    "subclasses":[
+                        "AdministrativeRegion_0",
+                        "AdministrativeRegion_1",
+                        "AdministrativeRegion_2",
+                        "AdministrativeRegion_3",
+                        "AdministrativeRegion_4"
+                    ]
+                {
+                    "class":"ZipCodeArea"
+                }
+
             ]
         }
     ]
+
 }
