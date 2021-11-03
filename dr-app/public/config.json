@@ -95,6 +95,7 @@
                         "AdministrativeRegion_3",
                         "AdministrativeRegion_4"
                     ]
+                },
                 {
                     "class":"ZipCodeArea"
                 }
