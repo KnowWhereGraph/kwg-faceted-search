@@ -8,26 +8,26 @@ const h_hazardTypes = {};
 
 // Prefixes
 const H_PREFIXES = {
-	rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-	rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-	xsd: 'http://www.w3.org/2001/XMLSchema#',
-	owl: 'http://www.w3.org/2002/07/owl#',
-	dc: 'http://purl.org/dc/elements/1.1/',
-	dcterms: 'http://purl.org/dc/terms/',
-	foaf: 'http://xmlns.com/foaf/0.1/',
-	kwgr: 'http://stko-roy.geog.ucsb.edu/lod/resource/',
-	'kwg-ont':'http://stko-roy.geog.ucsb.edu/lod/ontology/',
-	geo: 'http://www.opengis.net/ont/geosparql#',
+    rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+    xsd: 'http://www.w3.org/2001/XMLSchema#',
+    owl: 'http://www.w3.org/2002/07/owl#',
+    dc: 'http://purl.org/dc/elements/1.1/',
+    dcterms: 'http://purl.org/dc/terms/',
+    foaf: 'http://xmlns.com/foaf/0.1/',
+    kwgr: 'http://stko-roy.geog.ucsb.edu/lod/resource/',
+    'kwg-ont': 'http://stko-roy.geog.ucsb.edu/lod/ontology/',
+    geo: 'http://www.opengis.net/ont/geosparql#',
     time: 'http://www.w3.org/2006/time#',
-	ago: 'http://awesemantic-geo.link/ontology/',
+    ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#'
 };
 
 let S_PREFIXES = '';
-for(let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
-	S_PREFIXES += `prefix ${si_prefix}: <${p_prefix_iri}>\n`;
+for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
+    S_PREFIXES += `prefix ${si_prefix}: <${p_prefix_iri}>\n`;
 }
 
 // SPARQL endpoint
@@ -35,12 +35,10 @@ const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGra
 
 // define the configuration for full-text search
 const full_text_config = {
-    "description":"configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
-    "info": [
-        {
-            "class":"Place",
-            "subclasses":
-            [
+    "description": "configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
+    "info": [{
+            "class": "Place",
+            "subclasses": [
                 "City",
                 "State",
                 "NWSZone",
@@ -49,12 +47,11 @@ const full_text_config = {
             ]
         },
         {
-            "class":"Expert"
+            "class": "Expert"
         },
         {
-            "class":"Hazard",
-            "subclasses":
-            [
+            "class": "Hazard",
+            "subclasses": [
                 "Hail",
                 "ThunderstormWind",
                 "Tornado",
@@ -110,28 +107,28 @@ const full_text_config = {
 };
 
 async function query(srq_query) {
-	let d_form = new FormData();
-	d_form.append('query',  S_PREFIXES+srq_query);
+    let d_form = new FormData();
+    d_form.append('query', S_PREFIXES + srq_query);
 
-	let d_res = await fetch(P_ENDPOINT, {
-		method: 'POST',
-		mode: 'cors',
-		headers: {
-			Accept: 'application/sparql-results+json',
-			'Content-Type': 'application/x-www-form-urlencoded',
+    let d_res = await fetch(P_ENDPOINT, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            Accept: 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
             //'Authorization': 'Basic ' + btoa(username + ":" + password),
-		},
-		body: new URLSearchParams([
-			...(d_form),
-		]),
-	});
+        },
+        body: new URLSearchParams([
+            ...(d_form),
+        ]),
+    });
 
-	return (await d_res.json()).results.bindings;
+    return (await d_res.json()).results.bindings;
 }
 
 // query expertise super topics, place types and hazard types
 (async() => {
-    let a_superTopics = await query(/* syntax: sparql */ `
+    let a_superTopics = await query( /* syntax: sparql */ `
         select ?super_topic ?super_topic_label where { 
             ?super_topic rdf:type kwg-ont:ExpertiseTopic;
                 rdfs:label ?super_topic_label.
@@ -142,7 +139,7 @@ async function query(srq_query) {
         h_superTopics[row.super_topic.value] = row.super_topic_label.value;
     }
 
-    let a_placeTypes = await query(/* syntax: sparql */ `
+    let a_placeTypes = await query( /* syntax: sparql */ `
         select ?place_type ?place_type_label where { 
             ?place_type rdfs:subClassOf kwg-ont:Place;
                 rdfs:label ?place_type_label.
@@ -153,7 +150,7 @@ async function query(srq_query) {
         h_placeTypes[row.place_type.value] = row.place_type_label.value;
     }
 
-    let a_hazardTypes = await query(/* syntax: sparql */ `
+    let a_hazardTypes = await query( /* syntax: sparql */ `
         select ?hazard_type ?hazard_type_label where { 
             ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
                 rdfs:label ?hazard_type_label.
@@ -188,17 +185,16 @@ async function query(srq_query) {
 // query expertise subtopics
 async function getSubTopic(super_topic_iri) {
     let h_subTopics = [];
-    let a_topics = await query(/* syntax: sparql */ `
+    let a_topics = await query( /* syntax: sparql */ `
         select ?topic ?topic_label where { 
             ?super_topic kwg-ont:subTopic ?topic.
             ?topic rdfs:label ?topic_label.
             values ?super_topic {<${super_topic_iri}>}.
         }
     `);
-    
-    for (let row of a_topics) 
-    {
-        h_subTopics.push({'topic':row.topic.value, 'topic_label':row.topic_label.value});
+
+    for (let row of a_topics) {
+        h_subTopics.push({ 'topic': row.topic.value, 'topic_label': row.topic_label.value });
     }
     return h_subTopics;
 }
@@ -206,25 +202,23 @@ async function getSubTopic(super_topic_iri) {
 // query place instances of a chosen place type
 async function getPlaceInstance(place_type_iri) {
     let h_places = [];
-    let a_places = await query(/* syntax: sparql */ `
+    let a_places = await query( /* syntax: sparql */ `
         select ?place ?place_label where { 
             ?place rdf:type ?place_type;
                 rdfs:label ?place_label.
             values ?place_type {<${place_type_iri}>}.
         }
     `);
-    for (let row of a_places)
-    {
-        h_places.push({'place':row.place.value, 'place_label':row.place_label.value});
+    for (let row of a_places) {
+        h_places.push({ 'place': row.place.value, 'place_label': row.place_label.value });
     }
     return h_places;
 }
 
 // query expert location geometry
-async function getExpertLocationGeometry(expert_iri_list)
-{
+async function getExpertLocationGeometry(expert_iri_list) {
     let h_geometry = [];
-    let a_geometry = await query(/* syntax: sparql */ `
+    let a_geometry = await query( /* syntax: sparql */ `
         select ?expert ?expert_location ?expert_location_geometry ?expert_location_geometry_wkt
         {
             ?expert kwg-ont:affiliation ?affiliation.
@@ -455,4 +449,5 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_i
         "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_iri_list_selected, start_year, end_year)
     }
     console.log(search_result);
+    return search_result;
 }

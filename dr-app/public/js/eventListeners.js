@@ -1,0 +1,191 @@
+function getData() {
+    var fullTextResults = getParametersByClick();
+    displayTables(fullTextResults);
+
+
+
+
+
+
+}
+
+
+function getParametersByClick() {
+    // get parameters
+    var expertiseTopics = [];
+    var expertiseSubtopics = [];
+    var places = [];
+    var subplaces = [];
+    var hazards = [];
+    var startYear = 2010;
+    var endYear = 2020;
+    var keyword = "";
+
+    keyword = $("#spatial-search .left-filters .search-dropdown-input input").val();
+
+    $("li#expertise ul.list-group input:checkbox[name='expertiseTopic']:checked").each(function(i) {
+        expertiseTopics.push($(this).val());
+    });
+    $("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each(function(i) {
+        expertiseSubtopics.push($.parseJSON($(this).val()).topic);
+
+    });
+
+
+    $("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each(function(i) {
+        places.push($(this).val())
+    });
+    $("li#place ul.list-group input:checkbox[name='subplace']:checked").each(function(i) {
+        subplaces.push($.parseJSON($(this).val()).place);
+        console.log("***here****");
+        console.log($.parseJSON($(this).val()).place);
+    });
+
+
+    $("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each(function(i) {
+        hazards.push($(this).val())
+    });
+
+    // console.log("expertiseTopics: ", expertiseTopics);
+    // console.log("expertiseSubtopics: ", expertiseSubtopics);
+    // console.log("places: ", places);
+    // console.log("subplaces: ", subplaces);
+    // console.log("hazards: ", hazards);
+
+
+    var startYearInput = $("li#datarange-li input:text[name='start-year']").val();
+    var endYearInput = $("li#datarange-li input:text[name='end-year']").val();
+
+    if (startYearInput) {
+        startYear = startYearInput;
+    }
+
+    if (endYearInput) {
+        endYear = endYearInput;
+    }
+
+    // console.log("star year: ", startYear, "- end year: ", endYear);
+    var parameters = {
+        "hazards": hazards,
+        "startYear": startYear,
+        "endYear": endYear
+    };
+    if (expertiseTopics.length) {
+        parameters["expertise"] = expertiseTopics[0];
+        parameters["expertiseSubtopics"] = expertiseSubtopics;
+    }
+    if (places.length) {
+        parameters["place"] = places[0];
+        parameters["subplaces"] = subplaces;
+    }
+
+    console.log("parameters: ", parameters);
+
+    var fullTextResults = getFullTextSearchResult(keyword, expertiseSubtopics, subplaces, hazards, startYear, endYear);
+
+    return fullTextResults;
+}
+
+
+function displayTables(fullTextResults) {
+    console.log("get the fullTextResults");
+    fullTextResults.then(function(e) {
+        console.log("e->", e);
+        var expert = e.Expert;
+        var hazard = e.Hazard;
+        var place = e.Place;
+        console.log("expert: ", expert);
+        console.log("hazard: ", hazard);
+        console.log("place: ", place);
+        var expertTableHeadSelectors = {
+            "thead": "#expertTableTitle",
+            "tbody": "#expertTableBody"
+        };
+        var placeTableHeadSelectors = {
+            "thead": "#placeTableTitle",
+            "tbody": "#placeTableBody",
+            "pagination": "#placePagination"
+        };
+
+        var hazardTableHeadSelectors = {
+            "thead": "#hazardTableTitle",
+            "tbody": "#hazardTableBody",
+            "pagination": "#hazardPagination"
+        };
+        // displayTable(expertTableHeadSelectors, expert);
+        displayTable(placeTableHeadSelectors, place);
+        displayTable(hazardTableHeadSelectors, hazard);
+
+    });
+}
+
+function displayTable(selectors, optionPromise) {
+    console.log("selector: ", selectors);
+    console.log(optionPromise);
+    optionPromise.then(function(elements) {
+        if (elements.length) {
+            var tableTitles = Object.keys(elements[0]).filter(function(k) {
+                return k != "$$hashKey";
+            });
+            console.log("table titles: ", tableTitles);
+            $(selectors["thead"] + " thead tr").empty();
+            tableTitles.map(function(e) {
+                return "<th>" + e + "</th>";
+            }).forEach(function(tableTitleHtml) {
+                $(selectors["thead"] + " thead tr").append(tableTitleHtml);
+            });
+            console.log($(selectors["thead"] + " thead tr"));
+
+            var tableBody = $(selectors["tbody"] + " tbody");
+            tableBody.empty();
+            elements.forEach(e => {
+                var rowBodyHtml = "";
+                Object.values(e).map(function(val) {
+                    return "<td>" + val + "</td>";
+                }).forEach(html => {
+                    rowBodyHtml += html;
+                });
+                var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                tableBody.append(rowHtml);
+            })
+        }
+    }).then(function() {
+        tablePagination(selectors["tbody"], selectors["pagination"], 12);
+    });
+
+}
+
+function tablePagination(selector, paginationSelector, numPerPage) {
+    console.log("numer of per page: ", numPerPage);
+    // console.log("pagination:", paginationSelector);
+    $(selector).each(function() {
+        var currentPage = 0;
+        var $table = $(this);
+        $table.on('repaginate', function() {
+            $table.find('tbody tr').hide().slice(
+                currentPage * numPerPage,
+                (currentPage + 1) * numPerPage
+            ).show();
+        });
+        $table.trigger('repaginate');
+        var numRows = $table.find('tbody tr').length;
+        console.log("num rows: ", numRows);
+        var numPages = Math.ceil(numRows / numPerPage);
+        var $pager = $('<div class="pager"></div>');
+        for (var page = 0; page < numPages; page++) {
+            $('<span class="page-item"></span>').text(page + 1).on('click', {
+                newPage: page
+            }, function(event) {
+                currentPage = event.data['newPage'];
+                $table.trigger('repaginate');
+                $(this).addClass("active").siblings().removeClass("active");
+            }).appendTo($pager).addClass("clickable");
+        }
+
+        var $perPage = $('<div class="per-page"><span>12</span> Per Page <i class="bi bi-chevron-down"></i></div>');
+        $perPage.appendTo(paginationSelector);
+        $pager.appendTo(paginationSelector).find("span.page-item:first").addClass("active");
+
+    })
+
+}

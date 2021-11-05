@@ -1,10 +1,18 @@
+
+/* Main  */
+main#fr-place-main{
+    height: 900px;
+}
+
+/* 1-center container */
 main div#fr-place {
-    display: block;
+    width: 70%;
     height: 800px;
     border-radius: 5px;
     padding: 0px;
     background-color: #FFFFFF;
     box-shadow: 0 10px 64px 0 rgba(0, 0, 0, 0.05);
+    
     position: absolute;
     top: 0;
     bottom: 0;
@@ -13,22 +21,76 @@ main div#fr-place {
     margin: auto;
 }
 
-div#fr-place div#top-map{
-    height: 400px;
-    /* background-color: rebeccapurple; */
+/* 2-top map  */
+div#top-map{
+    height: 450px;
+    border-radius: 5px 5px 0 0;
 }
 
-#mapid{
+/* 3-bottom side */
+.bottom-side{
+    width: 100%;
+    height: 350px;
+    position: relative;
+}
+
+/* 3.1 bottom-left side */
+.bottom-side #bottom-left-side{
+    float: left;
+    width: 40%;
+    height: 100%;
+    background-color: #F2F2F4;
+    border-radius: 5px 0 0 5px;
+}
+
+/* 3.2 bottom-right-side */
+.bottom-side #bottom-right-side{
+    float: left;
+    width: 60%;
     height: 100%;
 }
 
-div#fr-place div.bottom-side div#bottom-left-side{
+/* 3.3 table */
+table#fr-place-table{
+    position: absolute;
+    height: 100%;
+    vertical-align: middle;
+
+    font-size: 22px;
+    font-family: sans-serif;
+    font-weight: 500;
+}
+
+table#fr-place-table tr th, 
+table#fr-place-table tr td{
+    border: none;
+}
+
+table#fr-place-table tr th{
+    width: 40%;
+    text-align: right;
+    padding-right: 70px;
+}
+
+table#fr-place-table tr td{
+    text-align: left;
+    padding-left: 70px;
+}
+
+table#fr-place-table a{
+    color: #df6c37;
+    font-weight: 600;
+}
+
+
+
+/* div#fr-place div.bottom-side div#bottom-left-side{
     width: 30%;
     height: 400px;
     background-color: #F2F2F4;
     float: left;
     position:relative;
-}
+} */
 
 /* div#fr-place div.bottom-side div#bottom-right-side{
     width: 70%;
@@ -36,14 +98,14 @@ div#fr-place div.bottom-side div#bottom-left-side{
     background-color: green;
 } */
 
-div#bottom-left-side ul{
-    position: absolute;
+/* div#bottom-left-side ul{ */
+    /* position: absolute; */
     /* customized size, not according to the UI */
-    right: 60px;
-    top: 90px;
-}
+    /* right: 60px; */
+    /* top: 90px; */
+/* } */
 
-div#bottom-right-side ul{
+/* div#bottom-right-side ul{
     font-size: 22px;
     font-family: sans-serif;
     font-weight: bold;
@@ -52,8 +114,8 @@ div#bottom-right-side ul{
     position: relative;
     top: 90px;
     left: 60px;
-}
-
+} */
+/* 
 div#bottom-right-side ul li{
     padding-bottom: 30px;
-}
+} */

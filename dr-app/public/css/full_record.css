@@ -1,12 +1,8 @@
 /* Main content */
-main {
-    position: relative;
-    width: 100%;
+
+main#fr-main{
     height: 973px;
-    background-color: #CFCFD5;
-
 }
-
 /* All the container which has the class of 
    center-container */
 div.center-container{

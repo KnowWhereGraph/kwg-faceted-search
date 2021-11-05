@@ -10,7 +10,7 @@ $(document).ready(function(){
     
     $(document).click(function(e){
         var elements = document.querySelector("a#navbarDropdown");
-        console.log($.contains(elements, e.target));
+        // console.log($.contains(elements, e.target));
         if (!$.contains(elements, e.target)){
             // var display = $("div.search-dropdown-input").css("display");
             var display = $("div#search-dropdown").css("display");
@@ -25,9 +25,6 @@ $(document).ready(function(){
     });
 
 
-    /**
-     * Breadcrumb dynamic router
-     */
 
        
 })

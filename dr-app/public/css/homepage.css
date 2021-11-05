@@ -181,6 +181,13 @@ ul.nav li img {
     margin-top: -4px;
 }
 
+/* Main content */
+main {
+    position: relative;
+    width: 100%;
+    background-color: #CFCFD5;
+}
+
 
 
 
