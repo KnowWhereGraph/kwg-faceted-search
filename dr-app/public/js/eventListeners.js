@@ -23,26 +23,26 @@ function getParametersByClick() {
 
     keyword = $("#spatial-search .left-filters .search-dropdown-input input").val();
 
-    $("li#expertise ul.list-group input:checkbox[name='expertiseTopic']:checked").each(function(i) {
+    $("li#expertise ul.list-group input:checkbox[name='expertiseTopic']:checked").each(function (i) {
         expertiseTopics.push($(this).val());
     });
-    $("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each(function(i) {
+    $("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each(function (i) {
         expertiseSubtopics.push($.parseJSON($(this).val()).topic);
 
     });
 
 
-    $("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each(function(i) {
+    $("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each(function (i) {
         places.push($(this).val())
     });
-    $("li#place ul.list-group input:checkbox[name='subplace']:checked").each(function(i) {
+    $("li#place ul.list-group input:checkbox[name='subplace']:checked").each(function (i) {
         subplaces.push($.parseJSON($(this).val()).place);
         console.log("***here****");
         console.log($.parseJSON($(this).val()).place);
     });
 
 
-    $("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each(function(i) {
+    $("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each(function (i) {
         hazards.push($(this).val())
     });
 
@@ -89,7 +89,7 @@ function getParametersByClick() {
 
 function displayTables(fullTextResults) {
     console.log("get the fullTextResults");
-    fullTextResults.then(function(e) {
+    fullTextResults.then(function (e) {
         console.log("e->", e);
         var expert = e.Expert;
         var hazard = e.Hazard;
@@ -99,7 +99,8 @@ function displayTables(fullTextResults) {
         console.log("place: ", place);
         var expertTableHeadSelectors = {
             "thead": "#expertTableTitle",
-            "tbody": "#expertTableBody"
+            "tbody": "#expertTableBody",
+            "pagination": "#expertPagination"
         };
         var placeTableHeadSelectors = {
             "thead": "#placeTableTitle",
@@ -112,7 +113,7 @@ function displayTables(fullTextResults) {
             "tbody": "#hazardTableBody",
             "pagination": "#hazardPagination"
         };
-        // displayTable(expertTableHeadSelectors, expert);
+        displayTable(expertTableHeadSelectors, expert);
         displayTable(placeTableHeadSelectors, place);
         displayTable(hazardTableHeadSelectors, hazard);
 
@@ -122,16 +123,16 @@ function displayTables(fullTextResults) {
 function displayTable(selectors, optionPromise) {
     console.log("selector: ", selectors);
     console.log(optionPromise);
-    optionPromise.then(function(elements) {
+    optionPromise.then(function (elements) {
         if (elements.length) {
-            var tableTitles = Object.keys(elements[0]).filter(function(k) {
+            var tableTitles = Object.keys(elements[0]).filter(function (k) {
                 return k != "$$hashKey";
             });
             console.log("table titles: ", tableTitles);
             $(selectors["thead"] + " thead tr").empty();
-            tableTitles.map(function(e) {
+            tableTitles.map(function (e) {
                 return "<th>" + e + "</th>";
-            }).forEach(function(tableTitleHtml) {
+            }).forEach(function (tableTitleHtml) {
                 $(selectors["thead"] + " thead tr").append(tableTitleHtml);
             });
             console.log($(selectors["thead"] + " thead tr"));
@@ -140,7 +141,7 @@ function displayTable(selectors, optionPromise) {
             tableBody.empty();
             elements.forEach(e => {
                 var rowBodyHtml = "";
-                Object.values(e).map(function(val) {
+                Object.values(e).map(function (val) {
                     return "<td>" + val + "</td>";
                 }).forEach(html => {
                     rowBodyHtml += html;
@@ -149,7 +150,7 @@ function displayTable(selectors, optionPromise) {
                 tableBody.append(rowHtml);
             })
         }
-    }).then(function() {
+    }).then(function () {
         tablePagination(selectors["tbody"], selectors["pagination"], 12);
     });
 
@@ -158,10 +159,11 @@ function displayTable(selectors, optionPromise) {
 function tablePagination(selector, paginationSelector, numPerPage) {
     console.log("numer of per page: ", numPerPage);
     // console.log("pagination:", paginationSelector);
-    $(selector).each(function() {
+    $(selector).each(function () {
         var currentPage = 0;
         var $table = $(this);
-        $table.on('repaginate', function() {
+        $table.on('repaginate', function () {
+            console.log("repagination");
             $table.find('tbody tr').hide().slice(
                 currentPage * numPerPage,
                 (currentPage + 1) * numPerPage
@@ -171,18 +173,83 @@ function tablePagination(selector, paginationSelector, numPerPage) {
         var numRows = $table.find('tbody tr').length;
         console.log("num rows: ", numRows);
         var numPages = Math.ceil(numRows / numPerPage);
+        console.log("num of pages: ", numPages);
+
+
         var $pager = $('<div class="pager"></div>');
-        for (var page = 0; page < numPages; page++) {
-            $('<span class="page-item"></span>').text(page + 1).on('click', {
-                newPage: page
-            }, function(event) {
+        if (numPages <= 5) {
+            for (var page = 0; page < numPages; page++) {
+                $('<span class="page-item"></span>').text(page + 1).on('click', {
+                    newPage: page
+                }, function (event) {
+                    currentPage = event.data['newPage'];
+                    $table.trigger('repaginate');
+                    $(this).addClass("active").siblings().removeClass("active");
+                }).appendTo($pager).addClass("clickable");
+            }
+        } else {
+            for (page = 0; page < 3; page++) {
+
+                $('<span class="page-item"></span>').text(page + 1).on('click', {
+                    newPage: page
+                }, function (event) {
+                    currentPage = event.data['newPage'];
+                    $table.trigger('repaginate');
+                    $(paginationSelector + " div.pager button").val(currentPage + 1);
+                    $(this).addClass("active").siblings().removeClass("active");
+                }).appendTo($pager).addClass("clickable");
+            }
+
+            $('<span class="page-item"></span>').text("...").appendTo($pager).addClass("clickable");
+            $('<span class="page-item"></span>').text(numPages).on('click', {
+                newPage: numPages - 1
+            }, function (event) {
                 currentPage = event.data['newPage'];
                 $table.trigger('repaginate');
                 $(this).addClass("active").siblings().removeClass("active");
             }).appendTo($pager).addClass("clickable");
+
+            $('<button class="page-item"></button>').val(currentPage + 1).text("Next").on('click', function (event) {
+
+                console.log("clicked the button, then the current page is : ", $(this).val());
+                var nextPage = parseInt($(this).val()) + 1;
+                console.log("then the next page is: ", nextPage);
+                $(this).val(nextPage);
+
+                var pages = $(paginationSelector + " div.pager span");
+                pages.each(function (e) {
+                    var innerHTML = this.innerHTML;
+                    if (nextPage + "" == innerHTML) {
+                        $(this).addClass("active").siblings().removeClass("active");
+                    }
+                });
+
+                if (nextPage > 3){
+                    $(paginationSelector + " div.pager span").removeClass("active");
+                }
+
+                currentPage = nextPage;
+                console.log("currentPage: ", currentPage);
+                $table.trigger('repaginate');
+
+            }).appendTo($pager).addClass("clickable")
+
+
+
         }
 
+
         var $perPage = $('<div class="per-page"><span>12</span> Per Page <i class="bi bi-chevron-down"></i></div>');
+        // var $perPage = $('<div class="dropdown per-page">\
+        //     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
+        //         Dropdown button</button>\
+        //     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+        //         <span class="dropdown-item">Action</span>\
+        //         <span class="dropdown-item">Another action</span>\
+        //         <span class="dropdown-item">Something else here</span>\
+        //     </div>\
+        // </div>');
+
         $perPage.appendTo(paginationSelector);
         $pager.appendTo(paginationSelector).find("span.page-item:first").addClass("active");
 
