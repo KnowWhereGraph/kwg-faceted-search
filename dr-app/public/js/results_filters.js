@@ -469,27 +469,9 @@ kwgApp.controller("pagination-controller", function($scope, $http) {
 
 });
 
+;
 kwgApp.controller("spatialmap-controller", function($scope) {
 
 
-    $(document).ready(function() {
-        setTimeout(() => {
-            var map = L.map('spatial-search-map').setView([40, -109.03], 5);
-            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
-                tileSize: 512,
-                zoomOffset: -1,
-                minZoom: 1,
-                attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
-                crossOrigin: true
-            }).addTo(map);
 
-            var latlngs = [
-                [37, -109.05],
-                [41, -109.03],
-                [41, -102.05],
-                [37, -102.04]
-            ];
-            var polygon = L.polygon(latlngs).addTo(map);
-        }, 200);
-    });
 });

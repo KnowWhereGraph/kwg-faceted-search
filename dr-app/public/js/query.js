@@ -264,7 +264,7 @@ async function getPlaceGeometry(place_iri_list)
 }
 
 // query hazard location geometry
-async function getExpertLocationGeometry(hazard_iri_list)
+async function getHazardLocationGeometry(hazard_iri_list)
 {
     let h_geometry = [];
     let a_geometry = await query(/* syntax: sparql */ `
