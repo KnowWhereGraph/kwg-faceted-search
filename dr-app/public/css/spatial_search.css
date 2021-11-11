@@ -361,11 +361,10 @@ table.table-filters tbody tr:nth-child(even) {
     background-color: #F2F2F4;
 }
 
-.results-table .table-body-container table td{
+.results-table .table-body-container table td {
     text-overflow: ellipsis;
     overflow: hidden;
 }
-
 
 
 /* Pagination */
@@ -377,25 +376,56 @@ table.table-filters tbody tr:nth-child(even) {
     /* background-color: brown; */
 }
 
-.dropdown-menu{
-    width: 300px;
-    height: 200px;
-    background-color: violet;
 
-}
+/* .dropdown-menu {
+    width: 300px; 
+    height: 100%;
+    background-color: violet;
+} */
+
 .paginate .per-page {
-    color: #00021F;
+    width: 150px;
+    height: 100%;
+    /* background-color: aquamarine; */
+    float: left;
+    position: relative;
+}
+
+.paginate .per-page::after {
+    content: "▼";
+    position: absolute;
+    right: 15px;
+    top: 25%;
+}
+
+.paginate .per-page select {
+    display: inline-block;
+    padding: 0;
+    width: 90%;
+    height: 100%;
+    color: #00021fce;
     font-size: 20px;
     font-weight: bold;
     line-height: 50px;
-    float: left;
+    background-color: transparent;
+    border: transparent;
+    outline: transparent;
+    appearance: none;
+}
+
+.paginate .per-page select:hover {
+    cursor: pointer;
+}
+
+.paginate .per-page option {
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .paginate .pager {
     float: right;
     height: 100%;
     margin-right: 100px;
-    /* background-color: cadetblue; */
 }
 
 .paginate .pager span {
@@ -417,12 +447,12 @@ table.table-filters tbody tr:nth-child(even) {
     background-color: white;
 }
 
-.paginate .pager span:hover{
+.paginate .pager span:hover {
     background-color: violet;
     cursor: pointer;
 }
 
-.paginate .pager button.page-item{
+.paginate .pager button.page-item {
     border: none;
     /* display: block; */
     width: 100px;
@@ -431,14 +461,11 @@ table.table-filters tbody tr:nth-child(even) {
     background-color: #00021F;
     color: #FFFFFF;
     margin-left: 50px;
-    
 }
 
-.paginate .pager{
+.paginate .pager {
     margin-right: 0;
 }
-
-
 
 
 /* div.rlts-pagination {

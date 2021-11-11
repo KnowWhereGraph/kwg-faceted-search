@@ -177,7 +177,21 @@ function displayTable(selectors, optionPromise) {
             })
         }
     }).then(function() {
+        var $perPage = $('<div class="dropdown per-page">\
+            <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+                <option value="12" selected="selected">12 Per Page</option>\
+                <option value="30">30 Per Page</option>\
+                <option value="50">50 Per Page</option>\
+            </select>\
+        </div>');
+
+        $perPage.appendTo(selectors["pagination"]);
+
         tablePagination(selectors["tbody"], selectors["pagination"], 12);
+        $(selectors["pagination"] + " .per-page select").on("change", function() {
+            console.log("changed here: ", $(this).val());
+            tablePagination(selectors["tbody"], selectors["pagination"], parseInt($(this).val()));
+        })
     });
 
 }
@@ -202,7 +216,12 @@ function tablePagination(selector, paginationSelector, numPerPage) {
         console.log("num of pages: ", numPages);
 
 
+        if ($("div.pager")) {
+            $("div.pager").empty();
+        }
+
         var $pager = $('<div class="pager"></div>');
+
         if (numPages <= 5) {
             for (var page = 0; page < numPages; page++) {
                 $('<span class="page-item"></span>').text(page + 1).on('click', {
@@ -265,19 +284,22 @@ function tablePagination(selector, paginationSelector, numPerPage) {
         }
 
 
-        var $perPage = $('<div class="per-page"><span>12</span> Per Page <i class="bi bi-chevron-down"></i></div>');
+        // var $perPage = $('<div class="per-page"><span>12</span> Per Page <i class="bi bi-chevron-down"></i></div>');
         // var $perPage = $('<div class="dropdown per-page">\
-        //     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
-        //         Dropdown button</button>\
-        //     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-        //         <span class="dropdown-item">Action</span>\
-        //         <span class="dropdown-item">Another action</span>\
-        //         <span class="dropdown-item">Something else here</span>\
-        //     </div>\
+        //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+        //         <option value="12" selected="selected">12 Per Page</option>\
+        //         <option value="30">30 Per Page</option>\
+        //         <option value="50">50 Per Page</option>\
+        //     </select>\
         // </div>');
 
-        $perPage.appendTo(paginationSelector);
+        // $perPage.appendTo(paginationSelector);
         $pager.appendTo(paginationSelector).find("span.page-item:first").addClass("active");
+
+        // console.log("pagination here :");
+        // $(paginationSelector + " .per-page select").on("change", function() {
+        //     console.log("u clicked me");
+        // })
 
     })
 
@@ -316,3 +338,6 @@ function displayMap(fullTextResults) {
 
 
 }
+
+
+// Per page change event
