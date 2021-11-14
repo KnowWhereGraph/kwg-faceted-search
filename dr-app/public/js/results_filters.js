@@ -332,33 +332,6 @@ kwgApp.controller("results-controller", function($scope, $compile, $timeout) {
     //     angular.element("#hazardTableBody tbody").append(body);
     // });
 
-    $scope.$on("fullTextSearchRlts", function($scope, data) {
-
-        var hazard = null;
-
-        // console.log("received the fullTextSearchRlts!");
-        // console.log($scope.fullTextSrchresults);
-        // $scope.item = data;
-
-
-
-
-
-        // console.log("titles: ", $scope.tableTitles);
-        // var insertedTitleInfo = '<th ng-repeat = "title in tableTitles">{{title}}</th>'
-        // var title = $compile(insertedTitleInfo)($scope);
-        // angular.element("#hazardTableTitle thead tr").empty();
-        // angular.element("#hazardTableTitle thead tr").append(title);
-
-
-        // var inseredBodyInfo = '<tr ng-repeat = "e in item">' +
-        //     '<td ng-repeat = "value in e">{{value}}</td>'
-        // '</tr>';
-        // var body = $compile(inseredBodyInfo)($scope);
-        // console.log(body);
-        // angular.element("#hazardTableBody tbody").empty();
-        // angular.element("#hazardTableBody tbody").append(body);
-    });
 
 
 

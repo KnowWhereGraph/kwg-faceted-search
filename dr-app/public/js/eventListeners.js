@@ -1,4 +1,6 @@
-var spatialQueryMap
+var spatialQueryMap;
+var startDate;
+var endDate;
 $(document).ready(function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
@@ -79,8 +81,18 @@ function getParametersByClick() {
     // console.log("hazards: ", hazards);
 
 
-    var startYearInput = $("li#datarange-li input:text[name='start-year']").val();
-    var endYearInput = $("li#datarange-li input:text[name='end-year']").val();
+    // var startYearInput = $("li#datarange-li input:text[name='start-year']").val();
+    // var endYearInput = $("li#datarange-li input:text[name='end-year']").val();
+
+
+
+    if (!startDate) {
+        startDate = "2020-01-01";
+    }
+    if (!endDate) {
+        endDate = "2021-12-25";
+    }
+
 
     if (startYearInput) {
         startYear = startYearInput;
@@ -340,4 +352,13 @@ function displayMap(fullTextResults) {
 }
 
 
-// Per page change event
+// Date range function
+$(function() {
+    $('input[name="daterange"]').daterangepicker({
+        opens: 'right'
+    }, function(start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        startDate = start.format('YYYY-MM-DD');
+        endDate = end.format('YYYY-MM-DD');
+    });
+});
