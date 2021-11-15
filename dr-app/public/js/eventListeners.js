@@ -5,7 +5,7 @@ $(document).ready(function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
         // [40, -109.03]
-        spatialQueryMap = L.map('spatial-search-map').setView([38.895, -77.036667], 5);
+        spatialQueryMap = L.map('spatial-search-map').setView([38.895, -77.036667], 1);
         L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
             tileSize: 512,
             zoomOffset: -1,
@@ -382,7 +382,11 @@ function displayMap(fullTextResults) {
                     console.log("geometry: ", coords);
                     center_lat += coords[1];
                     center_lon += coords[0];
-                    let place_marker = new L.marker([coords[1], coords[0]]);
+                    let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
+                        dd('b:'+e['place_name']),
+                        dd('br'),
+                        dd('span:'+e['place']),
+                    ]));;
                     // var point = L.circle([coords[1], coords[0]], {
                     //     color: '#DF6C37',
                     //     fillColor: '#DF6C37',
@@ -395,7 +399,7 @@ function displayMap(fullTextResults) {
                 center_lat /= places.length;
                 center_lon /= places.length;
                 // zoom to the center of places
-                spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
+                // spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
                 place_markers.addTo(spatialQueryMap);
             })
         })

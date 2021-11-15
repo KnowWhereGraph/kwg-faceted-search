@@ -245,9 +245,10 @@ async function getPlaceGeometry(place_iri_list)
 {
     let h_geometry = [];
     let a_geometry = await query(/* syntax: sparql */ `
-        select ?place ?place_geometry ?place_geometry_wkt
+        select ?place ?place_geometry ?place_geometry_wkt ?place_name
         {
-            ?place geo:hasGeometry ?place_geometry.
+            ?place rdfs:label ?place_name;
+                   geo:hasGeometry ?place_geometry.
             ?place_geometry geo:asWKT ?place_geometry_wkt.
             filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
         }
@@ -258,6 +259,7 @@ async function getPlaceGeometry(place_iri_list)
             'place':row.place.value, 
             'place_geometry':row.place_geometry.value,
             'place_geometry_wkt':row.place_geometry_wkt.value,
+            'place_name': row.place_name.value
         });
     }
     return h_geometry;

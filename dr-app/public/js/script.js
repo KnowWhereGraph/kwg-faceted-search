@@ -3,10 +3,10 @@ var kwgApp = angular.module('kwgApp', ['ngSanitize', 'ngRoute']);
 kwgApp.config(function($routeProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: '/pages/spatial_search.html',
+            templateUrl: '/pages/full_record.html',
             controller: 'mainController'
-        }).when('/full_record', {
-			templateUrl: '/pages/full_record.html',
+        }).when('/results_filters', {
+			templateUrl: '/pages/spatial_search.html',
             controller: 'mainController'
 		}).when('/full_record_place', {
             templateUrl: '/pages/full_record_place.html',
