@@ -296,7 +296,7 @@ async function getHazardLocationGeometry(hazard_iri_list)
 
 
 // query expert table record
-async function getExpertTableRecord(keyword, expertise_iri_list, place_iri_list) {
+async function getExpertTableRecord(keyword, expertise_iri_list, place_type_iri_list) {
     let h_expertTable = [];
     let query_string = `
         select ?expert ?expert_name ?affiliation_name ?department_name (group_concat(?expertise_name; separator="\\n") as ?expertise_list) ?webpage ?expert_location_geometry_wkt
@@ -320,16 +320,17 @@ async function getExpertTableRecord(keyword, expertise_iri_list, place_iri_list)
             ?department rdfs:label ?department_name.
             ?affiliation rdfs:label ?affiliation_name;
                          kwg-ont:locatedAt ?affiliation_loc.
-            ?affiliation_loc geo:hasGeometry ?expert_location_geometry.
+            ?affiliation_loc geo:hasGeometry ?expert_location_geometry ; 
+                             rdf:type ?affiliation_loc_type.
             ?expert_location_geometry geo:asWKT ?expert_location_geometry_wkt.   
     `;
     if (expertise_iri_list.length != 0)
     {
         query_string += `filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))`;
     }
-    if (place_iri_list.length != 0)
+    if (place_type_iri_list.length != 0)
     {
-        query_string += `filter (?affiliation_loc in (${place_iri_list.map((location) => `<${location}>`).join(',')}))`;
+        query_string += `filter (?affiliation_loc_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
     }
     query_string += `
         }
@@ -353,7 +354,7 @@ async function getExpertTableRecord(keyword, expertise_iri_list, place_iri_list)
 }
 
 // query hazard table records
-async function getHazardTableRecord(keyword, hazard_type_iri_list, place_iri_list, start_year, end_year) {
+async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_iri_list, start_year, end_year) {
     let h_hazardTable = [];
     let query_string = `
         select ?hazard ?hazard_name ?hazard_type_name ?place_name ?date_name ?hazard_location_geometry_wkt
@@ -378,13 +379,14 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_iri_lis
             ?start_date rdfs:label ?start_date_label.
             ?end_date rdfs:label ?end_date_label.
             ?place rdfs:label ?place_name;
+                   rdf:type ?place_type;
                    geo:hasGeometry ?hazard_location_geometry.
             ?hazard_location_geometry geo:asWKT ?hazard_location_geometry_wkt. 
             ?hazard_type rdfs:label ?hazard_type_name.
     `;
-    if (place_iri_list.length != 0)
+    if (place_type_iri_list.length != 0)
     {
-        query_string += `filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))`;
+        query_string += `filter (?place_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
     }
     if (start_year != '')
     {
@@ -416,7 +418,7 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_iri_lis
 }
 
 // query place table records
-async function getPlaceTableRecord(keyword, place_iri_list) {
+async function getPlaceTableRecord(keyword, place_type_iri_list) {
     let h_placeTable = [];
     let query_string = `
         select ?place ?place_name ?place_geometry_wkt
@@ -437,12 +439,11 @@ async function getPlaceTableRecord(keyword, place_iri_list) {
         ?place_geometry geo:asWKT ?place_geometry_wkt.
         ?place_type rdfs:subClassOf kwg-ont:Place.
     `;
-    if (place_iri_list.length != 0)
+    if (place_type_iri_list.length != 0)
     {
-        query_string += `filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))`;
+        query_string += `filter (?place_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
     }
     query_string += `}`;
-    console.log(query_string);
     let a_placeTable = await query(query_string);
     for (let row of a_placeTable)
     {
