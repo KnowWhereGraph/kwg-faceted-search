@@ -165,20 +165,20 @@ async function query(srq_query) {
     }
 
 
-    //let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
-    //let place_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/city.Boston','http://stko-roy.geog.ucsb.edu/lod/resource/city.Seattle'];
-    //let place_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/c.01019','http://stko-roy.geog.ucsb.edu/lod/resource/c.01021'];
-    //let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Hail', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    // let expertises_iri_selected = [];
-    // let place_iri_list_selected = [];
-    // let hazards_type_iri_selected = [];
-    // let keyword = "Boston";
-    // let start_year = 1990;
-    // let end_year = 2021;
+    // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
+    // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
+    // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
+    // let keyword = "";
+    // let start_year = '1990';
+    // let start_month = '01';
+    // let start_date = '01';
+    // let end_year = '2021';
+    // let end_month = '12';
+    // let end_date = '31';
     // let search_result = {
-    //     "Place":getPlaceTableRecord(keyword, place_iri_list_selected),
-    //     "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_iri_list_selected),
-    //     "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_iri_list_selected, start_year, end_year)
+    //     "Place":getPlaceTableRecord(keyword, place_type_iri_list_selected),
+    //     "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_type_iri_list_selected),
+    //     "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_type_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
     // }
     // console.log(search_result);
 
@@ -354,7 +354,7 @@ async function getExpertTableRecord(keyword, expertise_iri_list, place_type_iri_
 }
 
 // query hazard table records
-async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_iri_list, start_year, end_year) {
+async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_iri_list, start_year, start_month, start_date, end_year, end_month, end_date) {
     let h_hazardTable = [];
     let query_string = `
         select ?hazard ?hazard_name ?hazard_type_name ?place_name ?date_name ?hazard_location_geometry_wkt
@@ -390,11 +390,11 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_ir
     }
     if (start_year != '')
     {
-        query_string += `filter (?start_date_label >= '${start_year+'-01-01-0000 EST'}')`;
+        query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
     }
     if (end_year != '')
     {
-        query_string += `filter (?end_date_label <= '${end_year+'-12-31-2400 EST'}')`;
+        query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
     }
     if (hazard_type_iri_list.length != 0)
     {
@@ -434,9 +434,12 @@ async function getPlaceTableRecord(keyword, place_type_iri_list) {
     }
     query_string += `
         ?place rdfs:label ?place_name;
-               rdf:type ?place_type;
-               geo:hasGeometry ?place_geometry.
-        ?place_geometry geo:asWKT ?place_geometry_wkt.
+               rdf:type ?place_type.
+        optional
+        {
+            ?place geo:hasGeometry ?place_geometry.
+            ?place_geometry geo:asWKT ?place_geometry_wkt.
+        }
         ?place_type rdfs:subClassOf kwg-ont:Place.
     `;
     if (place_type_iri_list.length != 0)
@@ -462,7 +465,7 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_i
     let search_result = {
         "Place":getPlaceTableRecord(keyword, place_iri_list_selected),
         "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_iri_list_selected),
-        "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_iri_list_selected, start_year, end_year)
+        "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
     }
     console.log(search_result);
     return search_result;
