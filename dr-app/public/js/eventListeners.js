@@ -330,20 +330,32 @@ function displayMap(fullTextResults) {
             var wicket = new Wkt.Wkt();
             var place_iri_list = elements.map(e => { return e["place"]; });
             var placeLocations = getPlaceGeometry(place_iri_list);
+            var place_markers = new L.MarkerClusterGroup();
             placeLocations.then(function(places) {
+                var center_lat = 0;
+                var center_lon = 0;
                 places.forEach(e => {
                     var wkt_geom = e["place_geometry_wkt"];
                     wicket.read(wkt_geom);
                     var coords = wicket.toJson().coordinates;
                     console.log("geometry: ", coords);
-                    var point = L.circle([coords[1], coords[0]], {
-                        color: '#DF6C37',
-                        fillColor: '#DF6C37',
-                        fillOpacity: 0.5,
-                        radius: 5000
-                    }).addTo(spatialQueryMap);
+                    center_lat += coords[1];
+                    center_lon += coords[0];
+                    let place_marker  = new L.marker([coords[1], coords[0]]);
+                    // var point = L.circle([coords[1], coords[0]], {
+                    //     color: '#DF6C37',
+                    //     fillColor: '#DF6C37',
+                    //     fillOpacity: 0.5,
+                    //     radius: 5000
+                    // }).addTo(spatialQueryMap);
+                    place_markers.append(place_marker);
                     console.log(point);
                 });
+                center_lat /= places.length;
+                center_lon /= places.length;
+                // zoom to the center of places
+                spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
+                place_markers.addTo(spatialQueryMap);
             })
         })
     });
