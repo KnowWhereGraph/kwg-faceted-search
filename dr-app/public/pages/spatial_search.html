@@ -70,35 +70,28 @@
                     <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p>
 
                     <!-- part2: add div for dynamically showing the selected item -->
-                    <div class="selectedItem" ng-show="showSelectedPlace">
+                    <!-- <div class="selectedItem" ng-show="showSelectedPlace">
                         <input type="checkbox" class="form-check-input me-1" ng-model="checkedPlace" ng-click="unselectPlace()"> <span>{{selectedPlace}}</span>
                         <p>Sub-Topic
                             <i class="bi bi-chevron-up"></i>
                         </p>
-                    </div>
+                    </div> -->
 
                     <!-- part3 -->
                     <ul class="list-group" id="place-list">
 
-                        <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
+                        <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls">
+                            <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                        </li>
+
+                        <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
                             <span><input type="checkbox" class="form-check-input me-1"
                                     ng-click="selectPlace($event)" value="{{placeSupertopicUrl}}" name="placeTopic">{{getPlaceLabel(placeSupertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="subPlace in subPlaces" ng-show="placeSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{subPlace}}" name="subplace"> {{getSubplaceLabel(subPlace)}}
-                        </li>
-
-                        <!-- <li ng-repeat="place in places" ng-show="placesTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1" ng-click="selectPlace($event)"
-                                    value="{{place}}" name="place">
-                                {{place}}</span>
                         </li> -->
 
-                        <!-- dynamically added -->
-                        <!-- <li ng-repeat="subplace in subPlaces" ng-show="placeSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subplace}}" name="subplace"> {{subplace}}
-                        </li> -->
-                        <!-- ****************** -->
                     </ul>
                 </div>
             </li>

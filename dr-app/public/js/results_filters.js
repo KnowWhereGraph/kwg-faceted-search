@@ -101,11 +101,11 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         //     margin-top: 20px;
         //     margin-bottom: 16px;
         // }
-        var addedHeight = 70;
-        $("#results-filters").height(function(n, c) {
+        var addedHeight = 50;
+        $("#spatial-search").height(function(n, c) {
             return c + addedHeight;
         });
-        console.log("revised height: ", $("#results-filters").height());
+        console.log("revised height: ", $("#spatial-search").height());
 
 
         var selectedTopicUrl = $event.target.value;
@@ -141,11 +141,11 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         selectedElement = null;
 
         // reset the height of the main container
-        var decreasedHeight = 70;
-        $("#results-filters").height(function(n, c) {
+        var decreasedHeight = 50;
+        $("#spatial-search").height(function(n, c) {
             return c - decreasedHeight;
         });
-        console.log("revised height: ", $("#results-filters").height());
+        console.log("revised height: ", $("#spatial-search").height());
     };
 
     // Add click event for the Place Topic
@@ -169,11 +169,11 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         $scope.checkedPlace = true;
 
 
-        var addedHeight = 70;
-        $("#results-filters").height(function(n, c) {
+        var addedHeight = 50;
+        $("#spatial-search").height(function(n, c) {
             return c + addedHeight;
         });
-        console.log("revised height: ", $("#results-filters").height());
+        console.log("revised height: ", $("#spatial-search").height());
 
 
         var selectedPlaceUrl = $event.target.value;
@@ -202,11 +202,11 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         selectedPlace.checked = false;
         selectedPlace = null;
 
-        var decreaseHeight = 70;
-        $("#results-filters").height(function(n, c) {
+        var decreaseHeight = 50;
+        $("#spatial-search").height(function(n, c) {
             return c - decreaseHeight;
         });
-        console.log("revised height: ", $("#results-filters").height());
+        console.log("revised height: ", $("#spatial-search").height());
     };
 
 
@@ -234,71 +234,6 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         return h_hazardTypes[hazardUrl];
     };
 
-    // emit the event values to the parent controller
-    // $scope.getData = function() {
-    // var keyword = angular.element("#spatial-search .left-filters .search-dropdown-input input").val();
-    // var expertiseTopics = [];
-    // var expertiseSubtopics = [];
-    // var places = [];
-    // var subplaces = [];
-    // var hazards = [];
-    // var startYear = 2010;
-    // var endYear = 2020;
-    // $("li#expertise ul.list-group input:checkbox[name='expertiseTopic']:checked").each(function(i) {
-    //     expertiseTopics.push($(this).val());
-    // });
-    // $("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each(function(i) {
-    //     expertiseSubtopics.push($.parseJSON($(this).val()).topic);
-
-    // });
-    // $("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each(function(i) {
-    //     places.push($(this).val())
-    // });
-    // $("li#place ul.list-group input:checkbox[name='subplace']:checked").each(function(i) {
-    //     subplaces.push($.parseJSON($(this).val()).place);
-    // });
-    // $("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each(function(i) {
-    //     hazards.push($(this).val())
-    // });
-    // var startYearInput = $("li#datarange-li input:text[name='start-year']").val();
-    // var endYearInput = $("li#datarange-li input:text[name='end-year']").val();
-    // if (startYearInput) {
-    //     startYear = startYearInput;
-    // }
-
-    // if (endYearInput) {
-    //     endYear = endYearInput;
-    // }
-    // $scope.parameters = {
-    //     "keyword": keyword,
-    //     "hazards": hazards,
-    //     "startYear": startYear,
-    //     "endYear": endYear
-    // };
-    // if (expertiseTopics.length) {
-    //     $scope.parameters["expertise"] = expertiseTopics[0];
-    //     $scope.parameters["expertiseSubtopics"] = expertiseSubtopics;
-    // } else {
-    //     $scope.parameters["expertise"] = "";
-    //     $scope.parameters["expertiseSubtopics"] = [];
-    // }
-    // if (places.length) {
-    //     $scope.parameters["place"] = places[0];
-    //     $scope.parameters["subplaces"] = subplaces;
-    // } else {
-    //     $scope.parameters["place"] = "";
-    //     $scope.parameters["subplaces"] = [];
-    // }
-
-    // console.log("clicked the search button: .....");
-    // console.log($scope.parameters);
-
-
-    // var data = $scope.parameters;
-    // $scope.fullTextSrchresults = getFullTextSearchResult(data.keyword, data.expertiseSubtopics, data.subplaces, data.hazards, data.startYear, data.endYear);
-    // $scope.$emit("clickedSearch", $scope.fullTextSrchresults);
-    // console.log("result is : ", fullTextSrchresults);
-    // }
 
 
 

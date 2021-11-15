@@ -93,14 +93,24 @@ function getParametersByClick() {
         endDate = "2021-12-25";
     }
 
+    var start_year = startDate.split("-")[0];
+    var start_month = startDate.split("-")[1];
+    var start_date = startDate.split("-")[2];
 
-    if (startYearInput) {
-        startYear = startYearInput;
-    }
+    var end_year = endDate.split("-")[0];
+    var end_month = endDate.split("-")[1];
+    var end_date = endDate.split("-")[2];
 
-    if (endYearInput) {
-        endYear = endYearInput;
-    }
+
+
+
+    // if (startYearInput) {
+    //     startYear = startYearInput;
+    // }
+
+    // if (endYearInput) {
+    //     endYear = endYearInput;
+    // }
 
     // console.log("star year: ", startYear, "- end year: ", endYear);
     var parameters = {
@@ -119,7 +129,7 @@ function getParametersByClick() {
 
     console.log("parameters: ", parameters);
 
-    var fullTextResults = getFullTextSearchResult(keyword, expertiseSubtopics, subplaces, hazards, startYear, endYear);
+    var fullTextResults = getFullTextSearchResult(keyword, expertiseSubtopics, subplaces, hazards, start_year, start_month, start_date, end_year, end_month, end_date);
 
     return fullTextResults;
 }
@@ -164,7 +174,9 @@ function displayTable(selectors, optionPromise) {
     optionPromise.then(function(elements) {
         if (elements.length) {
             var tableTitles = Object.keys(elements[0]).filter(function(k) {
-                return k != "$$hashKey";
+                var excludedTitles = ["$$hashKey", "place_geometry_wkt", "expert_location_geometry_wkt", "hazard_location_geometry_wkt", "webpage"];
+                return !excludedTitles.includes(k);
+                // return k != "$$hashKey" || "place_geometry_wkt" || "expert_location_geometry_wkt" || "hazard_location_geometry_wkt";
             });
             console.log("table titles: ", tableTitles);
             $(selectors["thead"] + " thead tr").empty();
@@ -178,12 +190,19 @@ function displayTable(selectors, optionPromise) {
             var tableBody = $(selectors["tbody"] + " tbody");
             tableBody.empty();
             elements.forEach(e => {
+                console.log("current e------------> ", e);
                 var rowBodyHtml = "";
-                Object.values(e).map(function(val) {
-                    return "<td>" + val + "</td>";
-                }).forEach(html => {
+                tableTitles.forEach(tableTitle => {
+                    console.log("current table title is : ", tableTitle, ", the current value is: ", e[tableTitle]);
+                    var val = e[tableTitle];
+                    var html = "<td>" + val + "</td>";
                     rowBodyHtml += html;
                 });
+                // Object.values(e).map(function(val) {
+                //     return "<td>" + val + "</td>";
+                // }).forEach(html => {
+                //     rowBodyHtml += html;
+                // });
                 var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
                 tableBody.append(rowHtml);
             })
@@ -324,6 +343,28 @@ function displayMap(fullTextResults) {
     fullTextResults.then(function(e) {
         var place = e.Place;
 
+        // place.then(function(elements) {
+        //     // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
+        //     console.log("current map is :", spatialQueryMap);
+        //     var wicket = new Wkt.Wkt();
+        //     var place_iri_list = elements.map(e => { return e["place"]; });
+        //     var placeLocations = getPlaceGeometry(place_iri_list);
+        //     placeLocations.then(function(places) {
+        //         places.forEach(e => {
+        //             var wkt_geom = e["place_geometry_wkt"];
+        //             wicket.read(wkt_geom);
+        //             var coords = wicket.toJson().coordinates;
+        //             console.log("geometry: ", coords);
+        //             var point = L.circle([coords[1], coords[0]], {
+        //                 color: '#DF6C37',
+        //                 fillColor: '#DF6C37',
+        //                 fillOpacity: 0.5,
+        //                 radius: 5000
+        //             }).addTo(spatialQueryMap);
+        //             console.log(point);
+        //         });
+        //     })
+        // })
         place.then(function(elements) {
             // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
             console.log("current map is :", spatialQueryMap);
@@ -341,15 +382,15 @@ function displayMap(fullTextResults) {
                     console.log("geometry: ", coords);
                     center_lat += coords[1];
                     center_lon += coords[0];
-                    let place_marker  = new L.marker([coords[1], coords[0]]);
+                    let place_marker = new L.marker([coords[1], coords[0]]);
                     // var point = L.circle([coords[1], coords[0]], {
                     //     color: '#DF6C37',
                     //     fillColor: '#DF6C37',
                     //     fillOpacity: 0.5,
                     //     radius: 5000
                     // }).addTo(spatialQueryMap);
-                    place_markers.append(place_marker);
-                    console.log(point);
+                    place_markers.addLayer(place_marker);
+                    // console.log(point);
                 });
                 center_lat /= places.length;
                 center_lon /= places.length;
