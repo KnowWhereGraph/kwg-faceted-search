@@ -168,7 +168,7 @@ async function query(srq_query) {
     // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
     // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    // let keyword = "";
+    // let keyword = "Boston";
     // let start_year = '1990';
     // let start_month = '01';
     // let start_date = '01';
@@ -320,9 +320,13 @@ async function getExpertTableRecord(keyword, expertise_iri_list, place_type_iri_
             ?department rdfs:label ?department_name.
             ?affiliation rdfs:label ?affiliation_name;
                          kwg-ont:locatedAt ?affiliation_loc.
-            ?affiliation_loc geo:hasGeometry ?expert_location_geometry ; 
-                             rdf:type ?affiliation_loc_type.
-            ?expert_location_geometry geo:asWKT ?expert_location_geometry_wkt.   
+            ?affiliation_loc rdf:type ?affiliation_loc_type.
+            optional
+            {
+                ?affiliation_loc geo:hasGeometry ?expert_location_geometry .
+                ?expert_location_geometry geo:asWKT ?expert_location_geometry_wkt .
+            }
+               
     `;
     if (expertise_iri_list.length != 0)
     {
@@ -379,9 +383,12 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_ir
             ?start_date rdfs:label ?start_date_label.
             ?end_date rdfs:label ?end_date_label.
             ?place rdfs:label ?place_name;
-                   rdf:type ?place_type;
-                   geo:hasGeometry ?hazard_location_geometry.
-            ?hazard_location_geometry geo:asWKT ?hazard_location_geometry_wkt. 
+                   rdf:type ?place_type.
+            optional
+            {
+                ?place geo:hasGeometry ?hazard_location_geometry.
+                ?hazard_location_geometry geo:asWKT ?hazard_location_geometry_wkt. 
+            } 
             ?hazard_type rdfs:label ?hazard_type_name.
     `;
     if (place_type_iri_list.length != 0)
@@ -411,7 +418,7 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_ir
             'hazard_type_name':row.hazard_type_name.value,
             'place_name':row.place_name.value,
             'date_name':row.date_name.value,
-            'hazard_location_geometry_wkt':row.hazard_location_geometry_wkt.value
+            'hazard_location_geometry_wkt':(typeof row.hazard_location_geometry_wkt  === 'undefined') ? '' : row.hazard_location_geometry_wkt.value
         });
     }
     return h_hazardTable;
@@ -453,7 +460,7 @@ async function getPlaceTableRecord(keyword, place_type_iri_list) {
         h_placeTable.push({
             'place':row.place.value,
             'place_name':row.place_name.value,
-            'place_geometry_wkt':row.place_geometry_wkt.value
+            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
     return h_placeTable;
