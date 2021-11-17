@@ -127,7 +127,7 @@ async function query(srq_query) {
 }
 
 // query expertise super topics, place types and hazard types
-(async() => {
+async function getFilters() {
     let a_superTopics = await query( /* syntax: sparql */ `
         select ?super_topic ?super_topic_label where { 
             ?super_topic rdf:type kwg-ont:ExpertiseTopic;
@@ -161,6 +161,7 @@ async function query(srq_query) {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
+    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
@@ -179,7 +180,7 @@ async function query(srq_query) {
     // }
     // console.log(search_result);
 
-})();
+};
 
 // functions that respond to onclick events
 // query expertise subtopics
@@ -421,7 +422,7 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_ir
 }
 
 // query place table records
-async function getPlaceTableRecord(keyword, place_type_iri_list) {
+async function getPlaceTableRecord(keyword, place_type_iri_list, expertises_iri_selected, hazards_type_iri_selected) {
     let h_placeTable = [];
     let query_string = `
         select ?place ?place_name ?place_geometry_wkt
@@ -445,6 +446,15 @@ async function getPlaceTableRecord(keyword, place_type_iri_list) {
         }
         ?place_type rdfs:subClassOf kwg-ont:Place.
     `;
+    if (expertises_iri_selected.length !=0 )
+    {
+        query_string += `?expert kwg-ont:affiliation ?affiliation;
+                                 kwg-ont:hasExpertise ?expertise.
+                         ?affiliation rdfs:label ?affiliation_name;
+                                      kwg-ont:locatedAt ?affiliation_loc.
+                         filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
+        `;
+    }
     if (place_type_iri_list.length != 0)
     {
         query_string += `filter (?place_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
@@ -463,12 +473,12 @@ async function getPlaceTableRecord(keyword, place_type_iri_list) {
 }
 
 // full-text search
-async function getFullTextSearchResult(keyword, expertises_iri_selected, place_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+async function getFullTextSearchResult(keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let search_result = {
-        "Place":getPlaceTableRecord(keyword, place_iri_list_selected),
-        "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_iri_list_selected),
-        "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+        "Place":getPlaceTableRecord(keyword, place_type_iri_list_selected, expertises_iri_selected, hazards_type_iri_selected),
+        "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_type_iri_list_selected),
+        "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_type_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
     }
     console.log(search_result);
     return search_result;

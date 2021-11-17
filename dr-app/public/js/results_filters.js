@@ -1,74 +1,13 @@
 kwgApp.controller("filters-controller", function($scope, $timeout) {
     // Topics
-    $scope.expertiseTopics = [
-        "Biology Topic Group",
-        "Computer Science Topic Group",
-        "Data Science Topic Group",
-        "Demography Topic Group",
-        "Disaster Response Topic Group",
-        "Disease Topic Group",
-        "Ecology Topic Group",
-        "Education Topic Group",
-        "Epidemiology Topic Group",
-        "Geography Topic Group",
-        "Hazard Topic Group"
-    ];
-    $scope.places = [
-        "City",
-        "County",
-        "Marine",
-        "NWS Zone",
-        "State",
-        "Marine1",
-        "NWS Zone1",
-        "State1"
-    ];
-    $scope.hazards = [
-        "Astronomoical Low Tide",
-        "Avalanche",
-        "Blizzard",
-        "Coastal Flood",
-        "Cold/Wind Chill",
-        "Debris Flow",
-        "Dense Fog",
-        "Dense Smoke",
-        "Drought",
-        "Dust Devil",
-        "Dust Storm1",
-        "Dust Devil2",
-        "Dust Storm2",
-        "Dust Devil3",
-        "Dust Storm3"
-    ];
-    $scope.individuals = [
-        "Filter Title",
-        "Filter Title1",
-        "Filter Title2",
-        "Filter Title3",
-        "Filter Title4",
-        "Filter Title5",
-        "Filter Title6",
-        "Filter Title7",
-        "Filter Title8",
-        "Filter Title9",
-        "Filter Title10",
-        "Filter Title11"
-    ];
+    $scope.expertiseTopics = [];
+    $scope.places = [];
+    $scope.hazards = [];
+    $scope.individuals = [];
 
     // subtopics
-    $scope.expertiseSubtopics = [
-        "topic1", "topic2", "topic3", "topic4",
-        "topic5", "topic6", "topic7", "topic8",
-        "topic9", "topic10", "topic11", "topic12",
-        "topic13", "topic14", "topic15"
-    ];
-    $scope.subPlaces = [
-        "place1", "place2", "place3", "place4",
-        "place5", "place6", "place7", "place8"
-    ];
-
-
-
+    $scope.expertiseSubtopics = [];
+    $scope.subPlaces = [];
 
     // Add click event for the Expertise Topic
     // -1. Hide the selected topic
@@ -217,22 +156,26 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
 
     // add expertise topics
 
-    $scope.supertopicsUrls = Object.keys(h_superTopics);
-    $scope.getLabel = function(supertopicUrl) {
-        return h_superTopics[supertopicUrl];
-    };
+    getFilters().then(function (data){
+        $scope.supertopicsUrls = Object.keys(data['Expertise']);
+        $scope.getLabel = function(supertopicUrl) {
+            return data['Expertise'][supertopicUrl];
+        };
+    
+        // add place topics
+        $scope.placeSupertopicsUrls = Object.keys(data['Place']);
+        $scope.getPlaceLabel = function(placeSupertopicUrl) {
+            return data['Place'][placeSupertopicUrl];
+        }
+    
+        // add hazard topics
+        $scope.hazardsUrls = Object.keys(data['Hazard']);
+        $scope.getHazardLabel = function(hazardUrl) {
+            return data['Hazard'][hazardUrl];
+        };
+        $scope.$apply();
+    });
 
-    // add place topics
-    $scope.placeSupertopicsUrls = Object.keys(h_placeTypes);
-    $scope.getPlaceLabel = function(placeSupertopicUrl) {
-        return h_placeTypes[placeSupertopicUrl];
-    }
-
-    // add hazard topics
-    $scope.hazardsUrls = Object.keys(h_hazardTypes);
-    $scope.getHazardLabel = function(hazardUrl) {
-        return h_hazardTypes[hazardUrl];
-    };
 
 
 
