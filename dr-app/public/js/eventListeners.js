@@ -174,11 +174,15 @@ function displayTable(selectors, optionPromise) {
     optionPromise.then(function(elements) {
         if (elements.length) {
             var tableTitles = Object.keys(elements[0]).filter(function(k) {
-                var excludedTitles = ["$$hashKey", "place_geometry_wkt", "expert_location_geometry_wkt", "hazard_location_geometry_wkt", "webpage"];
+                console.log("current title: ", k);
+                var excludedTitles = ["$$hashKey", "expert_location_geometry_wkt", "place_geometry_wkt", "hazard_location_geometry_wkt", "webpage"];
+                // "place_geometry_wkt", "expert", "expert_location_geometry_wkt", "hazard", "hazard_location_geometry_wkt", "webpage"
+
                 return !excludedTitles.includes(k);
                 // return k != "$$hashKey" || "place_geometry_wkt" || "expert_location_geometry_wkt" || "hazard_location_geometry_wkt";
             });
-            console.log("table titles: ", tableTitles);
+
+
             $(selectors["thead"] + " thead tr").empty();
             tableTitles.map(function(e) {
                 return "<th>" + e + "</th>";
@@ -189,32 +193,58 @@ function displayTable(selectors, optionPromise) {
 
             var tableBody = $(selectors["tbody"] + " tbody");
             tableBody.empty();
+            var titleRemoved = "";
             elements.forEach(e => {
-                console.log("current e------------> ", e);
+                // console.log("current e------------> ", e);
                 var rowBodyHtml = "";
+                var hyperlink = "";
                 tableTitles.forEach(tableTitle => {
-                    console.log("current table title is : ", tableTitle, ", the current value is: ", e[tableTitle]);
+                    // console.log("current table title is : ", tableTitle, ", the current value is: ", e[tableTitle]);
                     var val = e[tableTitle];
-                    var html = "<td>" + val + "</td>";
-                    rowBodyHtml += html;
+
+                    var expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+                    if (new RegExp(expression).test(val)) {
+                        hyperlink = val;
+                        // remove the corresponding title
+                        titleRemoved = tableTitle;
+                    } else {
+                        var html = "<td>" + val + "</td>";
+                        rowBodyHtml += html;
+                    }
                 });
-                // Object.values(e).map(function(val) {
-                //     return "<td>" + val + "</td>";
-                // }).forEach(html => {
-                //     rowBodyHtml += html;
-                // });
-                var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                var rowHtml = '<tr onclick="window.open(' + "'" + hyperlink + "'" + ')">' + rowBodyHtml + "</tr>";
                 tableBody.append(rowHtml);
-            })
+            });
+            console.log("current table titles: ", tableTitles, elements[0]);
+            console.log("title need to be removed: ", titleRemoved);
+            for (var i = 0; i < $(selectors["thead"] + " thead tr th").length; i++) {
+                var element = $(selectors["thead"] + " thead tr th")[i];
+                if (element.innerHTML == titleRemoved) {
+                    console.log("element to be removed :", element);
+                    element.remove();
+                }
+
+            }
+            // $(selectors["thead"] + " thead tr th").each(e => {
+            //     console.log("this--> ", $(this));
+
+            //     if ($(this).innerHTML == titleRemoved) {
+            //         console.log("same innerHtml");
+            //     }
+            // });
+
         }
     }).then(function() {
+        console.log("selector pagination: ", $("div.per-page"));
+
+        $(selectors["pagination"]).empty();
         var $perPage = $('<div class="dropdown per-page">\
-            <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-                <option value="12" selected="selected">12 Per Page</option>\
-                <option value="30">30 Per Page</option>\
-                <option value="50">50 Per Page</option>\
-            </select>\
-        </div>');
+        <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+            <option value="12" selected="selected">12 Per Page</option>\
+            <option value="30">30 Per Page</option>\
+            <option value="50">50 Per Page</option>\
+        </select>\
+    </div>');
 
         $perPage.appendTo(selectors["pagination"]);
 
@@ -223,6 +253,7 @@ function displayTable(selectors, optionPromise) {
             console.log("changed here: ", $(this).val());
             tablePagination(selectors["tbody"], selectors["pagination"], parseInt($(this).val()));
         })
+
     });
 
 }
@@ -245,7 +276,6 @@ function tablePagination(selector, paginationSelector, numPerPage) {
         console.log("num rows: ", numRows);
         var numPages = Math.ceil(numRows / numPerPage);
         console.log("num of pages: ", numPages);
-
 
         if ($("div.pager")) {
             $("div.pager").empty();
@@ -383,9 +413,9 @@ function displayMap(fullTextResults) {
                     center_lat += coords[1];
                     center_lon += coords[0];
                     let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
-                        dd('b:'+e['place_name']),
+                        dd('b:' + e['place_name']),
                         dd('br'),
-                        dd('span:'+e['place']),
+                        dd('span:' + e['place']),
                     ]));;
                     // var point = L.circle([coords[1], coords[0]], {
                     //     color: '#DF6C37',
@@ -417,5 +447,6 @@ $(function() {
         console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
+        getData();
     });
 });

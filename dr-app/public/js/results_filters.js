@@ -60,11 +60,6 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         $scope.getSubtopicLabel = function(expertiseSubtopic) {
             return expertiseSubtopic.topic_label;
         }
-
-
-
-
-
     };
     $scope.unselectExpertise = function() {
         // set the selected topic invisible
@@ -156,18 +151,18 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
 
     // add expertise topics
 
-    getFilters().then(function (data){
+    getFilters().then(function(data) {
         $scope.supertopicsUrls = Object.keys(data['Expertise']);
         $scope.getLabel = function(supertopicUrl) {
             return data['Expertise'][supertopicUrl];
         };
-    
+
         // add place topics
         $scope.placeSupertopicsUrls = Object.keys(data['Place']);
         $scope.getPlaceLabel = function(placeSupertopicUrl) {
             return data['Place'][placeSupertopicUrl];
         }
-    
+
         // add hazard topics
         $scope.hazardsUrls = Object.keys(data['Hazard']);
         $scope.getHazardLabel = function(hazardUrl) {
@@ -176,11 +171,19 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         $scope.$apply();
     });
 
+    // dynamically display tables according to selected checkbox
+    $scope.selectSubTopic = function($event) {
+        console.log("yeah u selected the sub topic: ", $event.target.value);
+        getData();
+    }
 
+    $scope.selectPlaceSupertopic = function($event) {
+        getData();
+    }
 
-
-
-
+    $scope.selectHazard = function($event) {
+        getData();
+    }
 
 });
 
