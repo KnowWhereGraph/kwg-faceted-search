@@ -1,11 +1,6 @@
 // query.js contains the javascript codes that query data from KnowWhereGraph.
 // Right now the endpoint is set to be KnowWhereGraph-V1 from stko-roy.
 
-// store expertise super topics, place types and hazard types
-const h_superTopics = {};
-const h_placeTypes = {};
-const h_hazardTypes = {};
-
 // Prefixes
 const H_PREFIXES = {
     rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -33,79 +28,6 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 // SPARQL endpoint
 const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1';
 
-// define the configuration for full-text search
-const full_text_config = {
-    "description": "configuration for full-text search on the KnowWhereGraph-v1 repository on stko-roy",
-    "info": [{
-            "class": "Place",
-            "subclasses": [
-                "City",
-                "State",
-                "NWSZone",
-                "Marine",
-                "County"
-            ]
-        },
-        {
-            "class": "Expert"
-        },
-        {
-            "class": "Hazard",
-            "subclasses": [
-                "Hail",
-                "ThunderstormWind",
-                "Tornado",
-                "HeavySnow",
-                "HeavyRain",
-                "ExtremeColdWindChill",
-                "Waterspout",
-                "FunnelCloud",
-                "RipCurrent",
-                "Avalanche",
-                "HighWind",
-                "IceStorm",
-                "Blizzard",
-                "HighSurf",
-                "Flood",
-                "Wildfire",
-                "Drought",
-                "WinterStorm",
-                "WinterWeather",
-                "DenseFog",
-                "FlashFlood",
-                "StormSurgeTide",
-                "DustStorm",
-                "StrongWind",
-                "ExcessiveHeat",
-                "Lightning",
-                "DebrisFlow",
-                "FrostFreeze",
-                "Sleet",
-                "Lake-EffectSnow",
-                "ColdWindChill",
-                "Heat",
-                "DustDevil",
-                "TropicalStorm",
-                "MarineThunderstormWind",
-                "FreezingFog",
-                "MarineHail",
-                "CoastalFlood",
-                "MarineHighWind",
-                "AstronomicalLowTide",
-                "MarineStrongWind",
-                "Sneakerwave",
-                "LakeshoreFlood",
-                "TropicalDepression",
-                "MarineTropicalStorm",
-                "DenseSmoke",
-                "MarineHurricaneTyphoon",
-                "MarineTropicalDepression",
-                "Hurricane"
-            ]
-        }
-    ]
-};
-
 async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
@@ -128,6 +50,11 @@ async function query(srq_query) {
 
 // query expertise super topics, place types and hazard types
 async function getFilters() {
+    // store expertise super topics, place types and hazard types
+    let h_superTopics = {};
+    let h_placeTypes = {};
+    let h_hazardTypes = {};
+
     let a_superTopics = await query( /* syntax: sparql */ `
         select ?super_topic ?super_topic_label where { 
             ?super_topic rdf:type kwg-ont:ExpertiseTopic;
@@ -163,21 +90,18 @@ async function getFilters() {
 
     return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
+    // test data
     // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
     // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    // let keyword = "Boston";
+    // let keyword = "California";
     // let start_year = '1990';
     // let start_month = '01';
     // let start_date = '01';
     // let end_year = '2021';
     // let end_month = '12';
     // let end_date = '31';
-    // let search_result = {
-    //     "Place":getPlaceTableRecord(keyword, place_type_iri_list_selected),
-    //     "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_type_iri_list_selected),
-    //     "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_type_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
-    // }
+    // let search_result = getFullTextSearchResult(keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
     // console.log(search_result);
 
 };
@@ -291,130 +215,47 @@ async function getHazardLocationGeometry(hazard_iri_list)
     return h_geometry;
 }
 
-
 // query expert table record
-async function getExpertTableRecord(keyword, expertise_iri_list, place_type_iri_list) {
+async function getExpertTableRecord(expert_query_string, place_query_string) {
     let h_expertTable = [];
-    let query_string = `
-        select ?expert ?expert_name ?affiliation_name ?department_name (group_concat(?expertise_name; separator="\\n") as ?expertise_list) ?webpage ?expert_location_geometry_wkt
-        {
-    `;
-    if (keyword != "")
-    {
-        query_string += `
-            ?search a elastic-index:dr_index_new;
-            elastic:query "${keyword}";
-            elastic:entities ?expert.
-        `;
-    }
-    query_string += `
-            ?expert kwg-ont:affiliation ?affiliation;
-                    kwg-ont:department ?department;
-                    kwg-ont:personalPage ?webpage;
-                    kwg-ont:hasExpertise ?expertise;
-                    rdfs:label ?expert_name .
-            ?expertise rdfs:label ?expertise_name.
-            ?department rdfs:label ?department_name.
-            ?affiliation rdfs:label ?affiliation_name;
-                         kwg-ont:locatedAt ?affiliation_loc.
-            ?affiliation_loc rdf:type ?affiliation_loc_type.
-            optional
-            {
-                ?affiliation_loc geo:hasGeometry ?expert_location_geometry .
-                ?expert_location_geometry geo:asWKT ?expert_location_geometry_wkt .
-            }
-               
-    `;
-    if (expertise_iri_list.length != 0)
-    {
-        query_string += `filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))`;
-    }
-    if (place_type_iri_list.length != 0)
-    {
-        query_string += `filter (?affiliation_loc_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
-    }
-    query_string += `
-        }
-        group by ?expert ?expert_name ?affiliation_name ?department_name ?webpage ?expert_location_geometry_wkt
-    `;
-
+    let query_string = expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}`;
     let a_expertTable = await query(query_string);
     for (let row of a_expertTable)
     {
         h_expertTable.push({
             'expert':row.expert.value,
             'expert_name':row.expert_name.value,
+            'affiliation':row.affiliation.value,
             'affiliation_name':row.affiliation_name.value,
+            'department':row.department.value,
             'department_name':row.department_name.value,
-            'expertise_list':row.expertise_list.value,
-            'webpage':row.webpage.value,
-            'expert_location_geometry_wkt':row.expert_location_geometry_wkt.value
+            'expertise':row.expertise.value,
+            'expertise_name':row.expertise_name.value,
+            'place':row.place.value,
+            'place_name':row.place_name.value,
+            'webpage':row.webpage.value
         });
     }
     return h_expertTable;
 }
 
 // query hazard table records
-async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_iri_list, start_year, start_month, start_date, end_year, end_month, end_date) {
+async function getHazardTableRecord(hazard_query_string, place_query_string) {
     let h_hazardTable = [];
-    let query_string = `
-        select ?hazard ?hazard_name ?hazard_type_name ?place_name ?date_name ?hazard_location_geometry_wkt
-        {
-    `;
-    if (keyword != "")
-    {
-        query_string += `
-            ?search a elastic-index:dr_index_new;
-            elastic:query "${keyword}";
-            elastic:entities ?hazard.
-        `;
-    }
-    query_string += `
-            ?hazard kwg-ont:locatedAt ?place;
-                sosa:phenomenonTime ?date;
-                rdf:type ?hazard_type;
-                rdfs:label ?hazard_name.
-            ?date rdfs:label ?date_name;
-                time:hasBeginning ?start_date;
-                time:hasEnd ?end_date.
-            ?start_date rdfs:label ?start_date_label.
-            ?end_date rdfs:label ?end_date_label.
-            ?place rdfs:label ?place_name;
-                   rdf:type ?place_type.
-            optional
-            {
-                ?place geo:hasGeometry ?hazard_location_geometry.
-                ?hazard_location_geometry geo:asWKT ?hazard_location_geometry_wkt. 
-            } 
-            ?hazard_type rdfs:label ?hazard_type_name.
-    `;
-    if (place_type_iri_list.length != 0)
-    {
-        query_string += `filter (?place_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
-    }
-    if (start_year != '')
-    {
-        query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
-    }
-    if (end_year != '')
-    {
-        query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
-    }
-    if (hazard_type_iri_list.length != 0)
-    {
-        query_string += `filter (?hazard_type in (${hazard_type_iri_list.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
-    }
-
-    query_string += `}`;
+    let query_string = hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}`;
     let a_hazardTable = await query(query_string);
     for (let row of a_hazardTable)
     {
         h_hazardTable.push({
             'hazard':row.hazard.value,
             'hazard_name':row.hazard_name.value,
+            'hazard_type':row.hazard_type.value,
             'hazard_type_name':row.hazard_type_name.value,
+            'place':row.place.value,
             'place_name':row.place_name.value,
+            'date':row.date.value,
             'date_name':row.date_name.value,
+            'hazard_location_geometry':(typeof row.hazard_location_geometry  === 'undefined') ? '' : row.hazard_location_geometry.value,
             'hazard_location_geometry_wkt':(typeof row.hazard_location_geometry_wkt  === 'undefined') ? '' : row.hazard_location_geometry_wkt.value
         });
     }
@@ -422,50 +263,22 @@ async function getHazardTableRecord(keyword, hazard_type_iri_list, place_type_ir
 }
 
 // query place table records
-async function getPlaceTableRecord(keyword, place_type_iri_list, expertises_iri_selected, hazards_type_iri_selected) {
+async function getPlaceTableRecord(place_query_string, expert_query_string, hazard_query_string) {
     let h_placeTable = [];
     let query_string = `
-        select ?place ?place_name ?place_geometry_wkt
+        select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
         {
     `;
-    if (keyword != "")
-    {
-        query_string += `
-            ?search a elastic-index:dr_index_new;
-            elastic:query "${keyword}";
-            elastic:entities ?place.
-        `;
-    }
-    query_string += `
-        ?place rdfs:label ?place_name;
-               rdf:type ?place_type.
-        optional
-        {
-            ?place geo:hasGeometry ?place_geometry.
-            ?place_geometry geo:asWKT ?place_geometry_wkt.
-        }
-        ?place_type rdfs:subClassOf kwg-ont:Place.
-    `;
-    if (expertises_iri_selected.length !=0 )
-    {
-        query_string += `?expert kwg-ont:affiliation ?affiliation;
-                                 kwg-ont:hasExpertise ?expertise.
-                         ?affiliation rdfs:label ?affiliation_name;
-                                      kwg-ont:locatedAt ?affiliation_loc.
-                         filter (?expertise in (${expertise_iri_list.map((expertise) => `<${expertise}>`).join(',')}))
-        `;
-    }
-    if (place_type_iri_list.length != 0)
-    {
-        query_string += `filter (?place_type in (${place_type_iri_list.map((place_type) => `<${place_type}>`).join(',')}))`;
-    }
-    query_string += `}`;
+    query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}}`;
     let a_placeTable = await query(query_string);
     for (let row of a_placeTable)
     {
         h_placeTable.push({
             'place':row.place.value,
             'place_name':row.place_name.value,
+            'place_type':row.place_type.value,
+            'place_type_name':row.place_type_name.value,
+            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
@@ -475,10 +288,124 @@ async function getPlaceTableRecord(keyword, place_type_iri_list, expertises_iri_
 // full-text search
 async function getFullTextSearchResult(keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
+    let place_query_string = `
+        select *
+        {
+    `;
+    let expert_query_string = `
+        select *
+        {
+    `;
+    let hazard_query_string = `
+        select *
+        {
+    `;
+
+    if (keyword != "")
+    {
+        place_query_string += `
+            ?search a elastic-index:dr_index_new;
+            elastic:query "${keyword}";
+            elastic:entities ?place.
+        `;
+        expert_query_string += `
+            ?search a elastic-index:dr_index_new;
+            elastic:query "${keyword}";
+            elastic:entities ?expert.
+        `;
+        hazard_query_string += `
+            ?search a elastic-index:dr_index_new;
+            elastic:query "${keyword}";
+            elastic:entities ?hazard.
+        `;
+    }
+
+    place_query_string += `
+        ?place rdfs:label ?place_name;
+               rdf:type ?place_type.
+        optional
+        {
+            ?place geo:hasGeometry ?place_geometry.
+            ?place_geometry geo:asWKT ?place_geometry_wkt.
+        }
+        ?place_type rdfs:subClassOf kwg-ont:Place;
+                    rdfs:label ?place_type_name.
+    `;
+    if (place_type_iri_list_selected.length != 0)
+    {
+        place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) => `<${place_type}>`).join(',')}))`;
+    }
+
+    expert_query_string += `
+        ?expert rdf:type kwg-ont:Expert;
+                kwg-ont:affiliation ?affiliation;
+                kwg-ont:department ?department;
+                kwg-ont:personalPage ?webpage;
+                kwg-ont:hasExpertise ?expertise;
+                rdfs:label ?expert_name .
+        ?expertise rdfs:label ?expertise_name.
+        ?department rdfs:label ?department_name.
+        ?affiliation rdfs:label ?affiliation_name;
+                        kwg-ont:locatedAt ?place.
+        ?place rdf:type ?place_type;
+               rdfs:label ?place_name.
+        ?place_type rdfs:subClassOf kwg-ont:Place;
+                    rdfs:label ?place_type_name.
+        optional
+        {
+            ?place geo:hasGeometry ?place_geometry .
+            ?place_geometry geo:asWKT ?place_geometry_wkt .
+        }
+    `; 
+    if (expertises_iri_selected.length != 0)
+    {
+        expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) => `<${expertise}>`).join(',')}))`;
+    }
+
+    hazard_query_string += `
+        ?hazard kwg-ont:locatedAt ?place;
+                sosa:phenomenonTime ?date;
+                rdf:type ?hazard_type;
+                rdfs:label ?hazard_name;
+                rdf:type ?hazard_type.
+        ?hazard_type rdfs:subClassOf kwg-ont:Hazard.
+        ?date rdfs:label ?date_name;
+              time:hasBeginning ?start_date;
+              time:hasEnd ?end_date.
+        ?start_date rdfs:label ?start_date_label.
+        ?end_date rdfs:label ?end_date_label.
+        ?place rdfs:label ?place_name;
+               rdf:type ?place_type.
+        ?place_type rdfs:subClassOf kwg-ont:Place;
+                    rdfs:label ?place_type_name.
+        optional
+        {
+            ?place geo:hasGeometry ?place_geometry.
+            ?place_geometry geo:asWKT ?place_geometry_wkt. 
+        } 
+        ?hazard_type rdfs:label ?hazard_type_name.
+    `;
+    if ((start_year != '') && (start_month != '') && (start_date != ''))
+    {
+        hazard_query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
+    }
+    if ((end_year != '') && (end_month != '') && (end_date != ''))
+    {
+        hazard_query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
+    }
+    if (hazards_type_iri_selected.length != 0)
+    {
+        hazard_query_string += `filter (?hazard_type in (${hazards_type_iri_selected.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
+    }
+
+    place_query_string += `}`;
+    expert_query_string += `}`;
+    hazard_query_string += `}`;
+
     let search_result = {
-        "Place":getPlaceTableRecord(keyword, place_type_iri_list_selected, expertises_iri_selected, hazards_type_iri_selected),
-        "Expert":getExpertTableRecord(keyword,expertises_iri_selected, place_type_iri_list_selected),
-        "Hazard":getHazardTableRecord(keyword, hazards_type_iri_selected, place_type_iri_list_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+        "Place":getPlaceTableRecord(place_query_string, expert_query_string, hazard_query_string),
+        "Expert":getExpertTableRecord(expert_query_string, place_query_string),
+        "Hazard":getHazardTableRecord(hazard_query_string, place_query_string)
     }
     console.log(search_result);
     return search_result;
