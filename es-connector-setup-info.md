@@ -1,19 +1,20 @@
-# Create the Elasticsearch GraphDB Connector for the Direct Relief Use Case
+# Creating the Elasticsearch GraphDB Connector
 
-## 
+## Instructions
 
 Type the following SPARQL queries for the index creation.
 
-### 
+### Main graph
+
+The repository used is KWG-V2 on http://stko-kwg.geog.ucsb.edu:7200.
 
 #### SPARQL Query
 
 ```SPARQL
-
 PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
 INSERT DATA {
-	inst:dr_index_new :createConnector '''
+	inst:kwg_index :createConnector '''
 {
   "fields": [
     {
@@ -31,6 +32,200 @@ INSERT DATA {
       "objectFields": []
     },
     {
+      "fieldName": "comment",
+      "propertyChain": [
+        "http://www.w3.org/2000/01/rdf-schema#comment"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "hasFireCause",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasFireCause",
+		    "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+	  {
+      "fieldName": "hasIncidentName",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasIncidentName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "sfWithin",
+      "propertyChain": [
+        "http://www.opengis.net/ont/geosparql#sfWithin",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "hasFireMappingAssessmentLabel",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasFireMappingAssessmentLabel",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "hasFireName",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasFireName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "hasMappingProgram",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasMappingProgram",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "locatedIn",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/locatedIn",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "isFeatureOfInterestOf",
+      "propertyChain": [
+        "http://www.w3.org/ns/sosa/isFeatureOfInterestOf",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+  ],
+  "languages": [],
+  "types": [
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/PrescribedFire",
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/Wildfire",
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/ComplexFire",
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/OutOfAreaResponseFire",
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/UnknownFire",
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/WildlandFireUse",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_0",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_1",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_2",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_3",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_4"
+  ],
+  "readonly": false,
+  "detectFields": false,
+  "importGraph": false,
+  "elasticsearchNode": "http://stko-kwg.geog.ucsb.edu:9200",
+  "elasticsearchBasicAuthUser": "elastic",
+  "elasticsearchBasicAuthPassword": "JDC6sh1kaK6g1OZS1FJP",
+  "elasticsearchClusterSniff": true,
+  "manageIndex": true,
+  "manageMapping": true,
+  "bulkUpdateBatchSize": 5000,
+  "bulkUpdateRequestSize": 5242880
+}
+''' .
+}
+```
+
+
+### Direct Relief subgraph
+
+The repository used is KnowWhereGraph-V1 on http://stko-roy.geog.ucsb.edu:7202.
+
+#### SPARQL Query
+
+```SPARQL
+
+PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
+PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
+INSERT DATA {
+	inst:dr_index_new :createConnector '''
+{
+  "fields": [
+    {
+
+      "fieldName": "label",
+      "propertyChain": [
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+
       "fieldName": "expertise",
       "propertyChain": [
         "http://stko-roy.geog.ucsb.edu/lod/ontology/hasExpertise",
@@ -61,10 +256,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "expert_location",
+      "fieldName": "department",
       "propertyChain": [
-        "http://stko-roy.geog.ucsb.edu/lod/ontology/affiliation",
-		"http://stko-roy.geog.ucsb.edu/lod/ontology/locatedAt",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/department",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -77,9 +271,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "department",
+      "fieldName": "association",
       "propertyChain": [
-        "http://stko-roy.geog.ucsb.edu/lod/ontology/department",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/associatedWith",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -163,52 +357,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "fipsCode",
+      "fieldName": "locatedIn",
       "propertyChain": [
-        "http://stko-roy.geog.ucsb.edu/lod/ontology/fipsCode"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-    {
-      "fieldName": "nwsCode",
-      "propertyChain": [
-        "http://stko-roy.geog.ucsb.edu/lod/ontology/nwsCode"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-    {
-      "fieldName": "subDivision",
-      "propertyChain": [
-        "http://stko-roy.geog.ucsb.edu/lod/ontology/subDivision",
-        "http://www.w3.org/2000/01/rdf-schema#label"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-    {
-      "fieldName": "sameAs",
-      "propertyChain": [
-        "http://www.w3.org/2002/07/owl#sameAs",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/locatedIn",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -224,6 +375,36 @@ INSERT DATA {
       "fieldName": "phenomenonTime",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/phenomenonTime",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "superTopic",
+      "propertyChain": [
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/hasSuperTopic",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "topic",
+      "propertyChain": [
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/hasTopic",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -280,9 +461,8 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "hazard_impact_location",
+      "fieldName": "featureOfInterest",
       "propertyChain": [
-		"http://stko-roy.geog.ucsb.edu/lod/ontology/hasImpact",
         "http://www.w3.org/ns/sosa/hasFeatureOfInterest",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
@@ -296,10 +476,81 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "hazard_impact_member",
+      "fieldName": "fipsCode",
       "propertyChain": [
-		"http://stko-roy.geog.ucsb.edu/lod/ontology/hasImpact",
-		"http://www.w3.org/ns/sosa/hasMember",
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/fipsCode"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "nwsCode",
+      "propertyChain": [
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/nwsCode"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "sameAs",
+      "propertyChain": [
+        "http://www.w3.org/2002/07/owl#sameAs",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "member",
+      "propertyChain": [
+        "http://www.w3.org/ns/sosa/hasMember",
+        "http://www.w3.org/2000/01/rdf-schema#label"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "observableProperty",
+      "propertyChain": [
+        "http://www.w3.org/ns/sosa/observableProperty"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "jobTitle",
+      "propertyChain": [
+        "http://stko-roy.geog.ucsb.edu/lod/ontology/hasTitle",
         "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
@@ -315,6 +566,14 @@ INSERT DATA {
   "languages": [],
   "types": [
     "http://stko-roy.geog.ucsb.edu/lod/ontology/Expert",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Department",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Affiliation",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Organization",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/Expertise",
+    "http://www.w3.org/ns/sosa/Observation",
+    "http://www.w3.org/ns/sosa/ObservableProperty",
+    "http://www.w3.org/ns/sosa/ObservationCollection",
+    "http://stko-roy.geog.ucsb.edu/lod/ontology/JobTitle",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/City",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/State",
     "http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone",
