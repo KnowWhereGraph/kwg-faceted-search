@@ -28,6 +28,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 // SPARQL endpoint
 const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1';
 
+// query
 async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
@@ -124,97 +125,6 @@ async function getSubTopic(super_topic_iri) {
     return h_subTopics;
 }
 
-// query place instances of a chosen place type
-async function getPlaceInstance(place_type_iri) {
-    let h_places = [];
-    let a_places = await query( /* syntax: sparql */ `
-        select ?place ?place_label where { 
-            ?place rdf:type ?place_type;
-                rdfs:label ?place_label.
-            values ?place_type {<${place_type_iri}>}.
-        }
-    `);
-    for (let row of a_places) {
-        h_places.push({ 'place': row.place.value, 'place_label': row.place_label.value });
-    }
-    return h_places;
-}
-
-// query expert location geometry
-async function getExpertLocationGeometry(expert_iri_list) {
-    let h_geometry = [];
-    let a_geometry = await query( /* syntax: sparql */ `
-        select ?expert ?expert_location ?expert_location_geometry ?expert_location_geometry_wkt
-        {
-            ?expert kwg-ont:affiliation ?affiliation.
-            ?affiliation kwg-ont:locatedAt ?expert_location.
-            ?expert_location geo:hasGeometry ?expert_location_geometry.
-            ?expert_location_geometry geo:asWKT ?expert_location_geometry_wkt.
-            filter (?expert in (${expert_iri_list.map((expert) => `<${expert}>`).join(',')}))
-        }
-    `);
-    for (let row of a_geometry)
-    {
-        h_geometry.push({
-            'expert':row.expert.value, 
-            'expert_location':row.expert_location.value,
-            'expert_location_geometry':row.expert_location_geometry.value,
-            'expert_location_geometry_wkt':row.expert_location_geometry_wkt.value
-        });
-    }
-    return h_geometry;
-}
-
-// query place geometry
-async function getPlaceGeometry(place_iri_list)
-{
-    let h_geometry = [];
-    let a_geometry = await query(/* syntax: sparql */ `
-        select ?place ?place_geometry ?place_geometry_wkt ?place_name
-        {
-            ?place rdfs:label ?place_name;
-                   geo:hasGeometry ?place_geometry.
-            ?place_geometry geo:asWKT ?place_geometry_wkt.
-            filter (?place in (${place_iri_list.map((place) => `<${place}>`).join(',')}))
-        }
-    `);
-    for (let row of a_geometry)
-    {
-        h_geometry.push({
-            'place':row.place.value, 
-            'place_geometry':row.place_geometry.value,
-            'place_geometry_wkt':row.place_geometry_wkt.value,
-            'place_name': row.place_name.value
-        });
-    }
-    return h_geometry;
-}
-
-// query hazard location geometry
-async function getHazardLocationGeometry(hazard_iri_list)
-{
-    let h_geometry = [];
-    let a_geometry = await query(/* syntax: sparql */ `
-        select ?hazard ?hazard_location ?hazard_location_geometry ?hazard_location_geometry_wkt
-        {
-            ?hazard kwg-ont:locatedAt ?hazard_location.
-            ?hazard_location geo:hasGeometry ?hazard_location_geometry.
-            ?hazard_location_geometry geo:asWKT ?hazard_location_geometry_wkt.
-            filter (?hazard in (${hazard_iri_list.map((hazard) => `<${hazard}>`).join(',')}))
-        }
-    `);
-    for (let row of a_geometry)
-    {
-        h_geometry.push({
-            'hazard':row.hazard.value, 
-            'hazard_location':row.hazard_location.value,
-            'hazard_location_geometry':row.hazard_location_geometry.value,
-            'hazard_location_geometry_wkt':row.hazard_location_geometry_wkt.value
-        });
-    }
-    return h_geometry;
-}
-
 // query expert table record
 async function getExpertTableRecord(expert_query_string, place_query_string) {
     let h_expertTable = [];
@@ -233,6 +143,8 @@ async function getExpertTableRecord(expert_query_string, place_query_string) {
             'expertise_name':row.expertise_name.value,
             'place':row.place.value,
             'place_name':row.place_name.value,
+            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
             'webpage':row.webpage.value
         });
     }
@@ -253,10 +165,10 @@ async function getHazardTableRecord(hazard_query_string, place_query_string) {
             'hazard_type_name':row.hazard_type_name.value,
             'place':row.place.value,
             'place_name':row.place_name.value,
+            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
             'date':row.date.value,
             'date_name':row.date_name.value,
-            'hazard_location_geometry':(typeof row.hazard_location_geometry  === 'undefined') ? '' : row.hazard_location_geometry.value,
-            'hazard_location_geometry_wkt':(typeof row.hazard_location_geometry_wkt  === 'undefined') ? '' : row.hazard_location_geometry_wkt.value
         });
     }
     return h_hazardTable;
