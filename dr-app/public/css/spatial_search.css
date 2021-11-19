@@ -245,6 +245,15 @@ li#datarange-li form button {
     position: relative;
 }
 
+#spatial-search .table-body a {
+    /* font-size: 22px; */
+    font-family: sans-serif;
+    font-weight: 500;
+    /* color: #DF6C37; */
+    color: #00021F;
+    text-decoration: none;
+}
+
 #spatial-search .table-body tr:hover {
     /* background-color: pink; */
     cursor: pointer;
@@ -326,6 +335,7 @@ p#cnfg-tb {
 
 /* Table! dynamically switch to the selected tab */
 
+#pills-place,
 #pills-hazard {
     overflow-y: hidden;
 }

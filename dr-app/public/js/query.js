@@ -89,7 +89,7 @@ async function getFilters() {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
-    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
+    return { 'Expertise': h_superTopics, 'Place': h_placeTypes, 'Hazard': h_hazardTypes };
 
     // test data
     // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
@@ -130,22 +130,21 @@ async function getExpertTableRecord(expert_query_string, place_query_string) {
     let h_expertTable = [];
     let query_string = expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}`;
     let a_expertTable = await query(query_string);
-    for (let row of a_expertTable)
-    {
+    for (let row of a_expertTable) {
         h_expertTable.push({
-            'expert':row.expert.value,
-            'expert_name':row.expert_name.value,
-            'affiliation':row.affiliation.value,
-            'affiliation_name':row.affiliation_name.value,
-            'department':row.department.value,
-            'department_name':row.department_name.value,
-            'expertise':row.expertise.value,
-            'expertise_name':row.expertise_name.value,
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-            'webpage':row.webpage.value
+            'expert': row.expert.value,
+            'expert_name': row.expert_name.value,
+            'affiliation': row.affiliation.value,
+            'affiliation_name': row.affiliation_name.value,
+            'department': row.department.value,
+            'department_name': row.department_name.value,
+            'expertise': row.expertise.value,
+            'expertise_name': row.expertise_name.value,
+            'place': row.place.value,
+            'place_name': row.place_name.value,
+            'place_geometry': (typeof row.place_geometry === 'undefined') ? '' : row.place_geometry.value,
+            'place_geometry_wkt': (typeof row.place_geometry_wkt === 'undefined') ? '' : row.place_geometry_wkt.value,
+            'webpage': row.webpage.value
         });
     }
     return h_expertTable;
@@ -156,19 +155,18 @@ async function getHazardTableRecord(hazard_query_string, place_query_string) {
     let h_hazardTable = [];
     let query_string = hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}`;
     let a_hazardTable = await query(query_string);
-    for (let row of a_hazardTable)
-    {
+    for (let row of a_hazardTable) {
         h_hazardTable.push({
-            'hazard':row.hazard.value,
-            'hazard_name':row.hazard_name.value,
-            'hazard_type':row.hazard_type.value,
-            'hazard_type_name':row.hazard_type_name.value,
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-            'date':row.date.value,
-            'date_name':row.date_name.value,
+            'hazard': row.hazard.value,
+            'hazard_name': row.hazard_name.value,
+            'hazard_type': row.hazard_type.value,
+            'hazard_type_name': row.hazard_type_name.value,
+            'place': row.place.value,
+            'place_name': row.place_name.value,
+            'place_geometry': (typeof row.place_geometry === 'undefined') ? '' : row.place_geometry.value,
+            'place_geometry_wkt': (typeof row.place_geometry_wkt === 'undefined') ? '' : row.place_geometry_wkt.value,
+            'date': row.date.value,
+            'date_name': row.date_name.value,
         });
     }
     return h_hazardTable;
@@ -183,23 +181,21 @@ async function getPlaceTableRecord(place_query_string, expert_query_string, haza
     `;
     query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}}`;
     let a_placeTable = await query(query_string);
-    for (let row of a_placeTable)
-    {
+    for (let row of a_placeTable) {
         h_placeTable.push({
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_type':row.place_type.value,
-            'place_type_name':row.place_type_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
+            'place': row.place.value,
+            'place_name': row.place_name.value,
+            'place_type': row.place_type.value,
+            'place_type_name': row.place_type_name.value,
+            'place_geometry': (typeof row.place_geometry === 'undefined') ? '' : row.place_geometry.value,
+            'place_geometry_wkt': (typeof row.place_geometry_wkt === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
     return h_placeTable;
 }
 
 // full-text search
-async function getFullTextSearchResult(keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
-{
+async function getFullTextSearchResult(keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date) {
     let place_query_string = `
         select *
         {
@@ -213,8 +209,7 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_t
         {
     `;
 
-    if (keyword != "")
-    {
+    if (keyword != "") {
         place_query_string += `
             ?search a elastic-index:dr_index_new;
             elastic:query "${keyword}";
@@ -243,8 +238,7 @@ async function getFullTextSearchResult(keyword, expertises_iri_selected, place_t
         ?place_type rdfs:subClassOf kwg-ont:Place;
                     rdfs:label ?place_type_name.
     `;
-    if (place_type_iri_list_selected.length != 0)
-    {
+    if (place_type_iri_list_selected.length != 0) {
         place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) => `<${place_type}>`).join(',')}))`;
     }
 

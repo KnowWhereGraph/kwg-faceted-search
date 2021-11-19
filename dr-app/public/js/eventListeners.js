@@ -1,11 +1,17 @@
 var spatialQueryMap;
 var startDate;
 var endDate;
+var fullTextResults;
+var peopleResults;
+var placeResults;
+var hazardResults;
+var place_markers = new L.MarkerClusterGroup();
+var markers = [];
 $(document).ready(function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
         // [40, -109.03]
-        spatialQueryMap = L.map('spatial-search-map').setView([38.895, -77.036667], 1);
+        spatialQueryMap = L.map('spatial-search-map').setView([36.895, -95.036667], 4);
         L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
             tileSize: 512,
             zoomOffset: -1,
@@ -29,12 +35,47 @@ $(document).ready(function() {
         // }).addTo(spatialQueryMap);
         // console.log(point);
     }, 200);
+    // init();
 });
 
-function getData() {
-    var fullTextResults = getParametersByClick();
+function init() {
+    var fullTextResults = getFullTextSearchResult("", [], [], [], "", "", "", "", "", "");
     displayTables(fullTextResults);
-    displayMap(fullTextResults);
+
+}
+
+// Choose tab and display the map
+$("#spatial-search #pills-people-tab").on('click', function() {
+    console.log("clicked on the people tab");
+    if (fullTextResults) {
+        $("#spatial-search #ttl-results span").text(peopleResults);
+        displayMap(fullTextResults, "People");
+    }
+});
+$("#spatial-search #pills-place-tab").on('click', function() {
+    console.log("clicked on the place tab");
+    if (fullTextResults) {
+        $("#spatial-search #ttl-results span").text(placeResults);
+        displayMap(fullTextResults, "Place");
+    }
+});
+$("#spatial-search #pills-hazard-tab").on('click', function() {
+    console.log("clicked on the hazard tab");
+    if (fullTextResults) {
+        $("#spatial-search #ttl-results span").text(hazardResults);
+        displayMap(fullTextResults, "Hazard");
+    }
+});
+
+
+
+// update the filters and get results;
+function getData() {
+    fullTextResults = getParametersByClick();
+    displayTables(fullTextResults);
+
+    var activeText = $("#spatial-search .results-nav ul li button.active span").text();
+    displayMap(fullTextResults, activeText.trim());
 }
 
 
@@ -69,7 +110,6 @@ function getParametersByClick() {
         console.log($.parseJSON($(this).val()).place);
     });
 
-
     $("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each(function(i) {
         hazards.push($(this).val())
     });
@@ -79,7 +119,6 @@ function getParametersByClick() {
     // console.log("places: ", places);
     // console.log("subplaces: ", subplaces);
     // console.log("hazards: ", hazards);
-
 
     // var startYearInput = $("li#datarange-li input:text[name='start-year']").val();
     // var endYearInput = $("li#datarange-li input:text[name='end-year']").val();
@@ -101,18 +140,6 @@ function getParametersByClick() {
     var end_month = endDate.split("-")[1];
     var end_date = endDate.split("-")[2];
 
-
-
-
-    // if (startYearInput) {
-    //     startYear = startYearInput;
-    // }
-
-    // if (endYearInput) {
-    //     endYear = endYearInput;
-    // }
-
-    // console.log("star year: ", startYear, "- end year: ", endYear);
     var parameters = {
         "hazards": hazards,
         "startYear": startYear,
@@ -170,68 +197,75 @@ function displayTables(fullTextResults) {
 
 function displayTable(selectors, optionPromise) {
     console.log("selector: ", selectors);
-    console.log(optionPromise);
+
+    // returned attributes: 
+    // ['expert', 'expert_name', 'affiliation', 
+    // 'affiliation_name', 'department', 'department_name', 
+    // 'expertise', 'expertise_name', 'place', 'place_name', 
+    // 'place_geometry', 'place_geometry_wkt', 'webpage']
     optionPromise.then(function(elements) {
         if (elements.length) {
-            var tableTitles = Object.keys(elements[0]).filter(function(k) {
-                console.log("current title: ", k);
-                var excludedTitles = ["$$hashKey", "expert_location_geometry_wkt", "place_geometry_wkt", "hazard_location_geometry_wkt", "webpage"];
-                // "place_geometry_wkt", "expert", "expert_location_geometry_wkt", "hazard", "hazard_location_geometry_wkt", "webpage"
-
-                return !excludedTitles.includes(k);
-                // return k != "$$hashKey" || "place_geometry_wkt" || "expert_location_geometry_wkt" || "hazard_location_geometry_wkt";
-            });
-
+            console.log("returned attributes: ", Object.keys(elements[0]));
+            // 1. add table titles
+            var expertTitles = ["Name", "Affiliation", "Department", "Expertise", "Place"];
+            var placeTitles = ["Name", "Type"];
+            var hazardTitles = ["Name", "Type", "Place", "Date"];
+            // var titlesDisplayed = returnedAttributes.filter(e => { return e.endsWith("name"); });
+            var titlesDisplayed = [];
+            if (selectors["thead"] == "#expertTableTitle") {
+                titlesDisplayed = expertTitles;
+            } else if (selectors["thead"] == "#placeTableTitle") {
+                titlesDisplayed = placeTitles;
+            } else if (selectors["thead"] == "#hazardTableTitle") {
+                titlesDisplayed = hazardTitles;
+            }
 
             $(selectors["thead"] + " thead tr").empty();
-            tableTitles.map(function(e) {
-                return "<th>" + e + "</th>";
-            }).forEach(function(tableTitleHtml) {
-                $(selectors["thead"] + " thead tr").append(tableTitleHtml);
+            titlesDisplayed.map(e => { return "<th>" + e + "</th>" }).
+            forEach(tableTitleHtml => {
+                $(selectors["thead"] + " thead tr").
+                append(tableTitleHtml);
             });
-            console.log($(selectors["thead"] + " thead tr"));
 
+            // 2. table body
             var tableBody = $(selectors["tbody"] + " tbody");
             tableBody.empty();
-            var titleRemoved = "";
             elements.forEach(e => {
-                // console.log("current e------------> ", e);
                 var rowBodyHtml = "";
-                var hyperlink = "";
-                tableTitles.forEach(tableTitle => {
-                    // console.log("current table title is : ", tableTitle, ", the current value is: ", e[tableTitle]);
-                    var val = e[tableTitle];
 
-                    var expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
-                    if (new RegExp(expression).test(val)) {
-                        hyperlink = val;
-                        // remove the corresponding title
-                        titleRemoved = tableTitle;
-                    } else {
-                        var html = "<td>" + val + "</td>";
-                        rowBodyHtml += html;
-                    }
-                });
-                var rowHtml = '<tr onclick="window.open(' + "'" + hyperlink + "'" + ')">' + rowBodyHtml + "</tr>";
-                tableBody.append(rowHtml);
-            });
-            console.log("current table titles: ", tableTitles, elements[0]);
-            console.log("title need to be removed: ", titleRemoved);
-            for (var i = 0; i < $(selectors["thead"] + " thead tr th").length; i++) {
-                var element = $(selectors["thead"] + " thead tr th")[i];
-                if (element.innerHTML == titleRemoved) {
-                    console.log("element to be removed :", element);
-                    element.remove();
+                var expertAttributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
+                var expertTableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
+                var placeAttributeLinks = [e["place"], e["place_type"]];
+                var placeTableBodyAttributes = [e["place_name"], e["place_type_name"]];
+                var hazardAttributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
+                var hazardTableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
+
+
+                var attributeLinks = [];
+                var tableBodyAttributes = [];
+
+                if (selectors["thead"] == "#expertTableTitle") {
+                    attributeLinks = expertAttributeLinks;
+                    tableBodyAttributes = expertTableBodyAttributes;
+                } else if (selectors["thead"] == "#placeTableTitle") {
+                    attributeLinks = placeAttributeLinks;
+                    tableBodyAttributes = placeTableBodyAttributes;
+                } else if (selectors["thead"] == "#hazardTableTitle") {
+                    attributeLinks = hazardAttributeLinks;
+                    tableBodyAttributes = hazardTableBodyAttributes;
                 }
 
-            }
-            // $(selectors["thead"] + " thead tr th").each(e => {
-            //     console.log("this--> ", $(this));
+                var numAttributes = attributeLinks.length;
+                for (var index = 0; index < numAttributes; index++) {
+                    var link = attributeLinks[index];
+                    var attr = tableBodyAttributes[index];
+                    rowBodyHtml += "<td>" + '<a target="_blank" href="' + link + '">' + attr + "</a></td>";
+                }
 
-            //     if ($(this).innerHTML == titleRemoved) {
-            //         console.log("same innerHtml");
-            //     }
-            // });
+                // var rowHtml = '<tr onclick="window.open(' + "'" + e["expert"] + "'" + ')">' + rowBodyHtml + "</tr>";
+                var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                tableBody.append(rowHtml);
+            })
 
         }
     }).then(function() {
@@ -239,16 +273,16 @@ function displayTable(selectors, optionPromise) {
 
         $(selectors["pagination"]).empty();
         var $perPage = $('<div class="dropdown per-page">\
-        <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-            <option value="12" selected="selected">12 Per Page</option>\
-            <option value="30">30 Per Page</option>\
-            <option value="50">50 Per Page</option>\
-        </select>\
-    </div>');
+            <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+                <option value="50" selected="selected">50 Per Page</option>\
+                <option value="100">100 Per Page</option>\
+                <option value="200">200 Per Page</option>\
+            </select>\
+        </div>');
 
         $perPage.appendTo(selectors["pagination"]);
 
-        tablePagination(selectors["tbody"], selectors["pagination"], 12);
+        tablePagination(selectors["tbody"], selectors["pagination"], 50);
         $(selectors["pagination"] + " .per-page select").on("change", function() {
             console.log("changed here: ", $(this).val());
             tablePagination(selectors["tbody"], selectors["pagination"], parseInt($(this).val()));
@@ -277,8 +311,20 @@ function tablePagination(selector, paginationSelector, numPerPage) {
         var numPages = Math.ceil(numRows / numPerPage);
         console.log("num of pages: ", numPages);
 
-        if ($("div.pager")) {
-            $("div.pager").empty();
+        if (paginationSelector == "#hazardPagination") {
+            hazardResults = numRows;
+        }
+
+        if (paginationSelector == "#placePagination") {
+            placeResults = numRows;
+        }
+
+        if (paginationSelector == "#expertPagination") {
+            peopleResults = numRows;
+        }
+
+        if ($(paginationSelector + " div.pager")) {
+            $(paginationSelector + " div.pager").remove();
         }
 
         var $pager = $('<div class="pager"></div>');
@@ -366,13 +412,11 @@ function tablePagination(selector, paginationSelector, numPerPage) {
 
 }
 
-function displayMap(fullTextResults) {
+function displayMap(fullTextResults, tabName) {
     console.log("get the fullTextResults to display ");
-
+    // $("#spatial-search .results-nav ul li button.active")
 
     fullTextResults.then(function(e) {
-        var place = e.Place;
-
         // place.then(function(elements) {
         //     // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
         //     console.log("current map is :", spatialQueryMap);
@@ -395,44 +439,93 @@ function displayMap(fullTextResults) {
         //         });
         //     })
         // })
-        place.then(function(elements) {
-            // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
-            console.log("current map is :", spatialQueryMap);
-            var wicket = new Wkt.Wkt();
-            var place_iri_list = elements.map(e => { return e["place"]; });
-            var placeLocations = getPlaceGeometry(place_iri_list);
-            var place_markers = new L.MarkerClusterGroup();
-            placeLocations.then(function(places) {
+        // var place = e.Place;
+
+        if (place_markers) {
+            place_markers.removeLayers(markers);
+            markers = [];
+        }
+
+
+        var place = null;
+        if (tabName == "People") {
+            place = e.Expert;
+        } else if (tabName == "Place") {
+            place = e.Place;
+        } else if (tabName == "Hazard") {
+            place = e.Hazard;
+        }
+
+        if (place) {
+
+            place.then(function(elements) {
+                // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
+                console.log("current map is :", spatialQueryMap);
+                console.log("map elements: ", elements);
+                var wicket = new Wkt.Wkt();
                 var center_lat = 0;
                 var center_lon = 0;
-                places.forEach(e => {
-                    var wkt_geom = e["place_geometry_wkt"];
-                    wicket.read(wkt_geom);
-                    var coords = wicket.toJson().coordinates;
-                    console.log("geometry: ", coords);
-                    center_lat += coords[1];
-                    center_lon += coords[0];
-                    let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
-                        dd('b:' + e['place_name']),
-                        dd('br'),
-                        dd('span:' + e['place']),
-                    ]));;
-                    // var point = L.circle([coords[1], coords[0]], {
-                    //     color: '#DF6C37',
-                    //     fillColor: '#DF6C37',
-                    //     fillOpacity: 0.5,
-                    //     radius: 5000
-                    // }).addTo(spatialQueryMap);
-                    place_markers.addLayer(place_marker);
-                    // console.log(point);
+                var count = 0;
+                elements.forEach(e => {
+                    // console.log("current elements: ", e);
+                    if (e["place_geometry_wkt"]) {
+                        count += 1;
+                        var coords = wicket.read(e["place_geometry_wkt"]).toJson().coordinates;
+                        console.log("geometry: ", coords);
+                        center_lat += coords[1];
+                        center_lon += coords[0];
+                        let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
+                            dd('b:' + e["place_name"]),
+                            dd('br'),
+                            dd('span:' + e["place"])
+                        ]));
+                        markers.push(place_marker);
+                        place_markers.addLayer(place_marker);
+                    }
+
                 });
-                center_lat /= places.length;
-                center_lon /= places.length;
-                // zoom to the center of places
-                // spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
+                center_lat /= count;
+                center_lon /= count;
+                console.log("count is : ", count);
+                spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
                 place_markers.addTo(spatialQueryMap);
+                // var place_iri_list = elements.map(e => { return e["place"]; });
+                // var placeLocations = getPlaceGeometry(place_iri_list);
+
+                // locations.then(function(places) {
+                //     var center_lat = 0;
+                //     var center_lon = 0;
+                //     places.forEach(e => {
+                //         var wkt_geom = e["place_geometry_wkt"];
+                //         wicket.read(wkt_geom);
+                //         var coords = wicket.toJson().coordinates;
+                //         console.log("geometry: ", coords);
+                //         center_lat += coords[1];
+                //         center_lon += coords[0];
+                //         let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
+                //             dd('b:' + e['place_name']),
+                //             dd('br'),
+                //             dd('span:' + e['place']),
+                //         ]));;
+                //         // var point = L.circle([coords[1], coords[0]], {
+                //         //     color: '#DF6C37',
+                //         //     fillColor: '#DF6C37',
+                //         //     fillOpacity: 0.5,
+                //         //     radius: 5000
+                //         // }).addTo(spatialQueryMap);
+                //         place_markers.addLayer(place_marker);
+                //         // console.log(point);
+                //     });
+                //     center_lat /= places.length;
+                //     center_lon /= places.length;
+                //     // zoom to the center of places
+                //     // spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
+                //     place_markers.addTo(spatialQueryMap);
+                // })
             })
-        })
+        }
+
+
     });
 
 
