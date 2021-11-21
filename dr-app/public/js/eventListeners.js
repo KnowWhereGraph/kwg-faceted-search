@@ -40,8 +40,8 @@ $(document).ready(function() {
 
 function init() {
     var fullTextResults = getFullTextSearchResult("", [], [], [], "", "", "", "", "", "");
+    console.log("here is the fulltext results： ", fullTextResults);
     displayTables(fullTextResults);
-
 }
 
 // Choose tab and display the map

@@ -335,6 +335,7 @@ p#cnfg-tb {
 
 /* Table! dynamically switch to the selected tab */
 
+#pills-people,
 #pills-place,
 #pills-hazard {
     overflow-y: hidden;
