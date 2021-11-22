@@ -95,14 +95,14 @@ async function getFilters() {
     // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
     // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    // let keyword = "California";
+    // let keyword = "";
     // let start_year = '1990';
     // let start_month = '01';
     // let start_date = '01';
     // let end_year = '2021';
     // let end_month = '12';
     // let end_date = '31';
-    // let tabname = 'Hazard';
+    // let tabname = 'Place';
     // let pagenum = 1;
     // let recordnum = 20;
     // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
@@ -151,7 +151,9 @@ async function getExpertTableRecord(pagenum, recordnum, expert_query_string, pla
             'webpage':row.webpage.value
         });
     }
-    return h_expertTable;
+    let count_query_string = `select (count(*) as ?count) {` + expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}}`;
+    let a_count_expertTable = await query(count_query_string);
+    return {'count':a_count_expertTable[0].count.value,'record':h_expertTable};
 }
 
 // query hazard table records
@@ -174,7 +176,9 @@ async function getHazardTableRecord(pagenum, recordnum, hazard_query_string, pla
             'date_name':row.date_name.value,
         });
     }
-    return h_hazardTable;
+    let count_query_string = `select (count(*) as ?count) {` + hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}}`;
+    let a_count_hazardTable = await query(count_query_string);
+    return {'count':a_count_hazardTable[0].count.value,'record':h_hazardTable};
 }
 
 // query place table records
@@ -197,7 +201,14 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
-    return h_placeTable;
+    let count_query_string = `
+        select (count(*) as ?count) {
+            select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
+            {
+    `;
+    count_query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}}}`;
+    let a_count_placeTable = await query(count_query_string);
+    return {'count':a_count_placeTable[0].count.value,'record':h_placeTable};
 }
 
 // full-text search
@@ -322,7 +333,6 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, exp
     {
         search_result = {
             "Place":getPlaceTableRecord(pagenum, recordnum, expert_query_string, hazard_query_string),
-            
         }
     }
     if (tabname == 'Expert')
@@ -337,7 +347,6 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, exp
             "Hazard":getHazardTableRecord(pagenum, recordnum, hazard_query_string, place_query_string)
         }
     }
-
     console.log(search_result);
     return search_result;
 }
