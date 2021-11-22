@@ -1,4 +1,4 @@
-kwgApp.controller("filters-controller", function($scope, $timeout) {
+kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     // Topics
     $scope.expertiseTopics = [];
     $scope.places = [];
@@ -16,9 +16,19 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
     $scope.expertiseTopicShow = true;
     $scope.expertiseSubtopicShow = false;
 
+    $scope.showExpertiseList = true;
+    $scope.showHazardList = true;
+
+    $scope.showPeopleTab = true;
+    $scope.showPlaceTab = true;
+    $scope.showHazardTab = true;
+
+
     var selectedElement = null; // accept the element clicked
 
     $scope.selectExpertise = function($event) {
+        $scope.showHazardList = !$scope.showHazardList;
+        $scope.showHazardTab = !$scope.showHazardTab;
         // when click the topic: hide the topic and display the subtopic
         $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
@@ -62,6 +72,8 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
         }
     };
     $scope.unselectExpertise = function() {
+        $scope.showHazardList = !$scope.showHazardList;
+        $scope.showHazardTab = !$scope.showHazardTab;
         // set the selected topic invisible
         $scope.showSelectedExpertise = false;
         $scope.checkedExpertise = false;
@@ -182,6 +194,8 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
     }
 
     $scope.selectHazard = function($event) {
+        $scope.showExpertiseList = !$scope.showExpertiseList;
+        $scope.showPeopleTab = !$scope.showPeopleTab;
         getData();
     }
 
@@ -189,33 +203,6 @@ kwgApp.controller("filters-controller", function($scope, $timeout) {
 
 kwgApp.controller("results-controller", function($scope, $compile, $timeout) {
     $scope.totalResultsNumber = 0;
-    // $scope.$on('change', function(event, data) {
-    //     $scope.item = data;
-    //     console.log("received the table content : ", $scope.item);
-
-
-    //     $scope.tableTitles = Object.keys($scope.item[0]).filter(function(e) {
-    //         return e != "$$hashKey";
-    //     });
-    //     console.log("titles: ", $scope.tableTitles);
-    //     var insertedTitleInfo = '<th ng-repeat = "title in tableTitles">{{title}}</th>'
-    //     var title = $compile(insertedTitleInfo)($scope);
-    //     angular.element("#hazardTableTitle thead tr").empty();
-    //     angular.element("#hazardTableTitle thead tr").append(title);
-
-
-    //     var inseredBodyInfo = '<tr ng-repeat = "e in item">' +
-    //         '<td ng-repeat = "value in e">{{value}}</td>'
-    //     '</tr>';
-    //     var body = $compile(inseredBodyInfo)($scope);
-    //     console.log(body);
-    //     angular.element("#hazardTableBody tbody").empty();
-    //     angular.element("#hazardTableBody tbody").append(body);
-    // });
-
-
-
-
 });
 
 kwgApp.controller("pagination-controller", function($scope, $http) {
@@ -324,8 +311,4 @@ kwgApp.controller("pagination-controller", function($scope, $http) {
 });
 
 ;
-kwgApp.controller("spatialmap-controller", function($scope) {
-
-
-
-});
+kwgApp.controller("spatialmap-controller", function($scope) {});
