@@ -92,7 +92,9 @@ async function getFilters() {
     return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
-    // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
+    // let topicgroup_iri_selected = "http://stko-roy.geog.ucsb.edu/lod/resource/topicgroup.ecology";
+    // let expertises_iri_selected = [];
+    // // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
     // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
     // let keyword = "";
@@ -102,11 +104,10 @@ async function getFilters() {
     // let end_year = '2021';
     // let end_month = '12';
     // let end_date = '31';
-    // let tabname = 'Place';
+    // let tabname = 'Hazard';
     // let pagenum = 1;
     // let recordnum = 20;
-    // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
-    // console.log(search_result);
+    // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
 
 };
 
@@ -212,7 +213,7 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
 }
 
 // full-text search
-async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let place_query_string = `
         select *
@@ -286,6 +287,10 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, exp
     if (expertises_iri_selected.length != 0)
     {
         expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) => `<${expertise}>`).join(',')}))`;
+    }
+    else if (topicgroup_iri_selected != "")
+    {
+        expert_query_string += `<${topicgroup_iri_selected}> kwg-ont:subTopic ?expertise`;
     }
 
     hazard_query_string += `
