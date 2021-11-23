@@ -1,0 +1,550 @@
+main#spatial-search {
+    height: 1500px;
+}
+
+
+/* two major components : 
+1. left side menu: filters
+2. side side panel: results
+*/
+
+#spatial-search .left-filters {
+    width: 20%;
+    height: 100%;
+    background-color: #D8D8DD;
+    float: left;
+    box-shadow: 10px 0 64px 0 rgba(0, 0, 0, 0.05);
+}
+
+#spatial-search .results {
+    width: 50%;
+    height: 100%;
+    /* background-color: pink;  */
+    float: left;
+}
+
+#spatial-search .map {
+    width: 30%;
+    height: 100%;
+    float: left;
+    background-color: yellowgreen;
+}
+
+
+/* left side menu (filters, has two major components)
+1. spatial search 
+2. filters
+*/
+
+
+/* 1. Spatial Search */
+
+.left-filters .search-dropdown-input {
+    width: 80%;
+    margin: auto;
+    margin-top: 34px;
+}
+
+.left-filters .search-dropdown-input button#spatial-query {
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+/* 2. Filters */
+
+ul.filters {
+    width: 82%;
+    margin: auto;
+    margin-top: 40px;
+    padding-left: 0px;
+}
+
+
+/* the vertical distanc for each neighboring filer */
+
+ul.filters>li {
+    padding-bottom: 30px;
+}
+
+ul.filters li ul input {
+    margin-top: 0px;
+}
+
+
+/* **********************FONT STYLE****************** */
+
+
+/* 1. filter title style : expertise, place, hazard, and data range */
+
+ul.filters p.filter-title,
+ul.filters p.filter-type,
+p#data-range {
+    color: #00021F;
+    opacity: 0.5;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    line-height: 17px;
+    margin-bottom: 15px;
+}
+
+ul.filters p.filter-type,
+p#data-range {
+    opacity: 1;
+    letter-spacing: 0px;
+    line-height: 23px;
+}
+
+
+/* 2. input box  */
+
+ul.filters input.form-control {
+    color: #00021F;
+    opacity: 0.8;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0px;
+    line-height: 16px;
+    margin-bottom: 20px;
+}
+
+
+/* 3. each option */
+
+ul.filters li {
+    color: #00021F;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 19px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+ul.filters li p i {
+    padding-left: 7px;
+}
+
+
+/* *********************FONT STYLE END***************** */
+
+
+/***************** Layout *******************/
+
+
+/* 1. height for each module (expertise/place/hazard) */
+
+ul.filters li ul#expertise-list,
+ul.filters li ul#hazard-list {
+    height: 300px;
+    overflow-y: auto;
+}
+
+ul.filters li ul#place-list {
+    height: 150px;
+    overflow-y: auto;
+}
+
+
+/* 2. vertical distance for neighboring option */
+
+ul.filters li ul li {
+    margin-bottom: 10px;
+}
+
+
+/* 3. scroller style */
+
+.results-table .table-body-container::-webkit-scrollbar,
+ul.filters li ul::-webkit-scrollbar {
+    width: 5px;
+    background-color: #D8D8DD;
+}
+
+.results-table .table-body-container::-webkit-scrollbar-thumb,
+ul.filters li ul::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: rgba(0, 2, 31, 0.5);
+}
+
+
+/* dynamically display the selected topic */
+
+ul.filters div.filter div.selectedItem span {
+    display: inline-block;
+    color: #00021F;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 19px;
+    font-family: "Helvetica Neue";
+}
+
+ul.filters .filter div.selectedItem p {
+    margin-top: 20px;
+    margin-bottom: 16px;
+}
+
+
+/*****Data Range******/
+
+li#datarange-li form {
+    height: 40px;
+    margin-top: 20px;
+}
+
+li#datarange-li form input {
+    float: left;
+    /* width: 30%; */
+    /* width: 70%; */
+    width: 100%;
+    height: 100%;
+    margin-right: 10px;
+}
+
+li#datarange-li form button {
+    background-color: #00021F;
+    height: 100%;
+    border-radius: 5px;
+    float: left;
+    border: none;
+}
+
+
+/* *********Right side for results*********** */
+
+#spatial-search .results .results-container {
+    width: 90%;
+    height: 95%;
+    /* background-color: cadetblue; */
+    margin: auto;
+    margin-top: 35px;
+}
+
+#spatial-search .results .results-count {
+    width: 100%;
+    height: 70px;
+    /* background-color: chocolate; */
+}
+
+#spatial-search .results .results-nav {
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid rgba(0, 2, 31, 0.5);
+    /* background-color: coral; */
+}
+
+#spatial-search .results .results-table {
+    width: 100%;
+    height: calc(100% - 170px);
+    /* background-color: yellowgreen; */
+    margin-top: 50px;
+    position: relative;
+}
+
+#spatial-search .table-body a {
+    /* font-size: 22px; */
+    font-family: sans-serif;
+    font-weight: 500;
+    /* color: #DF6C37; */
+    color: #00021F;
+    text-decoration: none;
+}
+
+#spatial-search .table-body tr:hover {
+    /* background-color: pink; */
+    cursor: pointer;
+}
+
+
+/* 1. total number of results */
+
+.results-count p {
+    /* color: #4c54c9; */
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 20px;
+    letter-spacing: 0;
+}
+
+p#ttl-results {
+    float: left;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+p#sort-by,
+p#cnfg-tb {
+    float: right;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+p#cnfg-tb {
+    margin-right: 34px;
+}
+
+
+/* 2. Navigation */
+
+.results-nav ul {
+    float: left;
+    width: 100%;
+    height: 100%;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+
+.results-nav ul li {
+    padding: 0;
+}
+
+.results-nav ul li button {
+    width: 200px;
+    height: 100%;
+    background-color: transparent;
+    border-radius: 0px;
+    color: #00021F;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 20px;
+    opacity: 0.5;
+}
+
+.results-nav ul li button.active {
+    color: #00021F;
+    opacity: 1;
+    border-bottom: 3px solid rgba(0, 2, 31, 1);
+}
+
+.results-nav ul li button:hover {
+    opacity: 1;
+    border-bottom: 3px solid #00021F;
+    margin-top: 1px;
+}
+
+.results-nav ul li img {
+    padding-left: 0px;
+    padding-right: 15px;
+}
+
+
+/* Table! dynamically switch to the selected tab */
+
+#pills-people,
+#pills-place,
+#pills-hazard {
+    overflow-y: hidden;
+}
+
+.results-table .table-filters {
+    table-layout: fixed;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.results-table .table-title {
+    width: calc(100% - 5px);
+    margin-bottom: 0px;
+}
+
+.results-table .table-title thead {
+    height: 60px;
+    background-color: #D9D9DE;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 20px;
+    /* border: chocolate; */
+}
+
+.results-table .table-body-container {
+    width: 100%;
+    height: 1000px;
+    /* background-color: red; */
+    /* height: 500px; */
+    overflow-y: auto;
+}
+
+table.table-filters tbody tr:nth-child(odd) {
+    background-color: #FFFFFF;
+}
+
+table.table-filters tbody tr:nth-child(even) {
+    background-color: #F2F2F4;
+}
+
+.results-table .table-body-container table td {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+/* Pagination */
+
+.paginate {
+    width: 100%;
+    height: 50px;
+    margin-top: 30px;
+    /* background-color: brown; */
+}
+
+
+/* .dropdown-menu {
+    width: 300px; 
+    height: 100%;
+    background-color: violet;
+} */
+
+.paginate .per-page {
+    width: 150px;
+    height: 100%;
+    /* background-color: aquamarine; */
+    float: left;
+    position: relative;
+}
+
+.paginate .per-page::after {
+    content: "▼";
+    position: absolute;
+    right: 15px;
+    top: 25%;
+}
+
+.paginate .per-page select {
+    display: inline-block;
+    padding: 0;
+    width: 90%;
+    height: 100%;
+    color: #00021fce;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+    background-color: transparent;
+    border: transparent;
+    outline: transparent;
+    appearance: none;
+}
+
+.paginate .per-page select:hover {
+    cursor: pointer;
+}
+
+.paginate .per-page option {
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.paginate .pager {
+    float: right;
+    height: 100%;
+    margin-right: 100px;
+}
+
+.paginate .pager span {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 50px;
+    /* background-color: pink; */
+    color: #00021F;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.paginate .pager span.active {
+    background-color: white;
+}
+
+.paginate .pager span:hover {
+    background-color: violet;
+    cursor: pointer;
+}
+
+.paginate .pager button.page-item {
+    border: none;
+    /* display: block; */
+    width: 100px;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #00021F;
+    color: #FFFFFF;
+    margin-left: 50px;
+}
+
+.paginate .pager {
+    margin-right: 0;
+}
+
+
+/* div.rlts-pagination {
+    margin-top: 20px;
+    height: 50px;
+    background-color: rosybrown;
+    position: relative;
+} */
+
+
+/* .rlts-pagination .per-page {
+    color: #00021F;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 50px;
+} */
+
+
+/* .rlts-pagination .pagination {
+    float: right;
+    height: 100%;
+    margin-bottom: 0px;
+    margin-right: 50px;
+}
+
+.rlts-pagination .pagination li {
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 50px;
+}
+
+.rlts-pagination .pagination li.active {
+    background-color: white;
+}
+
+.rlts-pagination .pagination li.page-item:hover:not(.active) {
+    background-color: white;
+}
+
+.rlts-pagination .pagination li a {
+    margin-bottom: 0px;
+}
+
+.rlts-pagination .pagination li button {
+    border: none;
+    width: 100px;
+    border-radius: 8px;
+    background-color: #00021F;
+    color: #FFFFFF;
+}
+
+.rlts-pagination .per-page,
+.rlts-pagination .pagination>li a {
+    color: #00021F;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.rlts-pagination .pagination>li {
+    font-size: 18px;
+} */

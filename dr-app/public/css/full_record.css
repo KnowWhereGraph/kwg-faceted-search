@@ -1,0 +1,75 @@
+/* Main content */
+
+main#fr-main{
+    height: 973px;
+}
+/* All the container which has the class of 
+   center-container */
+div.center-container{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin: auto;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    box-shadow: 0 10px 64px 0 rgba(0, 0, 0, 0.05);
+    padding: 0px;
+}
+
+main#fr-main #fr{
+    width: 80%;
+    height: 881px;
+}
+
+/* Left side */
+div#fr div#left-side{
+    float: left;
+    width: 30%;
+    height: 100%;
+    background-color: #F2F2F4;
+    border-radius: 5px 0 0 5px;
+    
+}
+
+
+/* Right side */
+div#fr div#right-side{
+    float: left;
+    width: 70%;
+    height: 100%;    
+}
+
+/* table */
+table#fr-table{
+    position: absolute;
+    top: 60px;
+    font-size: 22px;
+    font-family: sans-serif;
+    font-weight: 500;
+}
+
+table#fr-table tr th, 
+table#fr-table tr td{
+    border: none;
+}
+
+table#fr-table tr th{
+    width: 30%;
+    text-align: right;
+    padding-right: 40px;
+}
+
+table#fr-table tr td{
+    text-align: left;
+    padding-left: 40px;
+
+}
+
+table#fr-table a{
+    color: #DF6C37;
+    font-weight: 600;
+}
+
+
