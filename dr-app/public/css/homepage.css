@@ -12,29 +12,46 @@ ul li {
 
 /* Header */
 
+
+/* breadcrum */
+
+.breadcrumb li span {
+    color: #FFFFFF;
+    font-size: 14px;
+    opacity: 0.5;
+    font-weight: 500;
+    line-height: 17px;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* breadcrum end */
+
 header {
     width: 100%;
     height: 275px;
     padding: 0;
     background-color: #00021F;
-    background-image: url('../images/header-bg.png'); 
+    background-image: url('../images/header-bg.png');
     background-repeat: repeat-x;
     position: relative;
 }
 
+
 /* 0. Integrate the repetative codes */
-header div.nav-path, 
-header div.display-expert{
-    position:absolute;
+
+header div.nav-path,
+header div.display-expert {
+    position: absolute;
     left: 41px;
-
-    
-
 }
 
-header div.nav-path a, 
+header div.nav-path a,
 header div.display-expert,
-ul.nav li span.item{
+ul.nav li span.item {
     color: #FFFFFF;
     letter-spacing: 0;
     font-family: sans-serif;
@@ -42,6 +59,7 @@ ul.nav li span.item{
 
 
 /* 1. KnowWhereGraph Icon */
+
 header img#knowwheregraph-icon {
     float: left;
     width: 153px;
@@ -50,25 +68,29 @@ header img#knowwheregraph-icon {
     margin-left: 41px;
 }
 
+
 /* 2. Direct Relief Icon */
+
 header div#direct_relief_container {
     float: left;
     margin-top: 44px;
     margin-left: 31px;
 }
 
+
 /* 3. Dynamic path (breadcrumb) */
+
 header div.nav-path {
     top: 144px;
 }
 
-div.nav-path .breadcrumb > li + li:before{
+div.nav-path .breadcrumb>li+li:before {
     color: #FFFFFF;
     content: "\00a0/\00a0";
     opacity: 0.5;
 }
 
-div.nav-path ul li a{
+div.nav-path ul li a {
     text-decoration: none;
     /* color: #FFFFFF; */
     /* font-family: sans-serif; */
@@ -79,13 +101,15 @@ div.nav-path ul li a{
     line-height: 17px;
 }
 
-div.nav-path ul#explore-expertise1 li a#curr_page{
+div.nav-path ul#explore-expertise1 li a#curr_page {
     opacity: 1;
 }
 
+
 /* 4. Current page name */
+
 header div.display-expert {
-    top: 180px;   
+    top: 180px;
 }
 
 header div.display-expert span#expert-name {
@@ -99,6 +123,7 @@ header div.display-expert span#expert-name {
 
 
 /* 5. Navigation menu */
+
 ul.nav {
     float: right;
     margin-top: 47px;
@@ -107,16 +132,18 @@ ul.nav {
 
 ul.nav li {
     position: relative;
-    padding-left: 33px; 
+    padding-left: 33px;
     line-height: 18px;
 }
 
-ul.nav li a{
+ul.nav li a {
     text-decoration: none;
 }
 
+
 /* 5.1 Dropdown menu */
-header div.search-dropdown-input{
+
+header div.search-dropdown-input {
     width: 333px;
     height: 134px;
     border-radius: 5px;
@@ -128,34 +155,34 @@ header div.search-dropdown-input{
     padding: 20px;
 }
 
-input#input-query{
+input#input-query {
     font-style: italic;
     font-size: 12px;
 }
 
-div.search-dropdown-input div.input-group button{
+div.search-dropdown-input div.input-group button {
     background-color: black;
     color: #FFFFFF;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
-
 }
 
-div.spatial-search{
+div.spatial-search {
     padding: 0px;
 }
+
 
 /* div.spatial-search div{
     background-color: red;
 } */
 
-div.spatial-search div i{
+div.spatial-search div i {
     float: left;
     font-size: 20px;
     line-height: 100%;
 }
 
-div.spatial-search button#spatial-query{
+div.spatial-search button#spatial-query {
     color: #00021F;
     background-color: #C1C1C9;
     border: 0px;
@@ -167,12 +194,11 @@ div.spatial-search button#spatial-query{
 ul li span.item {
     /* color: #FFFFFF; */
     /* font-family: sans-serif; */
-     /* letter-spacing: 0; */
+    /* letter-spacing: 0; */
     font-size: 18px;
     font-weight: 500;
     line-height: 21px;
     text-align: right;
-
 }
 
 ul.nav li img {
@@ -181,7 +207,9 @@ ul.nav li img {
     margin-top: -4px;
 }
 
+
 /* Main content */
+
 main {
     position: relative;
     width: 100%;
@@ -189,9 +217,8 @@ main {
 }
 
 
-
-
 /* Footer */
+
 footer {
     height: 354px;
     background-color: sandybrown;
@@ -231,7 +258,7 @@ footer div div input {
     height: 52px;
 }
 
-input.form-control::-webkit-input-placeholder{
+input.form-control::-webkit-input-placeholder {
     color: #00021F;
     opacity: 0.8;
     font-family: sans-serif;
@@ -254,7 +281,7 @@ div.form-group button {
     top: 6px;
 }
 
-footer div.footer{
+footer div.footer {
     height: 256px;
     background-color: #00021F;
     padding-top: 74px;
@@ -272,7 +299,6 @@ div.icons-footer img#kwg-icon-footer {
     height: 77px;
     position: absolute;
     top: 16px;
-    
 }
 
 div.icons-footer p {
@@ -291,7 +317,7 @@ div.icons-footer p {
     text-align: left;
 }
 
-div.icons-footer div#funded{
+div.icons-footer div#funded {
     width: 83px;
     height: 108px;
     position: absolute;
