@@ -92,25 +92,25 @@ async function getFilters() {
     //return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
-    let topicgroup_iri_selected = [];
-    // let topicgroup_iri_selected = "http://stko-roy.geog.ucsb.edu/lod/resource/topicgroup.biology";
-    // let expertises_iri_selected = [];
-    let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
-    let place_type_iri_list_selected = [];
-    // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
-    // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    let hazards_type_iri_selected = [];
-    let keyword = "";
-    let start_year = '1990';
-    let start_month = '01';
-    let start_date = '01';
-    let end_year = '2021';
-    let end_month = '12';
-    let end_date = '31';
-    let tabname = 'Expert';
-    let pagenum = 1;
-    let recordnum = 20;
-    let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
+    // let topicgroup_iri_selected = [];
+    // // let topicgroup_iri_selected = "http://stko-roy.geog.ucsb.edu/lod/resource/topicgroup.biology";
+    // // let expertises_iri_selected = [];
+    // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
+    // let place_type_iri_list_selected = [];
+    // // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
+    // // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
+    // let hazards_type_iri_selected = [];
+    // let keyword = "";
+    // let start_year = '1990';
+    // let start_month = '01';
+    // let start_date = '01';
+    // let end_year = '2021';
+    // let end_month = '12';
+    // let end_date = '31';
+    // let tabname = 'Expert';
+    // let pagenum = 1;
+    // let recordnum = 20;
+    // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
 
 };
 
@@ -119,7 +119,7 @@ async function getFilters() {
 async function getSubTopic(super_topic_iri) {
     let h_subTopics = [];
     let a_topics = await query( /* syntax: sparql */ `
-        select ?topic ?topic_label where { 
+        select ?topic (group_concat(distinct ?topic_label; separator = '/') as ?topic_label) where { 
             ?super_topic kwg-ont:subTopic ?topic.
             ?topic rdfs:label ?topic_label.
             values ?super_topic {<${super_topic_iri}>}.
@@ -374,4 +374,4 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
     return search_result;
 }
 
-getFilters();
+// getFilters();
