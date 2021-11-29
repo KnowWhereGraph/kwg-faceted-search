@@ -89,25 +89,28 @@ async function getFilters() {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
-    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
+    //return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
-    // let topicgroup_iri_selected = "http://stko-roy.geog.ucsb.edu/lod/resource/topicgroup.ecology";
+    let topicgroup_iri_selected = [];
+    // let topicgroup_iri_selected = "http://stko-roy.geog.ucsb.edu/lod/resource/topicgroup.biology";
     // let expertises_iri_selected = [];
-    // // let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
+    let expertises_iri_selected = ['http://stko-roy.geog.ucsb.edu/lod/resource/topic.data_science','http://stko-roy.geog.ucsb.edu/lod/resource/topic.covid19'];
+    let place_type_iri_list_selected = [];
     // let place_type_iri_list_selected = ['http://stko-roy.geog.ucsb.edu/lod/ontology/City','http://stko-roy.geog.ucsb.edu/lod/ontology/County','http://stko-roy.geog.ucsb.edu/lod/ontology/NWSZone'];
     // let hazards_type_iri_selected =['http://stko-roy.geog.ucsb.edu/lod/ontology/Wildfire', 'http://stko-roy.geog.ucsb.edu/lod/ontology/ThunderstormWind'];
-    // let keyword = "";
-    // let start_year = '1990';
-    // let start_month = '01';
-    // let start_date = '01';
-    // let end_year = '2021';
-    // let end_month = '12';
-    // let end_date = '31';
-    // let tabname = 'Hazard';
-    // let pagenum = 1;
-    // let recordnum = 20;
-    // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
+    let hazards_type_iri_selected = [];
+    let keyword = "";
+    let start_year = '1990';
+    let start_month = '01';
+    let start_date = '01';
+    let end_year = '2021';
+    let end_month = '12';
+    let end_date = '31';
+    let tabname = 'Expert';
+    let pagenum = 1;
+    let recordnum = 20;
+    let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
 
 };
 
@@ -132,7 +135,11 @@ async function getSubTopic(super_topic_iri) {
 // query expert table record
 async function getExpertTableRecord(pagenum, recordnum, expert_query_string, place_query_string) {
     let h_expertTable = [];
-    let query_string = expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}} limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
+    let query_string = `
+        select distinct ?expert ?expert_name ?affiliation ?affiliation_name (group_concat(distinct ?department; separator=",") as ?department) (group_concat(distinct ?department_name; separator=",") as ?department_name) (group_concat(distinct ?expertise; separator=",") as ?expertise) (group_concat(distinct ?expertise_name; separator=",") as ?expertise_name) ?place ?place_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt) ?webpage
+    `;
+    query_string += `{` + expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}} group by ?expert ?expert_name ?affiliation ?affiliation_name ?place ?place_name ?webpage limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
+    console.log(query_string);
     let a_expertTable = await query(query_string);
     for (let row of a_expertTable)
     {
@@ -152,7 +159,15 @@ async function getExpertTableRecord(pagenum, recordnum, expert_query_string, pla
             'webpage':row.webpage.value
         });
     }
-    let count_query_string = `select (count(*) as ?count) {` + expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}}`;
+    let count_query_string = `
+        select (count(*) as ?count)
+        {
+    `;
+    count_query_string += `
+        select distinct ?expert ?expert_name ?affiliation ?affiliation_name (group_concat(distinct ?department; separator=",") as ?department) (group_concat(distinct ?department_name; separator=",") as ?department_name) (group_concat(distinct ?expertise; separator=",") as ?expertise) (group_concat(distinct ?expertise_name; separator=",") as ?expertise_name) ?place ?place_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt) ?webpage
+    `;
+    count_query_string += `{` + expert_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}} group by ?expert ?expert_name ?affiliation ?affiliation_name ?place ?place_name ?webpage limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum + `}`;
+    console.log(count_query_string);
     let a_count_expertTable = await query(count_query_string);
     return {'count':a_count_expertTable[0].count.value,'record':h_expertTable};
 }
@@ -161,6 +176,7 @@ async function getExpertTableRecord(pagenum, recordnum, expert_query_string, pla
 async function getHazardTableRecord(pagenum, recordnum, hazard_query_string, place_query_string) {
     let h_hazardTable = [];
     let query_string = hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}} limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
+    console.log(query_string);
     let a_hazardTable = await query(query_string);
     for (let row of a_hazardTable)
     {
@@ -178,6 +194,7 @@ async function getHazardTableRecord(pagenum, recordnum, hazard_query_string, pla
         });
     }
     let count_query_string = `select (count(*) as ?count) {` + hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}}`;
+    console.log(count_query_string);
     let a_count_hazardTable = await query(count_query_string);
     return {'count':a_count_hazardTable[0].count.value,'record':h_hazardTable};
 }
@@ -189,6 +206,7 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
         select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
         {
     `;
+    console.log(query_string);
     query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}} limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
     let a_placeTable = await query(query_string);
     for (let row of a_placeTable)
@@ -207,6 +225,7 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
             select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
             {
     `;
+    console.log(count_query_string);
     count_query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}}}`;
     let a_count_placeTable = await query(count_query_string);
     return {'count':a_count_placeTable[0].count.value,'record':h_placeTable};
@@ -216,15 +235,15 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
 async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let place_query_string = `
-        select *
+        select distinct *
         {
     `;
     let expert_query_string = `
-        select *
+        select distinct *
         {
     `;
     let hazard_query_string = `
-        select *
+        select distinct *
         {
     `;
 
@@ -296,7 +315,6 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
     hazard_query_string += `
         ?hazard kwg-ont:locatedAt ?place;
                 sosa:phenomenonTime ?date;
-                rdf:type ?hazard_type;
                 rdfs:label ?hazard_name;
                 rdf:type ?hazard_type.
         ?hazard_type rdfs:subClassOf kwg-ont:Hazard.
@@ -356,4 +374,4 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
     return search_result;
 }
 
-// getFilters();
+getFilters();
