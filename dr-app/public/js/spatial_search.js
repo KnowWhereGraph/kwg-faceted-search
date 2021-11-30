@@ -327,9 +327,9 @@ var getParameters = function() {
     };
 
 };
-
+filters_selected = [];
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
-    var response = getFullTextSearchResult(tabName, pageNum, recordNum,
+    var response = getFullTextSearchResult(filters_selected,tabName, pageNum, recordNum,
         parameters["keyword"],
         parameters["expertiseTopics"], parameters["expertiseSubtopics"],
         parameters["places"], parameters["hazards"],

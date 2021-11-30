@@ -21,7 +21,64 @@
 
         <!-- options for filters -->
         <ul class="filters">
+            <li id="place" ng-show="showPlaceList">
+                <p class="filter-title">PLACE</p>
+                <div class="filter">
+                <!-- part2 -->
+                <input type="text" class="form-control" placeholder="Type Place Name">
+
+
+                    <!-- part2: add div for dynamically showing the selected item -->
+                    <!-- <div class="selectedItem" ng-show="showSelectedPlace">
+                        <input type="checkbox" class="form-check-input me-1" ng-model="checkedPlace" ng-click="unselectPlace()"> <span>{{selectedPlace}}</span>
+                        <p>Sub-Topic
+                            <i class="bi bi-chevron-up"></i>
+                        </p>
+                    </div> -->
+
+                    <!-- part3 -->
+                    <ul class="list-group" id="place-list">
+
+                        <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
+                            <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                        </li>
+
+                        <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
+                            <span><input type="checkbox" class="form-check-input me-1"
+                                    ng-click="selectPlace($event)" value="{{placeSupertopicUrl}}" name="placeTopic">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                        </li>
+                        <li ng-repeat="subPlace in subPlaces" ng-show="placeSubtopicShow">
+                            <input type="checkbox" class="form-check-input me-1" value="{{subPlace}}" name="subplace"> {{getSubplaceLabel(subPlace)}}
+                        </li> -->
+
+                    </ul>
+                </div>
+            </li>
+
+            <li id="hazard" ng-show="showHazardList">
+                <p class="filter-title">HAZARD</p>
+                <div class="filter">
+                    <!-- part2 -->
+                    <input type="text" class="form-control" placeholder="Type Hazard Name">
+
+                    <!-- part3 -->
+                    <ul class="list-group" id="hazard-list">
+                        <!-- <li ng-repeat="hazard in hazards">
+                            <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
+                                {{hazard}}</span>
+                        </li> -->
+                        <li ng-repeat="hazardUrl in hazardUrls">
+                            <span><input type="checkbox" class="form-check-input me-1"
+                                    ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
+                        </li>
+                    </ul>
+
+                </div>
+            </li>
             <li id="expertise" ng-show="showExpertiseList">
+                <!-- part2 -->
+                <input type="text" class="form-control" placeholder="Type Expert Name">
+
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
                     <!-- part1 -->
@@ -56,64 +113,6 @@
                     </ul>
                 </div>
             </li>
-
-            <li id="place" ng-show="showPlaceList">
-                <p class="filter-title">PLACE</p>
-                <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
-
-                    <!-- part2: add div for dynamically showing the selected item -->
-                    <!-- <div class="selectedItem" ng-show="showSelectedPlace">
-                        <input type="checkbox" class="form-check-input me-1" ng-model="checkedPlace" ng-click="unselectPlace()"> <span>{{selectedPlace}}</span>
-                        <p>Sub-Topic
-                            <i class="bi bi-chevron-up"></i>
-                        </p>
-                    </div> -->
-
-                    <!-- part3 -->
-                    <ul class="list-group" id="place-list">
-
-                        <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
-                        </li>
-
-                        <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectPlace($event)" value="{{placeSupertopicUrl}}" name="placeTopic">{{getPlaceLabel(placeSupertopicUrl)}}</span>
-                        </li>
-                        <li ng-repeat="subPlace in subPlaces" ng-show="placeSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subPlace}}" name="subplace"> {{getSubplaceLabel(subPlace)}}
-                        </li> -->
-
-                    </ul>
-                </div>
-            </li>
-
-            <li id="hazard" ng-show="showHazardList">
-                <p class="filter-title">HAZARD</p>
-                <div class="filter">
-                    <!-- part1 -->
-                    <p class="filter-type">rdf:subClassOf<i class="bi bi-chevron-up"></i></p>
-
-                    <!-- part2 -->
-                    <input type="text" class="form-control" placeholder="Find a filter">
-
-                    <!-- part3 -->
-                    <ul class="list-group" id="hazard-list">
-                        <!-- <li ng-repeat="hazard in hazards">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
-                                {{hazard}}</span>
-                        </li> -->
-                        <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><input type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
-                        </li>
-                    </ul>
-
-                </div>
-            </li>
-
             <li id="datarange-li">
                 <p class="filter-title" id="data-range">Date Range</p>
                 <form class="data-range-form">
@@ -136,20 +135,20 @@
                 <p id="cnfg-tb">Configure Table Columns</p>
             </div>
             <div class="results-nav">
-                <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation" ng-show="showPeopleTab">
-                        <button class="btn active" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
-                            <span><img src="../images/people.svg" alt=""> People</span>
-                        </button>
-                    </li>
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">    
                     <li class="nav-item" role="presentation" ng-show="showPlaceTab">
-                        <button class="btn" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
+                        <button class="btn active" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
                             <span><img src="../images/Place.svg" alt=""> Place</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showHazardTab">
                         <button class="btn" id="pills-hazard-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
                             <span><img src="../images/hazard.svg" alt=""> Hazard</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation" ng-show="showPeopleTab">
+                        <button class="btn" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
+                            <span><img src="../images/people.svg" alt=""> People</span>
                         </button>
                     </li>
                 </ul>
