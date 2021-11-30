@@ -1,21 +1,51 @@
-var kwgApp = angular.module('kwgApp', ['ngSanitize', 'ngRoute']);
+// var kwgApp = angular.module('kwgApp', ['ngSanitize', 'ngRoute']);
 // configure the routes
-kwgApp.config(function($routeProvider) {
-    $routeProvider
-        .when('/', {
-            templateUrl: '/pages/full_record.html',
-            controller: 'mainController'
-        }).when('/results_filters', {
-			templateUrl: '/pages/spatial_search.html',
-            controller: 'mainController'
-		}).when('/full_record_place', {
-            templateUrl: '/pages/full_record_place.html',
-            controller: 'mainController'
-        }).when('/explore', {
-            templateUrl: '/pages/explore.html',
-            controller: 'mainController'
+// kwgApp.config(function($routeProvider) {
+//     $routeProvider
+//         .when('/', {
+//             templateUrl: '../pages/explore.html',
+//             controller: 'mainController'
+//         }).when('/full_record', {
+//             templateUrl: '../pages/full_record.html',
+//             controller: 'mainController'
+//         }).when('/full_record_place', {
+//             templateUrl: '../pages/full_record_place.html',
+//             controller: 'mainController'
+//         }).when('/spatial_search', {
+//             templateUrl: '../pages/spatial_search.html',
+//             controller: 'mainController'
+//         });
+// });
+var kwgApp = angular.module('kwgApp', ['ui.router', 'ncy-angular-breadcrumb', 'ngRoute']);
+
+kwgApp.config([
+    '$stateProvider',
+    '$urlRouterProvider',
+    '$breadcrumbProvider',
+    function($stateProvider, $urlRouterProvider, $breadcrumbProvider) {
+        $stateProvider.state('home', {
+            url: '/',
+            templateUrl: '../pages/explore.html',
+            ncyBreadcrumb: {
+                label: 'Explore'
+            }
+        }).state('spatial search', {
+            url: '/spatial_search',
+            templateUrl: "../pages/spatial_search.html",
+            ncyBreadcrumb: {
+                label: 'Topic Group'
+            }
+
         });
-});
+
+        $urlRouterProvider.otherwise("/");
+        $breadcrumbProvider.setOptions({
+            prefixStateName: 'home',
+            template: "bootstrap3"
+        })
+    }
+])
+
 
 // mainController
 
