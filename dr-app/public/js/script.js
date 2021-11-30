@@ -33,7 +33,7 @@ kwgApp.config([
             url: '/spatial_search',
             templateUrl: "../pages/spatial_search.html",
             ncyBreadcrumb: {
-                label: 'Spatial Results'
+                label: 'Topic Group'
             }
 
         }).state('explore', {
