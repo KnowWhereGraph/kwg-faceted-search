@@ -89,7 +89,7 @@ async function getFilters() {
         h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
     }
 
-    //return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
+    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
     // let topicgroup_iri_selected = [];
@@ -107,10 +107,11 @@ async function getFilters() {
     // let end_year = '2021';
     // let end_month = '12';
     // let end_date = '31';
-    // let tabname = 'Expert';
+    // let tabname = 'Hazard';
     // let pagenum = 1;
     // let recordnum = 20;
-    // let search_result = getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
+    // let filters_selected = ['Hazard','Place'];
+    // let search_result = getFullTextSearchResult(filters_selected, tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date);
 
 };
 
@@ -176,7 +177,6 @@ async function getExpertTableRecord(pagenum, recordnum, expert_query_string, pla
 async function getHazardTableRecord(pagenum, recordnum, hazard_query_string, place_query_string) {
     let h_hazardTable = [];
     let query_string = hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}} limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
-    console.log(query_string);
     let a_hazardTable = await query(query_string);
     for (let row of a_hazardTable)
     {
@@ -194,20 +194,40 @@ async function getHazardTableRecord(pagenum, recordnum, hazard_query_string, pla
         });
     }
     let count_query_string = `select (count(*) as ?count) {` + hazard_query_string.slice(0, -1) + `{ select ?place {` + place_query_string + `}}}}`;
-    console.log(count_query_string);
     let a_count_hazardTable = await query(count_query_string);
     return {'count':a_count_hazardTable[0].count.value,'record':h_hazardTable};
 }
 
 // query place table records
-async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, hazard_query_string) {
+async function getPlaceTableRecord(filters_selected, pagenum, recordnum, place_query_string, expert_query_string, hazard_query_string) {
     let h_placeTable = [];
     let query_string = `
-        select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
+        select distinct ?place ?place_name ?place_type ?place_type_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
         {
     `;
-    console.log(query_string);
-    query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}} limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
+    let count_query_string = `
+        select (count(*) as ?count) {
+            select distinct ?place ?place_name ?place_type ?place_type_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
+            {
+    `;
+    if (filters_selected.includes('Expertise'))
+    {
+        query_string += place_query_string.slice(0, -1) + `{` + expert_query_string + `}}}`;
+        count_query_string += place_query_string.slice(0, -1) + `{` + expert_query_string + `}}}`;
+    }
+    else if (filters_selected.includes('Hazard'))
+    {
+        query_string += place_query_string.slice(0, -1) + `{` + hazard_query_string + `}}}`;
+        count_query_string += place_query_string.slice(0, -1) + `{` + hazard_query_string + `}}}`;
+    }
+    else
+    {
+        query_string += place_query_string.slice(0, -1) + `}}`; 
+        count_query_string += place_query_string.slice(0, -1) + `}}`;
+
+    }
+    query_string += `group by ?place ?place_name ?place_type ?place_type_name limit ` + recordnum + ` offset ` + (pagenum-1)*recordnum;
+    count_query_string += `group by ?place ?place_name ?place_type ?place_type_name}`;
     let a_placeTable = await query(query_string);
     for (let row of a_placeTable)
     {
@@ -220,19 +240,13 @@ async function getPlaceTableRecord(pagenum, recordnum, expert_query_string, haza
             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
-    let count_query_string = `
-        select (count(*) as ?count) {
-            select distinct ?place ?place_name ?place_type ?place_type_name ?place_geometry ?place_geometry_wkt
-            {
-    `;
     console.log(count_query_string);
-    count_query_string += `{` + expert_query_string + `} union {` + hazard_query_string + `}}}`;
     let a_count_placeTable = await query(count_query_string);
     return {'count':a_count_placeTable[0].count.value,'record':h_placeTable};
 }
 
 // full-text search
-async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+async function getFullTextSearchResult(filters_selected, tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let place_query_string = `
         select distinct *
@@ -355,7 +369,7 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
     if (tabname == 'Place')
     {
         search_result = {
-            "Place":getPlaceTableRecord(pagenum, recordnum, expert_query_string, hazard_query_string),
+            "Place":getPlaceTableRecord(filters_selected, pagenum, recordnum, place_query_string, expert_query_string, hazard_query_string),
         }
     }
     if (tabname == 'Expert')
