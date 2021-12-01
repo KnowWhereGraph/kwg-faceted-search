@@ -201,6 +201,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
 
 });
 
+kwgApp.controller("filters-controller", function($scope) {});
+
 kwgApp.controller("results-controller", function($scope, $compile, $timeout) {
     $scope.totalResultsNumber = 0;
 });
