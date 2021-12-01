@@ -19,8 +19,23 @@ $(document).ready(function() {
             attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
             crossOrigin: true
         }).addTo(spatialQueryMap);
-    }, 200);
 
+        // var latlngs = [
+        //     [37, -109.05],
+        //     [41, -109.03],
+        //     [41, -102.05],
+        //     [37, -102.04]
+        // ];
+        // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
+        // var point = L.circle([38.895, -77.036667], {
+        //     color: '#DF6C37',
+        //     fillColor: '#DF6C37',
+        //     fillOpacity: 0.5,
+        //     radius: 500
+        // }).addTo(spatialQueryMap);
+        // console.log(point);
+    }, 200);
+    // init();
 });
 
 function init() {
@@ -51,6 +66,8 @@ $("#spatial-search #pills-hazard-tab").on('click', function() {
         displayMap(fullTextResults, "Hazard");
     }
 });
+
+
 
 // update the filters and get results;
 function getData() {
@@ -174,6 +191,7 @@ function displayTables(fullTextResults) {
         displayTable(expertTableHeadSelectors, expert);
         displayTable(placeTableHeadSelectors, place);
         displayTable(hazardTableHeadSelectors, hazard);
+
     });
 }
 

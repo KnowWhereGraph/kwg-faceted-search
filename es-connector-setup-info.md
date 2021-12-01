@@ -1,4 +1,4 @@
-# Creating the Elasticsearch GraphDB Connector 
+# Creating the Elasticsearch GraphDB Connector
 
 ## Instructions
 

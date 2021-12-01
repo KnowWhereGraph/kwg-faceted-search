@@ -1,4 +1,4 @@
-// var kwgApp = angular.module('kwgApp', ['ngSanitize', 'ngRoute']);
+var kwgApp = angular.module('kwgApp', ['ngSanitize', 'ngRoute']);
 // configure the routes
 kwgApp.config(function($routeProvider) {
     $routeProvider
@@ -17,37 +17,8 @@ kwgApp.config(function($routeProvider) {
         }).when('/about', {
             templateUrl: '/pages/about.html',
             controller: 'mainController'
-
-var kwgApp = angular.module('kwgApp', ['ui.router', 'ncy-angular-breadcrumb', 'ngRoute']);
-
-kwgApp.config([
-    '$stateProvider',
-    '$urlRouterProvider',
-    '$breadcrumbProvider',
-    function($stateProvider, $urlRouterProvider, $breadcrumbProvider) {
-        $stateProvider.state('home', {
-            url: '/',
-            templateUrl: '../pages/explore.html',
-            ncyBreadcrumb: {
-                label: 'Explore'
-            }
-        }).state('spatial search', {
-            url: '/spatial_search',
-            templateUrl: "../pages/spatial_search.html",
-            ncyBreadcrumb: {
-                label: 'Topic Group'
-            }
-
         });
-
-        $urlRouterProvider.otherwise("/");
-        $breadcrumbProvider.setOptions({
-            prefixStateName: 'home',
-            template: "bootstrap3"
-        })
-    }
-])
-
+});
 
 // mainController
 

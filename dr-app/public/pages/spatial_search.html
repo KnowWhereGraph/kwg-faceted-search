@@ -14,7 +14,8 @@
 </header>
 
 <main id="spatial-search" ng-controller="spatialSearchController">
-    <div class="left-filters" ng-controller="filters-controller">
+    <script src="../js/eventListeners.js"></script>
+    <div class="left-filters">
 
         <!-- search input box -->
         <div class="search-dropdown-input">
@@ -44,7 +45,7 @@
 
                     <!-- part2: add div for dynamically showing selected item -->
                     <div class="selectedItem" ng-show="showSelectedExpertise">
-                        <input type="checkbox" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
+                        <input type="checkbox" class="form-check-input me-1" ng-model="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
                         <p>kwg-ont:subTopic
                             <i class="bi bi-chevron-up"></i>
                         </p>
@@ -55,10 +56,15 @@
 
                     <!-- part4 -->
                     <ul class="list-group" id="expertise-list">
-
-                        <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
+                        <!-- <li ng-repeat="topic in expertiseTopics" ng-show="expertiseTopicShow">
                             <span><input type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
+                                    ng-click="selectExpertise($event)" value="topic" name="expertiseTopic">
+                                {{topic}}</span>
+                        </li> -->
+
+                        <li ng-repeat="supertopicUrl in supertopicsUrls" ng-show="expertiseTopicShow">
+                            <span><input type="checkbox" class="form-check-input me-1"
+                                    ng-click="selectExpertise($event)" value="{{supertopicUrl}}" name="expertiseTopic">{{getLabel(supertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
@@ -72,7 +78,7 @@
                 </div>
             </li>
 
-            <li id="place" ng-show="showPlaceList">
+            <li id="place">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
                     <!-- part1 -->
@@ -89,7 +95,7 @@
                     <!-- part3 -->
                     <ul class="list-group" id="place-list">
 
-                        <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
+                        <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls">
                             <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
                         </li>
 
@@ -120,7 +126,7 @@
                             <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
                                 {{hazard}}</span>
                         </li> -->
-                        <li ng-repeat="hazardUrl in hazardUrls">
+                        <li ng-repeat="hazardUrl in hazardsUrls">
                             <span><input type="checkbox" class="form-check-input me-1"
                                     ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
                         </li>
@@ -139,8 +145,6 @@
                     <!-- <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> -->
                 </form>
             </li>
-
-
         </ul>
     </div>
     <div class="results" ng-controller="results-controller">
@@ -153,27 +157,140 @@
             <div class="results-nav">
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation" ng-show="showPeopleTab">
-                        <button class="btn active" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
+                        <button class="btn active" id="pills-people-tab" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
                             <span><img src="../images/people.svg" alt=""> People</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showPlaceTab">
-                        <button class="btn" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
+                        <button class="btn" id="pills-place-tab" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="false">
                             <span><img src="../images/Place.svg" alt=""> Place</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showHazardTab">
-                        <button class="btn" id="pills-hazard-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
+                        <button class="btn" id="pills-hazard-tab" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
                             <span><img src="../images/hazard.svg" alt=""> Hazard</span>
                         </button>
                     </li>
+
                 </ul>
             </div>
             <div class="results-table">
 
+
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
-                    <div class="tab-pane fade active show" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                    <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                        <!-- <table class="table table-filters table-title " id="table-people-title">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title-peope</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Label</th>
+                                    <th scope="col">Affiliation</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                </tr>
+                            </thead>
+                        </table> -->
+
+                        <!-- <div class="table-body-container" id="people-div">
+                            <table class="table table-filters table-body table-hover" id="table-body-people">
+                                <tbody>
+                                    <tr onclick="location.href='#'">
+                                        <td>Record Title-people</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div> -->
                         <table id="expertTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -189,6 +306,134 @@
 
                     <!-- Place table -->
                     <div class="tab-pane fade" id="pills-place" role="tabpanel" aria-labelledby="pills-place-tab">
+                        <!-- <table class="table table-filters table-title" id="table-place-title">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Label</th>
+                                    <th scope="col">Affiliation</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                </tr>
+                            </thead>
+                        </table> -->
+                        <!-- <div class="table-body-container">
+                            <table class="table table-filters table-body table-hover" id="table-body-place">
+                                <tbody>
+                                    <tr onclick="location.href='#'">
+                                        <td>Place</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Record Title</td>
+                                        <td>Expert</td>
+                                        <td>Alejandro Feged</td>
+                                        <td>Universidad del Rosario</td>
+                                        <td><a href="#">International Political Urban Studies</a></td>
+                                        <td>Alejandro</td>
+                                        <td>Feged</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> -->
+                        <!-- <table id="place-table" class="table table-hover" data-height="500" data-pagination="true"></table> -->
                         <table id="placeTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -206,7 +451,7 @@
                     </div>
 
                     <!-- hazard table -->
-                    <div class="tab-pane" id="pills-hazard" role="tabpanel" aria-labelledby="pills-hazard-tab">
+                    <div class="tab-pane active" id="pills-hazard" role="tabpanel" aria-labelledby="pills-hazard-tab">
                         <table id="hazardTableTitle" class="table table-filters table-title">
 
                             <thead>
