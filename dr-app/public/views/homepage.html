@@ -61,8 +61,9 @@
 <body ng-controller="mainController">
     <!-- Instead of using fullRecord0.html without SPA, we use angular.js template to achieve SPA -->
     <!-- Header -->
-    <header>
-        <a id="knowwheregraph" href="#"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
+    <nav>
+      <div class="container">
+        <a id="knowwheregraph" href="#/"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
 
         <div id="direct_relief_container">
             <img src="images/dr-icon.svg" alt="DirectReliefImg">
@@ -70,13 +71,13 @@
 
         <ul class="nav">
             <li class="nav-item">
-                <a href="">
+                <a href="#/about">
                     <span class="item">About</span>
                     <img src="images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
             </li>
             <li class="nav-item">
-                <a href="">
+                <a href="#/explore">
                     <span class="item">Explore</span>
                     <img src="images/dropdown.svg" alt="" class="dropdown-img">
                 </a>
@@ -89,10 +90,12 @@
 
                 <div class="search-dropdown-input" id="search-dropdown">
                     <div class="input-group mb-3">
+                      <form action="#/results_filters">
                         <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button">Search</button>
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
                         </div>
+                      </form>
                     </div>
 
                     <div class="spatial-search">
@@ -115,8 +118,8 @@
             </li>
         </ul>
 
-        <div class="nav-path">
-            <!-- <span id="explore-expertise">Explore/Expertise Topic Groups/Diseases/Covid-19/</span> -->
+      <!--   <div class="nav-path">
+
             <ul id="explore-expertise1" class="breadcrumb">
                 <li><a href="">Explore </a></li>
                 <li><a href="">Expertise Topic Groups </a></li>
@@ -124,14 +127,14 @@
                 <li><a href="">Covid-19 </a></li>
                 <li><a href="" id="curr_page">Alejandro Feged</a></li>
             </ul>
-            <!-- <span id="explore-expert">Alejandro Feged</span> -->
+
         </div>
 
         <div class="display-expert">
             <span id="expert-name">Alejandro Feged</span>
-        </div>
-
-    </header>
+        </div> -->
+      </div>
+    </nav>
     <!-- Main Content -->
     <div ng-view></div>
     <!-- <main>

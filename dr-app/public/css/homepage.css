@@ -9,31 +9,88 @@ ul li {
     list-style-type: none;
 }
 
+a {
+  text-decoration: none;
+}
 
-/* Header */
-
+/* header */
 header {
     width: 100%;
-    height: 275px;
+    height: auto;
     padding: 0;
     background-color: #00021F;
-    background-image: url('../images/header-bg.png'); 
+    background-image: url('../images/header-bg.png');
     background-repeat: repeat-x;
     position: relative;
 }
 
-/* 0. Integrate the repetative codes */
-header div.nav-path, 
-header div.display-expert{
-    position:absolute;
-    left: 41px;
+header .container {
+  padding-top: 160px;
+  padding-bottom: 50px;
+}
 
-    
+header .container h1 {
+  color: #fff;
+}
+
+header .container.home {
+  text-align: center;
+  max-width: 500px;
+}
+
+.search-bar-home {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: auto;
+  margin-bottom: -30px;
+}
+
+.search-bar-home input {
+  height: 60px;
+  box-shadow: 0 15px 25px 0 rgba(0,0,0,0.10);
+  padding-left: 25px;
+  transition: all .2s ease;
+}
+
+.search-bar-home input:hover {
+  transform: scale(1.005);
+}
+
+.search-bar-home button {
+  background-color: #DF6C37 !important;
+  margin: 3px;
+  transition: all .2s ease;
+}
+
+.search-bar-home button:hover {
+  transform: scale(1.05);
+  color: #fff;
+}
+
+
+/* nav */
+
+nav {
+  width: 100%;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
 
 }
 
-header div.nav-path a, 
-header div.display-expert,
+/* 0. Integrate the repetative codes */
+nav div.nav-path,
+nav div.display-expert{
+    position:absolute;
+    left: 41px;
+
+
+
+}
+
+nav div.nav-path a,
+nav div.display-expert,
 ul.nav li span.item{
     color: #FFFFFF;
     letter-spacing: 0;
@@ -42,23 +99,22 @@ ul.nav li span.item{
 
 
 /* 1. KnowWhereGraph Icon */
-header img#knowwheregraph-icon {
+nav img#knowwheregraph-icon {
     float: left;
     width: 153px;
     height: 59px;
     margin-top: 39px;
-    margin-left: 41px;
 }
 
 /* 2. Direct Relief Icon */
-header div#direct_relief_container {
+nav div#direct_relief_container {
     float: left;
     margin-top: 44px;
     margin-left: 31px;
 }
 
 /* 3. Dynamic path (breadcrumb) */
-header div.nav-path {
+nav div.nav-path {
     top: 144px;
 }
 
@@ -70,7 +126,7 @@ div.nav-path .breadcrumb > li + li:before{
 
 div.nav-path ul li a{
     text-decoration: none;
-    /* color: #FFFFFF; */
+    color: #FFFFFF;
     /* font-family: sans-serif; */
     /* letter-spacing: 0; */
     opacity: 0.5;
@@ -84,11 +140,11 @@ div.nav-path ul#explore-expertise1 li a#curr_page{
 }
 
 /* 4. Current page name */
-header div.display-expert {
-    top: 180px;   
+nav div.display-expert {
+    top: 180px;
 }
 
-header div.display-expert span#expert-name {
+nav div.display-expert span#expert-name {
     /* color: #FFFFFF; */
     /* font-family: sans-serif; */
     /* letter-spacing: 0; */
@@ -102,12 +158,11 @@ header div.display-expert span#expert-name {
 ul.nav {
     float: right;
     margin-top: 47px;
-    margin-right: 57px;
 }
 
 ul.nav li {
     position: relative;
-    padding-left: 33px; 
+    padding-left: 33px;
     line-height: 18px;
 }
 
@@ -116,7 +171,7 @@ ul.nav li a{
 }
 
 /* 5.1 Dropdown menu */
-header div.search-dropdown-input{
+nav div.search-dropdown-input{
     width: 333px;
     height: 134px;
     border-radius: 5px;
@@ -131,6 +186,12 @@ header div.search-dropdown-input{
 input#input-query{
     font-style: italic;
     font-size: 12px;
+}
+
+div.search-dropdown-input div.input-group form {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
 }
 
 div.search-dropdown-input div.input-group button{
@@ -188,7 +249,103 @@ main {
     background-color: #CFCFD5;
 }
 
+section.alt {
+  background-color: #D9D9DE;
+}
 
+section.about {
+  padding-top: 90px;
+  padding-bottom: 70px;
+}
+
+section.about .container {
+  max-width: 900px;
+}
+
+section.about p {
+  margin-bottom: 50px;
+}
+
+section.explore {
+  padding: 70px 0 120px;
+}
+
+section.explore .container {
+  max-width: 900px;
+  margin-bottom: 50px;
+}
+
+section.center {
+  text-align: center;
+}
+
+.button {
+  height: 50px;
+  display: inline-block;
+  padding: 12px 30px;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 5px 15px 0 rgba(0,0,0,0.20);
+  border-radius: 5px;
+  transition: all .2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  color: #fff;
+}
+
+.button.secondary {
+  background-color: #252648;
+}
+
+.columns-3 > * {
+  width: 31%;
+}
+
+.explore-topics {
+  margin: 30px 0;
+}
+
+.card-group {
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.card.explore-icon, .card.explore {
+  background: #FFFFFF;
+  box-shadow: 0 10px 64px 0 rgba(0,0,0,0.05);
+  border-radius: 5px;
+  transition: all .2s ease;
+}
+
+.card.explore-icon:hover, .card.explore:hover {
+  transform: scale(1.02);
+}
+
+.card.explore-icon .card-body .card-title, .card.explore .card-body .card-title {
+  color: #00021F;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.card.explore-icon {
+  padding: 30px 0 10px;
+}
+
+.card.explore-icon .card-img-top {
+  height: 50px;
+}
+
+.card.explore {
+  height: 70px;
+}
+
+.card.explore .card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 
 /* Footer */
@@ -252,6 +409,12 @@ div.form-group button {
     position: absolute;
     right: 8px;
     top: 6px;
+    transition: all .2s ease;
+}
+
+div.form-group button:hover {
+  color: #fff;
+  transform: scale(1.05);
 }
 
 footer div.footer{
@@ -272,7 +435,7 @@ div.icons-footer img#kwg-icon-footer {
     height: 77px;
     position: absolute;
     top: 16px;
-    
+
 }
 
 div.icons-footer p {
