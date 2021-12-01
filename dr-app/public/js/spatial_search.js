@@ -188,7 +188,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             loadedTabs[activeTabName] = true;
 
             var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-            var response = sendQueries(activeTabName, 1, pp, parameters);
+            var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+            var response = sendQueries(activeTabName, page, pp, parameters);
             var selectors = displayTableByTabName(activeTabName, response);
             response.then(function(e) {
                 var key = Object.keys(e)[0];
@@ -205,7 +206,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 // if the current tab is already loaded
             } else {
                 var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-                var response = sendQueries(activeTabName, 1, pp, parameters);
+                var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+                var response = sendQueries(activeTabName, page, pp, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 response.then(function(e) {
                     var key = Object.keys(e)[0];
@@ -364,7 +366,8 @@ var displayActiveTab = function() {
 
         // send queries to the current active tab
         var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        response = sendQueries(activeTabName, 1, pp, parameters);
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        response = sendQueries(activeTabName, page, pp, parameters);
 
         // get the count of records and display them in the table
         var selectors = displayTableByTabName(activeTabName, response);
@@ -533,6 +536,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
+                    updateURLParameters('page',currentPage+1);
+
                     angular.element(this).addClass("active").siblings().removeClass("active");
 
                     // click event
@@ -550,6 +555,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
+                    updateURLParameters('page',currentPage+1);
 
                     angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
                     angular.element(this).addClass("active").siblings().removeClass("active");
@@ -570,6 +576,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 newPage: numPages - 1
             }, function(event) {
                 currentPage = event.data['newPage'];
+                updateURLParameters('page',currentPage+1);
 
                 angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -595,6 +602,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 }
 
                 currentPage = nextPage;
+                updateURLParameters('page',currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 displayTableByTabName(activeTabName, response);
