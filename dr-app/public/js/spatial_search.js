@@ -13,8 +13,9 @@ var place_markers = new L.MarkerClusterGroup();
 var markers = [];
 
 var totalResults = 0;
+var urlVariables;
 
-kwgApp.controller("spatialSearchController", function($scope, $timeout) {
+kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
     // Show expertise, place, and hazard menu in the initial status
     $scope.showExpertiseList = true;
     $scope.showPlaceList = true;
@@ -168,15 +169,22 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     // 4. click on tab
     $scope.clickTab = function($event) {
         var newActiveTabName = "";
+        var urlUpdateTab = "";
         var innerHTML = $event.target.innerHTML;
+
         if (innerHTML.indexOf("People") != -1) {
+            urlUpdateTab = "people";
             newActiveTabName = "Expert";
         } else if (innerHTML.indexOf("Place") != -1) {
+            urlUpdateTab = "place";
             newActiveTabName = "Place";
         } else if (innerHTML.indexOf("Hazard") != -1) {
+            urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
         console.log("clicked tab: ", newActiveTabName);
+        updateURLParameters($location,"tab",urlUpdateTab)
+
         newParameters = getParameters();
         console.log("different from the previous parameters: ", JSON.stringify(newParameters) == JSON.stringify(parameters));
         activeTabName = newActiveTabName;
@@ -226,6 +234,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
 
     };
 
+    //Select tab based on url value
+    urlVariables = $location.search();
+    var activeTab = (urlVariables['tab']!=null) ? urlVariables['tab'] : 'people';
+    $timeout(function() {
+        angular.element("#pills-" + activeTab + "-tab").click();
+    });
 
 });
 
@@ -265,7 +279,6 @@ var init = function() {
         // }).addTo(spatialQueryMap);
         // console.log(point);
     }, 200);
-    displayActiveTab();
 }
 
 // prepare the parameters
@@ -327,6 +340,17 @@ var getParameters = function() {
     };
 
 };
+
+var updateURLParameters = function($loc, param, value) {
+    urlVariables[param] = value;
+    urlTextArray = [];
+    for(var index in urlVariables) {
+        urlTextArray.push(index+"="+urlVariables[index]);
+    }
+
+    newUrl = "/spatial_search?" + urlTextArray.join("&");
+    $loc.url(newUrl);
+}
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     var response = getFullTextSearchResult(tabName, pageNum, recordNum,
@@ -663,7 +687,7 @@ function displayMap(fullTextResults, tabName) {
                 if (e["place_geometry_wkt"]) {
                     count += 1;
                     var coords = wicket.read(e["place_geometry_wkt"]).toJson().coordinates;
-                    console.log("geometry: ", coords);
+                    //console.log("geometry: ", coords);
                     center_lat += coords[1];
                     center_lon += coords[0];
                     let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
