@@ -123,12 +123,13 @@ async function getSubTopic(super_topic_iri) {
             ?super_topic kwg-ont:subTopic ?topic.
             ?topic rdfs:label ?topic_label.
             values ?super_topic {<${super_topic_iri}>}.
-        }
+        } group by ?topic
     `);
 
     for (let row of a_topics) {
         h_subTopics.push({ 'topic': row.topic.value, 'topic_label': row.topic_label.value });
     }
+
     return h_subTopics;
 }
 
