@@ -609,7 +609,11 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
             }).appendTo($pager).addClass("clickable");
         }
 
-        $pager.appendTo(paginationSelector).find("span.page-item:first").addClass("active");
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
+            if($(this).text()==page)
+                $(this).addClass("active");
+        })
     });
 }
 
