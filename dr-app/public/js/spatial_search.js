@@ -13,12 +13,19 @@ var place_markers = new L.MarkerClusterGroup();
 var markers = [];
 
 var totalResults = 0;
+
+//For URL variable tracking
 var urlVariables;
-var $loc;
 
 kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
-    $loc = $location;
-    urlVariables = $loc.search();
+    //prep for URL variable tracking
+    urlVariables = $location.search();
+    $scope.updateURLParameters = function(param, value) {
+        urlVariables[param] = value;
+        $timeout(function() {
+            $location.search(urlVariables);
+        }.bind(this));
+    }
 
     // Show expertise, place, and hazard menu in the initial status
     $scope.showExpertiseList = true;
@@ -176,7 +183,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
-        updateURLParameters("tab",urlUpdateTab);
+        $scope.updateURLParameters("tab",urlUpdateTab);
 
         newParameters = getParameters();
         activeTabName = newActiveTabName;
@@ -269,6 +276,11 @@ var init = function() {
     }, 200);
 }
 
+//We need this to call the url rewrite
+var getScope = function() {
+    return angular.element(document.querySelector('[ng-controller=spatialSearchController]')).scope();
+}
+
 // prepare the parameters
 var getParameters = function() {
     var keyword = "";
@@ -320,18 +332,6 @@ var getParameters = function() {
     };
 
 };
-
-var updateURLParameters = function(param, value) {
-    urlVariables[param] = value;
-    urlTextArray = [];
-    for(var index in urlVariables) {
-        urlTextArray.push(index+"="+urlVariables[index]);
-    }
-
-    newUrl = "/spatial_search?" + urlTextArray.join("&");
-    console.log(newUrl);
-    $loc.url(newUrl);
-}
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     var response = getFullTextSearchResult(tabName, pageNum, recordNum,
@@ -501,11 +501,11 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     var perPage = angular.element(perPageHTML);
 
     perPage.appendTo(selectors["pagination"]);
-    updateURLParameters("pp",pp.toString());
+    getScope().updateURLParameters("pp",pp.toString());
     tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
         var recordsPerpage = angular.element(this).val();
-        updateURLParameters("pp",recordsPerpage);
+        getScope().updateURLParameters("pp",recordsPerpage);
 
         // recalculate the pages
         tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
@@ -536,7 +536,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
-                    updateURLParameters('page',currentPage+1);
+                    getScope().updateURLParameters('page',currentPage+1);
 
                     angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -555,7 +555,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
-                    updateURLParameters('page',currentPage+1);
+                    getScope().updateURLParameters('page',currentPage+1);
 
                     angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
                     angular.element(this).addClass("active").siblings().removeClass("active");
@@ -576,7 +576,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 newPage: numPages - 1
             }, function(event) {
                 currentPage = event.data['newPage'];
-                updateURLParameters('page',currentPage+1);
+                getScope().updateURLParameters('page',currentPage+1);
 
                 angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -602,7 +602,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 }
 
                 currentPage = nextPage;
-                updateURLParameters('page',currentPage);
+                getScope().updateURLParameters('page',currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 displayTableByTabName(activeTabName, response);
