@@ -25,15 +25,22 @@ kwgApp.config([
     function($stateProvider, $urlRouterProvider, $breadcrumbProvider) {
         $stateProvider.state('home', {
             url: '/',
-            templateUrl: '../pages/explore.html',
+            templateUrl: '../pages/home.html',
             ncyBreadcrumb: {
-                label: 'Explore'
+                label: 'Home'
             }
         }).state('spatial search', {
             url: '/spatial_search',
             templateUrl: "../pages/spatial_search.html",
             ncyBreadcrumb: {
                 label: 'Topic Group'
+            }
+
+        }).state('explore', {
+            url: '/explore',
+            templateUrl: "../pages/explore.html",
+            ncyBreadcrumb: {
+                label: 'Explore'
             }
 
         });
