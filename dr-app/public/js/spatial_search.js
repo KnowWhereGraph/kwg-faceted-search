@@ -29,12 +29,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     getFilters().then(function(data) {
         console.log("Data is loaded: ", data);
 
-        // initialize the expertise super topics
-        $scope.expertiseSupertopicUrls = Object.keys(data['Expertise']);
-        $scope.getExpertiseLabel = function(expertiseSupertopicUrl) {
-            return data['Expertise'][expertiseSupertopicUrl];
-        };
-        $scope.expertiseTopicShow = true;
+       
 
         // initialize the place
         $scope.placeSupertopicUrls = Object.keys(data['Place']);
@@ -47,7 +42,16 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         $scope.getHazardLabel = function(hazardUrl) {
             return data['Hazard'][hazardUrl];
         };
+
+         // initialize the expertise super topics
+         $scope.expertiseSupertopicUrls = Object.keys(data['Expertise']);
+         $scope.getExpertiseLabel = function(expertiseSupertopicUrl) {
+             return data['Expertise'][expertiseSupertopicUrl];
+         };
+         $scope.expertiseTopicShow = true;
+         
         $scope.$apply();
+        
     });
 
     // data range initialization
@@ -503,9 +507,9 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     angular.element(selectors["pagination"]).empty();
     var perPage = angular.element('<div class="dropdown per-page">\
                     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton" [ng-model]="perpage" (ngModelChange)="onChange($event)">\
-                        <option value="50" selected="selected">50 Per Page</option>\
+                        <option value="20" selected="selected">20 Per Page</option>\
+                        <option value="50">50 Per Page</option>\
                         <option value="100">100 Per Page</option>\
-                        <option value="200">200 Per Page</option>\
                     </select>\
                 </div>');
 
