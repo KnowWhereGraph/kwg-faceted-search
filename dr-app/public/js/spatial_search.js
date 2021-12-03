@@ -22,6 +22,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     urlVariables = $location.search();
     $scope.updateURLParameters = function(param, value) {
         urlVariables[param] = value;
+        
         $timeout(function() {
             $location.search(urlVariables);
         }.bind(this));
