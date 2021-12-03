@@ -76,15 +76,7 @@
             ]
         },
         {
-            "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG",
-            "info":[
-                {
-                    "class":"KWGCellLevel9"
-                }
-            ]
-        },
-        {
-            "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V2",
+            "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KnowWhereGraph-V2",
             "info":[
                 {
                     "class":"AdministrativeRegion",
@@ -97,7 +89,18 @@
                     ]
                 },
                 {
-                    "class":"ZipCodeArea"
+                    "class":"Fire",
+                    "subclasses":[
+                        "PrescribedFire",
+                        "Wildfire",
+                        "UnknownFire",
+                        "WildlandFireUse"
+                    ],
+                    "observationCollection":[
+                        "Mean dNBR Value",
+                        "Number of Acres Burned",
+                        "Standard Deviation of Mean dNBR Value"
+                    ]
                 }
 
             ]

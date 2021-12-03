@@ -1,3 +1,19 @@
+<header>
+  <div class="container">
+    <div class="nav-path">
+      <ul id="explore-expertise1" class="breadcrumb">
+        <li><a href="">Explore </a></li>
+        <li><a href="">Expertise Topic Groups </a></li>
+        <li><a href="">Diseases </a></li>
+        <li><a href="">Covid-19 </a></li>
+        <li><a href="" id="curr_page">Alejandro Feged</a></li>
+      </ul>
+    </div>
+    <h1>Alejandro Feged</h1>
+  </div>
+</header>
+
+
 <main id="spatial-search" ng-controller="spatialSearchController">
     <div class="left-filters" ng-controller="filters-controller">
 
@@ -21,42 +37,6 @@
 
         <!-- options for filters -->
         <ul class="filters">
-            <li id="expertise" ng-show="showExpertiseList">
-                <p class="filter-title">EXPERTISE</p>
-                <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
-
-                    <!-- part2: add div for dynamically showing selected item -->
-                    <div class="selectedItem" ng-show="showSelectedExpertise">
-                        <input type="checkbox" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
-                        <p>kwg-ont:subTopic
-                            <i class="bi bi-chevron-up"></i>
-                        </p>
-                    </div>
-
-                    <!-- part3 -->
-                    <input type="text" class="form-control" placeholder="Find a filter">
-
-                    <!-- part4 -->
-                    <ul class="list-group" id="expertise-list">
-
-                        <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
-                        </li>
-                        <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
-                        </li>
-
-
-                        <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
-                        </li> -->
-                    </ul>
-                </div>
-            </li>
-
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
@@ -93,10 +73,7 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-                    <!-- part1 -->
-                    <p class="filter-type">rdf:subClassOf<i class="bi bi-chevron-up"></i></p>
-
-                    <!-- part2 -->
+                     <!-- part2 -->
                     <input type="text" class="form-control" placeholder="Find a filter">
 
                     <!-- part3 -->
@@ -113,7 +90,41 @@
 
                 </div>
             </li>
+            <li id="expertise" ng-show="showExpertiseList">
+                <p class="filter-title">EXPERTISE</p>
+                <div class="filter">
+                    <!-- part1 -->
+                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
 
+                    <!-- part2: add div for dynamically showing selected item -->
+                    <div class="selectedItem" ng-show="showSelectedExpertise">
+                        <input type="checkbox" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
+                        <p>kwg-ont:subTopic
+                            <i class="bi bi-chevron-up"></i>
+                        </p>
+                    </div>
+
+                    <!-- part3 -->
+                    <input type="text" class="form-control" placeholder="Find a filter">
+
+                    <!-- part4 -->
+                    <ul class="list-group" id="expertise-list">
+
+                        <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
+                            <span><input type="checkbox" class="form-check-input me-1"
+                                    ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
+                        </li>
+                        <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
+                            <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
+                        </li>
+
+
+                        <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
+                            <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
+                        </li> -->
+                    </ul>
+                </div>
+            </li>
             <li id="datarange-li">
                 <p class="filter-title" id="data-range">Date Range</p>
                 <form class="data-range-form">
@@ -137,13 +148,8 @@
             </div>
             <div class="results-nav">
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation" ng-show="showPeopleTab">
-                        <button class="btn active" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
-                            <span><img src="../images/people.svg" alt=""> People</span>
-                        </button>
-                    </li>
                     <li class="nav-item" role="presentation" ng-show="showPlaceTab">
-                        <button class="btn" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
+                        <button class="btn active" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
                             <span><img src="../images/Place.svg" alt=""> Place</span>
                         </button>
                     </li>
@@ -152,13 +158,18 @@
                             <span><img src="../images/hazard.svg" alt=""> Hazard</span>
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation" ng-show="showPeopleTab">
+                        <button class="btn" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
+                            <span><img src="../images/people.svg" alt=""> People</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
             <div class="results-table">
 
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
-                    <div class="tab-pane fade active show" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                    <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
                         <table id="expertTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -173,7 +184,7 @@
                     </div>
 
                     <!-- Place table -->
-                    <div class="tab-pane fade" id="pills-place" role="tabpanel" aria-labelledby="pills-place-tab">
+                    <div class="tab-pane fade active show" id="pills-place" role="tabpanel" aria-labelledby="pills-place-tab">
                         <table id="placeTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -236,9 +247,5 @@
     </div>
 
     <div class="map" id="spatial-search-map" ng-controller="spatialmap-controller"></div>
-
-
-
-
 
 </main>
