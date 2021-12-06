@@ -206,11 +206,53 @@ INSERT DATA {
       "array": false,
       "objectFields": []
     },
-  	{
+    {
       "fieldName": "hosts",
       "propertyChain": [
         "http://www.w3.org/ns/sosa/hosts",
-		"http://stko-kwg.geog.ucsb.edu/lod/ontology/pocValue"
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/pocValue"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "climateDivisionFIPS",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionFIPS"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "climateDivisionName",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionName"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+	{
+      "fieldName": "climateDivisionNumber",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionNumber"
       ],
       "indexed": true,
       "stored": true,
@@ -235,8 +277,11 @@ INSERT DATA {
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_2",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_3",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_4",
-	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite",
-    "http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent"
+	"http://stko-kwg.geog.ucsb.edu/lod/ontology/NWZone",
+	"http://stko-kwg.geog.ucsb.edu/lod/ontology/USClimateDivision",
+	"http://stko-kwg.geog.ucsb.edu/lod/ontology/ZipCodeArea",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite",
+	"http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent"
   ],
   "readonly": false,
   "detectFields": false,
