@@ -14,7 +14,20 @@ var markers = [];
 
 var totalResults = 0;
 
-kwgApp.controller("spatialSearchController", function($scope, $timeout) {
+//For URL variable tracking
+var urlVariables;
+
+kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
+    //prep for URL variable tracking
+    urlVariables = $location.search();
+    $scope.updateURLParameters = function(param, value) {
+        urlVariables[param] = value;
+        
+        $timeout(function() {
+            $location.search(urlVariables);
+        }.bind(this));
+    }
+
     // Show expertise, place, and hazard menu in the initial status
     $scope.showExpertiseList = true;
     $scope.showPlaceList = true;
@@ -58,7 +71,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     $('input[name="daterange"]').daterangepicker({
         opens: "right"
     }, function(start, end, label) {
-        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
     });
@@ -82,11 +94,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
         // display the corresponding subtopics 
         selectedElement = $event.target;
-        console.log("select the supertopic: ", $event.target.value);
+
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
         $scope.selectedExpertise = topicStr;
-        console.log("selected expertise: ", topicStr);
+
         $scope.showSelectedExpertise = true;
         $scope.checkedExpertise = true;
 
@@ -94,14 +106,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         angular.element("#spatial-search").height(function(n, c) {
             return c + addedHeight;
         });
-        console.log("selected, revised height is: ", angular.element("#spatial-search").height());
 
         var selectedTopicUrl = $event.target.value;
         var subtopics = getSubTopic(selectedTopicUrl);
         var expertiseSubtopics = null;
         subtopics.then(function(e) {
             expertiseSubtopics = e;
-            // console.log("expertiseSubtopics: ", expertiseSubtopics);
         }).then(function() {
             $scope.expertiseSubtopics = expertiseSubtopics;
         }).then(function() {
@@ -114,8 +124,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         $scope.getSubtopicLabel = function(expertiseSubtopic) {
             return expertiseSubtopic.topic_label;
         };
-        console.log("subtopic show: ", $scope.expertiseSubtopicShow);
-        console.log("select the supertopic :", 　$scope.checkedExpertise);
     };
     $scope.unselectExpertise = function($event) {
         $scope.showHazardList = !$scope.showHazardList;
@@ -135,8 +143,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         angular.element("#spatial-search").height(function(n, c) {
             return c - decreasedHeight;
         });
-        console.log("unselected , revised height is :", angular.element("#spatial-search").height());
-        console.log("unselect the supertopic :", 　$scope.checkedExpertise);
     };
 
     // 2.2. select options of hazard, hide expertise
@@ -151,7 +157,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
         }
 
         // select hazard and interact with the backend, search for it
-        console.log("selected hazard");
         displayActiveTab();
 
     };
@@ -159,30 +164,33 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     // 3. Interaction with the backend
     // 3.1 select subtopic of the expertise, search for it
     $scope.selectSubTopic = function($event) {
-        console.log("selected expertise");
         displayActiveTab();
     };
 
     // 3.2 select place, search for it
     $scope.selectPlaceSupertopic = function($event) {
-        console.log("selected place");
         displayActiveTab();
     };
 
     // 4. click on tab
     $scope.clickTab = function($event) {
         var newActiveTabName = "";
+        var urlUpdateTab = "";
         var innerHTML = $event.target.innerHTML;
+
         if (innerHTML.indexOf("People") != -1) {
+            urlUpdateTab = "people";
             newActiveTabName = "Expert";
         } else if (innerHTML.indexOf("Place") != -1) {
+            urlUpdateTab = "place";
             newActiveTabName = "Place";
         } else if (innerHTML.indexOf("Hazard") != -1) {
+            urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
-        console.log("clicked tab: ", newActiveTabName);
+        $scope.updateURLParameters("tab",urlUpdateTab);
+
         newParameters = getParameters();
-        console.log("different from the previous parameters: ", JSON.stringify(newParameters) == JSON.stringify(parameters));
         activeTabName = newActiveTabName;
 
         if (JSON.stringify(newParameters) != JSON.stringify(parameters)) {
@@ -191,34 +199,32 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
 
             loadedTabs[activeTabName] = true;
 
-            var response = sendQueries(activeTabName, 1, 50, parameters);
+            var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+            var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+            var response = sendQueries(activeTabName, page, pp, parameters);
             var selectors = displayTableByTabName(activeTabName, response);
-            // console.log("current params: ", params);
             response.then(function(e) {
                 var key = Object.keys(e)[0];
                 var val = e[key];
                 val.then(function(result) {
-                    console.log("result: ", result);
                     var countResults = result["count"];
                     displayPagination(activeTabName, selectors, countResults, parameters);
                 });
 
             });
         } else {
-            console.log("check if it's loaded or not:", loadedTabs[activeTabName]);
             // if the parameters are the same, then consider about the tab
             if (loadedTabs[activeTabName]) {
                 // if the current tab is already loaded
-                console.log("the clicked tab is already loaded");
             } else {
-                var response = sendQueries(activeTabName, 1, 50, parameters);
+                var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+                var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+                var response = sendQueries(activeTabName, page, pp, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
-                // console.log("current params: ", params);
                 response.then(function(e) {
                     var key = Object.keys(e)[0];
                     var val = e[key];
                     val.then(function(result) {
-                        console.log("result: ", result);
                         var countResults = result["count"];
                         displayPagination(activeTabName, selectors, countResults, parameters);
                     });
@@ -230,6 +236,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
 
     };
 
+    //Select tab based on url value
+    var activeTab = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+    $timeout(function() {
+        angular.element("#pills-" + activeTab + "-tab").click();
+    });
 
 });
 
@@ -267,9 +278,12 @@ var init = function() {
         //     fillOpacity: 0.5,
         //     radius: 500
         // }).addTo(spatialQueryMap);
-        // console.log(point);
     }, 200);
-    displayActiveTab();
+}
+
+//We need this to call the url rewrite
+var getScope = function() {
+    return angular.element(document.querySelector('[ng-controller=spatialSearchController]')).scope();
 }
 
 // prepare the parameters
@@ -294,12 +308,6 @@ var getParameters = function() {
         hazards.push(hazard);
     });
 
-    // console.log("expertiseTopics: ", expertiseTopics);
-    // console.log("expertise Subtopics: ", expertiseSubtopics);
-    // console.log("places: ", places);
-    // console.log("hazards: ", hazards);
-
-
     if (!startDate) {
         startDate = "2020-01-01";
     }
@@ -313,8 +321,6 @@ var getParameters = function() {
     var end_year = endDate.split("-")[0];
     var end_month = endDate.split("-")[1];
     var end_date = endDate.split("-")[2];
-    // console.log("start year: ", start_year, ", start_month: ", start_month, ", start_date", start_date,
-    //     ", end_year: ", end_year, ", end_month: ", end_month, ", end_date: ", end_date);
 
     return {
         "keyword": keyword,
@@ -349,36 +355,31 @@ var displayActiveTab = function() {
     var activeElement = angular.element(".results-table #pills-tabContent div.active");
     var activeElementID = activeElement[0].id;
     if (activeElementID.endsWith("people")) {
-        console.log("current active tab is people");
         activeTabName = "Expert";
     } else if (activeElementID.endsWith("place")) {
-        console.log("current active tab is place");
         activeTabName = "Place";
     } else if (activeElementID.endsWith("hazard")) {
-        console.log("current active tab is hazard");
         activeTabName = "Hazard";
     };
 
     // get all the parameters
     var newParameters = getParameters();
-    console.log("if the parameters have been changed: ", JSON.stringify(parameters) == JSON.stringify(newParameters));
     var response;
     if (JSON.stringify(parameters) != JSON.stringify(newParameters)) {
         loadedTabs = {};
         parameters = newParameters;
 
         // send queries to the current active tab
-        response = sendQueries(activeTabName, 1, 50, parameters);
-        console.log("response is: ", response);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        response = sendQueries(activeTabName, page, pp, parameters);
 
         // get the count of records and display them in the table
         var selectors = displayTableByTabName(activeTabName, response);
-        console.log("current params: ", selectors);
         response.then(function(e) {
             var key = Object.keys(e)[0];
             var val = e[key];
             val.then(function(result) {
-                console.log("result: ", result);
                 var countResults = result["count"];
                 displayPagination(activeTabName, selectors, countResults, parameters);
             });
@@ -394,7 +395,6 @@ var displayTableByTabName = function(activeTabName, response) {
     var countResults = null;
     var recordResults = null;
     var titlesDisplayed = [];
-    console.log("current active tab is : ", activeTabName);
     if (activeTabName == "Expert") {
         selectors = {
             "thead": "#expertTableTitle",
@@ -416,7 +416,6 @@ var displayTableByTabName = function(activeTabName, response) {
     };
 
     if (selectors) {
-        console.log("selectors: ", selectors);
         // Table title
         if (selectors["thead"] == "#expertTableTitle") {
             titlesDisplayed = expertTitles;
@@ -439,11 +438,9 @@ var displayTableByTabName = function(activeTabName, response) {
             var key = Object.keys(e)[0];
             var val = e[key];
             val.then(function(result) {
-                console.log("result: ", result);
                 countResults = result["count"];
                 recordResults = result["record"];
 
-                console.log("recordResults: ", recordResults);
                 var attributeLinks = [];
                 var tableBodyAttributes = [];
 
@@ -473,7 +470,6 @@ var displayTableByTabName = function(activeTabName, response) {
 
             }).then(function() {
 
-                // console.log("selector pagination: ", angular.element("div.per-page"));
                 // angular.element(selectors["pagination"]).empty();
                 // var perPage = angular.element('<div class="dropdown per-page">\
                 //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
@@ -487,14 +483,11 @@ var displayTableByTabName = function(activeTabName, response) {
                 // tablePagination(selectors["tbody"], selectors["pagination"], countResults, 50);
                 // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
                 //     var recordsPerpage = angular.element(this).val();
-                //     console.log("changed the reocrds of per page here: ", recordsPerpage);
 
                 //     tablePagination(selectors["tbody"], selectors["pagination"], countResults, recordsPerpage);
                 // })
             });
 
-            // console.log("val-->", val);
-            // console.log("active Name: ", activeTabName);
             displayMap(val, activeTabName);
 
         });
@@ -503,27 +496,27 @@ var displayTableByTabName = function(activeTabName, response) {
 };
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
-    console.log("selector pagination: ", angular.element("div.per-page"));
     angular.element(selectors["pagination"]).empty();
-    var perPage = angular.element('<div class="dropdown per-page">\
-                    <select class="dropdown-menu" aria-labelledby="dropdownMenuButton" [ng-model]="perpage" (ngModelChange)="onChange($event)">\
-                        <option value="20" selected="selected">20 Per Page</option>\
-                        <option value="50">50 Per Page</option>\
-                        <option value="100">100 Per Page</option>\
-                    </select>\
-                </div>');
+
+    var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+    perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" aria-labelledby="dropdownMenuButton" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
+    perPageHTML += (pp==20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
+    perPageHTML += (pp==50) ? '<option value="50" selected="selected">50 Per Page</option>' : '<option value="50">50 Per Page</option>';
+    perPageHTML += (pp==100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
+    perPageHTML += '</select></div>';
+    var perPage = angular.element(perPageHTML);
 
     perPage.appendTo(selectors["pagination"]);
-    tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, 50, parameters);
+    getScope().updateURLParameters("pp",pp.toString());
+    tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
         var recordsPerpage = angular.element(this).val();
-        console.log("changed the reocrds of per page here: ", recordsPerpage);
-        console.log("parameters: ", parameters);
+        getScope().updateURLParameters("pp",recordsPerpage);
+
         // recalculate the pages
         tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
         var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
-        displayTableByTabName(activeTabName, response)
-        console.log("after changing the recordsPerpage, response is: ", response);
+        displayTableByTabName(activeTabName, response);
     });
 }
 
@@ -533,11 +526,9 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         var currentPage = 0;
         var $table = angular.element(this);
         $table.on('repaginate', function() {
-            console.log("repaginate");
         });
 
         var numPages = Math.ceil(totalRecords / numPerPage);
-        console.log("num rows:", totalRecords, ", total pages: ", numPages);
 
         if (angular.element(paginationSelector + 　" div.pager")) {
             angular.element(paginationSelector + " div.pager").remove();
@@ -551,17 +542,16 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
+                    getScope().updateURLParameters('page',currentPage+1);
+
                     angular.element(this).addClass("active").siblings().removeClass("active");
-                    console.log("clicked the page: ", currentPage);
 
                     // click event
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    console.log("click reponse: ", response);
                     displayTableByTabName(activeTabName, response)
 
                 }).appendTo($pager).addClass("clickable");
 
-                console.log("pager: ", $pager);
             }
         } else {
             // the first 3 pages
@@ -571,16 +561,15 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
+                    getScope().updateURLParameters('page',currentPage+1);
 
                     angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
                     angular.element(this).addClass("active").siblings().removeClass("active");
 
-                    console.log("clicked the page2: ", currentPage);
 
                     // click event
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                     displayTableByTabName(activeTabName, response);
-                    console.log("click reponse: ", response);
 
 
                 }).appendTo($pager).addClass("clickable");
@@ -593,6 +582,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 newPage: numPages - 1
             }, function(event) {
                 currentPage = event.data['newPage'];
+                getScope().updateURLParameters('page',currentPage+1);
 
                 angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -602,9 +592,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
             }).appendTo($pager).addClass("clickable");
 
             angular.element('<button class="page-item"></button>').val(currentPage + 1).text("Next").on('click', function(event) {
-                console.log("clicked the button, then the current page is:", angular.element(this).val());
                 var nextPage = parseInt(angular.element(this).val()) + 1;
-                console.log("then the next page is : ", nextPage);
                 angular.element(this).val(nextPage);
 
                 var pages = angular.element(paginationSelector + " div.pager span");
@@ -620,19 +608,22 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 }
 
                 currentPage = nextPage;
-                console.log("currentPage: ", currentPage);
+                getScope().updateURLParameters('page',currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 displayTableByTabName(activeTabName, response);
             }).appendTo($pager).addClass("clickable");
         }
 
-        $pager.appendTo(paginationSelector).find("span.page-item:first").addClass("active");
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
+            if($(this).text()==page)
+                $(this).addClass("active");
+        })
     });
 }
 
 function displayMap(fullTextResults, tabName) {
-    console.log("get the fullTextResults to display, ", fullTextResults, tabName);
     // $("#spatial-search .results-nav ul li button.active")
 
     fullTextResults.then(function(e) {
@@ -653,21 +644,17 @@ function displayMap(fullTextResults, tabName) {
         //     place = e.Hazard;
         // }
         var place = e["record"];
-        console.log("here the place is ", place);
 
         if (place) {
             // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
-            console.log("current map is :", spatialQueryMap);
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
             var count = 0;
             place.forEach(e => {
-                // console.log("current elements: ", e);
                 if (e["place_geometry_wkt"]) {
                     count += 1;
                     var coords = wicket.read(e["place_geometry_wkt"]).toJson().coordinates;
-                    console.log("geometry: ", coords);
                     center_lat += coords[1];
                     center_lon += coords[0];
                     let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
@@ -683,12 +670,11 @@ function displayMap(fullTextResults, tabName) {
             if (count) {
                 center_lat /= count;
                 center_lon /= count;
-                console.log("count is : ", count);
 
                 spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
                 place_markers.addTo(spatialQueryMap);
             } else {
-                console.log("there is no returned locations");
+                //there is no returned locations
             }
         }
 
