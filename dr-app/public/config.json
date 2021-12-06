@@ -96,13 +96,33 @@
                         "UnknownFire",
                         "WildlandFireUse"
                     ],
-                    "observationCollection":[
+                    "observation":[
                         "Mean dNBR Value",
                         "Number of Acres Burned",
                         "Standard Deviation of Mean dNBR Value"
                     ]
+                },
+                {
+                    "class":"EarthquakeEvent",
+                    "observation":[
+                        "depth",
+                        "depthError",
+                        "dmin",
+                        "gap",
+                        "horizontalError",
+                        "locationSource",
+                        "mag",
+                        "magError",
+                        "magNst",
+                        "magSource",
+                        "magType",
+                        "net",
+                        "nst",
+                        "rms",
+                        "status",
+                        "type"
+                    ]
                 }
-
             ]
         }
     ]

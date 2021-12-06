@@ -235,7 +235,8 @@ INSERT DATA {
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_2",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_3",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_4",
-	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite"
+	  "http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent"
   ],
   "readonly": false,
   "detectFields": false,
