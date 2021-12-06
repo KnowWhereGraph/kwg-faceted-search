@@ -1,5 +1,16 @@
-main#spatial-search {
+main.spatial-search {
     height: 1500px;
+}
+
+
+/* faceted-spatial-search */
+
+main#faceted-results-search {
+    height: 1700px;
+}
+
+main#faceted-spatial-search {
+    height: 800px;
 }
 
 
@@ -8,7 +19,7 @@ main#spatial-search {
 2. side side panel: results
 */
 
-#spatial-search .left-filters {
+.spatial-search .left-filters {
     width: 20%;
     height: 100%;
     background-color: #D8D8DD;
@@ -16,18 +27,40 @@ main#spatial-search {
     box-shadow: 10px 0 64px 0 rgba(0, 0, 0, 0.05);
 }
 
-#spatial-search .results {
+.spatial-search .results {
     width: 50%;
     height: 100%;
     /* background-color: pink;  */
     float: left;
 }
 
-#spatial-search .map {
+
+/* faceted-results-search */
+
+#faceted-spatial-search .left-filters,
+#faceted-results-search .left-filters {
+    width: 25%;
+    height: 100%;
+}
+
+#faceted-results-search .results {
+    width: 75%;
+    height: 100%;
+    float: left;
+}
+
+.spatial-search .map {
     width: 30%;
     height: 100%;
     float: left;
     background-color: yellowgreen;
+}
+
+#faceted-spatial-search .map {
+    width: 75%;
+    /* height: 100%; */
+    /* float: left; */
+    background-color: transparent;
 }
 
 
@@ -67,6 +100,14 @@ ul.filters>li {
     padding-bottom: 30px;
 }
 
+
+/* faceted spatial search */
+
+#faceted-spatial-search ul.filters>li,
+#faceted-results-search ul.filters>li {
+    padding-bottom: 20px;
+}
+
 ul.filters li ul input {
     margin-top: 0px;
 }
@@ -88,6 +129,15 @@ p#data-range {
     letter-spacing: 1px;
     line-height: 17px;
     margin-bottom: 15px;
+}
+
+
+/* faceted spatial search */
+
+#faceted-spatial-search ul.filters p.filter-title,
+#faceted-results-search ul.filters p.filter-title {
+    opacity: 1;
+    font-weight: bold;
 }
 
 ul.filters p.filter-type,
@@ -216,7 +266,7 @@ li#datarange-li form button {
 
 /* *********Right side for results*********** */
 
-#spatial-search .results .results-container {
+.spatial-search .results .results-container {
     width: 90%;
     height: 95%;
     /* background-color: cadetblue; */
@@ -224,20 +274,27 @@ li#datarange-li form button {
     margin-top: 35px;
 }
 
-#spatial-search .results .results-count {
+.spatial-search .results .results-count {
     width: 100%;
     height: 70px;
     /* background-color: chocolate; */
 }
 
-#spatial-search .results .results-nav {
+
+/* faceted-spatial-search */
+
+#faceted-results-search .results-count {
+    height: 90px;
+}
+
+.spatial-search .results .results-nav {
     width: 100%;
     height: 50px;
     border-bottom: 2px solid rgba(0, 2, 31, 0.5);
     /* background-color: coral; */
 }
 
-#spatial-search .results .results-table {
+.spatial-search .results .results-table {
     width: 100%;
     height: calc(100% - 170px);
     /* background-color: yellowgreen; */
@@ -245,7 +302,14 @@ li#datarange-li form button {
     position: relative;
 }
 
-#spatial-search .table-body a {
+
+/* faceted-spatial-search */
+
+#faceted-results-search .results .results-table {
+    margin-top: 30px;
+}
+
+.spatial-search .table-body a {
     /* font-size: 22px; */
     font-family: sans-serif;
     font-weight: 500;
@@ -254,7 +318,12 @@ li#datarange-li form button {
     text-decoration: none;
 }
 
-#spatial-search .table-body tr:hover {
+.spatial-search .table-body a:hover {
+    color: orange;
+    cursor: pointer;
+}
+
+.spatial-search .table-body tr:hover {
     /* background-color: pink; */
     cursor: pointer;
 }
@@ -269,10 +338,57 @@ li#datarange-li form button {
     letter-spacing: 0;
 }
 
-p#ttl-results {
+#ttl-results {
     float: left;
     font-size: 22px;
     font-weight: bold;
+}
+
+
+/* faceted-spatial-search */
+
+#faceted-results-search .results-count {
+    width: 100%;
+    /* background-color: rgb(146, 194, 146); */
+    position: relative;
+}
+
+#faceted-results-search #ttl-results {
+    width: 100%;
+    height: 30px;
+    position: absolute;
+    top: 0px;
+    /* background-color: powderblue; */
+}
+
+#faceted-results-search .tableConfig {
+    width: 100%;
+    height: 60px;
+    /* background-color: pink; */
+    position: absolute;
+    top: 30px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#faceted-results-search .tableConfig .dropdown {
+    float: left;
+    width: 200px;
+    height: 40px;
+    /* background-color: white; */
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+#faceted-results-search .tableConfig .dropdown button {
+    width: 100%;
+    background-color: #FFFFFF;
+    border: 0px;
+    color: #00021F;
+}
+
+#faceted-results-search .tableConfig p {
+    line-height: 60px;
 }
 
 p#sort-by,
