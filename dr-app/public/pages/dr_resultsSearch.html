@@ -38,7 +38,6 @@
         <!-- options for filters -->
         <ul class="filters">
 
-
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
@@ -77,10 +76,7 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:subClassOf<i class="bi bi-chevron-up"></i></p> -->
 
-                    <!-- part2 -->
                     <input type="text" class="form-control" placeholder="Find a filter">
 
                     <!-- part3 -->
@@ -97,7 +93,6 @@
 
                 </div>
             </li>
-
             <li id="expertise" ng-show="showExpertiseList">
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
@@ -125,8 +120,6 @@
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
                         </li>
-
-
                         <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
                         </li> -->
@@ -179,7 +172,7 @@
 
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
-                    <div class="tab-pane fade " id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                    <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
                         <table id="expertTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -257,9 +250,5 @@
     </div>
 
     <div class="map" id="spatial-search-map" ng-controller="spatialmap-controller"></div>
-
-
-
-
 
 </main>
