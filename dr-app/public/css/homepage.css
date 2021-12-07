@@ -33,6 +33,7 @@ header {
     background-color: #00021F;
     background-image: url('../images/header-bg.png');
     background-repeat: repeat-x;
+    background-size: cover;
     position: relative;
 }
 
@@ -70,7 +71,7 @@ header .container.home {
 }
 
 .search-bar-home button {
-  background-color: #DF6C37 !important;
+  background-color: #2BA9BD !important;
   margin: 3px;
   transition: all .2s ease;
 }
@@ -323,6 +324,8 @@ section.center {
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 40px;
 }
 
 .card-explore-icon, .card-explore {
@@ -364,8 +367,6 @@ section.center {
 
 /* Footer */
 footer {
-    height: 354px;
-    background-color: sandybrown;
     clear: left;
 }
 
@@ -415,7 +416,7 @@ input.form-control::-webkit-input-placeholder{
 div.form-group button {
     width: 114px;
     height: 40px;
-    background-color: #00021F;
+    background-color: #2BA9BD;
     color: #FFFFFF;
     border-radius: 3px;
     box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
@@ -442,6 +443,8 @@ footer div.footer div.icons-footer {
     height: 108px;
     margin: 0 auto;
     position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 div.icons-footer img#kwg-icon-footer {
