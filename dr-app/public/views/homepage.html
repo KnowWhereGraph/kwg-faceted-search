@@ -40,13 +40,18 @@
     <!-- <script src="js/eventListeners.js"></script> -->
     <!-- <script src="js/results_filters.js"></script> -->
 
-
-
-
-
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" /> -->
+    <!-- <link rel="stylesheet" href="../css/leaflet-geoman.css"> -->
+    <!-- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script> -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.11.3/dist/leaflet-geoman.min.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script> -->
+    <!-- <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script> -->
+    <!-- <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.11.3/dist/leaflet-geoman.min.js"></script> -->
+    <!-- <script src="../js/leaflet-geoman.min.js"></script> -->
+
     <script src="js/wicket.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
@@ -63,67 +68,71 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-    <script src="js/spatial_search.js"></script>
+    <script src="js/results_search.js"></script>
 </head>
 
 <body ng-controller="mainController">
     <!-- Instead of using fullRecord0.html without SPA, we use angular.js template to achieve SPA -->
     <!-- Header -->
     <nav>
-      <div class="container">
-        <a id="knowwheregraph" href="#/"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
+        <div class="container">
+            <a id="knowwheregraph" href="#/"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
 
-        <div id="direct_relief_container">
-            <img src="images/dr-icon.svg" alt="DirectReliefImg">
-        </div>
+            <div id="direct_relief_container">
+                <img src="images/dr-icon.svg" alt="DirectReliefImg">
+            </div>
 
-        <ul class="nav">
-            <li class="nav-item">
-                <a href="#/about">
-                    <span class="item">About</span>
-                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#/explore">
-                    <span class="item">Explore</span>
-                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#/spatial_search" id="navbarDropdown">
-                    <span class="item">Search</span>
-                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                </a>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="#/about">
+                        <span class="item">About</span>
+                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#/explore">
+                        <span class="item">Explore</span>
+                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="" id="navbarDropdown">
+                        <span class="item">Search</span>
+                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                    </a>
 
-                <div class="search-dropdown-input" id="search-dropdown">
-                    <div class="input-group mb-3">
-                      <form action="#/spatial_search">
-                        <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    <div class="search-dropdown-input" id="search-dropdown">
+                        <div class="input-group mb-3">
+                            <form action="#/results_filters">
+                                <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                </div>
+                            </form>
                         </div>
-                      </form>
-                    </div>
 
-                    <div class="spatial-search">
-                        <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">
+                        <div class="spatial-search">
+                            <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">
                             <div>
                                 <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
                             </div>
                         </button>
+                        </div>
                     </div>
-                </div>
 
-            </li>
-           
-            <li class="nav-item">
-                <span class="item">Contact</span>
-                <img src="images/dropdown.svg" alt="" class="dropdown-img">
-            </li>
-        </ul>
+                </li>
+                <li class="nav-item">
+                    <span class="item">Tools</span>
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                </li>
+                <li class="nav-item">
+                    <span class="item">Contact</span>
+                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                </li>
+            </ul>
+        </div>
 
-        <!-- <div class="nav-path"> -->
+            <!-- <div class="nav-path"> -->
             <!-- <span id="explore-expertise">Explore/Expertise Topic Groups/Diseases/Covid-19/</span> -->
             <!-- <ul id="explore-expertise1" class="breadcrumb">
                 <li><a href="">Explore </a></li>
@@ -138,8 +147,8 @@
         </div>
 
         <div class="display-expert">
-            <!-- <span id="expert-name">Alejandro Feged</span> -->
-        <!-- </div> -->
+            <span id="expert-name">Alejandro Feged</span> -->
+            <!-- </div> -->
 
     </nav>
     <!-- Main Content -->

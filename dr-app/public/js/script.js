@@ -29,9 +29,9 @@ kwgApp.config([
             ncyBreadcrumb: {
                 label: 'Home'
             }
-        }).state('spatial search', {
-            url: '/spatial_search',
-            templateUrl: "../pages/spatial_search.html",
+        }).state('result_search', {
+            url: '/result_search',
+            templateUrl: "../pages/dr_resultsSearch.html",
             ncyBreadcrumb: {
                 label: 'Topic Group'
             }
@@ -43,6 +43,24 @@ kwgApp.config([
                 label: 'Explore'
             }
 
+        }).state('faceted_result_search', {
+            url: '/faceted_result_search',
+            templateUrl: "../pages/faceted_resultsSearch.html",
+            ncyBreadcrumb: {
+                label: "test"
+            }
+        }).state('faceted_spatialSearch', {
+            url: '/faceted_spatialSearch',
+            templateUrl: "../pages/faceted_spatialSearch.html",
+            ncyBreadcrumb: {
+                label: "Spatial Search"
+            }
+        }).state('test', {
+            url: '/test',
+            templateUrl: "../pages/test-drawing.html",
+            ncyBreadcrumb: {
+                label: "test"
+            }
         });
 
         $urlRouterProvider.otherwise("/");

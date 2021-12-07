@@ -1,20 +1,27 @@
 <header>
-  <div class="container">
-    <div class="nav-path">
-      <ul id="explore-expertise1" class="breadcrumb">
-        <li><a href="">Explore </a></li>
-        <li><a href="">Expertise Topic Groups </a></li>
-        <li><a href="">Diseases </a></li>
-        <li><a href="">Covid-19 </a></li>
-        <li><a href="" id="curr_page">Alejandro Feged</a></li>
-      </ul>
+    <style>
+        header {
+            background-image: url('../images/faceted-header-bg.png');
+            background-repeat: repeat-x;
+            position: relative;
+        }
+    </style>
+    <div class="container">
+        <div class="nav-path">
+            <ul id="explore-expertise1" class="breadcrumb">
+                <li><a href="">Explore </a></li>
+                <li><a href="">Expertise Topic Groups </a></li>
+                <li><a href="">Diseases </a></li>
+                <li><a href="">Covid-19 </a></li>
+                <li><a href="" id="curr_page">Alejandro Feged</a></li>
+            </ul>
+        </div>
+        <h1>Alejandro Feged</h1>
     </div>
-    <h1>Alejandro Feged</h1>
-  </div>
 </header>
 
 
-<main id="spatial-search" ng-controller="spatialSearchController">
+<main class="spatial-search" id="faceted-results-search" ng-controller="spatialSearchController">
     <div class="left-filters" ng-controller="filters-controller">
 
         <!-- search input box -->
@@ -37,11 +44,13 @@
 
         <!-- options for filters -->
         <ul class="filters">
+
+
             <li id="place" ng-show="showPlaceList">
-                <p class="filter-title">PLACE</p>
+                <p class="filter-title">Air Quality<i class="bi bi-chevron-up"></i></p>
                 <div class="filter">
                     <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
+                    <p class="filter-type">subClassOf<i class="bi bi-chevron-up"></i></p>
 
                     <!-- part2: add div for dynamically showing the selected item -->
                     <!-- <div class="selectedItem" ng-show="showSelectedPlace">
@@ -51,6 +60,8 @@
                         </p>
                     </div> -->
 
+                    <!-- part2 -->
+                    <input type="text" class="form-control" placeholder="Find a filter">
                     <!-- part3 -->
                     <ul class="list-group" id="place-list">
 
@@ -71,9 +82,12 @@
             </li>
 
             <li id="hazard" ng-show="showHazardList">
-                <p class="filter-title">HAZARD</p>
+                <p class="filter-title">Climate<i class="bi bi-chevron-up"></i></p>
                 <div class="filter">
-                     <!-- part2 -->
+                    <!-- part1 -->
+                    <p class="filter-type">subClassOf<i class="bi bi-chevron-up"></i></p>
+
+                    <!-- part2 -->
                     <input type="text" class="form-control" placeholder="Find a filter">
 
                     <!-- part3 -->
@@ -90,19 +104,20 @@
 
                 </div>
             </li>
+
             <li id="expertise" ng-show="showExpertiseList">
-                <p class="filter-title">EXPERTISE</p>
+                <p class="filter-title">Fires<i class="bi bi-chevron-up"></i></p>
                 <div class="filter">
                     <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
+                    <p class="filter-type">subClassOf <i class="bi bi-chevron-up"></i></p>
 
                     <!-- part2: add div for dynamically showing selected item -->
-                    <div class="selectedItem" ng-show="showSelectedExpertise">
+                    <!-- <div class="selectedItem" ng-show="showSelectedExpertise">
                         <input type="checkbox" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
                         <p>kwg-ont:subTopic
                             <i class="bi bi-chevron-up"></i>
                         </p>
-                    </div>
+                    </div> -->
 
                     <!-- part3 -->
                     <input type="text" class="form-control" placeholder="Find a filter">
@@ -125,6 +140,27 @@
                     </ul>
                 </div>
             </li>
+
+            <li>
+                <p class="filter-title">Observations<i class="bi bi-chevron-up"></i></p>
+            </li>
+
+            <li>
+                <p class="filter-title">Debris Flow<i class="bi bi-chevron-up"></i></p>
+            </li>
+
+            <li>
+                <p class="filter-title">Earthquakes<i class="bi bi-chevron-up"></i></p>
+            </li>
+
+            <li>
+                <p class="filter-title">Place<i class="bi bi-chevron-up"></i></p>
+            </li>
+
+            <li>
+                <p class="filter-title">Soil<i class="bi bi-chevron-up"></i></p>
+            </li>
+
             <li id="datarange-li">
                 <p class="filter-title" id="data-range">Date Range</p>
                 <form class="data-range-form">
@@ -142,34 +178,32 @@
     <div class="results" ng-controller="results-controller">
         <div class="results-container">
             <div class="results-count">
-                <p id="ttl-results"><span>{{totalResultsNumber}}</span>Results</p>
-                <p id="sort-by">Sort By <i class="bi bi-chevron-down"></i></p>
-                <p id="cnfg-tb">Configure Table Columns</p>
+                <div id="ttl-results"><span>2124</span> Results</div>
+
+                <div class="tableConfig">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          Air Quality results
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="#">All Results</a></li>
+                            <li><a class="dropdown-item" href="#">Climate Results</a></li>
+                            <li><a class="dropdown-item" href="#">Observation Results</a></li>
+                        </ul>
+                    </div>
+                    <p id="sort-by">Sort By <i class="bi bi-chevron-down"></i></p>
+                    <p id="cnfg-tb">Configure Table Columns</p>
+
+
+                </div>
+
             </div>
-            <div class="results-nav">
-                <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                    <li class="nav-item" role="presentation" ng-show="showPlaceTab">
-                        <button class="btn active" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
-                            <span><img src="../images/Place.svg" alt=""> Place</span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation" ng-show="showHazardTab">
-                        <button class="btn" id="pills-hazard-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
-                            <span><img src="../images/hazard.svg" alt=""> Hazard</span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation" ng-show="showPeopleTab">
-                        <button class="btn" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
-                            <span><img src="../images/people.svg" alt=""> People</span>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+
             <div class="results-table">
 
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
-                    <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
+                    <div class="tab-pane fade " id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">
                         <table id="expertTableTitle" class="table table-filters table-title">
                             <thead>
                                 <tr></tr>
@@ -221,31 +255,14 @@
                     </div>
 
                 </div>
-                <!-- <div class="rlts-pagination" ng-controller="pagination-controller as vm">
-                    <div class="per-page"><span>12</span> Per Page
-                        <i class="bi bi-chevron-down"></i>
-                            </div>
-
-
-                            <ul class="pagination">
-                                <li class="page-item active" ng-click="clickPage(1)"><a class="pg-link">1</a></li>
-                                <li class="page-item" ng-click="clickPage(2)"><a class="pg-link">2</a></li>
-                                <li class="page-item" ng-click="clickPage(3)"><a class="pg-link">3</a></li>
-                                <li class="page-item" ng-click="clickPage(4)"><a class="pg-link">4</a></li>
-                                <li class="page-item" ng-click="clickPage(5)"><a class="pg-link">5</a></li>
-                                <li class="page-item"><a class="pg-link">...</a></li>
-                                <li class="page-item" ng-click="clickPage(7)"><a class="pg-link">310</a></li>
-                                <li><button id="nxt-pg">Next</button></li>
-                            </ul>
-
-
-                    </div> -->
 
             </div>
         </div>
 
     </div>
 
-    <div class="map" id="spatial-search-map" ng-controller="spatialmap-controller"></div>
+
+
+
 
 </main>
