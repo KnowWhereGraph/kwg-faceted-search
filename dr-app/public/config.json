@@ -2,92 +2,11 @@
     "description":"configuration for full-text search on KnowWhereGraph",
     "repository": [
         {
-            "endpoint":"http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1",
-            "info": [
-                {
-                    "class":"Place",
-                    "subclasses":
-                    [
-                        "City",
-                        "State",
-                        "NWSZone",
-                        "Marine",
-                        "County"
-                    ]
-                },
-                {
-                    "class":"Expert"
-                },
-                {
-                    "class":"Hazard",
-                    "subclasses":
-                    [
-                        "Hail",
-                        "ThunderstormWind",
-                        "Tornado",
-                        "HeavySnow",
-                        "HeavyRain",
-                        "ExtremeColdWindChill",
-                        "Waterspout",
-                        "FunnelCloud",
-                        "RipCurrent",
-                        "Avalanche",
-                        "HighWind",
-                        "IceStorm",
-                        "Blizzard",
-                        "HighSurf",
-                        "Flood",
-                        "Wildfire",
-                        "Drought",
-                        "WinterStorm",
-                        "WinterWeather",
-                        "DenseFog",
-                        "FlashFlood",
-                        "StormSurgeTide",
-                        "DustStorm",
-                        "StrongWind",
-                        "ExcessiveHeat",
-                        "Lightning",
-                        "DebrisFlow",
-                        "FrostFreeze",
-                        "Sleet",
-                        "Lake-EffectSnow",
-                        "ColdWindChill",
-                        "Heat",
-                        "DustDevil",
-                        "TropicalStorm",
-                        "MarineThunderstormWind",
-                        "FreezingFog",
-                        "MarineHail",
-                        "CoastalFlood",
-                        "MarineHighWind",
-                        "AstronomicalLowTide",
-                        "MarineStrongWind",
-                        "Sneakerwave",
-                        "LakeshoreFlood",
-                        "TropicalDepression",
-                        "MarineTropicalStorm",
-                        "DenseSmoke",
-                        "MarineHurricaneTyphoon",
-                        "MarineTropicalDepression",
-                        "Hurricane"
-                    ]
-                }
-            ]
+            "endpoint":"http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1"
         },
         {
             "endpoint":"http://stko-kwg.geog.ucsb.edu:7200/repositories/KnowWhereGraph-V2",
             "info":[
-                {
-                    "class":"AdministrativeRegion",
-                    "subclasses":[
-                        "AdministrativeRegion_0",
-                        "AdministrativeRegion_1",
-                        "AdministrativeRegion_2",
-                        "AdministrativeRegion_3",
-                        "AdministrativeRegion_4"
-                    ]
-                },
                 {
                     "class":"Fire",
                     "subclasses":[
@@ -96,13 +15,33 @@
                         "UnknownFire",
                         "WildlandFireUse"
                     ],
-                    "observationCollection":[
+                    "observation":[
                         "Mean dNBR Value",
                         "Number of Acres Burned",
                         "Standard Deviation of Mean dNBR Value"
                     ]
+                },
+                {
+                    "class":"EarthquakeEvent",
+                    "observation":[
+                        "depth",
+                        "depthError",
+                        "dmin",
+                        "gap",
+                        "horizontalError",
+                        "locationSource",
+                        "mag",
+                        "magError",
+                        "magNst",
+                        "magSource",
+                        "magType",
+                        "net",
+                        "nst",
+                        "rms",
+                        "status",
+                        "type"
+                    ]
                 }
-
             ]
         }
     ]
