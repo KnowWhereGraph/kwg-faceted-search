@@ -43,6 +43,13 @@ kwgApp.config([
                 label: 'Explore'
             }
 
+        }).state('about', {
+            url: '/about',
+            templateUrl: "../pages/about.html",
+            ncyBreadcrumb: {
+                label: 'About'
+            }
+
         }).state('faceted_result_search', {
             url: '/faceted_result_search',
             templateUrl: "../pages/faceted_resultsSearch.html",
