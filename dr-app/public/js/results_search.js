@@ -42,13 +42,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     getFilters().then(function(data) {
         console.log("Data is loaded: ", data);
 
-        // initialize the expertise super topics
-        $scope.expertiseSupertopicUrls = Object.keys(data['Expertise']);
-        $scope.getExpertiseLabel = function(expertiseSupertopicUrl) {
-            return data['Expertise'][expertiseSupertopicUrl];
-        };
-        $scope.expertiseTopicShow = true;
-
         // initialize the place
         $scope.placeSupertopicUrls = Object.keys(data['Place']);
         $scope.getPlaceLabel = function(placeSupertopicUrl) {
@@ -217,7 +210,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             // if the parameters are the same, then consider about the tab
             if (loadedTabs[activeTabName]) {
                 // if the current tab is already loaded
-                var response = sendQueries(activeTabName, 1, 50, parameters);
                 displayMap(response, activeTabName);
 
             } else {
@@ -283,7 +275,8 @@ var getParameters = function() {
     var places = [];
     var hazards = [];
 
-    keyword = angular.element("#spatial-search .left-filters .search-dropdown-input input").val();
+    keyword = angular.element(".spatial-search .left-filters .search-dropdown-input input").val();
+    console.log(keyword);
     angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
         expertiseTopics.push(supertopics.value);
     });
