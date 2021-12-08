@@ -62,6 +62,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.expertiseTopicShow = true;
 
         $scope.$apply();
+
+        if(urlVariables['group']!=null && urlVariables['group']!='') {
+            $timeout(function() {
+                angular.element("#"+urlVariables['group'].replaceAll(' ','_')).click();
+            });
+        }
     });
 
     // data range initialization
@@ -96,6 +102,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.selectedExpertise = topicStr;
         $scope.showSelectedExpertise = true;
         $scope.checkedExpertise = true;
+
+        $scope.updateURLParameters('group',topicStr);
 
         var addedHeight = 50;
         angular.element(".spatial-search").height(function(n, c) {
@@ -276,7 +284,6 @@ var getParameters = function() {
     var hazards = [];
 
     keyword = angular.element(".spatial-search .left-filters .search-dropdown-input input").val();
-    console.log(keyword);
     angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
         expertiseTopics.push(supertopics.value);
     });
