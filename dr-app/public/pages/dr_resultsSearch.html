@@ -114,7 +114,7 @@
                     <ul class="list-group" id="expertise-list">
 
                         <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1"
+                            <span><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
