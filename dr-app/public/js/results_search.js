@@ -606,33 +606,44 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         } else {
             //Build out pagination based on current selected page
             var selectedPage = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
-            //Start by adding the first page, last page, current page, and the closet page numbers to the current page
-            var pagesToSelect = [1, selectedPage-2, selectedPage-1, selectedPage, selectedPage+1, selectedPage+2, numPages];
-            //For every 10 pages, we want to add a marker page to make hopping around easier
-            var setsOfTen = Math.floor(numPages/10);
-            for(var i=1; i<=setsOfTen; i++) {
-                pagesToSelect.push(10 * i);
-            }
+            //Add the first page, last page, current page, and the closet page numbers to the current page
+            var pagesToSelect = [1, selectedPage-1, selectedPage, selectedPage+1, numPages];
 
             for (page = 0; page < numPages; page++) {
                 if(!pagesToSelect.includes(page+1))
                     continue;
 
-                angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
-                    newPage: page
-                }, function(event) {
-                    currentPage = event.data['newPage'];
-                    getScope().updateURLParameters('page',currentPage+1);
+                if(page+1==selectedPage) {
+                    angular.element('<input type="text" class="page-item page-typed" value="'+(page+1)+'"/>').on('change', function(event) {
+                        typedPage = $(event.target).val();
+                        getScope().updateURLParameters('page',typedPage);
 
-                    angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
-                    angular.element(this).addClass("active").siblings().removeClass("active");
+                        angular.element(paginationSelector + " div.pager button").val(typedPage);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
 
-                    // click event
-                    var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    var selectors = displayTableByTabName(activeTabName, response);
-                    displayPagination(activeTabName, selectors, totalRecords, parameters);
+                        // click event
+                        var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
 
-                }).appendTo($pager).addClass("clickable");
+                    }).appendTo($pager).addClass("clickable");
+                } else {
+                    angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
+                        newPage: page
+                    }, function (event) {
+                        currentPage = event.data['newPage'];
+                        getScope().updateURLParameters('page', currentPage + 1);
+
+                        angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
+
+                        // click event
+                        var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+
+                    }).appendTo($pager).addClass("clickable");
+                }
             }
 
             ///////////////////////////////OLD CODE/////////////////////////////////////////////////////////////////////
