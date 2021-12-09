@@ -584,7 +584,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         }
 
         var $pager = angular.element('<div class="pager"></div>');
-        if (numPages <= 5) {
+        if (numPages <= 10) {
             for (var page = 0; page < numPages; page++) {
 
                 angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
@@ -597,76 +597,107 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
 
                     // click event
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    displayTableByTabName(activeTabName, response)
+                    var selectors = displayTableByTabName(activeTabName, response);
+                    displayPagination(activeTabName, selectors, totalRecords, parameters);
 
                 }).appendTo($pager).addClass("clickable");
 
             }
         } else {
-            // the first 3 pages
-            for (page = 0; page < 3; page++) {
+            //Build out pagination based on current selected page
+            var selectedPage = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+            //Add the first page, last page, current page, and the closet page numbers to the current page
+            var pagesToSelect = [1, selectedPage-1, selectedPage, selectedPage+1, numPages];
 
-                angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
-                    newPage: page
-                }, function(event) {
-                    currentPage = event.data['newPage'];
-                    getScope().updateURLParameters('page',currentPage+1);
+            for (page = 0; page < numPages; page++) {
+                if(!pagesToSelect.includes(page+1))
+                    continue;
 
-                    angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
-                    angular.element(this).addClass("active").siblings().removeClass("active");
+                if(page+1==selectedPage) {
+                    angular.element('<input type="text" class="page-item page-typed" value="'+(page+1)+'"/>').on('change', function(event) {
+                        typedPage = $(event.target).val();
+                        getScope().updateURLParameters('page',typedPage);
 
-                    // click event
-                    var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    displayTableByTabName(activeTabName, response);
+                        angular.element(paginationSelector + " div.pager button").val(typedPage);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
 
-                }).appendTo($pager).addClass("clickable");
+                        // click event
+                        var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+
+                    }).appendTo($pager).addClass("clickable");
+                } else {
+                    angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
+                        newPage: page
+                    }, function (event) {
+                        currentPage = event.data['newPage'];
+                        getScope().updateURLParameters('page', currentPage + 1);
+
+                        angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
+
+                        // click event
+                        var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+
+                    }).appendTo($pager).addClass("clickable");
+                }
             }
-
-            // page (...)
-            angular.element('<span class="page-item"></span>').text("...").appendTo($pager).addClass("clickable");
-            // page (last page)
-            angular.element('<span class="page-item"></span>').text(numPages).on('click', {
-                newPage: numPages - 1
-            }, function(event) {
-                currentPage = event.data['newPage'];
-                getScope().updateURLParameters('page',currentPage+1);
-
-                angular.element(this).addClass("active").siblings().removeClass("active");
-
-                //  click event
-                var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                displayTableByTabName(activeTabName, response);
-            }).appendTo($pager).addClass("clickable");
-
-            angular.element('<button class="page-item"></button>').val(currentPage + 1).text("Next").on('click', function(event) {
+        }
+        //Next button
+        if(selectedPage<numPages) {
+            angular.element('<button></button>').val(selectedPage).text("Next").on('click', function (event) {
                 var nextPage = parseInt(angular.element(this).val()) + 1;
                 angular.element(this).val(nextPage);
 
                 var pages = angular.element(paginationSelector + " div.pager span");
-                pages.each(function(e) {
+                pages.each(function (e) {
                     var innerHTML = this.innerHTML;
                     if (nextPage + "" == innerHTML) {
                         $(this).addClass("active").siblings().removeClass("active");
                     }
                 });
 
-                if (nextPage > 3) {
-                    angular.element(paginationSelector + " div.pager span").removeClass("active");
-                }
-
                 currentPage = nextPage;
-                getScope().updateURLParameters('page',currentPage);
+                getScope().updateURLParameters('page', currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
-                displayTableByTabName(activeTabName, response);
-            }).appendTo($pager).addClass("clickable");
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
         }
 
+        //Add pagination to html
         var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
         $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
             if($(this).text()==page)
                 $(this).addClass("active");
-        })
+        });
+
+        //Prev button
+        if(selectedPage>1) {
+            angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function (event) {
+                var nextPage = parseInt(angular.element(this).val()) - 1;
+                angular.element(this).val(nextPage);
+
+                var pages = angular.element(paginationSelector + " div.pager span");
+                pages.each(function (e) {
+                    var innerHTML = this.innerHTML;
+                    if (nextPage + "" == innerHTML) {
+                        $(this).addClass("active").siblings().removeClass("active");
+                    }
+                });
+
+                currentPage = nextPage;
+                getScope().updateURLParameters('page', currentPage);
+                //  click event
+                var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
+        }
     });
 }
 

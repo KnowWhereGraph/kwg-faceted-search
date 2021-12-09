@@ -577,6 +577,20 @@ table.table-filters tbody tr:nth-child(even) {
     font-weight: 600;
 }
 
+.paginate .pager input {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin-left: 20px;
+    line-height: 50px;
+    text-align: center;
+    /* background-color: pink; */
+    color: #00021F;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+}
+
 .paginate .pager span.active {
     background-color: white;
 }
@@ -586,7 +600,7 @@ table.table-filters tbody tr:nth-child(even) {
     cursor: pointer;
 }
 
-.paginate .pager button.page-item {
+.paginate button {
     border: none;
     /* display: block; */
     width: 100px;
@@ -595,6 +609,7 @@ table.table-filters tbody tr:nth-child(even) {
     background-color: #00021F;
     color: #FFFFFF;
     margin-left: 50px;
+    float: right;
 }
 
 .paginate .pager {
