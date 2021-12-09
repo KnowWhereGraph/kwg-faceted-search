@@ -600,7 +600,7 @@ table.table-filters tbody tr:nth-child(even) {
     cursor: pointer;
 }
 
-.paginate .pager button.page-item {
+.paginate button {
     border: none;
     /* display: block; */
     width: 100px;
@@ -609,6 +609,7 @@ table.table-filters tbody tr:nth-child(even) {
     background-color: #00021F;
     color: #FFFFFF;
     margin-left: 50px;
+    float: right;
 }
 
 .paginate .pager {

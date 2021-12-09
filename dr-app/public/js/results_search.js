@@ -645,54 +645,59 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     }).appendTo($pager).addClass("clickable");
                 }
             }
+        }
+        //Next button
+        if(selectedPage<numPages) {
+            angular.element('<button></button>').val(selectedPage).text("Next").on('click', function (event) {
+                var nextPage = parseInt(angular.element(this).val()) + 1;
+                angular.element(this).val(nextPage);
 
-            ///////////////////////////////OLD CODE/////////////////////////////////////////////////////////////////////
-            // // page (...)
-            // angular.element('<span class="page-item"></span>').text("...").appendTo($pager).addClass("clickable");
-            // // page (last page)
-            // angular.element('<span class="page-item"></span>').text(numPages).on('click', {
-            //     newPage: numPages - 1
-            // }, function(event) {
-            //     currentPage = event.data['newPage'];
-            //     getScope().updateURLParameters('page',currentPage+1);
-            //
-            //     angular.element(this).addClass("active").siblings().removeClass("active");
-            //
-            //     //  click event
-            //     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-            //     displayTableByTabName(activeTabName, response);
-            // }).appendTo($pager).addClass("clickable");
-            //
-            // angular.element('<button class="page-item"></button>').val(currentPage + 1).text("Next").on('click', function(event) {
-            //     var nextPage = parseInt(angular.element(this).val()) + 1;
-            //     angular.element(this).val(nextPage);
-            //
-            //     var pages = angular.element(paginationSelector + " div.pager span");
-            //     pages.each(function(e) {
-            //         var innerHTML = this.innerHTML;
-            //         if (nextPage + "" == innerHTML) {
-            //             $(this).addClass("active").siblings().removeClass("active");
-            //         }
-            //     });
-            //
-            //     if (nextPage > 3) {
-            //         angular.element(paginationSelector + " div.pager span").removeClass("active");
-            //     }
-            //
-            //     currentPage = nextPage;
-            //     getScope().updateURLParameters('page',currentPage);
-            //     //  click event
-            //     var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
-            //     displayTableByTabName(activeTabName, response);
-            // }).appendTo($pager).addClass("clickable");
-            ///////////////////////////////OLD CODE/////////////////////////////////////////////////////////////////////
+                var pages = angular.element(paginationSelector + " div.pager span");
+                pages.each(function (e) {
+                    var innerHTML = this.innerHTML;
+                    if (nextPage + "" == innerHTML) {
+                        $(this).addClass("active").siblings().removeClass("active");
+                    }
+                });
+
+                currentPage = nextPage;
+                getScope().updateURLParameters('page', currentPage);
+                //  click event
+                var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
         }
 
+        //Add pagination to html
         var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
         $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
             if($(this).text()==page)
                 $(this).addClass("active");
-        })
+        });
+
+        //Prev button
+        if(selectedPage>1) {
+            angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function (event) {
+                var nextPage = parseInt(angular.element(this).val()) - 1;
+                angular.element(this).val(nextPage);
+
+                var pages = angular.element(paginationSelector + " div.pager span");
+                pages.each(function (e) {
+                    var innerHTML = this.innerHTML;
+                    if (nextPage + "" == innerHTML) {
+                        $(this).addClass("active").siblings().removeClass("active");
+                    }
+                });
+
+                currentPage = nextPage;
+                getScope().updateURLParameters('page', currentPage);
+                //  click event
+                var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
+        }
     });
 }
 
