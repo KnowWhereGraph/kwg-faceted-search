@@ -58,7 +58,7 @@
                     <ul class="list-group" id="place-list">
 
                         <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                            <span><input id="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
                         </li>
 
                         <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
@@ -86,7 +86,7 @@
                                 {{hazard}}</span>
                         </li> -->
                         <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><input type="checkbox" class="form-check-input me-1"
+                            <span><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
                         </li>
                     </ul>
@@ -118,7 +118,7 @@
                                     ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
+                            <input id="{{getSubtopicLabel(expertiseSubtopic).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
                         </li>
                         <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}

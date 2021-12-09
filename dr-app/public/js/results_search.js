@@ -20,8 +20,14 @@ var urlVariables;
 kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
     //prep for URL variable tracking
     urlVariables = $location.search();
-    $scope.updateURLParameters = function(param, value) {
-        urlVariables[param] = value;
+    $scope.updateURLParameters = function(param, value, arr=false) {
+        if(arr && urlVariables[param] != null && urlVariables[param] != '') {
+            paramVals = urlVariables[param].split(',');
+            if(!paramVals.includes(value))
+                paramVals.push(value);
+            urlVariables[param] = paramVals.join(',');
+        } else
+            urlVariables[param] = value;
 
         $timeout(function() {
             $location.search(urlVariables);
@@ -63,9 +69,36 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         $scope.$apply();
 
+        if(urlVariables['place']!=null && urlVariables['place']!='') {
+            $timeout(function() {
+                selectedPlaces = urlVariables['place'].split(',');
+                for(var i=0; i<selectedPlaces.length; i++) {
+                    angular.element("#"+selectedPlaces[i].replaceAll(' ','_')).click();
+                }
+            });
+        }
+
+        if(urlVariables['hazard']!=null && urlVariables['hazard']!='') {
+            $timeout(function() {
+                selectedHazards = urlVariables['hazard'].split(',');
+                for(var i=0; i<selectedHazards.length; i++) {
+                    angular.element("#"+selectedHazards[i].replaceAll(' ','_')).click();
+                }
+            });
+        }
+
         if(urlVariables['group']!=null && urlVariables['group']!='') {
             $timeout(function() {
                 angular.element("#"+urlVariables['group'].replaceAll(' ','_')).click();
+            });
+        }
+
+        if(urlVariables['topic']!=null && urlVariables['topic']!='') {
+            $timeout(function() {
+                selectedTopics = urlVariables['topic'].split(',');
+                for(var i=0; i<selectedTopics.length; i++) {
+                    angular.element("#"+selectedTopics[i].replaceAll(' ','_')).click();
+                }
             });
         }
     });
@@ -159,6 +192,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.showPeopleTab = true;
         }
 
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        $scope.updateURLParameters('hazard',topicStr,true);
+
         // select hazard and interact with the backend, search for it
         displayActiveTab();
 
@@ -167,11 +204,18 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     // 3. Interaction with the backend
     // 3.1 select subtopic of the expertise, search for it
     $scope.selectSubTopic = function($event) {
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        $scope.updateURLParameters('topic',topicStr,true);
+
         displayActiveTab();
     };
 
     // 3.2 select place, search for it
     $scope.selectPlaceSupertopic = function($event) {
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        $scope.updateURLParameters('place',topicStr,true);
         displayActiveTab();
     };
 
