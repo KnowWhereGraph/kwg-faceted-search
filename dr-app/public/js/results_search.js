@@ -33,6 +33,39 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $location.search(urlVariables);
         }.bind(this));
     }
+    //remove url parameter
+    $scope.removeValue = function(param) {
+        var newUrlVariables = {};
+        for(var index in urlVariables) {
+            if(index!=param)
+                newUrlVariables[index] = urlVariables[index];
+        }
+        urlVariables = newUrlVariables;
+
+        $timeout(function() {
+            $location.search(urlVariables);
+        }.bind(this));
+    }
+    //remove single value from a url parameter
+    $scope.removeSingleValue = function(param, value) {
+        var newValue = [];
+        if(urlVariables[param] != null && urlVariables[param] != '') {
+            oldValues = urlVariables[param].split(',');
+            for(var i=0; i<oldValues.length; i++) {
+                if(oldValues[i] != value)
+                    newValue.push(oldValues[i]);
+            }
+        }
+
+        if(newValue.length) {
+            urlVariables[param] = newValue.join(',');
+
+            $timeout(function() {
+                $location.search(urlVariables);
+            }.bind(this));
+        } else
+            $scope.removeValue(param);
+    }
 
     // Show expertise, place, and hazard menu in the initial status
     $scope.showExpertiseList = true;
@@ -171,6 +204,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
 
+        $scope.removeValue('group');
+        $scope.removeValue('topic');
 
         selectedElement.checked = false;
         selectedElement = null;
@@ -194,7 +229,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        $scope.updateURLParameters('hazard',topicStr,true);
+        if(angular.element("#"+topicStr.replaceAll(' ','_')+":checked").length)
+            $scope.updateURLParameters('hazard',topicStr,true);
+        else
+            $scope.removeSingleValue('hazard', topicStr);
 
         // select hazard and interact with the backend, search for it
         displayActiveTab();
@@ -206,7 +244,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.selectSubTopic = function($event) {
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        $scope.updateURLParameters('topic',topicStr,true);
+        if(angular.element("#"+topicStr.replaceAll(' ','_')+":checked").length)
+            $scope.updateURLParameters('topic',topicStr,true);
+        else
+            $scope.removeSingleValue('topic', topicStr);
 
         displayActiveTab();
     };
@@ -215,7 +256,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.selectPlaceSupertopic = function($event) {
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        $scope.updateURLParameters('place',topicStr,true);
+        if(angular.element("#"+topicStr.replaceAll(' ','_')+":checked").length)
+            $scope.updateURLParameters('place',topicStr,true);
+        else
+            $scope.removeSingleValue('place', topicStr);
+
         displayActiveTab();
     };
 
