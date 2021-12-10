@@ -125,15 +125,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 angular.element("#"+urlVariables['group'].replaceAll(' ','_')).click();
             });
         }
-
-        if(urlVariables['topic']!=null && urlVariables['topic']!='') {
-            $timeout(function() {
-                selectedTopics = urlVariables['topic'].split(',');
-                for(var i=0; i<selectedTopics.length; i++) {
-                    angular.element("#"+selectedTopics[i].replaceAll(' ','_')).click();
-                }
-            });
-        }
     });
 
     // data range initialization
@@ -185,6 +176,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.expertiseSubtopics = expertiseSubtopics;
         }).then(function() {
             $scope.$apply();
+
+            if(urlVariables['topic']!=null && urlVariables['topic']!='') {
+                $timeout(function() {
+                    selectedTopics = urlVariables['topic'].split(',');
+                    for(var i=0; i<selectedTopics.length; i++) {
+                        angular.element("#"+selectedTopics[i].replaceAll(' ','_')).click();
+                    }
+                });
+            }
         })
 
         // $timeout(function() {
