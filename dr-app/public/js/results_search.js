@@ -21,12 +21,54 @@ var urlVariables;
 kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
     //prep for URL variable tracking
     urlVariables = $location.search();
-    $scope.updateURLParameters = function(param, value) {
-        urlVariables[param] = value;
+    $scope.updateURLParameters = function(param, value, arr = false) {
+            if (arr && urlVariables[param] != null && urlVariables[param] != '') {
+                paramVals = urlVariables[param].split(',');
+                if (!paramVals.includes(value))
+                    paramVals.push(value);
+                urlVariables[param] = paramVals.join(',');
+            } else
+                urlVariables[param] = value;
 
-        $timeout(function() {
-            $location.search(urlVariables);
-        }.bind(this));
+            $timeout(function() {
+                $location.search(urlVariables);
+                displayBreadCrumbs();
+            }.bind(this));
+        }
+        //remove url parameter
+    $scope.removeValue = function(param) {
+            var newUrlVariables = {};
+            for (var index in urlVariables) {
+                if (index != param)
+                    newUrlVariables[index] = urlVariables[index];
+            }
+            urlVariables = newUrlVariables;
+
+            $timeout(function() {
+                $location.search(urlVariables);
+                displayBreadCrumbs();
+            }.bind(this));
+        }
+        //remove single value from a url parameter
+    $scope.removeSingleValue = function(param, value) {
+        var newValue = [];
+        if (urlVariables[param] != null && urlVariables[param] != '') {
+            oldValues = urlVariables[param].split(',');
+            for (var i = 0; i < oldValues.length; i++) {
+                if (oldValues[i] != value)
+                    newValue.push(oldValues[i]);
+            }
+        }
+
+        if (newValue.length) {
+            urlVariables[param] = newValue.join(',');
+
+            $timeout(function() {
+                $location.search(urlVariables);
+                displayBreadCrumbs();
+            }.bind(this));
+        } else
+            $scope.removeValue(param);
     }
 
     // Show expertise, place, and hazard menu in the initial status
@@ -63,6 +105,30 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.expertiseTopicShow = true;
 
         $scope.$apply();
+
+        if (urlVariables['place'] != null && urlVariables['place'] != '') {
+            $timeout(function() {
+                selectedPlaces = urlVariables['place'].split(',');
+                for (var i = 0; i < selectedPlaces.length; i++) {
+                    angular.element("#" + selectedPlaces[i].replaceAll(' ', '_')).click();
+                }
+            });
+        }
+
+        if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
+            $timeout(function() {
+                selectedHazards = urlVariables['hazard'].split(',');
+                for (var i = 0; i < selectedHazards.length; i++) {
+                    angular.element("#" + selectedHazards[i].replaceAll(' ', '_')).click();
+                }
+            });
+        }
+
+        if (urlVariables['group'] != null && urlVariables['group'] != '') {
+            $timeout(function() {
+                angular.element("#" + urlVariables['group'].replaceAll(' ', '_')).click();
+            });
+        }
     });
 
     // data range initialization
@@ -98,6 +164,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.showSelectedExpertise = true;
         $scope.checkedExpertise = true;
 
+        $scope.updateURLParameters('group', topicStr);
+
         var addedHeight = 50;
         angular.element(".spatial-search").height(function(n, c) {
             return c + addedHeight;
@@ -112,6 +180,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.expertiseSubtopics = expertiseSubtopics;
         }).then(function() {
             $scope.$apply();
+
+            if (urlVariables['topic'] != null && urlVariables['topic'] != '') {
+                $timeout(function() {
+                    selectedTopics = urlVariables['topic'].split(',');
+                    for (var i = 0; i < selectedTopics.length; i++) {
+                        angular.element("#" + selectedTopics[i].replaceAll(' ', '_')).click();
+                    }
+                });
+            }
         })
 
         // $timeout(function() {
@@ -131,6 +208,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
 
+        $scope.removeValue('group');
+        $scope.removeValue('topic');
 
         selectedElement.checked = false;
         selectedElement = null;
@@ -152,6 +231,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.showPeopleTab = true;
         }
 
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
+            $scope.updateURLParameters('hazard', topicStr, true);
+        else
+            $scope.removeSingleValue('hazard', topicStr);
+
         // select hazard and interact with the backend, search for it
         displayActiveTab();
 
@@ -160,11 +246,25 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     // 3. Interaction with the backend
     // 3.1 select subtopic of the expertise, search for it
     $scope.selectSubTopic = function($event) {
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
+            $scope.updateURLParameters('topic', topicStr, true);
+        else
+            $scope.removeSingleValue('topic', topicStr);
+
         displayActiveTab();
     };
 
     // 3.2 select place, search for it
     $scope.selectPlaceSupertopic = function($event) {
+        var currentElement = $event.target.parentNode;
+        var topicStr = currentElement.innerHTML.split(">")[1].trim();
+        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
+            $scope.updateURLParameters('place', topicStr, true);
+        else
+            $scope.removeSingleValue('place', topicStr);
+
         displayActiveTab();
     };
 
@@ -231,10 +331,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             }
         }
 
+        displayBreadCrumbs();
     };
 
     //Select tab based on url value
-    var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
+    var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
     $timeout(function() {
         angular.element("#pills-" + activeTab + "-tab").click();
     });
@@ -317,7 +418,6 @@ var getParameters = function() {
     var hazards = [];
 
     keyword = angular.element(".spatial-search .left-filters .search-dropdown-input input").val();
-    console.log(keyword);
     angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
         expertiseTopics.push(supertopics.value);
     });
@@ -370,6 +470,54 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
         parameters["start_year"], parameters["start_month"], parameters["start_date"],
         parameters["end_year"], parameters["end_month"], parameters["end_date"]);
     return response;
+}
+
+var displayBreadCrumbs = function() {
+    bcURL = '#/result_search?';
+    bcHTML = '<li><a href="' + bcURL + '">Explore</a></li>';
+
+    tab = urlVariables['tab'];
+    tabCap = tab.charAt(0).toUpperCase() + tab.slice(1);
+    bcURL += 'tab=' + tab;
+    bcHTML += '<li><a href="' + bcURL + '">' + tabCap + '</a></li>';
+
+    switch (tab) {
+        case "place":
+            if (urlVariables['place'] != null && urlVariables['place'] != '') {
+                var places = urlVariables['place'].split(',');
+                for (var i = 0; i < places.length; i++) {
+                    placeUrl = bcURL += '&place=' + places[i];
+                    bcHTML += '<li><a href="' + placeUrl + '">' + places[i] + '</a></li>';
+                }
+            }
+            break;
+        case "hazard":
+            if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
+                var hazards = urlVariables['hazard'].split(',');
+                for (var j = 0; j < hazards.length; j++) {
+                    hazardUrl = bcURL += '&hazard=' + hazards[j];
+                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                }
+            }
+            break;
+        case "people":
+            if (urlVariables['group'] != null && urlVariables['group'] != '') {
+                groupUrl = bcURL += '&group=' + urlVariables['group'];
+                bcHTML += '<li><a href="' + groupUrl + '">' + urlVariables['group'] + '</a></li>';
+
+                if (urlVariables['topic'] != null && urlVariables['topic'] != '') {
+                    var topics = urlVariables['topic'].split(',');
+                    for (var k = 0; k < topics.length; k++) {
+                        topicUrl = groupUrl += '&topic=' + topics[k];
+                        bcHTML += '<li><a href="' + topicUrl + '">' + topics[k] + '</a></li>';
+                    }
+                }
+            }
+            break;
+    }
+
+    angular.element("#breadcrumb-list").html(bcHTML);
+    angular.element("#breadcrumb-header").html(tabCap);
 }
 
 // for initial status, click facets
@@ -573,7 +721,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         }
 
         var $pager = angular.element('<div class="pager"></div>');
-        if (numPages <= 5) {
+        if (numPages <= 10) {
             for (var page = 0; page < numPages; page++) {
 
                 angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
@@ -586,48 +734,58 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
 
                     // click event
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    displayTableByTabName(activeTabName, response)
+                    var selectors = displayTableByTabName(activeTabName, response);
+                    displayPagination(activeTabName, selectors, totalRecords, parameters);
 
                 }).appendTo($pager).addClass("clickable");
 
             }
         } else {
-            // the first 3 pages
-            for (page = 0; page < 3; page++) {
+            //Build out pagination based on current selected page
+            var selectedPage = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+            //Add the first page, last page, current page, and the closet page numbers to the current page
+            var pagesToSelect = [1, selectedPage - 1, selectedPage, selectedPage + 1, numPages];
 
-                angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
-                    newPage: page
-                }, function(event) {
-                    currentPage = event.data['newPage'];
-                    getScope().updateURLParameters('page', currentPage + 1);
+            for (page = 0; page < numPages; page++) {
+                if (!pagesToSelect.includes(page + 1))
+                    continue;
 
-                    angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
-                    angular.element(this).addClass("active").siblings().removeClass("active");
+                if (page + 1 == selectedPage) {
+                    angular.element('<input type="text" class="page-item page-typed" value="' + (page + 1) + '"/>').on('change', function(event) {
+                        typedPage = $(event.target).val();
+                        getScope().updateURLParameters('page', typedPage);
 
-                    // click event
-                    var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                    displayTableByTabName(activeTabName, response);
+                        angular.element(paginationSelector + " div.pager button").val(typedPage);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
 
-                }).appendTo($pager).addClass("clickable");
+                        // click event
+                        var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+
+                    }).appendTo($pager).addClass("clickable");
+                } else {
+                    angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
+                        newPage: page
+                    }, function(event) {
+                        currentPage = event.data['newPage'];
+                        getScope().updateURLParameters('page', currentPage + 1);
+
+                        angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
+                        angular.element(this).addClass("active").siblings().removeClass("active");
+
+                        // click event
+                        var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
+                        var selectors = displayTableByTabName(activeTabName, response);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+
+                    }).appendTo($pager).addClass("clickable");
+                }
             }
-
-            // page (...)
-            angular.element('<span class="page-item"></span>').text("...").appendTo($pager).addClass("clickable");
-            // page (last page)
-            angular.element('<span class="page-item"></span>').text(numPages).on('click', {
-                newPage: numPages - 1
-            }, function(event) {
-                currentPage = event.data['newPage'];
-                getScope().updateURLParameters('page', currentPage + 1);
-
-                angular.element(this).addClass("active").siblings().removeClass("active");
-
-                //  click event
-                var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
-                displayTableByTabName(activeTabName, response);
-            }).appendTo($pager).addClass("clickable");
-
-            angular.element('<button class="page-item"></button>').val(currentPage + 1).text("Next").on('click', function(event) {
+        }
+        //Next button
+        if (selectedPage < numPages) {
+            angular.element('<button></button>').val(selectedPage).text("Next").on('click', function(event) {
                 var nextPage = parseInt(angular.element(this).val()) + 1;
                 angular.element(this).val(nextPage);
 
@@ -639,23 +797,43 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     }
                 });
 
-                if (nextPage > 3) {
-                    angular.element(paginationSelector + " div.pager span").removeClass("active");
-                }
-
                 currentPage = nextPage;
                 getScope().updateURLParameters('page', currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
-                displayTableByTabName(activeTabName, response);
-            }).appendTo($pager).addClass("clickable");
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
         }
 
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
             if ($(this).text() == page)
                 $(this).addClass("active");
-        })
+        });
+
+        //Prev button
+        if (selectedPage > 1) {
+            angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function(event) {
+                var nextPage = parseInt(angular.element(this).val()) - 1;
+                angular.element(this).val(nextPage);
+
+                var pages = angular.element(paginationSelector + " div.pager span");
+                pages.each(function(e) {
+                    var innerHTML = this.innerHTML;
+                    if (nextPage + "" == innerHTML) {
+                        $(this).addClass("active").siblings().removeClass("active");
+                    }
+                });
+
+                currentPage = nextPage;
+                getScope().updateURLParameters('page', currentPage);
+                //  click event
+                var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
+                var selectors = displayTableByTabName(activeTabName, response);
+                displayPagination(activeTabName, selectors, totalRecords, parameters);
+            }).appendTo(paginationSelector).addClass("clickable");
+        }
     });
 }
 

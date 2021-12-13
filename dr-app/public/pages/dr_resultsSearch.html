@@ -1,15 +1,11 @@
 <header>
     <div class="container">
         <div class="nav-path">
-            <ul id="explore-expertise1" class="breadcrumb">
-                <li><a href="">Explore </a></li>
-                <li><a href="">Expertise Topic Groups </a></li>
-                <li><a href="">Diseases </a></li>
-                <li><a href="">Covid-19 </a></li>
-                <li><a href="" id="curr_page">Alejandro Feged</a></li>
+            <ul id="breadcrumb-list" class="breadcrumb">
+<!--                <li><a href="" id="curr_page"></a></li>-->
             </ul>
         </div>
-        <h1>Alejandro Feged</h1>
+        <h1 id="breadcrumb-header"></h1>
     </div>
 </header>
 
@@ -22,7 +18,7 @@
             <div class="input-group">
                 <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">Search</button>
+                    <button id="input-query-submit" class="btn btn-outline-secondary" type="button">Search</button>
                 </div>
             </div>
 
@@ -58,7 +54,7 @@
                     <ul class="list-group" id="place-list">
 
                         <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                            <span><input id="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
                         </li>
 
                         <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
@@ -86,7 +82,7 @@
                                 {{hazard}}</span>
                         </li> -->
                         <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><input type="checkbox" class="form-check-input me-1"
+                            <span><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
                         </li>
                     </ul>
@@ -114,11 +110,11 @@
                     <ul class="list-group" id="expertise-list">
 
                         <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1"
+                            <span><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
+                            <input id="{{getSubtopicLabel(expertiseSubtopic).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
                         </li>
                         <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
                             <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
