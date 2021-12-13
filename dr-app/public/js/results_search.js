@@ -31,6 +31,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         $timeout(function() {
             $location.search(urlVariables);
+            displayBreadCrumbs();
         }.bind(this));
     }
     //remove url parameter
@@ -44,6 +45,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         $timeout(function() {
             $location.search(urlVariables);
+            displayBreadCrumbs();
         }.bind(this));
     }
     //remove single value from a url parameter
@@ -62,6 +64,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
             $timeout(function() {
                 $location.search(urlVariables);
+                displayBreadCrumbs();
             }.bind(this));
         } else
             $scope.removeValue(param);
@@ -327,10 +330,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             }
         }
 
+        displayBreadCrumbs();
     };
 
     //Select tab based on url value
-    var activeTab = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+    var activeTab = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
     $timeout(function() {
         angular.element("#pills-" + activeTab + "-tab").click();
     });
@@ -425,6 +429,54 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
         parameters["start_year"], parameters["start_month"], parameters["start_date"],
         parameters["end_year"], parameters["end_month"], parameters["end_date"]);
     return response;
+}
+
+var displayBreadCrumbs = function() {
+    bcURL = '#/result_search?';
+    bcHTML = '<li><a href="'+bcURL+'">Explore</a></li>';
+
+    tab = urlVariables['tab'];
+    tabCap =  tab.charAt(0).toUpperCase() + tab.slice(1);
+    bcURL += 'tab=' + tab;
+    bcHTML += '<li><a href="'+bcURL+'">'+tabCap+'</a></li>';
+
+    switch(tab) {
+        case "place":
+            if(urlVariables['place']!=null && urlVariables['place']!='') {
+                var places = urlVariables['place'].split(',');
+                for(var i=0; i<places.length; i++) {
+                    placeUrl = bcURL += '&place=' + places[i];
+                    bcHTML += '<li><a href="'+placeUrl+'">'+places[i]+'</a></li>';
+                }
+            }
+            break;
+        case "hazard":
+            if(urlVariables['hazard']!=null && urlVariables['hazard']!='') {
+                var hazards = urlVariables['hazard'].split(',');
+                for(var j=0; j<hazards.length; j++) {
+                    hazardUrl = bcURL += '&hazard=' + hazards[j];
+                    bcHTML += '<li><a href="'+hazardUrl+'">'+hazards[j]+'</a></li>';
+                }
+            }
+            break;
+        case "people":
+            if(urlVariables['group']!=null && urlVariables['group']!='') {
+                groupUrl = bcURL += '&group=' + urlVariables['group'];
+                bcHTML += '<li><a href="'+groupUrl+'">'+urlVariables['group']+'</a></li>';
+
+                if(urlVariables['topic']!=null && urlVariables['topic']!='') {
+                    var topics = urlVariables['topic'].split(',');
+                    for(var k=0; k<topics.length; k++) {
+                        topicUrl = groupUrl += '&topic=' + topics[k];
+                        bcHTML += '<li><a href="'+topicUrl+'">'+topics[k]+'</a></li>';
+                    }
+                }
+            }
+            break;
+    }
+
+    angular.element("#breadcrumb-list").html(bcHTML);
+    angular.element("#breadcrumb-header").html(tabCap);
 }
 
 // for initial status, click facets
