@@ -13,6 +13,7 @@ var place_markers = new L.MarkerClusterGroup();
 var markers = [];
 
 var totalResults = 0;
+var resultsSearchMap = null;
 
 //For URL variable tracking
 var urlVariables;
@@ -182,7 +183,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
-        $scope.updateURLParameters("tab",urlUpdateTab);
+        $scope.updateURLParameters("tab", urlUpdateTab);
 
         newParameters = getParameters();
         activeTabName = newActiveTabName;
@@ -193,8 +194,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
             loadedTabs[activeTabName] = true;
 
-            var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-            var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+            var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+            var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
             var response = sendQueries(activeTabName, page, pp, parameters);
             var selectors = displayTableByTabName(activeTabName, response);
             response.then(function(e) {
@@ -213,8 +214,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 displayMap(response, activeTabName);
 
             } else {
-                var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-                var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+                var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
                 var response = sendQueries(activeTabName, page, pp, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 response.then(function(e) {
@@ -233,10 +234,51 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     };
 
     //Select tab based on url value
-    var activeTab = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+    var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
     $timeout(function() {
         angular.element("#pills-" + activeTab + "-tab").click();
     });
+
+    $scope.spatialSearchDraw = function() {
+        if (resultsSearchMap) {
+            resultsSearchMap.pm.addControls({
+                position: "topleft",
+                positions: {
+                    draw: "topleft",
+                    edit: "topright"
+                },
+                drawMarker: false,
+                drawCircleMarker: false,
+                drawPolyline: false,
+                drawRectangle: true,
+                drawPolygon: true,
+                drawCircle: true,
+
+                drawControls: true,
+                editControls: false,
+                optionsControls: true,
+                customControls: true
+            });
+
+            resultsSearchMap.on("pm:create", (e) => {
+                console.log("the shape is drawn/finished");
+                console.log(e.shape);
+                var coordinates;
+                var radius;
+
+                if (e.shape == "Polygon" || e.shape == "Rectangle") {
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
+                } else if (e.shape == "Circle") {
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
+                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
+                }
+
+                console.log("coordinates: ", coordinates);
+                console.log("radius: ", radius);
+
+            });
+        }
+    };
 
 });
 
@@ -250,15 +292,14 @@ var init = function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
         // [40, -109.03]
-        spatialQueryMap = L.map('spatial-search-map').setView([36.895, -95.036667], 4);
+        resultsSearchMap = L.map('results-search-map').setView([40.895, -100.036667], 5);
         L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
             tileSize: 512,
             zoomOffset: -1,
             minZoom: 1,
             attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
             crossOrigin: true
-        }).addTo(spatialQueryMap);
-
+        }).addTo(resultsSearchMap);
     }, 200);
 }
 
@@ -353,8 +394,8 @@ var displayActiveTab = function() {
         parameters = newParameters;
 
         // send queries to the current active tab
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         response = sendQueries(activeTabName, page, pp, parameters);
 
         // get the count of records and display them in the table
@@ -496,20 +537,20 @@ var displayTableByTabName = function(activeTabName, response) {
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
     angular.element(selectors["pagination"]).empty();
-    var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+    var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
     perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" aria-labelledby="dropdownMenuButton" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
-    perPageHTML += (pp==20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
-    perPageHTML += (pp==50) ? '<option value="50" selected="selected">50 Per Page</option>' : '<option value="50">50 Per Page</option>';
-    perPageHTML += (pp==100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
+    perPageHTML += (pp == 20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
+    perPageHTML += (pp == 50) ? '<option value="50" selected="selected">50 Per Page</option>' : '<option value="50">50 Per Page</option>';
+    perPageHTML += (pp == 100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
     perPageHTML += '</select></div>';
     var perPage = angular.element(perPageHTML);
 
     perPage.appendTo(selectors["pagination"]);
-    getScope().updateURLParameters("pp",pp.toString());
+    getScope().updateURLParameters("pp", pp.toString());
     tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
         var recordsPerpage = angular.element(this).val();
-        getScope().updateURLParameters("pp",recordsPerpage);
+        getScope().updateURLParameters("pp", recordsPerpage);
 
         // recalculate the pages
         tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
@@ -523,8 +564,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
     angular.element(selector).each(function() {
         var currentPage = 0;
         var $table = angular.element(this);
-        $table.on('repaginate', function() {
-        });
+        $table.on('repaginate', function() {});
 
         var numPages = Math.ceil(totalRecords / numPerPage);
 
@@ -540,7 +580,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
-                    getScope().updateURLParameters('page',currentPage+1);
+                    getScope().updateURLParameters('page', currentPage + 1);
 
                     angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -559,7 +599,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
-                    getScope().updateURLParameters('page',currentPage+1);
+                    getScope().updateURLParameters('page', currentPage + 1);
 
                     angular.element(paginationSelector + " div.pager button").val(currentPage + 1);
                     angular.element(this).addClass("active").siblings().removeClass("active");
@@ -578,7 +618,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 newPage: numPages - 1
             }, function(event) {
                 currentPage = event.data['newPage'];
-                getScope().updateURLParameters('page',currentPage+1);
+                getScope().updateURLParameters('page', currentPage + 1);
 
                 angular.element(this).addClass("active").siblings().removeClass("active");
 
@@ -604,16 +644,16 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 }
 
                 currentPage = nextPage;
-                getScope().updateURLParameters('page',currentPage);
+                getScope().updateURLParameters('page', currentPage);
                 //  click event
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 displayTableByTabName(activeTabName, response);
             }).appendTo($pager).addClass("clickable");
         }
 
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
-            if($(this).text()==page)
+            if ($(this).text() == page)
                 $(this).addClass("active");
         })
     });
@@ -623,8 +663,6 @@ function displayMap(fullTextResults, tabName) {
     // $("#spatial-search .results-nav ul li button.active")
 
     fullTextResults.then(function(e) {
-
-
         if (place_markers) {
             place_markers.removeLayers(markers);
             markers = [];
@@ -640,7 +678,7 @@ function displayMap(fullTextResults, tabName) {
         var place = e["record"];
 
         if (place) {
-            // var polygon = L.polygon(latlngs).addTo(spatialQueryMap);
+            // var polygon = L.polygon(latlngs).addTo(resultsSearchMap);
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
@@ -665,14 +703,12 @@ function displayMap(fullTextResults, tabName) {
                 center_lat /= count;
                 center_lon /= count;
 
-                spatialQueryMap.panTo(new L.LatLng(center_lat, center_lon));
-                place_markers.addTo(spatialQueryMap);
+                resultsSearchMap.panTo(new L.LatLng(center_lat, center_lon));
+                place_markers.addTo(resultsSearchMap);
             } else {
                 //there is no returned locations
             }
         }
-
-
     });
 
 

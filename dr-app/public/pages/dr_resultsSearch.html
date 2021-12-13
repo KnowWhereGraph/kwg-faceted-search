@@ -27,7 +27,7 @@
             </div>
 
             <div class="spatial-search">
-                <button id="spatial-query" type="button" class="btn" data-toggle="button">
+                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">
                     <div>
                         <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
                     </div>
@@ -249,6 +249,6 @@
 
     </div>
 
-    <div class="map" id="spatial-search-map" ng-controller="spatialmap-controller"></div>
+    <div class="map" id="results-search-map" ng-controller="spatialmap-controller"></div>
 
 </main>
