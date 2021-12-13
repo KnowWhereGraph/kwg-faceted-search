@@ -35,3 +35,21 @@ spatialSearchMap.pm.addControls({
     optionsControls: true,
     customControls: true
 });
+
+spatialSearchMap.on("pm:create", (e) => {
+    console.log("the shape is drawn/finished");
+    console.log(e.shape);
+    var coordinates;
+    var radius;
+
+    if (e.shape == "Polygon" || e.shape == "Rectangle") {
+        coordinates = spatialSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
+    } else if (e.shape == "Circle") {
+        coordinates = spatialSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
+        radius = spatialSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
+    }
+
+    console.log("coordinates: ", coordinates);
+    console.log("radius: ", radius);
+
+});
