@@ -4,15 +4,14 @@
   </div>
 
   <div class="search-bar-home">
-    <form action="#/result_search">
+    <form>
       <div class="form-group">
-        <input type="text" name="keyword" value="" class="form-control" placeholder="Search Places, Hazards, and Experts"></input>
-        <button class="btn" type="submit">Search</button>
+          <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Search Places, Hazards, and Experts"/>
+          <button class="btn" type="submit" ng-click="keywordSubmit($event)">Search</button>
       </div>
     </form>
   </div>
 </header>
-
 
 <main id="home">
     <section class="alt about center">
