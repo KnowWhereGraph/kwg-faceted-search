@@ -80,7 +80,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showPlaceTab = true;
     $scope.showHazardTab = true;
 
-    $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';;
+    $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
 
     // 1. Initialization: Display the expertise super topics, places, and hazard
     getFilters().then(function(data) {
