@@ -81,6 +81,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showPlaceTab = true;
     $scope.showHazardTab = true;
 
+    $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
+
     // 1. Initialization: Display the expertise super topics, places, and hazard
     getFilters().then(function(data) {
         console.log("Data is loaded: ", data);
@@ -141,6 +143,35 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     // entire graph intialization
     init();
+
+    $scope.onKeywordChange = function() {
+        $scope.inputQuery = this.inputQuery;
+    }
+
+    $scope.keywordSubmit = function($event) {
+        var keyword = $scope.inputQuery;
+        if(keyword != '')
+            $scope.updateURLParameters('keyword', keyword);
+        else
+            $scope.removeValue('keyword');
+
+        var parameters = getParameters();
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+        response.then(function(e) {
+            var key = Object.keys(e)[0];
+            var val = e[key];
+            val.then(function(result) {
+                var countResults = result["count"];
+                displayPagination(activeTabName, selectors, countResults, parameters);
+            });
+
+        });
+    }
 
     // 2. select options of expertise, hide hazard
     var selectedElement = null;
@@ -417,7 +448,7 @@ var getParameters = function() {
     var places = [];
     var hazards = [];
 
-    keyword = angular.element(".spatial-search .left-filters .search-dropdown-input input").val();
+    keyword = getScope().inputQuery;
     angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
         expertiseTopics.push(supertopics.value);
     });

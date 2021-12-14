@@ -16,9 +16,9 @@
         <!-- search input box -->
         <div class="search-dropdown-input">
             <div class="input-group">
-                <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Enter your query"/>
                 <div class="input-group-append">
-                    <button id="input-query-submit" class="btn btn-outline-secondary" type="button">Search</button>
+                    <button id="input-query-submit" class="btn btn-outline-secondary" type="button" ng-click="keywordSubmit($event)">Search</button>
                 </div>
             </div>
 
