@@ -176,7 +176,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     // 2. select options of expertise, hide hazard
     var selectedElement = null;
 
-    // 2.1. Select expertise and expand the subtopics 
+    // 2.1. Select expertise and expand the subtopics
     $scope.expertiseTopicShow = true; // show the super topics
     $scope.expertiseSubtopicShow = false; // hide the subtopics
     $scope.showSelectedExpertise = false; // hide the current selected supertopic
@@ -187,7 +187,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         // hide the supertopic list and show the subtopic list
         $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
-        // display the corresponding subtopics 
+        // display the corresponding subtopics
         selectedElement = $event.target;
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
@@ -834,7 +834,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
-            }).appendTo(paginationSelector).addClass("clickable");
+            }).appendTo(paginationSelector).addClass("clickable next");
         }
 
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -863,7 +863,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
-            }).appendTo(paginationSelector).addClass("clickable");
+            }).appendTo(paginationSelector).addClass("clickable prev");
         }
     });
 }
