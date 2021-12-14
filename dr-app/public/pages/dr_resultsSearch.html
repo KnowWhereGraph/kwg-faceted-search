@@ -1,15 +1,11 @@
 <header>
     <div class="container">
         <div class="nav-path">
-            <ul id="explore-expertise1" class="breadcrumb">
-                <li><a href="">Explore </a></li>
-                <li><a href="">Expertise Topic Groups </a></li>
-                <li><a href="">Diseases </a></li>
-                <li><a href="">Covid-19 </a></li>
-                <li><a href="" id="curr_page">Alejandro Feged</a></li>
+            <ul id="breadcrumb-list" class="breadcrumb">
+<!--                <li><a href="" id="curr_page"></a></li>-->
             </ul>
         </div>
-        <h1>Alejandro Feged</h1>
+        <h1 id="breadcrumb-header"></h1>
     </div>
 </header>
 
@@ -20,14 +16,14 @@
         <!-- search input box -->
         <div class="search-dropdown-input">
             <div class="input-group">
-                <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Enter your query"/>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">Search</button>
+                    <button id="input-query-submit" class="btn btn-outline-secondary" type="button" ng-click="keywordSubmit($event)">Search</button>
                 </div>
             </div>
 
             <div class="spatial-search">
-                <button id="spatial-query" type="button" class="btn" data-toggle="button">
+                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">
                     <div>
                         <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
                     </div>
@@ -249,6 +245,6 @@
 
     </div>
 
-    <div class="map" id="spatial-search-map" ng-controller="spatialmap-controller"></div>
+    <div class="map" id="results-search-map" ng-controller="spatialmap-controller"></div>
 
 </main>

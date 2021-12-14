@@ -4,15 +4,14 @@
   </div>
 
   <div class="search-bar-home">
-    <form action="#/result_search?tab=place&pp=20">
+    <form>
       <div class="form-group">
-        <input type="text" name="" value="" class="form-control" placeholder="Search Places, Hazards, and Experts"></input>
-        <button class="btn" type="submit" name="button">Search</button>
+          <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Search Places, Hazards, and Experts"/>
+          <button class="btn" type="submit" ng-click="keywordSubmit($event)">Search</button>
       </div>
     </form>
   </div>
 </header>
-
 
 <main id="home">
     <section class="alt about center">
@@ -29,7 +28,7 @@
               <div class="explore-title">
               </div>
               <div class="card-group-home columns-3">
-                  <a href="#/result_search?tab=place&pp=20">
+                  <a href="#/result_search?tab=place">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">Place</p>
@@ -37,21 +36,21 @@
                       </div>
                   </a>
 
-                  <a href="#/result_search?tab=hazard&pp=20">
+                  <a href="#/result_search?tab=hazard">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">Hazard</p>
                           </div>
                       </div>
                   </a>
-                  <a href="#/result_search?tab=people&pp=20">
+                  <a href="#/result_search?tab=people">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">Expert</p>
                           </div>
                       </div>
                   </a>
-                  <a href="#/result_search?tab=hazard&pp=20&place=City&hazard=Wildfire%20Event">
+                  <a href="#/result_search?tab=hazard&hazard=Wildfire%20Event">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">Wildfire</p>
@@ -59,14 +58,14 @@
                       </div>
                   </a>
 
-                  <a href="#/result_search?tab=place&pp=20&place=City">
+                  <a href="#/result_search?tab=place&place=City">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">City</p>
                           </div>
                       </div>
                   </a>
-                  <a href="#/result_search?tab=people&pp=20&group=Disease%20Topic%20Group&topic=Covid-19%20Topic">
+                  <a href="#/result_search?tab=people&group=Disease%20Topic%20Group&topic=Covid-19%20Topic">
                       <div class="card-explore">
                           <div class="card-body">
                               <p class="card-title">Covid-19</p>
