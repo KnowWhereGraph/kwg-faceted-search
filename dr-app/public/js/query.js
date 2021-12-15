@@ -10,8 +10,8 @@ const H_PREFIXES = {
     dc: 'http://purl.org/dc/elements/1.1/',
     dcterms: 'http://purl.org/dc/terms/',
     foaf: 'http://xmlns.com/foaf/0.1/',
-    kwgr: 'http://stko-roy.geog.ucsb.edu/lod/resource/',
-    'kwg-ont': 'http://stko-roy.geog.ucsb.edu/lod/ontology/',
+    kwgr: 'http://stko-kwg.geog.ucsb.edu/lod/resource/',
+    'kwg-ont': 'http://stko-kwg.geog.ucsb.edu/lod/ontology/',
     geo: 'http://www.opengis.net/ont/geosparql#',
     time: 'http://www.w3.org/2006/time#',
     ago: 'http://awesemantic-geo.link/ontology/',
@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KnowWhereGraph-V2';
 
 // query
 async function query(srq_query) {
@@ -49,6 +49,8 @@ async function query(srq_query) {
     return (await d_res.json()).results.bindings;
 }
 
+getFilters();
+
 // query expertise super topics, place types and hazard types
 async function getFilters() {
     // store expertise super topics, place types and hazard types
@@ -56,40 +58,58 @@ async function getFilters() {
     let h_placeTypes = {};
     let h_hazardTypes = {};
 
-    let a_superTopics = await query( /* syntax: sparql */ `
-        select ?super_topic ?super_topic_label where { 
-            ?super_topic rdf:type kwg-ont:ExpertiseTopic;
-                rdfs:label ?super_topic_label.
-        }
-    `);
+    // let a_superTopics = await query( /* syntax: sparql */ `
+    //     select ?super_topic ?super_topic_label where { 
+    //         ?super_topic rdf:type kwg-ont:ExpertiseTopic;
+    //             rdfs:label ?super_topic_label.
+    //     }
+    // `);
 
-    for (let row of a_superTopics) {
-        h_superTopics[row.super_topic.value] = row.super_topic_label.value;
-    }
+    // for (let row of a_superTopics) {
+    //     h_superTopics[row.super_topic.value] = row.super_topic_label.value;
+    // }
 
-    let a_placeTypes = await query( /* syntax: sparql */ `
+    // as place types do not have a super class such as kwg-ont:Place in KnowWhereGraph-V2 right now,
+    // we will configure h_placeTypes manually
+    // retrieve iris and labels of kwg-ont:AdministrativeRegion and its subclasses
+    let AdministrativeRegion_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion';
+    h_placeTypes[AdministrativeRegion_iri] = {'label':'AdministrativeRegion', 'subclasses':{}};
+    let a_placeTypes_AdministrativeRegion =  await query( /* syntax: sparql */ `
         select ?place_type ?place_type_label where { 
-            ?place_type rdfs:subClassOf kwg-ont:Place;
+            ?place_type rdfs:subClassOf kwg-ont:AdministrativeRegion;
                 rdfs:label ?place_type_label.
         }
     `);
-
-    for (let row of a_placeTypes) {
-        h_placeTypes[row.place_type.value] = row.place_type_label.value;
+    for (let row of a_placeTypes_AdministrativeRegion) {
+        h_placeTypes[AdministrativeRegion_iri]['subclasses'][row.place_type.value] = row.place_type_label.value;
     }
+    
+    // retrieve iris and labels of kwg-ont:USClimateDivision
+    let USClimateDivision_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/USClimateDivision';
+    h_placeTypes[USClimateDivision_iri] = {'label':'USClimateDivision'};
 
-    let a_hazardTypes = await query( /* syntax: sparql */ `
-        select ?hazard_type ?hazard_type_label where { 
-            ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
-                rdfs:label ?hazard_type_label.
-        }
-    `);
+    // retrieve iris and labels of kwg-ont:NWZone
+    let NWZone_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/NWZone';
+    h_placeTypes[NWZone_iri] = {'label':'NWZone'};
 
-    for (let row of a_hazardTypes) {
-        h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
-    }
+    // retrieve iris and labels of kwg-ont:ZipCodeArea
+    let ZipCodeArea_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/ZipCodeArea';
+    h_placeTypes[ZipCodeArea_iri] = {'label':'ZipCodeArea'};
 
-    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
+    console.log(h_placeTypes);
+    console.log(getInstances('http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_0'))
+    // let a_hazardTypes = await query( /* syntax: sparql */ `
+    //     select ?hazard_type ?hazard_type_label where { 
+    //         ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
+    //             rdfs:label ?hazard_type_label.
+    //     }
+    // `);
+
+    // for (let row of a_hazardTypes) {
+    //     h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
+    // }
+
+    // return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
     // let topicgroup_iri_selected = [];
@@ -115,22 +135,23 @@ async function getFilters() {
 };
 
 // functions that respond to onclick events
-// query expertise subtopics
-async function getSubTopic(super_topic_iri) {
-    let h_subTopics = [];
-    let a_topics = await query( /* syntax: sparql */ `
-        select ?topic (group_concat(distinct ?topic_label; separator = '/') as ?topic_label) where { 
-            ?super_topic kwg-ont:subTopic ?topic.
-            ?topic rdfs:label ?topic_label.
-            values ?super_topic {<${super_topic_iri}>}.
-        } group by ?topic
+// query instances
+async function getInstances(class_iri)
+{
+    let h_instances = [];
+    let a_instances = await query( /* syntax: sparql */ `
+        select ?instance ?instance_label
+        {
+            ?instance rdf:type <${class_iri}>;
+                      rdfs:label ?instance_label
+        }
     `);
 
-    for (let row of a_topics) {
-        h_subTopics.push({ 'topic': row.topic.value, 'topic_label': row.topic_label.value });
+    for (let row of a_instances) {
+        h_instances.push({'instance': row.instance.value, 'instance_label': row.instance_label.value});
     }
 
-    return h_subTopics;
+    return h_instances;
 }
 
 // query expert table record
