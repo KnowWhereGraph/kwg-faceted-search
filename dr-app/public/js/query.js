@@ -49,8 +49,6 @@ async function query(srq_query) {
     return (await d_res.json()).results.bindings;
 }
 
-getFilters();
-
 // query expertise super topics, place types and hazard types
 async function getFilters() {
     // store expertise super topics, place types and hazard types
@@ -58,19 +56,20 @@ async function getFilters() {
     let h_placeTypes = {};
     let h_hazardTypes = {};
 
-    // let a_superTopics = await query( /* syntax: sparql */ `
-    //     select ?super_topic ?super_topic_label where { 
-    //         ?super_topic rdf:type kwg-ont:ExpertiseTopic;
-    //             rdfs:label ?super_topic_label.
-    //     }
-    // `);
+    let a_superTopics = await query( /* syntax: sparql */ `
+        select ?super_topic ?super_topic_label where { 
+            ?super_topic rdfs:subClassOf kwg-ont:ExpertiseTopic;
+                         rdfs:label ?super_topic_label.
+        }
+    `);
 
-    // for (let row of a_superTopics) {
-    //     h_superTopics[row.super_topic.value] = row.super_topic_label.value;
-    // }
+    for (let row of a_superTopics) {
+        h_superTopics[row.super_topic.value] = row.super_topic_label.value;
+    }
 
     // as place types do not have a super class such as kwg-ont:Place in KnowWhereGraph-V2 right now,
     // we will configure h_placeTypes manually
+
     // retrieve iris and labels of kwg-ont:AdministrativeRegion and its subclasses
     let AdministrativeRegion_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion';
     h_placeTypes[AdministrativeRegion_iri] = {'label':'AdministrativeRegion', 'subclasses':{}};
@@ -96,20 +95,31 @@ async function getFilters() {
     let ZipCodeArea_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/ZipCodeArea';
     h_placeTypes[ZipCodeArea_iri] = {'label':'ZipCodeArea'};
 
-    console.log(h_placeTypes);
-    console.log(getInstances('http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_0'))
-    // let a_hazardTypes = await query( /* syntax: sparql */ `
-    //     select ?hazard_type ?hazard_type_label where { 
-    //         ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
-    //             rdfs:label ?hazard_type_label.
-    //     }
-    // `);
+    // as many hazard types do not have a super class such as kwg-ont:HazardEvent in KnowWhereGraph-V2 right now,
+    // we will configure h_hazardTypes manually
 
-    // for (let row of a_hazardTypes) {
-    //     h_hazardTypes[row.hazard_type.value] = row.hazard_type_label.value;
-    // }
+    // retrieve iris and labels of kwg-ont:Fire and its subclasses
+    let Fire_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/Fire';
+    h_hazardTypes[Fire_iri] = {'label':'Fire', 'subclasses':{}};
+    let a_hazardTypes_Fire =  await query( /* syntax: sparql */ `
+        select ?fire_type ?fire_type_label where { 
+            ?fire_type rdfs:subClassOf kwg-ont:Fire;
+                       rdfs:label ?fire_type_label.
+        }
+    `);
+    for (let row of a_hazardTypes_Fire) {
+        h_hazardTypes[Fire_iri]['subclasses'][row.fire_type.value] = row.fire_type_label.value;
+    }
 
-    // return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
+    // retrieve iris and labels of kwg-ont:EarthquakeEvent
+    let EarthquakeEvent_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent';
+    h_hazardTypes[EarthquakeEvent_iri] = {'label':'EarthquakeEvent'};
+
+    // retrieve iris and labels of kwg-ont:AirQualitySite
+    let AirQualitySite_iri = 'http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite';
+    h_hazardTypes[AirQualitySite_iri] = {'label':'AirQualitySite'};
+
+    return {'Expertise':h_superTopics, 'Place':h_placeTypes, 'Hazard':h_hazardTypes};
 
     // test data
     // let topicgroup_iri_selected = [];

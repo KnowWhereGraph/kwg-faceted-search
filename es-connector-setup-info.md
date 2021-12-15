@@ -15,7 +15,7 @@ The repository used is KnowWhereGraph-V2 on http://stko-kwg.geog.ucsb.edu:7200.
 PREFIX :<http://www.ontotext.com/connectors/elasticsearch#>
 PREFIX inst:<http://www.ontotext.com/connectors/elasticsearch/instance#>
 INSERT DATA {
-	inst:kwg_index_v2_updated-copy :createConnector '''
+	inst:kwg_index_v2_updated :createConnector '''
 {
   "fields": [
     {
