@@ -146,16 +146,26 @@ async function getFilters() {
 
 // functions that respond to onclick events
 // query instances
-async function getInstances(class_iri)
+// getInstances() is used to retrieve iris and labels of instances that belong to a kwg-ont class
+async function getInstances(class_iri, keyword)
 {
     let h_instances = [];
-    let a_instances = await query( /* syntax: sparql */ `
+    let instance_query = `
         select ?instance ?instance_label
         {
             ?instance rdf:type <${class_iri}>;
-                      rdfs:label ?instance_label
-        }
-    `);
+                    rdfs:label ?instance_label
+    `;
+    if (keyword != "")
+    {
+        instance_query += `filter (regex(?instance_label, "${keyword}", "i"))}`;
+    }
+    else 
+    {
+        instance_query += `}`;
+
+    }
+    let a_instances = await query(instance_query);
 
     for (let row of a_instances) {
         h_instances.push({'instance': row.instance.value, 'instance_label': row.instance_label.value});
