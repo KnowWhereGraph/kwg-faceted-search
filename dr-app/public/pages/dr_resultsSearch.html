@@ -16,7 +16,8 @@
         <!-- search input box -->
         <div class="search-dropdown-input">
             <div class="input-group">
-                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Enter your query"/>
+                <label for="keyword">Keyword Search</label>
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" id="keyword" placeholder="Enter your query"/>
                 <div class="input-group-append">
                     <button id="input-query-submit" class="btn btn-outline-secondary" type="button" ng-click="keywordSubmit($event)">Search</button>
                 </div>
@@ -49,12 +50,13 @@
                     </div> -->
 
                     <!-- part2 -->
-                    <input type="text" class="form-control" placeholder="Find a filter">
+                    <label for="findPlaceFilter">Find Place Filter Search</label>
+                    <input type="text" class="form-control" id="findPlaceFilter" placeholder="Find a filter">
                     <!-- part3 -->
                     <ul class="list-group" id="place-list">
 
                         <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
-                            <span><input id="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
+                            <span><label for="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}">{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}</label><input id="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
                         </li>
 
                         <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
@@ -72,8 +74,8 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-
-                    <input type="text" class="form-control" placeholder="Find a filter">
+                    <label for="findHazardFilter">Find Hazard Filter Search</label>
+                    <input type="text" class="form-control" id="findHazardFilter" placeholder="Find a filter">
 
                     <!-- part3 -->
                     <ul class="list-group" id="hazard-list">
@@ -82,7 +84,7 @@
                                 {{hazard}}</span>
                         </li> -->
                         <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
+                            <span><label for="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}">{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}</label><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
                         </li>
                     </ul>
@@ -97,20 +99,22 @@
 
                     <!-- part2: add div for dynamically showing selected item -->
                     <div class="selectedItem" ng-show="showSelectedExpertise">
-                        <input type="checkbox" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
+                        <label for="selected-expertise">Selected Expertise</label>
+                        <input type="checkbox" id="selected-expertise" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
                         <p>kwg-ont:subTopic
                             <i class="bi bi-chevron-up"></i>
                         </p>
                     </div>
 
                     <!-- part3 -->
-                    <input type="text" class="form-control" placeholder="Find a filter">
+                    <label for="findExpertiseFilter">Find Hazard Filter Search</label>
+                    <input type="text" class="form-control" id="findExpertiseFilter" placeholder="Find a filter">
 
                     <!-- part4 -->
                     <ul class="list-group" id="expertise-list">
 
                         <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
+                            <span><label for="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}">{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}</label><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
                                     ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
                         </li>
                         <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
@@ -128,7 +132,8 @@
                 <form class="data-range-form">
                     <!-- <input type="text" class="form-control mb-1" id="start-year-input" placeholder="Start Year" name="start-year">
                     <input type="text" class="form-control mb-1" id="end-year-input" placeholder="End Year" name="end-year"> -->
-                    <input type="text" class="form-control mb-1" name="daterange" value="01/01/2020 - 12/15/2021">
+                    <label for="daterange">Date Range</label>
+                    <input type="text" class="form-control mb-1" id="daterange" name="daterange" value="01/01/2020 - 12/15/2021">
 
                     <!-- <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> -->
                 </form>

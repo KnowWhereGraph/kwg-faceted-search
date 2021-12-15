@@ -13,6 +13,10 @@ a {
   text-decoration: none;
 }
 
+label {
+  display: none;
+}
+
 /* breadcrum */
 
 .breadcrumb li span {
