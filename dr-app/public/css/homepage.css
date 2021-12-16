@@ -5,6 +5,10 @@ body,
     padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 ul li {
     list-style-type: none;
 }
@@ -92,7 +96,10 @@ nav {
   padding: 0;
   position: absolute;
   z-index: 9;
+}
 
+nav .container {
+  max-width: 960px !important;
 }
 
 /* 0. Integrate the repetative codes */
@@ -100,9 +107,6 @@ nav div.nav-path,
 nav div.display-expert{
     position:absolute;
     left: 41px;
-
-
-
 }
 
 nav div.nav-path a,
@@ -575,8 +579,6 @@ footer div.footer{
 }
 
 footer div.footer div.icons-footer {
-    width: 954px;
-    height: 108px;
     margin: 0 auto;
     position: relative;
     display: flex;
@@ -631,4 +633,35 @@ div.icons-footer div#funded span {
     line-height: 16px;
     margin: 0 auto;
     text-align: center;
+}
+
+
+@media only screen and (max-width: 1000px) {
+  .search-bar-home {
+    padding: 0 30px;
+  }
+
+  div.form-group button {
+    right: 40px;
+  }
+
+  .about p {
+    padding: 0 30px;
+  }
+
+  .card-group-home {
+    padding: 0 30px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .columns-3 > * {
+    width: 47%;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .columns-3 > * {
+    width: 100%;
+  }
 }
