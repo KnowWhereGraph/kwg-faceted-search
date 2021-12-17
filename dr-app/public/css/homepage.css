@@ -21,6 +21,10 @@ label {
   display: none;
 }
 
+.container {
+  max-width: 960px !important;
+}
+
 /* breadcrum */
 
 .breadcrumb li span {
@@ -421,6 +425,8 @@ section.about p {
 
 section.explore {
   padding: 70px 0 120px;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 section.explore .container {
@@ -494,14 +500,11 @@ section.center {
 }
 
 .card-explore {
-  height: 70px;
+  text-align: center;
 }
 
 .card-explore .card-body {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  line-height: 70px !important;
+
 }
 
 
@@ -646,10 +649,6 @@ div.icons-footer div#funded span {
   }
 
   .about p {
-    padding: 0 30px;
-  }
-
-  .card-group-home {
     padding: 0 30px;
   }
 }
