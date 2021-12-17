@@ -1,5 +1,6 @@
 main.spatial-search {
-    height: 1500px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 
@@ -14,24 +15,20 @@ main#faceted-spatial-search {
 }
 
 
-/* two major components : 
+/* two major components :
 1. left side menu: filters
 2. side side panel: results
 */
 
 .spatial-search .left-filters {
-    width: 20%;
+    width: 300px;
     height: 100%;
     background-color: #D8D8DD;
-    float: left;
     box-shadow: 10px 0 64px 0 rgba(0, 0, 0, 0.05);
 }
 
 .spatial-search .results {
-    width: 50%;
-    height: 100%;
-    /* background-color: pink;  */
-    float: left;
+    width: calc(60% - 150px);
 }
 
 
@@ -50,10 +47,9 @@ main#faceted-spatial-search {
 }
 
 .spatial-search .map {
-    width: 30%;
-    height: 100%;
-    float: left;
-    background-color: yellowgreen;
+    width: calc(40% - 150px);
+    height: 1357px;
+    background-color: #00021F;
 }
 
 #faceted-spatial-search .map {
@@ -65,7 +61,7 @@ main#faceted-spatial-search {
 
 
 /* left side menu (filters, has two major components)
-1. spatial search 
+1. spatial search
 2. filters
 */
 
@@ -290,7 +286,7 @@ li#datarange-li form button {
 .spatial-search .results .results-nav {
     width: 100%;
     height: 50px;
-    border-bottom: 2px solid rgba(0, 2, 31, 0.5);
+    border-bottom: 2px solid rgba(0, 2, 31, 0.2);
     /* background-color: coral; */
 }
 
@@ -398,8 +394,13 @@ p#cnfg-tb {
     font-weight: 600;
 }
 
+p#sort-by {
+  display: none;
+}
+
+
 p#cnfg-tb {
-    margin-right: 34px;
+
 }
 
 
@@ -418,7 +419,6 @@ p#cnfg-tb {
 }
 
 .results-nav ul li button {
-    width: 200px;
     height: 100%;
     background-color: transparent;
     border-radius: 0px;
@@ -434,6 +434,7 @@ p#cnfg-tb {
 .results-nav ul li button.active {
     color: #00021F;
     opacity: 1;
+    margin-bottom: 12px;
     border-bottom: 3px solid rgba(0, 2, 31, 1);
 }
 
@@ -481,9 +482,7 @@ p#cnfg-tb {
 
 .results-table .table-body-container {
     width: 100%;
-    height: 1000px;
-    /* background-color: red; */
-    /* height: 500px; */
+    max-height: 900px;
     overflow-y: auto;
 }
 
@@ -505,30 +504,31 @@ table.table-filters tbody tr:nth-child(even) {
 
 .paginate {
     width: 100%;
-    height: 50px;
     margin-top: 30px;
-    /* background-color: brown; */
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 15px;
 }
 
 
 /* .dropdown-menu {
-    width: 300px; 
+    width: 300px;
     height: 100%;
     background-color: violet;
 } */
 
 .paginate .per-page {
-    width: 150px;
-    height: 100%;
-    /* background-color: aquamarine; */
-    float: left;
+    width: 100%;
+    height: 50px;
     position: relative;
 }
 
 .paginate .per-page::after {
     content: "▼";
     position: absolute;
-    right: 15px;
+    right: calc(100% - 150px);
     top: 25%;
 }
 
@@ -559,14 +559,12 @@ table.table-filters tbody tr:nth-child(even) {
 .paginate .pager {
     float: right;
     height: 100%;
-    margin-right: 100px;
 }
 
 .paginate .pager span {
     display: inline-block;
     width: 50px;
     height: 50px;
-    margin-left: 20px;
     line-height: 50px;
     text-align: center;
     border-radius: 50px;
@@ -581,7 +579,6 @@ table.table-filters tbody tr:nth-child(even) {
     display: inline-block;
     width: 50px;
     height: 50px;
-    margin-left: 20px;
     line-height: 50px;
     text-align: center;
     /* background-color: pink; */
@@ -596,24 +593,31 @@ table.table-filters tbody tr:nth-child(even) {
 }
 
 .paginate .pager span:hover {
-    background-color: violet;
+    background-color: #2BA9BD;
     cursor: pointer;
 }
 
 .paginate button {
     border: none;
     /* display: block; */
-    width: 100px;
-    height: 100%;
+    width: 70px;
+    height: 50px;
     border-radius: 8px;
     background-color: #00021F;
     color: #FFFFFF;
-    margin-left: 50px;
     float: right;
 }
 
+.paginate button.prev {
+  order: 1;
+}
+
+.paginate button.next {
+  order: 3;
+}
+
 .paginate .pager {
-    margin-right: 0;
+    order: 2;
 }
 
 
@@ -679,3 +683,37 @@ table.table-filters tbody tr:nth-child(even) {
 .rlts-pagination .pagination>li {
     font-size: 18px;
 } */
+
+
+@media only screen and (max-width: 1000px) {
+  .spatial-search .results {
+    width: calc(100% - 300px);
+  }
+
+  .spatial-search .map {
+      width: 90%;
+      margin: 40px auto;
+      height: 500px;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  .spatial-search .results {
+    width: 100%;
+    order: 1;
+  }
+
+  .spatial-search .map {
+    order: 2;
+  }
+
+  .spatial-search .left-filters {
+      width: 100%;
+      height: 100%;
+      order: 3;
+  }
+
+  .left-filters .search-dropdown-input, ul.filters {
+    width: 90%;
+  }
+}

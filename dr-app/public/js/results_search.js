@@ -176,7 +176,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     // 2. select options of expertise, hide hazard
     var selectedElement = null;
 
-    // 2.1. Select expertise and expand the subtopics 
+    // 2.1. Select expertise and expand the subtopics
     $scope.expertiseTopicShow = true; // show the super topics
     $scope.expertiseSubtopicShow = false; // hide the subtopics
     $scope.showSelectedExpertise = false; // hide the current selected supertopic
@@ -187,7 +187,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         // hide the supertopic list and show the subtopic list
         $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
         $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
-        // display the corresponding subtopics 
+        // display the corresponding subtopics
         selectedElement = $event.target;
         var currentElement = $event.target.parentNode;
         var topicStr = currentElement.innerHTML.split(">")[1].trim();
@@ -717,7 +717,7 @@ var displayTableByTabName = function(activeTabName, response) {
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-    perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" aria-labelledby="dropdownMenuButton" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
+    perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
     perPageHTML += (pp == 20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
     perPageHTML += (pp == 50) ? '<option value="50" selected="selected">50 Per Page</option>' : '<option value="50">50 Per Page</option>';
     perPageHTML += (pp == 100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
@@ -782,7 +782,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     continue;
 
                 if (page + 1 == selectedPage) {
-                    angular.element('<input type="text" class="page-item page-typed" value="' + (page + 1) + '"/>').on('change', function(event) {
+                    angular.element('<label for="page-number">Page Number</label><input type="text" id="page-number" class="page-item page-typed" value="' + (page + 1) + '"/>').on('change', function(event) {
                         typedPage = $(event.target).val();
                         getScope().updateURLParameters('page', typedPage);
 
@@ -834,7 +834,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
-            }).appendTo(paginationSelector).addClass("clickable");
+            }).appendTo(paginationSelector).addClass("clickable next");
         }
 
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -863,7 +863,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
-            }).appendTo(paginationSelector).addClass("clickable");
+            }).appendTo(paginationSelector).addClass("clickable prev");
         }
     });
 }

@@ -81,28 +81,35 @@
         <div class="container">
             <a id="knowwheregraph" href="#/"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
 
-            <ul class="nav">
+            <div class="right" id="menuToggle">
+              <label for="hamburger">Mobile Menu</label>
+              <input type="checkbox" name="hamburger" id="hamburger"/>
+              <span></span>
+              <span></span>
+              <span></span>
+            <ul class="nav" id="menu">
                 <li class="nav-item">
                     <a href="#/about">
-                        <span class="item">About</span>
+                        <p class="item">About</p>
                         <img src="images/dropdown.svg" alt="" class="dropdown-img">
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#/explore">
-                        <span class="item">Explore</span>
+                        <p class="item">Explore</p>
                         <img src="images/dropdown.svg" alt="" class="dropdown-img">
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="" id="navbarDropdown">
-                        <span class="item">Search</span>
+                        <p class="item">Search</p>
                         <img src="images/dropdown.svg" alt="" class="dropdown-img">
                     </a>
 
                     <div class="search-dropdown-input" id="search-dropdown">
                         <div class="input-group mb-3">
                             <form action="#/results_filters">
+                                <label for="input-query">Nav Search</label>
                                 <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit">Search</button>
@@ -121,14 +128,19 @@
 
                 </li>
                 <li class="nav-item">
-                    <span class="item">Tools</span>
+                  <a href="#">
+                    <p class="item">Tools</p>
                     <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                  </a>
                 </li>
                 <li class="nav-item">
-                    <span class="item">Contact</span>
+                  <a href="#">
+                    <p class="item">Contact</p>
                     <img src="images/dropdown.svg" alt="" class="dropdown-img">
+                  </a>
                 </li>
             </ul>
+          </div>
         </div>
 
         <!-- <div class="nav-path"> -->
