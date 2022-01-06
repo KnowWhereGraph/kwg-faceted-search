@@ -1,5 +1,5 @@
 // query.js contains the javascript codes that query data from KnowWhereGraph.
-// Right now the endpoint is set to be KnowWhereGraph-V1 from stko-roy.
+// Right now the endpoint is set to be KnowWhereGraph-V2 from stko-kwg.
 
 // Prefixes
 const H_PREFIXES = {
@@ -10,8 +10,8 @@ const H_PREFIXES = {
     dc: 'http://purl.org/dc/elements/1.1/',
     dcterms: 'http://purl.org/dc/terms/',
     foaf: 'http://xmlns.com/foaf/0.1/',
-    kwgr: 'http://stko-roy.geog.ucsb.edu/lod/resource/',
-    'kwg-ont': 'http://stko-roy.geog.ucsb.edu/lod/ontology/',
+    kwgr: 'http://stko-kwg.geog.ucsb.edu/lod/resource/',
+    'kwg-ont': 'http://stko-kwg.geog.ucsb.edu/lod/ontology/',
     geo: 'http://www.opengis.net/ont/geosparql#',
     time: 'http://www.w3.org/2006/time#',
     ago: 'http://awesemantic-geo.link/ontology/',
@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KnowWhereGraph-V2';
 
 // query
 async function query(srq_query) {
@@ -134,7 +134,7 @@ async function getSubTopic(super_topic_iri) {
 }
 
 // query expert table record
-async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected) 
+async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected)
 {
     let h_expertTable = [];
 
@@ -177,10 +177,10 @@ async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_
             ?place geo:hasGeometry ?place_geometry .
             ?place_geometry geo:asWKT ?place_geometry_wkt .
         }
-    `; 
+    `;
     if (expertises_iri_selected.length != 0)
     {
-        expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) => 
+        expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
             `<${expertise}>`).join(',')}))`;
     }
     else if (topicgroup_iri_selected != "")
@@ -189,7 +189,7 @@ async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_
     }
     if (place_type_iri_list_selected.length != 0)
     {
-        expert_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) => 
+        expert_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
             `<${place_type}>`).join(',')}))`;
     }
     if (keyword != "")
@@ -231,7 +231,7 @@ async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_
 }
 
 // query hazard table records
-async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date) 
+async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let h_hazardTable = [];
     // generate query string to retrieve hazard records
@@ -279,7 +279,7 @@ async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_
     }
     if (place_type_iri_list_selected.length != 0)
     {
-        hazard_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) => 
+        hazard_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
             `<${place_type}>`).join(',')}))`;
     }
     if (keyword != "")
@@ -312,12 +312,12 @@ async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_
     ` + hazard_query_string + `}`;
 
     let a_counter_hazardTable = await query(hazard_counter_query_string);
-    
+
     return {'count':a_counter_hazardTable[0].count.value,'record':h_hazardTable};
 }
 
 // query place table records
-async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date) 
+async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
 {
     let h_placeTable = [];
 
@@ -361,10 +361,10 @@ async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_s
                 ?place geo:hasGeometry ?place_geometry .
                 ?place_geometry geo:asWKT ?place_geometry_wkt .
             }
-        `; 
+        `;
         if (expertises_iri_selected.length != 0)
         {
-            place_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) => 
+            place_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
                 `<${expertise}>`).join(',')}))`;
         }
         else if (topicgroup_iri_selected != "")
@@ -437,10 +437,10 @@ async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_s
     }
     if (place_type_iri_list_selected.length != 0)
     {
-        place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) => 
+        place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
             `<${place_type}>`).join(',')}))`;
     }
-    if (hazards_type_iri_selected.length != 0) 
+    if (hazards_type_iri_selected.length != 0)
     {
         place_query_string += `}`;
     }
@@ -540,7 +540,7 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
             ?place geo:hasGeometry ?place_geometry .
             ?place_geometry geo:asWKT ?place_geometry_wkt .
         }
-    `; 
+    `;
     if (expertises_iri_selected.length != 0)
     {
         expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) => `<${expertise}>`).join(',')}))`;
@@ -610,6 +610,116 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
     }
     console.log(search_result);
     return search_result;
+}
+
+//New search function for place in stko-kwg
+async function getPlaceSearchResults(pageNum, recordNum, keyword="") {
+    let formattedResults = [];
+
+    let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
+    if(keyword!="") {
+        placeQuery +=
+        `
+        ?search a elastic-index:kwg_index_v2_updated;
+        elastic:query "${keyword}";
+        elastic:entities ?entity.
+        `;
+    }
+
+    placeQuery +=
+        `
+        {
+            ?entity a kwg-ont:AdministrativeRegion.
+            ?entity rdf:type ?type
+            FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+            ?entity rdfs:label ?label.
+            ?type rdfs:label ?typeLabel
+        }
+        union
+        {
+            ?entity a kwg-ont:ZipCodeArea.
+            ?entity rdf:type ?type
+            FILTER(?type=kwg-ont:ZipCodeArea).
+            ?entity rdfs:label ?label.
+            ?type rdfs:label ?typeLabel
+        }
+        union
+        {
+            ?entity a kwg-ont:USClimateDivision.
+            ?entity rdf:type ?type
+            FILTER(?type=kwg-ont:USClimateDivision).
+            ?entity rdfs:label ?label.
+            ?type rdfs:label ?typeLabel
+        }
+        union
+        {
+            ?entity a kwg-ont:NWZone.
+            ?entity rdf:type ?type
+            FILTER(?type=kwg-ont:NWZone).
+            ?entity rdfs:label ?label.
+            ?type rdfs:label ?typeLabel
+        }
+    } ORDER BY ASC(?label)`;
+
+    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    for (let row of queryResults) {
+        formattedResults.push({
+            'place':row.entity.value,
+            'place_name':row.label.value,
+            'place_type':row.type.value,
+            'place_type_name':row.typeLabel.value,
+            //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+            //'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
+        });
+    }
+
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
+}
+
+//New search function for place in stko-kwg
+async function getHazardSearchResults(pageNum, recordNum, keyword="") {
+    let formattedResults = [];
+
+    let placeQuery = `select ?label ?type ?typeLabel ?entity ?place ?placeLabel ?time ?timeLabel where {`;
+    if(keyword!="") {
+        placeQuery +=
+        `
+        ?search a elastic-index:kwg_index_v2_updated;
+        elastic:query "${keyword}";
+        elastic:entities ?entity.
+        `;
+    }
+
+    placeQuery +=
+        `
+        ?entity rdf:type ?type.
+        ?type rdfs:subClassOf kwg-ont:HazardEvent.
+        ?entity rdfs:label ?label.
+        ?entity kwg-ont:locatedIn ?place.
+        ?place rdfs:label ?placeLabel.
+        ?entity sosa:phenomenonTime ?time.
+        ?time time:inXSDDate ?timeLabel
+    } ORDER BY ASC(?label)`;
+
+    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    for (let row of queryResults) {
+        formattedResults.push({
+            'hazard':row.entity.value,
+            'hazard_name':row.label.value,
+            'hazard_type':row.type.value,
+            //'hazard_type_name':row.hazard_type_name.value,
+            'place':row.place.value,
+            'place_name':row.placeLabel.value,
+            //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+            //'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
+            'date':row.time.value,
+            'date_name':row.timeLabel.value,
+        });
+    }
+
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
 // getFilters();

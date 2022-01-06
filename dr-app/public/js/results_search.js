@@ -329,14 +329,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
             var response = sendQueries(activeTabName, page, pp, parameters);
             var selectors = displayTableByTabName(activeTabName, response);
-            response.then(function(e) {
-                var key = Object.keys(e)[0];
-                var val = e[key];
-                val.then(function(result) {
-                    var countResults = result["count"];
-                    displayPagination(activeTabName, selectors, countResults, parameters);
-                });
 
+            response.then(function(result) {
+                var countResults = result["count"];
+                displayPagination(activeTabName, selectors, countResults, parameters);
             });
         } else {
             // if the parameters are the same, then consider about the tab
@@ -349,14 +345,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
                 var response = sendQueries(activeTabName, page, pp, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
-                response.then(function(e) {
-                    var key = Object.keys(e)[0];
-                    var val = e[key];
-                    val.then(function(result) {
-                        var countResults = result["count"];
-                        displayPagination(activeTabName, selectors, countResults, parameters);
-                    });
 
+                response.then(function(result) {
+                    var countResults = result["count"];
+                    displayPagination(activeTabName, selectors, countResults, parameters);
                 });
                 loadedTabs[activeTabName] = true;
             }
@@ -494,13 +486,19 @@ var getParameters = function() {
 };
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
-    var response = getFullTextSearchResult(tabName, pageNum, recordNum,
-        parameters["keyword"],
-        parameters["expertiseTopics"], parameters["expertiseSubtopics"],
-        parameters["places"], parameters["hazards"],
-        parameters["start_year"], parameters["start_month"], parameters["start_date"],
-        parameters["end_year"], parameters["end_month"], parameters["end_date"]);
-    return response;
+    switch(tabName) {
+        case "Place":
+            return getPlaceSearchResults(pageNum, recordNum, parameters["keyword"]);
+        case "Hazard":
+            return getHazardSearchResults(pageNum, recordNum, parameters["keyword"]);
+        default:
+            return getFullTextSearchResult(tabName, pageNum, recordNum,
+                parameters["keyword"],
+                parameters["expertiseTopics"], parameters["expertiseSubtopics"],
+                parameters["places"], parameters["hazards"],
+                parameters["start_year"], parameters["start_month"], parameters["start_date"],
+                parameters["end_year"], parameters["end_month"], parameters["end_date"]);
+    }
 }
 
 var displayBreadCrumbs = function() {
@@ -638,78 +636,74 @@ var displayTableByTabName = function(activeTabName, response) {
         // Table body
         var tableBody = angular.element(selectors["tbody"] + " tbody");
         tableBody.empty();
-        response.then(function(e) {
-            var key = Object.keys(e)[0];
-            var val = e[key];
-            val.then(function(result) {
-                countResults = result["count"];
-                recordResults = result["record"];
 
-                var attributeLinks = [];
-                var tableBodyAttributes = [];
+        response.then(function(result) {
+            countResults = result["count"];
+            recordResults = result["record"];
 
-                recordResults.forEach(e => {
-                    var rowBodyHtml = "";
-                    if (selectors["thead"] == "#expertTableTitle") {
-                        attributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
-                        tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
-                    } else if (selectors["thead"] == "#placeTableTitle") {
-                        attributeLinks = [e["place"], e["place_type"]];
-                        tableBodyAttributes = [e["place_name"], e["place_type_name"]];
-                    } else if (selectors["thead"] == "#hazardTableTitle") {
-                        attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
-                        tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
-                    };
+            var attributeLinks = [];
+            var tableBodyAttributes = [];
 
-                    var numAttributes = attributeLinks.length;
-                    for (var index = 0; index < numAttributes; index++) {
-                        var link = attributeLinks[index];
-                        var attr = tableBodyAttributes[index];
+            recordResults.forEach(e => {
+                var rowBodyHtml = "";
+                if (selectors["thead"] == "#expertTableTitle") {
+                    attributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
+                    tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
+                } else if (selectors["thead"] == "#placeTableTitle") {
+                    attributeLinks = [e["place"], e["place_type"]];
+                    tableBodyAttributes = [e["place_name"], e["place_type_name"]];
+                } else if (selectors["thead"] == "#hazardTableTitle") {
+                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
+                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
+                };
 
-                        var linkArr = Array.from(new Set(link.split(",")));
-                        var attrArr = Array.from(new Set(attr.split(",")));
-                        var cellHtml = "";
-                        if (linkArr.length == attrArr.length) {
-                            for (var i = 0; i < linkArr.length; i++) {
-                                var href = linkArr[i];
-                                var content = attrArr[i];
-                                cellHtml += '<a target="_blank" href="' + href + '">' + content + "</a>";
-                                if (linkArr.length > 1 && i < linkArr.length - 1) {
-                                    cellHtml += "; <br>";
-                                }
+                var numAttributes = attributeLinks.length;
+                for (var index = 0; index < numAttributes; index++) {
+                    var link = attributeLinks[index];
+                    var attr = tableBodyAttributes[index];
+
+                    var linkArr = Array.from(new Set(link.split(",")));
+                    var attrArr = Array.from(new Set(attr.split(",")));
+                    var cellHtml = "";
+                    if (linkArr.length == attrArr.length) {
+                        for (var i = 0; i < linkArr.length; i++) {
+                            var href = linkArr[i];
+                            var content = attrArr[i];
+                            cellHtml += '<a target="_blank" href="' + href + '">' + content + "</a>";
+                            if (linkArr.length > 1 && i < linkArr.length - 1) {
+                                cellHtml += "; <br>";
                             }
                         }
-                        // rowBodyHtml += "<td>" + '<a target="_blank" href="' + link + '">' + attr + "</a></td>";
-                        rowBodyHtml += "<td>" + cellHtml + "</td>";
                     }
+                    // rowBodyHtml += "<td>" + '<a target="_blank" href="' + link + '">' + attr + "</a></td>";
+                    rowBodyHtml += "<td>" + cellHtml + "</td>";
+                }
 
-                    var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
-                    tableBody.append(rowHtml);
-                })
+                var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                tableBody.append(rowHtml);
+            })
 
-            }).then(function() {
+        }).then(function() {
 
-                // angular.element(selectors["pagination"]).empty();
-                // var perPage = angular.element('<div class="dropdown per-page">\
-                //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-                //         <option value="50" selected="selected">50 Per Page</option>\
-                //         <option value="100">100 Per Page</option>\
-                //         <option value="200">200 Per Page</option>\
-                //     </select>\
-                // </div>');
+            // angular.element(selectors["pagination"]).empty();
+            // var perPage = angular.element('<div class="dropdown per-page">\
+            //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+            //         <option value="50" selected="selected">50 Per Page</option>\
+            //         <option value="100">100 Per Page</option>\
+            //         <option value="200">200 Per Page</option>\
+            //     </select>\
+            // </div>');
 
-                // perPage.appendTo(selectors["pagination"]);
-                // tablePagination(selectors["tbody"], selectors["pagination"], countResults, 50);
-                // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
-                //     var recordsPerpage = angular.element(this).val();
+            // perPage.appendTo(selectors["pagination"]);
+            // tablePagination(selectors["tbody"], selectors["pagination"], countResults, 50);
+            // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
+            //     var recordsPerpage = angular.element(this).val();
 
-                //     tablePagination(selectors["tbody"], selectors["pagination"], countResults, recordsPerpage);
-                // })
-            });
-
-            displayMap(val, activeTabName);
-
+            //     tablePagination(selectors["tbody"], selectors["pagination"], countResults, recordsPerpage);
+            // })
         });
+
+        displayMap(response, activeTabName);
     }
     return selectors;
 };
