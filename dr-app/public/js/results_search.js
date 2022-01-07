@@ -301,14 +301,17 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.clickTab = function($event) {
         var newActiveTabName = "";
         var urlUpdateTab = "";
+        //We have to look in two places cause the ng-click function may set the target to a child node rather than the
+        //node it actually belongs to. Why? Who the heck knows.g
         var innerHTML = $event.target.innerHTML;
-        if (innerHTML.indexOf("People") != -1) {
+        var currentHTML = $event.currentTarget.innerHTML;
+        if (innerHTML.indexOf("People") != -1 || currentHTML.indexOf("People") != -1) {
             urlUpdateTab = "people";
             newActiveTabName = "People";
-        } else if (innerHTML.indexOf("Place") != -1) {
+        } else if (innerHTML.indexOf("Place") != -1 || currentHTML.indexOf("Place") != -1) {
             urlUpdateTab = "place";
             newActiveTabName = "Place";
-        } else if (innerHTML.indexOf("Hazard") != -1) {
+        } else if (innerHTML.indexOf("Hazard") != -1 || currentHTML.indexOf("Hazard") != -1) {
             urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
@@ -336,7 +339,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             // if the parameters are the same, then consider about the tab
             if (loadedTabs[activeTabName]) {
                 // if the current tab is already loaded
-                displayMap(response, activeTabName);
+                //displayMap(response, activeTabName);
 
             } else {
                 var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
@@ -344,6 +347,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 var response = sendQueries(activeTabName, page, pp, parameters);
                 var selectors = displayTableByTabName(activeTabName, response);
 
+                console.log(response);
                 response.then(function(result) {
                     var countResults = result["count"];
                     displayPagination(activeTabName, selectors, countResults, parameters);
@@ -687,7 +691,7 @@ var displayTableByTabName = function(activeTabName, response) {
             // })
         });
 
-        displayMap(response, activeTabName);
+        //displayMap(response, activeTabName);
     }
     return selectors;
 };
