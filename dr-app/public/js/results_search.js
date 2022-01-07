@@ -162,14 +162,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
-        response.then(function(e) {
-            var key = Object.keys(e)[0];
-            var val = e[key];
-            val.then(function(result) {
-                var countResults = result["count"];
-                displayPagination(activeTabName, selectors, countResults, parameters);
-            });
 
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }
 
@@ -662,20 +658,8 @@ var displayTableByTabName = function(activeTabName, response) {
                     var link = attributeLinks[index];
                     var attr = tableBodyAttributes[index];
 
-                    var linkArr = Array.from(new Set(link.split(",")));
-                    var attrArr = Array.from(new Set(attr.split(",")));
-                    var cellHtml = "";
-                    if (linkArr.length == attrArr.length) {
-                        for (var i = 0; i < linkArr.length; i++) {
-                            var href = linkArr[i];
-                            var content = attrArr[i];
-                            cellHtml += '<a target="_blank" href="' + href + '">' + content + "</a>";
-                            if (linkArr.length > 1 && i < linkArr.length - 1) {
-                                cellHtml += "; <br>";
-                            }
-                        }
-                    }
-                    // rowBodyHtml += "<td>" + '<a target="_blank" href="' + link + '">' + attr + "</a></td>";
+                    var cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
+
                     rowBodyHtml += "<td>" + cellHtml + "</td>";
                 }
 

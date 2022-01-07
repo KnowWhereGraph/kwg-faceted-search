@@ -231,243 +231,243 @@ async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_
 }
 
 // query hazard table records
-async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
-{
-    let h_hazardTable = [];
-    // generate query string to retrieve hazard records
-    let hazard_query_string = `
-        select distinct ?hazard ?hazard_name ?hazard_type ?hazard_type_name ?place ?place_name 
-        ?date ?date_name
-        {
-    `;
-    if (keyword != "")
-    {
-        hazard_query_string += `
-            ?search a elastic-index:dr_index_new;
-            elastic:query "${keyword}";
-            elastic:entities ?hazard.
-        `;
-    }
-    hazard_query_string += `
-        ?hazard kwg-ont:locatedAt ?place;
-                sosa:phenomenonTime ?date;
-                rdfs:label ?hazard_name;
-                rdf:type ?hazard_type.
-        ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
-                     rdfs:label ?hazard_type_name.
-        ?date rdfs:label ?date_name;
-              time:hasBeginning ?start_date;
-              time:hasEnd ?end_date.
-        ?start_date rdfs:label ?start_date_label.
-        ?end_date rdfs:label ?end_date_label.
-        ?place rdfs:label ?place_name;
-               rdf:type ?place_type.
-        ?place_type rdfs:subClassOf kwg-ont:Place;
-                    rdfs:label ?place_type_name.
-    `;
-    if ((start_year != '') && (start_month != '') && (start_date != ''))
-    {
-        hazard_query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
-    }
-    if ((end_year != '') && (end_month != '') && (end_date != ''))
-    {
-        hazard_query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
-    }
-    if (hazards_type_iri_selected.length != 0)
-    {
-        hazard_query_string += `filter (?hazard_type in (${hazards_type_iri_selected.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
-    }
-    if (place_type_iri_list_selected.length != 0)
-    {
-        hazard_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
-            `<${place_type}>`).join(',')}))`;
-    }
-    if (keyword != "")
-    {
-        hazard_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
-    }
-    hazard_query_string += `}`;
-
-    let a_hazardTable = await query(hazard_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
-    for (let row of a_hazardTable)
-    {
-        h_hazardTable.push({
-            'hazard':row.hazard.value,
-            'hazard_name':row.hazard_name.value,
-            'hazard_type':row.hazard_type.value,
-            'hazard_type_name':row.hazard_type_name.value,
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-            'date':row.date.value,
-            'date_name':row.date_name.value,
-        });
-    }
-
-    // generate query string to retrieve the counter of hazard records
-    let hazard_counter_query_string = `
-        select (count(*) as ?count)
-        {
-    ` + hazard_query_string + `}`;
-
-    let a_counter_hazardTable = await query(hazard_counter_query_string);
-
-    return {'count':a_counter_hazardTable[0].count.value,'record':h_hazardTable};
-}
+// async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+// {
+//     let h_hazardTable = [];
+//     // generate query string to retrieve hazard records
+//     let hazard_query_string = `
+//         select distinct ?hazard ?hazard_name ?hazard_type ?hazard_type_name ?place ?place_name
+//         ?date ?date_name
+//         {
+//     `;
+//     if (keyword != "")
+//     {
+//         hazard_query_string += `
+//             ?search a elastic-index:dr_index_new;
+//             elastic:query "${keyword}";
+//             elastic:entities ?hazard.
+//         `;
+//     }
+//     hazard_query_string += `
+//         ?hazard kwg-ont:locatedAt ?place;
+//                 sosa:phenomenonTime ?date;
+//                 rdfs:label ?hazard_name;
+//                 rdf:type ?hazard_type.
+//         ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
+//                      rdfs:label ?hazard_type_name.
+//         ?date rdfs:label ?date_name;
+//               time:hasBeginning ?start_date;
+//               time:hasEnd ?end_date.
+//         ?start_date rdfs:label ?start_date_label.
+//         ?end_date rdfs:label ?end_date_label.
+//         ?place rdfs:label ?place_name;
+//                rdf:type ?place_type.
+//         ?place_type rdfs:subClassOf kwg-ont:Place;
+//                     rdfs:label ?place_type_name.
+//     `;
+//     if ((start_year != '') && (start_month != '') && (start_date != ''))
+//     {
+//         hazard_query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
+//     }
+//     if ((end_year != '') && (end_month != '') && (end_date != ''))
+//     {
+//         hazard_query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
+//     }
+//     if (hazards_type_iri_selected.length != 0)
+//     {
+//         hazard_query_string += `filter (?hazard_type in (${hazards_type_iri_selected.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
+//     }
+//     if (place_type_iri_list_selected.length != 0)
+//     {
+//         hazard_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
+//             `<${place_type}>`).join(',')}))`;
+//     }
+//     if (keyword != "")
+//     {
+//         hazard_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
+//     }
+//     hazard_query_string += `}`;
+//
+//     let a_hazardTable = await query(hazard_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
+//     for (let row of a_hazardTable)
+//     {
+//         h_hazardTable.push({
+//             'hazard':row.hazard.value,
+//             'hazard_name':row.hazard_name.value,
+//             'hazard_type':row.hazard_type.value,
+//             'hazard_type_name':row.hazard_type_name.value,
+//             'place':row.place.value,
+//             'place_name':row.place_name.value,
+//             'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+//             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
+//             'date':row.date.value,
+//             'date_name':row.date_name.value,
+//         });
+//     }
+//
+//     // generate query string to retrieve the counter of hazard records
+//     let hazard_counter_query_string = `
+//         select (count(*) as ?count)
+//         {
+//     ` + hazard_query_string + `}`;
+//
+//     let a_counter_hazardTable = await query(hazard_counter_query_string);
+//
+//     return {'count':a_counter_hazardTable[0].count.value,'record':h_hazardTable};
+// }
 
 // query place table records
-async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
-{
-    let h_placeTable = [];
-
-    let place_query_string = `
-        select distinct ?place ?place_name ?place_type ?place_type_name 
-    `;
-
-    // generate query string to retrieve place records depending on the selection of filters
-    if (topicgroup_iri_selected != "")
-    {
-        place_query_string += `
-            (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) 
-            (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
-            {
-        `;
-        if (keyword != "")
-        {
-            place_query_string += `
-                ?search a elastic-index:dr_index_new;
-                elastic:query "${keyword}";
-                elastic:entities ?expert.
-            `;
-        }
-        place_query_string += `
-            ?expert rdf:type kwg-ont:Expert;
-                    kwg-ont:affiliation ?affiliation;
-                    kwg-ont:department ?department;
-                    kwg-ont:personalPage ?webpage;
-                    kwg-ont:hasExpertise ?expertise;
-                    rdfs:label ?expert_name .
-            ?expertise rdfs:label ?expertise_name.
-            ?department rdfs:label ?department_name.
-            ?affiliation rdfs:label ?affiliation_name;
-                        kwg-ont:locatedAt ?place.
-            ?place rdf:type ?place_type;
-                rdfs:label ?place_name.
-            ?place_type rdfs:subClassOf kwg-ont:Place;
-                        rdfs:label ?place_type_name.
-            optional
-            {
-                ?place geo:hasGeometry ?place_geometry .
-                ?place_geometry geo:asWKT ?place_geometry_wkt .
-            }
-        `;
-        if (expertises_iri_selected.length != 0)
-        {
-            place_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
-                `<${expertise}>`).join(',')}))`;
-        }
-        else if (topicgroup_iri_selected != "")
-        {
-            place_query_string += `<${topicgroup_iri_selected}> kwg-ont:subTopic ?expertise`;
-        }
-    }
-    else if (hazards_type_iri_selected.length != 0)
-    {
-        place_query_string += `
-            {
-        `;
-        if (keyword != "")
-        {
-            place_query_string += `
-                ?search a elastic-index:dr_index_new;
-                elastic:query "${keyword}";
-                elastic:entities ?hazard.
-            `;
-        }
-        place_query_string += `
-            ?hazard kwg-ont:locatedAt ?place;
-                    sosa:phenomenonTime ?date;
-                    rdfs:label ?hazard_name;
-                    rdf:type ?hazard_type.
-            ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
-                         rdfs:label ?hazard_type_name.
-            ?date rdfs:label ?date_name;
-                  time:hasBeginning ?start_date;
-                  time:hasEnd ?end_date.
-            ?start_date rdfs:label ?start_date_label.
-            ?end_date rdfs:label ?end_date_label.
-            ?place rdfs:label ?place_name;
-                   rdf:type ?place_type.
-            ?place_type rdfs:subClassOf kwg-ont:Place;
-                        rdfs:label ?place_type_name.
-        `;
-        if ((start_year != '') && (start_month != '') && (start_date != ''))
-        {
-            place_query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
-        }
-        if ((end_year != '') && (end_month != '') && (end_date != ''))
-        {
-            place_query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
-        }
-        place_query_string += `filter (?hazard_type in (${hazards_type_iri_selected.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
-    }
-    else
-    {
-        place_query_string += `
-            (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) 
-            (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
-            {
-        `;
-        place_query_string += `
-            ?place rdfs:label ?place_name;
-                   rdf:type ?place_type.
-            ?place_type rdfs:subClassOf kwg-ont:Place;
-                        rdfs:label ?place_type_name.
-            optional
-            {
-                ?place geo:hasGeometry ?place_geometry .
-                ?place_geometry geo:asWKT ?place_geometry_wkt .
-            }
-        `;
-    }
-    if (keyword != "")
-    {
-        place_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
-    }
-    if (place_type_iri_list_selected.length != 0)
-    {
-        place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
-            `<${place_type}>`).join(',')}))`;
-    }
-    if (hazards_type_iri_selected.length != 0)
-    {
-        place_query_string += `}`;
-    }
-    else
-    {
-        place_query_string += `} group by ?place ?place_name ?place_type ?place_type_name`;
-    }
-
-    let a_placeTable = await query(place_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
-    for (let row of a_placeTable)
-    {
-        h_placeTable.push({
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_type':row.place_type.value,
-            'place_type_name':row.place_type_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
-        });
-    }
-    let place_counter_query_string = `
-        select (count(*) as ?count)
-        {
-    ` + place_query_string + `}`;
-    let a_counter_placeTable = await query(place_counter_query_string);
-    return {'count':a_counter_placeTable[0].count.value,'record':h_placeTable};
-}
+// async function getPlaceTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
+// {
+//     let h_placeTable = [];
+//
+//     let place_query_string = `
+//         select distinct ?place ?place_name ?place_type ?place_type_name
+//     `;
+//
+//     // generate query string to retrieve place records depending on the selection of filters
+//     if (topicgroup_iri_selected != "")
+//     {
+//         place_query_string += `
+//             (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry)
+//             (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
+//             {
+//         `;
+//         if (keyword != "")
+//         {
+//             place_query_string += `
+//                 ?search a elastic-index:dr_index_new;
+//                 elastic:query "${keyword}";
+//                 elastic:entities ?expert.
+//             `;
+//         }
+//         place_query_string += `
+//             ?expert rdf:type kwg-ont:Expert;
+//                     kwg-ont:affiliation ?affiliation;
+//                     kwg-ont:department ?department;
+//                     kwg-ont:personalPage ?webpage;
+//                     kwg-ont:hasExpertise ?expertise;
+//                     rdfs:label ?expert_name .
+//             ?expertise rdfs:label ?expertise_name.
+//             ?department rdfs:label ?department_name.
+//             ?affiliation rdfs:label ?affiliation_name;
+//                         kwg-ont:locatedAt ?place.
+//             ?place rdf:type ?place_type;
+//                 rdfs:label ?place_name.
+//             ?place_type rdfs:subClassOf kwg-ont:Place;
+//                         rdfs:label ?place_type_name.
+//             optional
+//             {
+//                 ?place geo:hasGeometry ?place_geometry .
+//                 ?place_geometry geo:asWKT ?place_geometry_wkt .
+//             }
+//         `;
+//         if (expertises_iri_selected.length != 0)
+//         {
+//             place_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
+//                 `<${expertise}>`).join(',')}))`;
+//         }
+//         else if (topicgroup_iri_selected != "")
+//         {
+//             place_query_string += `<${topicgroup_iri_selected}> kwg-ont:subTopic ?expertise`;
+//         }
+//     }
+//     else if (hazards_type_iri_selected.length != 0)
+//     {
+//         place_query_string += `
+//             {
+//         `;
+//         if (keyword != "")
+//         {
+//             place_query_string += `
+//                 ?search a elastic-index:dr_index_new;
+//                 elastic:query "${keyword}";
+//                 elastic:entities ?hazard.
+//             `;
+//         }
+//         place_query_string += `
+//             ?hazard kwg-ont:locatedAt ?place;
+//                     sosa:phenomenonTime ?date;
+//                     rdfs:label ?hazard_name;
+//                     rdf:type ?hazard_type.
+//             ?hazard_type rdfs:subClassOf kwg-ont:Hazard;
+//                          rdfs:label ?hazard_type_name.
+//             ?date rdfs:label ?date_name;
+//                   time:hasBeginning ?start_date;
+//                   time:hasEnd ?end_date.
+//             ?start_date rdfs:label ?start_date_label.
+//             ?end_date rdfs:label ?end_date_label.
+//             ?place rdfs:label ?place_name;
+//                    rdf:type ?place_type.
+//             ?place_type rdfs:subClassOf kwg-ont:Place;
+//                         rdfs:label ?place_type_name.
+//         `;
+//         if ((start_year != '') && (start_month != '') && (start_date != ''))
+//         {
+//             place_query_string += `filter (?start_date_label >= '${start_year+'-'+start_month+'-'+start_date+'-0000 EST'}')`;
+//         }
+//         if ((end_year != '') && (end_month != '') && (end_date != ''))
+//         {
+//             place_query_string += `filter (?end_date_label <= '${end_year+'-'+end_month+'-'+end_date+'-2400 EST'}')`;
+//         }
+//         place_query_string += `filter (?hazard_type in (${hazards_type_iri_selected.map((hazard_type) => `<${hazard_type}>`).join(',')}))`;
+//     }
+//     else
+//     {
+//         place_query_string += `
+//             (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry)
+//             (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt)
+//             {
+//         `;
+//         place_query_string += `
+//             ?place rdfs:label ?place_name;
+//                    rdf:type ?place_type.
+//             ?place_type rdfs:subClassOf kwg-ont:Place;
+//                         rdfs:label ?place_type_name.
+//             optional
+//             {
+//                 ?place geo:hasGeometry ?place_geometry .
+//                 ?place_geometry geo:asWKT ?place_geometry_wkt .
+//             }
+//         `;
+//     }
+//     if (keyword != "")
+//     {
+//         place_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
+//     }
+//     if (place_type_iri_list_selected.length != 0)
+//     {
+//         place_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
+//             `<${place_type}>`).join(',')}))`;
+//     }
+//     if (hazards_type_iri_selected.length != 0)
+//     {
+//         place_query_string += `}`;
+//     }
+//     else
+//     {
+//         place_query_string += `} group by ?place ?place_name ?place_type ?place_type_name`;
+//     }
+//
+//     let a_placeTable = await query(place_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
+//     for (let row of a_placeTable)
+//     {
+//         h_placeTable.push({
+//             'place':row.place.value,
+//             'place_name':row.place_name.value,
+//             'place_type':row.place_type.value,
+//             'place_type_name':row.place_type_name.value,
+//             'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+//             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
+//         });
+//     }
+//     let place_counter_query_string = `
+//         select (count(*) as ?count)
+//         {
+//     ` + place_query_string + `}`;
+//     let a_counter_placeTable = await query(place_counter_query_string);
+//     return {'count':a_counter_placeTable[0].count.value,'record':h_placeTable};
+// }
 
 // full-text search
 async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
@@ -704,11 +704,12 @@ async function getHazardSearchResults(pageNum, recordNum, keyword="") {
 
     let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
+        let hazardLabelArray = row.type.value.split("/");
         formattedResults.push({
             'hazard':row.entity.value,
             'hazard_name':row.label.value,
             'hazard_type':row.type.value,
-            //'hazard_type_name':row.hazard_type_name.value,
+            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1],
             'place':row.place.value,
             'place_name':row.placeLabel.value,
             //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
