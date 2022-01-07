@@ -17,7 +17,8 @@ const H_PREFIXES = {
     ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
-    'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#'
+    'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
+    'iospress': 'http://ld.iospress.nl/rdf/ontology/',
 };
 
 let S_PREFIXES = '';
@@ -134,101 +135,101 @@ async function getSubTopic(super_topic_iri) {
 }
 
 // query expert table record
-async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected)
-{
-    let h_expertTable = [];
-
-    // generate query string to retrieve expert records
-    let expert_query_string = `
-        select distinct ?expert ?expert_name ?affiliation ?affiliation_name 
-        (group_concat(distinct ?department; separator=",") as ?department) 
-        (group_concat(distinct ?department_name; separator=",") as ?department_name) 
-        (group_concat(distinct ?expertise; separator=",") as ?expertise) 
-        (group_concat(distinct ?expertise_name; separator=",") as ?expertise_name) 
-        ?place ?place_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry) 
-        (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt) ?webpage
-        {
-    `;
-    if (keyword != "")
-    {
-        expert_query_string += `
-            ?search a elastic-index:dr_index_new;
-            elastic:query "${keyword}";
-            elastic:entities ?expert.
-        `;
-    }
-    expert_query_string += `
-        ?expert rdf:type kwg-ont:Expert;
-                kwg-ont:affiliation ?affiliation;
-                kwg-ont:department ?department;
-                kwg-ont:personalPage ?webpage;
-                kwg-ont:hasExpertise ?expertise;
-                rdfs:label ?expert_name .
-        ?expertise rdfs:label ?expertise_name.
-        ?department rdfs:label ?department_name.
-        ?affiliation rdfs:label ?affiliation_name;
-                     kwg-ont:locatedAt ?place.
-        ?place rdf:type ?place_type;
-               rdfs:label ?place_name.
-        ?place_type rdfs:subClassOf kwg-ont:Place;
-                    rdfs:label ?place_type_name.
-        optional
-        {
-            ?place geo:hasGeometry ?place_geometry .
-            ?place_geometry geo:asWKT ?place_geometry_wkt .
-        }
-    `;
-    if (expertises_iri_selected.length != 0)
-    {
-        expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
-            `<${expertise}>`).join(',')}))`;
-    }
-    else if (topicgroup_iri_selected != "")
-    {
-        expert_query_string += `<${topicgroup_iri_selected}> kwg-ont:subTopic ?expertise`;
-    }
-    if (place_type_iri_list_selected.length != 0)
-    {
-        expert_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
-            `<${place_type}>`).join(',')}))`;
-    }
-    if (keyword != "")
-    {
-        expert_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
-    }
-    expert_query_string += `} group by ?expert ?expert_name ?affiliation ?affiliation_name ?place ?place_name ?webpage`;
-
-    let a_expertTable = await query(expert_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
-
-    for (let row of a_expertTable)
-    {
-        h_expertTable.push({
-            'expert':row.expert.value,
-            'expert_name':row.expert_name.value,
-            'affiliation':row.affiliation.value,
-            'affiliation_name':row.affiliation_name.value,
-            'department':row.department.value,
-            'department_name':row.department_name.value,
-            'expertise':row.expertise.value,
-            'expertise_name':row.expertise_name.value,
-            'place':row.place.value,
-            'place_name':row.place_name.value,
-            'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-            'webpage':row.webpage.value
-        });
-    }
-
-    // generate query string to retrieve the counter of expert records
-    let expert_counter_query_string = `
-        select (count(*) as ?count)
-        {
-    ` + expert_query_string + `}`;
-
-    let a_counter_expertTable = await query(expert_counter_query_string);
-
-    return {'count':a_counter_expertTable[0].count.value,'record':h_expertTable};
-}
+// async function getExpertTableRecord(pagenum, recordnum, keyword, topicgroup_iri_selected, expertises_iri_selected, place_type_iri_list_selected)
+// {
+//     let h_expertTable = [];
+//
+//     // generate query string to retrieve expert records
+//     let expert_query_string = `
+//         select distinct ?expert ?expert_name ?affiliation ?affiliation_name
+//         (group_concat(distinct ?department; separator=",") as ?department)
+//         (group_concat(distinct ?department_name; separator=",") as ?department_name)
+//         (group_concat(distinct ?expertise; separator=",") as ?expertise)
+//         (group_concat(distinct ?expertise_name; separator=",") as ?expertise_name)
+//         ?place ?place_name (group_concat(distinct ?place_geometry; separator=",") as ?place_geometry)
+//         (group_concat(distinct ?place_geometry_wkt; separator=",") as ?place_geometry_wkt) ?webpage
+//         {
+//     `;
+//     if (keyword != "")
+//     {
+//         expert_query_string += `
+//             ?search a elastic-index:dr_index_new;
+//             elastic:query "${keyword}";
+//             elastic:entities ?expert.
+//         `;
+//     }
+//     expert_query_string += `
+//         ?expert rdf:type kwg-ont:Expert;
+//                 kwg-ont:affiliation ?affiliation;
+//                 kwg-ont:department ?department;
+//                 kwg-ont:personalPage ?webpage;
+//                 kwg-ont:hasExpertise ?expertise;
+//                 rdfs:label ?expert_name .
+//         ?expertise rdfs:label ?expertise_name.
+//         ?department rdfs:label ?department_name.
+//         ?affiliation rdfs:label ?affiliation_name;
+//                      kwg-ont:locatedAt ?place.
+//         ?place rdf:type ?place_type;
+//                rdfs:label ?place_name.
+//         ?place_type rdfs:subClassOf kwg-ont:Place;
+//                     rdfs:label ?place_type_name.
+//         optional
+//         {
+//             ?place geo:hasGeometry ?place_geometry .
+//             ?place_geometry geo:asWKT ?place_geometry_wkt .
+//         }
+//     `;
+//     if (expertises_iri_selected.length != 0)
+//     {
+//         expert_query_string += `filter (?expertise in (${expertises_iri_selected.map((expertise) =>
+//             `<${expertise}>`).join(',')}))`;
+//     }
+//     else if (topicgroup_iri_selected != "")
+//     {
+//         expert_query_string += `<${topicgroup_iri_selected}> kwg-ont:subTopic ?expertise`;
+//     }
+//     if (place_type_iri_list_selected.length != 0)
+//     {
+//         expert_query_string += `filter (?place_type in (${place_type_iri_list_selected.map((place_type) =>
+//             `<${place_type}>`).join(',')}))`;
+//     }
+//     if (keyword != "")
+//     {
+//         expert_query_string +=  `filter (regex(?place_name, "${keyword}", "i"))`;
+//     }
+//     expert_query_string += `} group by ?expert ?expert_name ?affiliation ?affiliation_name ?place ?place_name ?webpage`;
+//
+//     let a_expertTable = await query(expert_query_string + ` limit` + recordnum + ` offset ` + (pagenum-1)*recordnum);
+//
+//     for (let row of a_expertTable)
+//     {
+//         h_expertTable.push({
+//             'expert':row.expert.value,
+//             'expert_name':row.expert_name.value,
+//             'affiliation':row.affiliation.value,
+//             'affiliation_name':row.affiliation_name.value,
+//             'department':row.department.value,
+//             'department_name':row.department_name.value,
+//             'expertise':row.expertise.value,
+//             'expertise_name':row.expertise_name.value,
+//             'place':row.place.value,
+//             'place_name':row.place_name.value,
+//             'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+//             'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
+//             'webpage':row.webpage.value
+//         });
+//     }
+//
+//     // generate query string to retrieve the counter of expert records
+//     let expert_counter_query_string = `
+//         select (count(*) as ?count)
+//         {
+//     ` + expert_query_string + `}`;
+//
+//     let a_counter_expertTable = await query(expert_counter_query_string);
+//
+//     return {'count':a_counter_expertTable[0].count.value,'record':h_expertTable};
+// }
 
 // query hazard table records
 // async function getHazardTableRecord(pagenum, recordnum, keyword, place_type_iri_list_selected, hazards_type_iri_selected, start_year, start_month, start_date, end_year, end_month, end_date)
@@ -677,7 +678,7 @@ async function getPlaceSearchResults(pageNum, recordNum, keyword="") {
     return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
-//New search function for place in stko-kwg
+//New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, keyword="") {
     let formattedResults = [];
 
@@ -723,4 +724,50 @@ async function getHazardSearchResults(pageNum, recordNum, keyword="") {
     return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
-// getFilters();
+//New search function for expert in stko-kwg
+async function getExpertSearchResults(pageNum, recordNum, keyword="") {
+    let formattedResults = [];
+
+    let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
+    if(keyword!="") {
+        placeQuery +=
+            `
+        ?search a elastic-index:kwg_index_v2_updated;
+        elastic:query "${keyword}";
+        elastic:entities ?entity.
+        `;
+    }
+
+    placeQuery +=
+        `
+        ?entity rdf:type iospress:Contributor.
+        ?entity rdfs:label ?label.
+        ?entity kwg-ont:hasExpertise ?sortaExpert.
+        ?sortaExpert rdf:type ?expert.
+        ?expert rdfs:label ?expertLabel.
+        ?entity iospress:contributorAffiliation ?affiliation.
+        ?affiliation rdfs:label ?affiliationLabel
+    } ORDER BY ASC(?label)`;
+
+    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    for (let row of queryResults) {
+        formattedResults.push({
+            'expert':row.entity.value,
+            'expert_name':row.label.value,
+            'affiliation':row.affiliation.value,
+            'affiliation_name':row.affiliationLabel.value,
+            'department':"Insert Department Here",
+            'department_name':"Insert Department Here",
+            'expertise':row.expert.value,
+            'expertise_name':row.expertLabel.value,
+            'place':"Insert Place Here",
+            'place_name':"Insert Place Here",
+            // 'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+            // 'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
+            // 'webpage':row.webpage.value
+        });
+    }
+
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
+}

@@ -161,6 +161,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
+        console.log(activeTabName);
+        console.log(response);
         var selectors = displayTableByTabName(activeTabName, response);
 
         response.then(function(result) {
@@ -302,7 +304,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var innerHTML = $event.target.innerHTML;
         if (innerHTML.indexOf("People") != -1) {
             urlUpdateTab = "people";
-            newActiveTabName = "Expert";
+            newActiveTabName = "People";
         } else if (innerHTML.indexOf("Place") != -1) {
             urlUpdateTab = "place";
             newActiveTabName = "Place";
@@ -487,13 +489,10 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
             return getPlaceSearchResults(pageNum, recordNum, parameters["keyword"]);
         case "Hazard":
             return getHazardSearchResults(pageNum, recordNum, parameters["keyword"]);
+        case "People":
+            return getExpertSearchResults(pageNum, recordNum, parameters["keyword"]);
         default:
-            return getFullTextSearchResult(tabName, pageNum, recordNum,
-                parameters["keyword"],
-                parameters["expertiseTopics"], parameters["expertiseSubtopics"],
-                parameters["places"], parameters["hazards"],
-                parameters["start_year"], parameters["start_month"], parameters["start_date"],
-                parameters["end_year"], parameters["end_month"], parameters["end_date"]);
+            return {};
     }
 }
 
@@ -552,7 +551,7 @@ var displayActiveTab = function() {
     var activeElement = angular.element(".results-table #pills-tabContent div.active");
     var activeElementID = activeElement[0].id;
     if (activeElementID.endsWith("people")) {
-        activeTabName = "Expert";
+        activeTabName = "People";
     } else if (activeElementID.endsWith("place")) {
         activeTabName = "Place";
     } else if (activeElementID.endsWith("hazard")) {
@@ -593,7 +592,7 @@ var displayTableByTabName = function(activeTabName, response) {
     var recordResults = null;
     var titlesDisplayed = [];
 
-    if (activeTabName == "Expert") {
+    if (activeTabName == "People") {
         selectors = {
             "thead": "#expertTableTitle",
             "tbody": "#expertTableBody",
@@ -640,6 +639,7 @@ var displayTableByTabName = function(activeTabName, response) {
             var attributeLinks = [];
             var tableBodyAttributes = [];
 
+            console.log(recordResults);
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
                 if (selectors["thead"] == "#expertTableTitle") {
