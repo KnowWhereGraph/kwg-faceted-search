@@ -81,10 +81,25 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
 
+    //Set place facet values
+    $scope.placeFacetsRegion = (urlVariables['region']!=null && urlVariables['region']!='') ? urlVariables['region'] : '';
+    $scope.placeFacetsZip = (urlVariables['zip']!=null && urlVariables['zip']!='') ? urlVariables['zip'] : '';
+    $scope.placeFacetsUSCD = (urlVariables['uscd']!=null && urlVariables['uscd']!='') ? urlVariables['uscd'] : '';
+    $scope.placeFacetsNWZ = (urlVariables['nwz']!=null && urlVariables['nwz']!='') ? urlVariables['nwz'] : '';
+
     //Populate hazard class types and set values
     getHazardClasses().then(function(data) {
         $scope.hazardUrls = data;
         $scope.$apply();
+    }).then(function() {
+        if((urlVariables['hazard']!=null && urlVariables['hazard']!='')) {
+            $timeout(function() {
+                let hazArr = urlVariables['hazard'].split(',');
+                for(let i=0; i<hazArr.length; i++) {
+                    angular.element("#"+hazArr[i]).click();
+                }
+            });
+        }
     });
 
     // entire graph intialization
