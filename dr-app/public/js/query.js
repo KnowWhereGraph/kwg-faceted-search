@@ -614,20 +614,79 @@ async function getFullTextSearchResult(tabname, pagenum, recordnum, keyword, top
 }
 
 //New search function for place in stko-kwg
-async function getPlaceSearchResults(pageNum, recordNum, keyword="") {
+async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
-    if(keyword!="") {
-        placeQuery +=
-        `
+
+    if(parameters["keyword"]!="") {
+        placeQuery +=`
         ?search a elastic-index:kwg_index_v2_updated;
-        elastic:query "${keyword}";
-        elastic:entities ?entity.
-        `;
+        elastic:query "${parameters["keyword"]}";
+        elastic:entities ?entity.`;
     }
 
-    placeQuery +=
+    if(parameters["placeFacetsRegion"]!="" | parameters["placeFacetsUSCD"]!="" | parameters["placeFacetsNWZ"]!="" | parameters["placeFacetsZip"]!="") {
+        let typeQueries = [];
+
+        if(parameters["placeFacetsRegion"]!="") {
+            typeQueries.push(`
+            {
+                ?search a elastic-index:kwg_index_v2_updated;
+                elastic:query "${parameters["placeFacetsRegion"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:AdministrativeRegion.
+                ?entity rdf:type ?type
+                FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+                ?entity rdfs:label ?label.
+                ?type rdfs:label ?typeLabel
+            }`);
+        }
+        if(parameters["placeFacetsZip"]!="") {
+            typeQueries.push(`
+            {
+                ?search a elastic-index:kwg_index_v2_updated;
+                elastic:query "${parameters["placeFacetsZip"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:ZipCodeArea.
+                ?entity rdf:type ?type
+                FILTER(?type=kwg-ont:ZipCodeArea).
+                ?entity rdfs:label ?label.
+                ?type rdfs:label ?typeLabel
+            }`);
+        }
+        if(parameters["placeFacetsUSCD"]!="") {
+            typeQueries.push(`
+            {
+                ?search a elastic-index:kwg_index_v2_updated;
+                elastic:query "${parameters["placeFacetsUSCD"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:USClimateDivision.
+                ?entity rdf:type ?type
+                FILTER(?type=kwg-ont:USClimateDivision).
+                ?entity rdfs:label ?label
+            }`);
+        }
+        if(parameters["placeFacetsNWZ"]!="") {
+            typeQueries.push(`
+            {
+                ?search a elastic-index:kwg_index_v2_updated;
+                elastic:query "${parameters["placeFacetsNWZ"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:NWZone.
+                ?entity rdf:type ?type
+                FILTER(?type=kwg-ont:NWZone).
+                ?entity rdfs:label ?label
+            }`);
+        }
+        console.log(typeQueries);
+        placeQuery += typeQueries.join(' union ');
+    } else {
+        placeQuery +=
         `
         {
             ?entity a kwg-ont:AdministrativeRegion.
@@ -649,26 +708,27 @@ async function getPlaceSearchResults(pageNum, recordNum, keyword="") {
             ?entity a kwg-ont:USClimateDivision.
             ?entity rdf:type ?type
             FILTER(?type=kwg-ont:USClimateDivision).
-            ?entity rdfs:label ?label.
-            ?type rdfs:label ?typeLabel
+            ?entity rdfs:label ?label
         }
         union
         {
             ?entity a kwg-ont:NWZone.
             ?entity rdf:type ?type
             FILTER(?type=kwg-ont:NWZone).
-            ?entity rdfs:label ?label.
-            ?type rdfs:label ?typeLabel
-        }
-    } ORDER BY ASC(?label)`;
+            ?entity rdfs:label ?label
+        }`;
+    }
+
+    placeQuery += `} ORDER BY ASC(?label)`;
 
     let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
+        let placeLabel = (typeof row.typeLabel  === 'undefined') ? row.type.value : row.typeLabel.value;
         formattedResults.push({
             'place':row.entity.value,
             'place_name':row.label.value,
             'place_type':row.type.value,
-            'place_type_name':row.typeLabel.value,
+            'place_type_name':placeLabel,
             //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
             //'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
@@ -679,15 +739,15 @@ async function getPlaceSearchResults(pageNum, recordNum, keyword="") {
 }
 
 //New search function for hazard in stko-kwg
-async function getHazardSearchResults(pageNum, recordNum, keyword="") {
+async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     let placeQuery = `select ?label ?type ?typeLabel ?entity ?place ?placeLabel ?time ?timeLabel where {`;
-    if(keyword!="") {
+    if(parameters["keyword"]!="") {
         placeQuery +=
         `
         ?search a elastic-index:kwg_index_v2_updated;
-        elastic:query "${keyword}";
+        elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
     }
@@ -725,15 +785,15 @@ async function getHazardSearchResults(pageNum, recordNum, keyword="") {
 }
 
 //New search function for expert in stko-kwg
-async function getExpertSearchResults(pageNum, recordNum, keyword="") {
+async function getExpertSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
-    if(keyword!="") {
+    if(parameters["keyword"]!="") {
         placeQuery +=
             `
         ?search a elastic-index:kwg_index_v2_updated;
-        elastic:query "${keyword}";
+        elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
     }

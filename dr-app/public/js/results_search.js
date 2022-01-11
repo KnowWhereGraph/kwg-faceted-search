@@ -302,7 +302,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var newActiveTabName = "";
         var urlUpdateTab = "";
         //We have to look in two places cause the ng-click function may set the target to a child node rather than the
-        //node it actually belongs to. Why? Who the heck knows.g
+        //node it actually belongs to. Why? Who the heck knows.
         var innerHTML = $event.target.innerHTML;
         var currentHTML = $event.currentTarget.innerHTML;
         if (innerHTML.indexOf("People") != -1 || currentHTML.indexOf("People") != -1) {
@@ -406,6 +406,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     };
 
+    $scope.placeFacetChanged = function() {
+        var parameters = getParameters();
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
 });
 
 kwgApp.controller("filters-controller", function($scope) {});
@@ -436,65 +450,33 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
-    var keyword = "";
-    var expertiseTopics = [];
-    var expertiseSubtopics = [];
-    var places = [];
-    var hazards = [];
+    var parameters = {"keyword": getScope().inputQuery};
 
-    keyword = getScope().inputQuery;
-    angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
-        expertiseTopics.push(supertopics.value);
+    //Place facets
+    angular.element("#placeFacetsRegion").each((index, div) => {
+        parameters["placeFacetsRegion"] = div.value;
     });
-    angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each((index, subtopics) => {
-        expertiseSubtopics.push(JSON.parse(subtopics.value).topic);
+    angular.element("#placeFacetsZip").each((index, div) => {
+        parameters["placeFacetsZip"] = div.value;
     });
-    angular.element("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each((index, place) => {
-        places.push(place.value);
+    angular.element("#placeFacetsUSCD").each((index, div) => {
+        parameters["placeFacetsUSCD"] = div.value;
     });
-    angular.element("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each((index, hazard) => {
-        hazards.push(hazard.value);
+    angular.element("#placeFacetsNWZ").each((index, div) => {
+        parameters["placeFacetsNWZ"] = div.value;
     });
 
-
-    if (!startDate) {
-        startDate = "2020-01-01";
-    }
-    if (!endDate) {
-        endDate = "2021-12-25";
-    }
-    var start_year = startDate.split("-")[0];
-    var start_month = startDate.split("-")[1];
-    var start_date = startDate.split("-")[2];
-
-    var end_year = endDate.split("-")[0];
-    var end_month = endDate.split("-")[1];
-    var end_date = endDate.split("-")[2];
-
-    return {
-        "keyword": keyword,
-        "expertiseTopics": expertiseTopics,
-        "expertiseSubtopics": expertiseSubtopics,
-        "places": places,
-        "hazards": hazards,
-        "start_year": start_year,
-        "start_month": start_month,
-        "start_date": start_date,
-        "end_year": end_year,
-        "end_month": end_month,
-        "end_date": end_date
-    };
-
+    return parameters;
 };
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     switch(tabName) {
         case "Place":
-            return getPlaceSearchResults(pageNum, recordNum, parameters["keyword"]);
+            return getPlaceSearchResults(pageNum, recordNum, parameters);
         case "Hazard":
-            return getHazardSearchResults(pageNum, recordNum, parameters["keyword"]);
+            return getHazardSearchResults(pageNum, recordNum, parameters);
         case "People":
-            return getExpertSearchResults(pageNum, recordNum, parameters["keyword"]);
+            return getExpertSearchResults(pageNum, recordNum, parameters);
         default:
             return {};
     }
