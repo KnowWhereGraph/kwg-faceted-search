@@ -223,9 +223,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ?entity sosa:phenomenonTime ?time.
         ?time time:inXSDDate ?timeLabel${dateQuery}
     } ORDER BY ASC(?label)`;
-
-    console.log(hazardQuery);
-
+    
     let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
