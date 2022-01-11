@@ -42,78 +42,41 @@
                     <input type="text" class="form-control" id="placeFacetsZip" ng-model="placeFacetsZip" ng-blur="placeFacetChanged()" placeholder="Find by Zip Code...">
                     <input type="text" class="form-control" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-blur="placeFacetChanged()" placeholder="Find by US Climate Division...">
                     <input type="text" class="form-control" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-blur="placeFacetChanged()" placeholder="Find by NW Zone...">
-                    <ul class="list-group" id="place-list">
-                    </ul>
                 </div>
             </li>
 
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-                    <label for="findHazardFilter">Find Hazard Filter Search</label>
-                    <input type="text" class="form-control" id="findHazardFilter" placeholder="Find a filter">
-
-                    <!-- part3 -->
                     <ul class="list-group" id="hazard-list">
                         <!-- <li ng-repeat="hazard in hazards">
                             <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
                                 {{hazard}}</span>
                         </li> -->
                         <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><label for="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}">{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}</label><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
+                            <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hazardUrl['hazard_type_name']}}" name="hazard">
+                            {{hazardUrl['hazard_type_name']}}
                         </li>
                     </ul>
-
                 </div>
             </li>
             <li id="expertise" ng-show="showExpertiseList">
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
-
-                    <!-- part2: add div for dynamically showing selected item -->
-                    <div class="selectedItem" ng-show="showSelectedExpertise">
-                        <label for="selected-expertise">Selected Expertise</label>
-                        <input type="checkbox" id="selected-expertise" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
-                        <p>kwg-ont:subTopic
-                            <i class="bi bi-chevron-up"></i>
-                        </p>
-                    </div>
-
-                    <!-- part3 -->
-                    <label for="findExpertiseFilter">Find Hazard Filter Search</label>
-                    <input type="text" class="form-control" id="findExpertiseFilter" placeholder="Find a filter">
-
-                    <!-- part4 -->
-                    <ul class="list-group" id="expertise-list">
-
-                        <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><label for="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}">{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}</label><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
-                        </li>
-                        <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input id="{{getSubtopicLabel(expertiseSubtopic).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
-                        </li>
-                        <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
-                        </li> -->
-                    </ul>
                 </div>
             </li>
 
-            <li id="datarange-li">
-                <p class="filter-title" id="data-range">Date Range</p>
-                <form class="data-range-form">
-                    <!-- <input type="text" class="form-control mb-1" id="start-year-input" placeholder="Start Year" name="start-year">
-                    <input type="text" class="form-control mb-1" id="end-year-input" placeholder="End Year" name="end-year"> -->
-                    <label for="daterange">Date Range</label>
-                    <input type="text" class="form-control mb-1" id="daterange" name="daterange" value="01/01/2020 - 12/15/2021">
+<!--            <li id="datarange-li">-->
+<!--                <p class="filter-title" id="data-range">Date Range</p>-->
+<!--                <form class="data-range-form">-->
+<!--                    &lt;!&ndash; <input type="text" class="form-control mb-1" id="start-year-input" placeholder="Start Year" name="start-year">-->
+<!--                    <input type="text" class="form-control mb-1" id="end-year-input" placeholder="End Year" name="end-year"> &ndash;&gt;-->
+<!--                    <label for="daterange">Date Range</label>-->
+<!--                    <input type="text" class="form-control mb-1" id="daterange" name="daterange" value="01/01/2020 - 12/15/2021">-->
 
-                    <!-- <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> -->
-                </form>
-            </li>
+<!--                    &lt;!&ndash; <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> &ndash;&gt;-->
+<!--                </form>-->
+<!--            </li>-->
 
 
         </ul>
