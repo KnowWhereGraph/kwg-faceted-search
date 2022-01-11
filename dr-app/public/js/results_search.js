@@ -1,5 +1,3 @@
-var startDate;
-var endDate;
 var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Department", "Expertise", "Place"];
@@ -12,7 +10,6 @@ var loadedTabs = {};
 var place_markers = new L.MarkerClusterGroup();
 var markers = [];
 
-var totalResults = 0;
 var resultsSearchMap = null;
 
 //For URL variable tracking
@@ -550,6 +547,8 @@ var displayTableByTabName = function(activeTabName, response) {
 };
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
+    angular.element("#ttl-results").html(countResults + ' Records');
+
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
     perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
