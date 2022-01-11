@@ -162,45 +162,16 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
         $scope.updateURLParameters("tab", urlUpdateTab);
 
-        newParameters = getParameters();
-        activeTabName = newActiveTabName;
+        var parameters = getParameters();
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(newActiveTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(newActiveTabName, response);
 
-        if (JSON.stringify(newParameters) != JSON.stringify(parameters)) {
-            loadedTabs = {};
-            parameters = newParameters;
-
-            loadedTabs[activeTabName] = true;
-
-            var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-            var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-            var response = sendQueries(activeTabName, page, pp, parameters);
-            var selectors = displayTableByTabName(activeTabName, response);
-
-            response.then(function(result) {
-                var countResults = result["count"];
-                displayPagination(activeTabName, selectors, countResults, parameters);
-            });
-        } else {
-            // if the parameters are the same, then consider about the tab
-            if (loadedTabs[activeTabName]) {
-                // if the current tab is already loaded
-                //displayMap(response, activeTabName);
-
-            } else {
-                var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-                var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-                var response = sendQueries(activeTabName, page, pp, parameters);
-                var selectors = displayTableByTabName(activeTabName, response);
-
-                response.then(function(result) {
-                    var countResults = result["count"];
-                    displayPagination(activeTabName, selectors, countResults, parameters);
-                });
-                loadedTabs[activeTabName] = true;
-            }
-        }
-
-        displayBreadCrumbs();
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(newActiveTabName, selectors, countResults, parameters);
+        });
     };
 
     //Select tab based on url value
@@ -399,6 +370,7 @@ var getParameters = function() {
 };
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
+    angular.element("#ttl-results").html('Loading query...');
     switch(tabName) {
         case "Place":
             return getPlaceSearchResults(pageNum, recordNum, parameters);
