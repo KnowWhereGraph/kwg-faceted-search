@@ -38,9 +38,13 @@
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
+                    <div>Administrative Region</div>
                     <input type="text" class="form-control" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-blur="placeFacetChanged()" placeholder="Find by Administrative Region...">
+                    <div>Zip Code</div>
                     <input type="text" class="form-control" id="placeFacetsZip" ng-model="placeFacetsZip" ng-blur="placeFacetChanged()" placeholder="Find by Zip Code...">
+                    <div>US Climate Division</div>
                     <input type="text" class="form-control" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-blur="placeFacetChanged()" placeholder="Find by US Climate Division...">
+                    <div>NW Zone</div>
                     <input type="text" class="form-control" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-blur="placeFacetChanged()" placeholder="Find by NW Zone...">
                 </div>
             </li>
@@ -48,11 +52,14 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
+                    <div>Place</div>
+                    <input type="text" class="form-control" id="hazardFacetPlace" ng-model="hazardFacetPlace" ng-blur="hazardFacetChanged()" placeholder="Find by Place...">
+                    <div>Date Start</div>
+                    <input type="date" class="form-control" id="hazardFacetDateStart" ng-model="hazardFacetDateStart" ng-blur="hazardFacetChanged()">
+                    <div>Date End</div>
+                    <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-blur="hazardFacetChanged()">
+                    <div>Hazard Type(s)</div>
                     <ul class="list-group" id="hazard-list">
-                        <!-- <li ng-repeat="hazard in hazards">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
-                                {{hazard}}</span>
-                        </li> -->
                         <li ng-repeat="hazardUrl in hazardUrls">
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hazardUrl['hazard_type_name']}}" name="hazard">
                             {{hazardUrl['hazard_type_name']}}
@@ -65,20 +72,6 @@
                 <div class="filter">
                 </div>
             </li>
-
-<!--            <li id="datarange-li">-->
-<!--                <p class="filter-title" id="data-range">Date Range</p>-->
-<!--                <form class="data-range-form">-->
-<!--                    &lt;!&ndash; <input type="text" class="form-control mb-1" id="start-year-input" placeholder="Start Year" name="start-year">-->
-<!--                    <input type="text" class="form-control mb-1" id="end-year-input" placeholder="End Year" name="end-year"> &ndash;&gt;-->
-<!--                    <label for="daterange">Date Range</label>-->
-<!--                    <input type="text" class="form-control mb-1" id="daterange" name="daterange" value="01/01/2020 - 12/15/2021">-->
-
-<!--                    &lt;!&ndash; <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> &ndash;&gt;-->
-<!--                </form>-->
-<!--            </li>-->
-
-
         </ul>
     </div>
     <div class="results" ng-controller="results-controller">

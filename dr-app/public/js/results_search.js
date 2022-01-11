@@ -88,6 +88,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz']!=null && urlVariables['nwz']!='') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
+    $scope.hazardFacetPlace = (urlVariables['place']!=null && urlVariables['place']!='') ? urlVariables['place'] : '';
+    if(urlVariables['date-start']!=null && urlVariables['date-start']!='')
+        $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
+    if(urlVariables['date-end']!=null && urlVariables['date-end']!='')
+        $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
     getHazardClasses().then(function(data) {
         $scope.hazardUrls = data;
         $scope.$apply();
@@ -102,7 +107,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     });
 
-    // entire graph intialization
+    // entire graph initialization
     init();
 
     $scope.onKeywordChange = function() {
@@ -279,6 +284,35 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
+    $scope.hazardFacetChanged = function() {
+        var parameters = getParameters();
+
+        if(parameters['hazardFacetPlace']!='')
+            $scope.updateURLParameters('place', parameters['hazardFacetPlace']);
+        else
+            $scope.removeValue('place');
+        if(parameters['hazardFacetDateStart']!='')
+            $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
+        else
+            $scope.removeValue('date-start');
+        if(parameters['hazardFacetDateEnd']!='')
+            $scope.updateURLParameters('date-end', parameters['hazardFacetDateEnd']);
+        else
+            $scope.removeValue('date-end');
+
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
     $scope.selectHazard = function() {
         var parameters = getParameters();
 
@@ -346,6 +380,15 @@ var getParameters = function() {
     });
 
     //Hazard facets
+    angular.element("#hazardFacetPlace").each((index, div) => {
+        parameters["hazardFacetPlace"] = div.value;
+    });
+    angular.element("#hazardFacetDateStart").each((index, div) => {
+        parameters["hazardFacetDateStart"] = div.value;
+    });
+    angular.element("#hazardFacetDateEnd").each((index, div) => {
+        parameters["hazardFacetDateEnd"] = div.value;
+    });
     let hazardTypes = [];
     angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
         hazardTypes.push(hazard.value);
@@ -377,30 +420,47 @@ var displayBreadCrumbs = function() {
     bcURL += 'tab=' + tab;
     bcHTML += '<li><a href="' + bcURL + '">' + tabCap + '</a></li>';
 
+    if(urlVariables['keyword'] != null && urlVariables['keyword'] != '') {
+        mainUrl = bcURL + '&keyword=' + urlVariables['keyword'];
+        bcHTML += '<li><a href="' + mainUrl + '">Keyword: ' + urlVariables['keyword'] + '</a></li>';
+    }
+
     switch (tab) {
         case "place":
             if(urlVariables['region'] != null && urlVariables['region'] != '') {
-                placeUrl = bcURL += '&region=' + urlVariables['region'];
-                bcHTML += '<li><a href="' + placeUrl + '">Administrative Region:' + urlVariables['region'] + '</a></li>';
+                placeUrl = bcURL + '&region=' + urlVariables['region'];
+                bcHTML += '<li><a href="' + placeUrl + '">Administrative Region: ' + urlVariables['region'] + '</a></li>';
             }
             if(urlVariables['zip'] != null && urlVariables['zip'] != '') {
-                placeUrl = bcURL += '&zip=' + urlVariables['zip'];
-                bcHTML += '<li><a href="' + placeUrl + '">Zip Code:' + urlVariables['zip'] + '</a></li>';
+                placeUrl = bcURL + '&zip=' + urlVariables['zip'];
+                bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
             if(urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
-                placeUrl = bcURL += '&region=' + urlVariables['uscd'];
-                bcHTML += '<li><a href="' + placeUrl + '">US Climate Division:' + urlVariables['uscd'] + '</a></li>';
+                placeUrl = bcURL + '&region=' + urlVariables['uscd'];
+                bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
             }
             if(urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
-                placeUrl = bcURL += '&region=' + urlVariables['nwz'];
-                bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone:' + urlVariables['nwz'] + '</a></li>';
+                placeUrl = bcURL + '&region=' + urlVariables['nwz'];
+                bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
         case "hazard":
+            if(urlVariables['place'] != null && urlVariables['place'] != '') {
+                placeUrl = bcURL + '&place=' + urlVariables['place'];
+                bcHTML += '<li><a href="' + placeUrl + '">Place: ' + urlVariables['place'] + '</a></li>';
+            }
+            if(urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+                placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
+                bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
+            }
+            if(urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
+                placeUrl = bcURL + '&date-end=' + urlVariables['date-end'];
+                bcHTML += '<li><a href="' + placeUrl + '">Date End: ' + urlVariables['date-end'] + '</a></li>';
+            }
             if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
                 var hazards = urlVariables['hazard'].split(',');
                 for (var j = 0; j < hazards.length; j++) {
-                    hazardUrl = bcURL += '&hazard=' + hazards[j];
+                    hazardUrl = bcURL + '&hazard=' + hazards[j];
                     bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
                 }
             }

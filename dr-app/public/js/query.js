@@ -178,9 +178,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select ?label ?type ?typeLabel ?entity ?place ?placeLabel ?time ?timeLabel where {`;
+    let hazardQuery = `select ?label ?type ?typeLabel ?entity ?place ?placeLabel ?time ?timeLabel where {`;
     if(parameters["keyword"]!="") {
-        placeQuery +=
+        hazardQuery +=
         `
         ?search a elastic-index:kwg_index_v2_updated;
         elastic:query "${parameters["keyword"]}";
@@ -193,17 +193,40 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         typeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
-    placeQuery += `
+    let dateQuery = '';
+    if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
+        letDateArr = [];
+        if(parameters["hazardFacetDateStart"]!="")
+            letDateArr.push(`?timeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+        if(parameters["hazardFacetDateEnd"]!="")
+            letDateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?timeLabel`);
+        dateQuery = ` FILTER (` + letDateArr.join(' && ') + `)`;
+    }
+
+    let placeQuery = '';
+    if(parameters["hazardFacetPlace"]!="") {
+        placeQuery = `?search a elastic-index:kwg_index_v2_updated;
+            elastic:query "${parameters["hazardFacetPlace"]}";
+            elastic:entities ?place.`
+    }
+
+    hazardQuery += `
         ?entity rdf:type ?type${typeQuery}.
         ?type rdfs:subClassOf kwg-ont:HazardEvent.
         ?entity rdfs:label ?label.
-        ?entity kwg-ont:locatedIn ?place.
-        ?place rdfs:label ?placeLabel.
+        {
+            ${placeQuery}
+            
+            ?entity kwg-ont:locatedIn ?place.
+            ?place rdfs:label ?placeLabel.
+        }
         ?entity sosa:phenomenonTime ?time.
-        ?time time:inXSDDate ?timeLabel
+        ?time time:inXSDDate ?timeLabel${dateQuery}
     } ORDER BY ASC(?label)`;
 
-    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    console.log(hazardQuery);
+
+    let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
         formattedResults.push({
@@ -220,7 +243,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
     return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
