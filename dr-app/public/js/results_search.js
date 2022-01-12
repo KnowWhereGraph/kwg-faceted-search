@@ -94,6 +94,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     if(urlVariables['date-end']!=null && urlVariables['date-end']!='')
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
     getHazardClasses().then(function(data) {
+        console.log(data);
         $scope.hazardUrls = data;
         $scope.$apply();
     }).then(function() {
@@ -172,6 +173,21 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(newActiveTabName, selectors, countResults, parameters);
         });
+    };
+
+    $scope.selectSubList = function($event) {
+        let childListItems = $event.target.parentNode.nextElementSibling.children;
+        for(let i=0; i< childListItems.length; i++) {
+            console.log(childListItems[i].children);
+        }
+        // $event.target.parentNode.nextElementSibling.children.each(function(e) {
+        //     console.log('here');
+        // });
+        //get neighbor list
+        //for every input within that list
+            //check the checkbox
+
+        //$scope.selectHazard();
     };
 
     //Select tab based on url value
@@ -718,14 +734,14 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
             }).appendTo(paginationSelector).addClass("clickable next");
         }
 
-        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-        $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
-            if ($(this).text() == page)
-                $(this).addClass("active");
-        });
+        //Add the page numbers to the html
+        $pager.appendTo(paginationSelector);
 
-        //Prev button
-        if (selectedPage > 1) {
+        //Before moving on, make sure that the pagination value actually exists.
+        //If it doesn't, then load the 1st page
+        if(angular.element(paginationSelector + ' #page-number').length < 1) {
+            angular.element(paginationSelector + ' .page-item').first().click();
+        } else if (selectedPage > 1) { //Prev button
             angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function(event) {
                 var nextPage = parseInt(angular.element(this).val()) - 1;
                 angular.element(this).val(nextPage);

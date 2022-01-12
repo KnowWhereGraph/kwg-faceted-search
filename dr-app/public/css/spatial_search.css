@@ -234,6 +234,9 @@ ul.filters .filter div.selectedItem p {
     margin-bottom: 16px;
 }
 
+.list-group-indented {
+    margin-left: 20px;
+}
 
 /*****Data Range******/
 

@@ -205,25 +205,43 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     let placeQuery = '';
     if(parameters["hazardFacetPlace"]!="") {
-        placeQuery = `?search a elastic-index:kwg_index_v2_updated;
+        placeQuery = `
+            ?search a elastic-index:kwg_index_v2_updated;
             elastic:query "${parameters["hazardFacetPlace"]}";
             elastic:entities ?place.`
     }
 
     hazardQuery += `
-        ?entity rdf:type ?type${typeQuery}.
-        ?type rdfs:subClassOf kwg-ont:HazardEvent.
-        ?entity rdfs:label ?label.
         {
-            ${placeQuery}
-            
-            ?entity kwg-ont:locatedIn ?place.
-            ?place rdfs:label ?placeLabel.
+            ?entity rdf:type ?type${typeQuery}.
+            ?type rdfs:subClassOf kwg-ont:HazardEvent.
+            ?entity rdfs:label ?label.
+            {
+                ${placeQuery}
+                
+                ?entity kwg-ont:locatedIn ?place.
+                ?place rdfs:label ?placeLabel.
+            }
+            ?entity sosa:phenomenonTime ?time.
+            ?time time:inXSDDate ?timeLabel${dateQuery}
         }
-        ?entity sosa:phenomenonTime ?time.
-        ?time time:inXSDDate ?timeLabel${dateQuery}
+        union
+        {
+            ?entity rdf:type ?type${typeQuery}.
+            ?type rdfs:subClassOf kwg-ont:Fire.
+            ?entity rdfs:label ?label.
+            {
+                ${placeQuery}
+                
+                ?entity kwg-ont:locatedIn ?place.
+                ?place rdfs:label ?placeLabel.
+            }
+            ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+            ?observationCollection sosa:phenomenonTime ?time.
+            ?time time:inXSDDate ?timeLabel${dateQuery}
+        }
     } ORDER BY ASC(?label)`;
-    
+
     let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
@@ -247,14 +265,22 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
 async function getHazardClasses() {
     let formattedResults = [];
+    let fireResults = [];
 
-    let classQuery = `
+    let hazardQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
         ?type rdfs:subClassOf kwg-ont:HazardEvent.
     } ORDER BY ASC(?label)`;
 
-    let queryResults = await query(classQuery);
+    //Special case for fires
+    let fireQuery = `
+    select distinct ?type where {
+        ?entity rdf:type ?type.
+        ?type rdfs:subClassOf kwg-ont:Fire.
+    } ORDER BY ASC(?label)`;
+
+    let queryResults = await query(hazardQuery);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
         formattedResults.push({
@@ -263,7 +289,16 @@ async function getHazardClasses() {
         });
     }
 
-    return formattedResults;
+    let queryResultsFire = await query(fireQuery);
+    for (let row of queryResultsFire) {
+        let hazardLabelArray = row.type.value.split("/");
+        fireResults.push({
+            'hazard_type':row.type.value,
+            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1]
+        });
+    }
+
+    return {'hazards':formattedResults, 'fires':fireResults};
 }
 
 //New search function for expert in stko-kwg
