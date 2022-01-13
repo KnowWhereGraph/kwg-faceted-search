@@ -1,6 +1,6 @@
 var parameters = {};
 
-var expertTitles = ["Name", "Affiliation", "Department", "Expertise", "Place"];
+var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
 var placeTitles = ["Name", "Type"];
 var hazardTitles = ["Name", "Type", "Place", "Date"];
 
@@ -561,8 +561,8 @@ var displayTableByTabName = function(activeTabName, response) {
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
                 if (selectors["thead"] == "#expertTableTitle") {
-                    attributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
-                    tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
+                    attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
+                    tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
                 } else if (selectors["thead"] == "#placeTableTitle") {
                     attributeLinks = [e["place"], e["place_type"]];
                     tableBodyAttributes = [e["place_name"], e["place_type_name"]];
@@ -575,8 +575,19 @@ var displayTableByTabName = function(activeTabName, response) {
                 for (var index = 0; index < numAttributes; index++) {
                     var link = attributeLinks[index];
                     var attr = tableBodyAttributes[index];
+                    var cellHtml = '';
 
-                    var cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
+                    if(Array.isArray(attr)) {
+                        let linkArray = [];
+
+                        for(let i=0; i<attr.length; i++) {
+                            linkArray.push('<a target="_blank" href="' + link[i] + '">' + attr[i] + "</a>")
+                        }
+
+                        cellHtml = linkArray.join(', ');
+                    }else {
+                        cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
+                    }
 
                     rowBodyHtml += "<td>" + cellHtml + "</td>";
                 }

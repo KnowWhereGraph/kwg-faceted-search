@@ -304,7 +304,7 @@ async function getHazardClasses() {
 
 //New search function for expert in stko-kwg
 async function getExpertSearchResults(pageNum, recordNum, parameters) {
-    let formattedResults = [];
+    let formattedResults = {};
 
     let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
     if(parameters["keyword"]!="") {
@@ -329,23 +329,28 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
-        formattedResults.push({
-            'expert':row.entity.value,
-            'expert_name':row.label.value,
-            'affiliation':row.affiliation.value,
-            'affiliation_name':row.affiliationLabel.value,
-            'department':"Insert Department Here",
-            'department_name':"Insert Department Here",
-            'expertise':row.expert.value,
-            'expertise_name':row.expertLabel.value,
-            'place':"Insert Place Here",
-            'place_name':"Insert Place Here",
-            // 'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            // 'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-            // 'webpage':row.webpage.value
-        });
+        if(row.entity.value in formattedResults) {
+            //We already have this user, which means we need to grab their expertise
+            formattedResults[row.entity.value]['expertise'].push(row.expert.value);
+            formattedResults[row.entity.value]['expertise_name'].push(row.expertLabel.value);
+        } else {
+            //New user, so add them
+            formattedResults[row.entity.value] = {
+                'expert': row.entity.value,
+                'expert_name': row.label.value,
+                'affiliation': row.affiliation.value,
+                'affiliation_name': row.affiliationLabel.value,
+                'expertise': [row.expert.value],
+                'expertise_name': [row.expertLabel.value],
+                'place': "Insert Place Here",
+                'place_name': "Insert Place Here",
+                // 'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
+                // 'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
+                // 'webpage':row.webpage.value
+            };
+        }
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
-    return {'count':countResults[0].count.value,'record':formattedResults};
+    return {'count':countResults[0].count.value,'record':Object.values(formattedResults)};
 }
