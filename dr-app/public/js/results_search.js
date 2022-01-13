@@ -175,19 +175,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
-    $scope.selectSubList = function($event) {
+    $scope.selectSubList = function($event, functionName) {
         let childListItems = $event.target.parentNode.nextElementSibling.children;
-        for(let i=0; i< childListItems.length; i++) {
-            console.log(childListItems[i].children);
-        }
-        // $event.target.parentNode.nextElementSibling.children.each(function(e) {
-        //     console.log('here');
-        // });
-        //get neighbor list
-        //for every input within that list
-            //check the checkbox
 
-        //$scope.selectHazard();
+        if($event.target.checked) {
+            for(let i=0; i< childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
+            }
+        } else  {
+            for(let i=0; i< childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+        }
+
+        $scope[functionName]();
     };
 
     //Select tab based on url value

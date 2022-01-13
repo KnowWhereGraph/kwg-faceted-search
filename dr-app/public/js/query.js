@@ -27,7 +27,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KnowWhereGraph-V2';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V2';
 
 // query
 async function query(srq_query) {
@@ -37,6 +37,7 @@ async function query(srq_query) {
     let d_res = await fetch(P_ENDPOINT, {
         method: 'POST',
         mode: 'cors',
+        //credentials: 'include',
         headers: {
             Accept: 'application/sparql-results+json',
             'Content-Type': 'application/x-www-form-urlencoded',
