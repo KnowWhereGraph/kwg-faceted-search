@@ -106,6 +106,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
         }
     });
+    $scope.hazardFacetAcresBurnedMin = (urlVariables['acres-min']!=null && !isNaN(urlVariables['acres-min'])) ? Number.parseInt(urlVariables['acres-min']) : '';
+    $scope.hazardFacetAcresBurnedMax = (urlVariables['acres-max']!=null && !isNaN(urlVariables['acres-max'])) ? Number.parseInt(urlVariables['acres-max']) : '';
+    $scope.hazardFacetMeanDnbrMin = (urlVariables['dnbr-min']!=null && !isNaN(urlVariables['dnbr-min'])) ? Number.parseInt(urlVariables['dnbr-min']) : '';
+    $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max']!=null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
+    $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min']!=null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
+    $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
@@ -320,6 +326,30 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('date-end', parameters['hazardFacetDateEnd']);
         else
             $scope.removeValue('date-end');
+        if(parameters['hazardFacetAcresBurnedMin']!='')
+            $scope.updateURLParameters('acres-min', parameters['hazardFacetAcresBurnedMin']);
+        else
+            $scope.removeValue('acres-min');
+        if(parameters['hazardFacetAcresBurnedMax']!='')
+            $scope.updateURLParameters('acres-max', parameters['hazardFacetAcresBurnedMax']);
+        else
+            $scope.removeValue('acres-max');
+        if(parameters['hazardFacetMeanDnbrMin']!='')
+            $scope.updateURLParameters('dnbr-min', parameters['hazardFacetMeanDnbrMin']);
+        else
+            $scope.removeValue('dnbr-min');
+        if(parameters['hazardFacetMeanDnbrMax']!='')
+            $scope.updateURLParameters('dnbr-max', parameters['hazardFacetMeanDnbrMax']);
+        else
+            $scope.removeValue('dnbr-max');
+        if(parameters['hazardFacetSDMeanDnbrMin']!='')
+            $scope.updateURLParameters('stddev-dnbr-min', parameters['hazardFacetSDMeanDnbrMin']);
+        else
+            $scope.removeValue('stddev-dnbr-min');
+        if(parameters['hazardFacetSDMeanDnbrMax']!='')
+            $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
+        else
+            $scope.removeValue('stddev-dnbr-max');
 
         var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -436,6 +466,24 @@ var getParameters = function() {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+    angular.element("#hazardFacetAcresBurnedMin").each((index, div) => {
+        parameters["hazardFacetAcresBurnedMin"] = div.value;
+    });
+    angular.element("#hazardFacetAcresBurnedMax").each((index, div) => {
+        parameters["hazardFacetAcresBurnedMax"] = div.value;
+    });
+    angular.element("#hazardFacetMeanDnbrMin").each((index, div) => {
+        parameters["hazardFacetMeanDnbrMin"] = div.value;
+    });
+    angular.element("#hazardFacetMeanDnbrMax").each((index, div) => {
+        parameters["hazardFacetMeanDnbrMax"] = div.value;
+    });
+    angular.element("#hazardFacetSDMeanDnbrMin").each((index, div) => {
+        parameters["hazardFacetSDMeanDnbrMin"] = div.value;
+    });
+    angular.element("#hazardFacetSDMeanDnbrMax").each((index, div) => {
+        parameters["hazardFacetSDMeanDnbrMax"] = div.value;
+    });
 
     //People facets
     let expertTopics = [];
@@ -513,6 +561,30 @@ var displayBreadCrumbs = function() {
                     hazardUrl = bcURL + '&hazard=' + hazards[j];
                     bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
                 }
+            }
+            if(urlVariables['acres-min'] != null && urlVariables['acres-min'] != '') {
+                placeUrl = bcURL + '&acres-min=' + urlVariables['acres-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (min): ' + urlVariables['acres-min'] + '</a></li>';
+            }
+            if(urlVariables['acres-max'] != null && urlVariables['acres-max'] != '') {
+                placeUrl = bcURL + '&acres-max=' + urlVariables['acres-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (max): ' + urlVariables['acres-max'] + '</a></li>';
+            }
+            if(urlVariables['dnbr-min'] != null && urlVariables['dnbr-min'] != '') {
+                placeUrl = bcURL + '&dnbr-min=' + urlVariables['dnbr-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (min): ' + urlVariables['dnbr-min'] + '</a></li>';
+            }
+            if(urlVariables['dnbr-max'] != null && urlVariables['dnbr-max'] != '') {
+                placeUrl = bcURL + '&dnbr-max=' + urlVariables['dnbr-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (max): ' + urlVariables['dnbr-max'] + '</a></li>';
+            }
+            if(urlVariables['stddev-dnbr-min'] != null && urlVariables['stddev-dnbr-min'] != '') {
+                placeUrl = bcURL + '&stddev-dnbr-min=' + urlVariables['stddev-dnbr-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (min): ' + urlVariables['stddev-dnbr-min'] + '</a></li>';
+            }
+            if(urlVariables['stddev-dnbr-max'] != null && urlVariables['stddev-dnbr-max'] != '') {
+                placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
             }
             break;
         case "people":

@@ -166,8 +166,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             'place_name':row.label.value,
             'place_type':row.type.value,
             'place_type_name':placeLabel,
-            //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            //'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value
         });
     }
 
@@ -179,7 +177,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select ?label ?type ?typeLabel ?entity ?place ?placeLabel ?time ?timeLabel where {`;
+    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?time ?timeLabel where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
@@ -196,20 +194,47 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     let dateQuery = '';
     if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
-        letDateArr = [];
+        let dateArr = [];
         if(parameters["hazardFacetDateStart"]!="")
-            letDateArr.push(`?timeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+            dateArr.push(`?timeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
         if(parameters["hazardFacetDateEnd"]!="")
-            letDateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?timeLabel`);
-        dateQuery = ` FILTER (` + letDateArr.join(' && ') + `)`;
+            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?timeLabel`);
+        dateQuery = ` FILTER (` + dateArr.join(' && ') + `)`;
     }
 
     let placeQuery = '';
     if(parameters["hazardFacetPlace"]!="") {
-        placeQuery = `
-            ?search a elastic-index:kwg_index_v2_updated;
-            elastic:query "${parameters["hazardFacetPlace"]}";
-            elastic:entities ?place.`
+        placeQuery = ` FILTER(contains(?placeLabel, '${parameters["hazardFacetPlace"]}'))`;
+    }
+
+    let acresBurnedQuery = '';
+    if(parameters["hazardFacetAcresBurnedMin"]!="" || parameters["hazardFacetAcresBurnedMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetAcresBurnedMin"]!="")
+            facetArr.push(`?numAcresBurned > ` + parameters["hazardFacetAcresBurnedMin"]);
+        if(parameters["hazardFacetAcresBurnedMax"]!="")
+            facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
+        acresBurnedQuery = ` FILTER (` + facetArr.join(' && ') + `)`;
+    }
+
+    let meanDnbrQuery = '';
+    if(parameters["hazardFacetMeanDnbrMin"]!="" || parameters["hazardFacetMeanDnbrMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetMeanDnbrMin"]!="")
+            facetArr.push(`?meanVal > ` + parameters["hazardFacetMeanDnbrMin"]);
+        if(parameters["hazardFacetMeanDnbrMax"]!="")
+            facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
+        meanDnbrQuery = ` FILTER (` + facetArr.join(' && ') + `)`;
+    }
+
+    let SDMeanDnbrQuery = '';
+    if(parameters["hazardFacetSDMeanDnbrMin"]!="" || parameters["hazardFacetSDMeanDnbrMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetSDMeanDnbrMin"]!="")
+            facetArr.push(`?stanDevMeanVal > ` + parameters["hazardFacetSDMeanDnbrMin"]);
+        if(parameters["hazardFacetSDMeanDnbrMax"]!="")
+            facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
+        SDMeanDnbrQuery = ` FILTER (` + facetArr.join(' && ') + `)`;
     }
 
     hazardQuery += `
@@ -218,10 +243,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?type rdfs:subClassOf kwg-ont:HazardEvent.
             ?entity rdfs:label ?label.
             {
-                ${placeQuery}
-                
                 ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel.
+                ?place rdfs:label ?placeLabel${placeQuery}.
             }
             ?entity sosa:phenomenonTime ?time.
             ?time time:inXSDDate ?timeLabel${dateQuery}
@@ -232,14 +255,27 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?type rdfs:subClassOf kwg-ont:Fire.
             ?entity rdfs:label ?label.
             {
-                ${placeQuery}
-                
                 ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel.
+                ?place rdfs:label ?placeLabel${placeQuery}.
             }
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?time.
-            ?time time:inXSDDate ?timeLabel${dateQuery}
+            ?time time:inXSDDate ?timeLabel${dateQuery}.
+            
+            ?observationCollection sosa:hasMember ?numAcresBurnedObj.
+            ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
+            FILTER(contains(?numAcresBurnedObjLabel, 'Observation of Number Of Acres Burned')).
+            ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned${acresBurnedQuery}.
+        
+            ?observationCollection sosa:hasMember ?meanValObj.
+            ?meanValObj rdfs:label ?meanValObjLabel
+            FILTER(contains(?meanValObjLabel, 'Observation of Mean dNBR Value')).
+            ?meanValObj sosa:hasSimpleResult ?meanVal${meanDnbrQuery}.
+            
+            ?observationCollection sosa:hasMember ?stanDevMeanValObj.
+            ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
+            FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
+            ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal${SDMeanDnbrQuery}.
         }
     } ORDER BY ASC(?label)`;
 
@@ -253,8 +289,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1],
             'place':row.place.value,
             'place_name':row.placeLabel.value,
-            //'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-            //'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
             'date':row.time.value,
             'date_name':row.timeLabel.value,
         });
@@ -348,9 +382,6 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
                 'expertise_name': [row.expertLabel.value],
                 'place': "Insert Place Here",
                 'place_name': "Insert Place Here",
-                // 'place_geometry':(typeof row.place_geometry  === 'undefined') ? '' : row.place_geometry.value,
-                // 'place_geometry_wkt':(typeof row.place_geometry_wkt  === 'undefined') ? '' : row.place_geometry_wkt.value,
-                // 'webpage':row.webpage.value
             };
         }
     }
