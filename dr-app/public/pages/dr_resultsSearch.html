@@ -80,6 +80,21 @@
             <li id="expertise" ng-show="showExpertiseList">
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
+                    <div>Expert Topic(s)</div>
+                    <ul class="list-group" id="expert-list">
+                        <section ng-repeat="expertTopic in expertTopics['topics']">
+                            <li class="ng-binding ng-scope">
+                                <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')">
+                                {{expertTopic['expert_label']}}
+                            </li>
+                            <ul class="list-group list-group-indented">
+                                <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic']">
+                                    <input id="{{expertTopic['expert_topic']+'_'+expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert">
+                                    {{expertTopic['expert_sublabel'][$index]}}
+                                </li>
+                            </ul>
+                        </section>
+                    </ul>
                 </div>
             </li>
         </ul>

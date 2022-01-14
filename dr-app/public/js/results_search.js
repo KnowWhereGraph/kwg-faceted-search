@@ -94,7 +94,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     if(urlVariables['date-end']!=null && urlVariables['date-end']!='')
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
     getHazardClasses().then(function(data) {
-        console.log(data);
         $scope.hazardUrls = data;
         $scope.$apply();
     }).then(function() {
@@ -103,6 +102,21 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 let hazArr = urlVariables['hazard'].split(',');
                 for(let i=0; i<hazArr.length; i++) {
                     angular.element("#"+hazArr[i]).click();
+                }
+            });
+        }
+    });
+
+    //Populate expert topics and set values
+    getExpertTopics().then(function(data) {
+        $scope.expertTopics = data;
+        $scope.$apply();
+    }).then(function() {
+        if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
+            $timeout(function() {
+                let expertArr = urlVariables['expert'].split(',');
+                for(let i=0; i<expertArr.length; i++) {
+                    angular.element("#"+expertArr[i]).click();
                 }
             });
         }
@@ -321,6 +335,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
     };
+
+    $scope.selectTopic = function() {
+        var parameters = getParameters();
+
+        if(parameters['expertTopics'].length > 0)
+            $scope.updateURLParameters('expert', parameters['expertTopics'].join(','));
+        else
+            $scope.removeValue('expert');
+
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
 });
 
 kwgApp.controller("filters-controller", function($scope) {});
@@ -382,6 +417,13 @@ var getParameters = function() {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+
+    //People facets
+    let expertTopics = [];
+    angular.element("input:checkbox[name='expert']:checked").each((index, expert) => {
+        expertTopics.push(expert.value);
+    });
+    parameters["expertTopics"] = expertTopics;
 
     return parameters;
 };
@@ -455,6 +497,13 @@ var displayBreadCrumbs = function() {
             }
             break;
         case "people":
+            if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
+                var experts = urlVariables['expert'].split(',');
+                for (var j = 0; j < experts.length; j++) {
+                    expertUrl = bcURL + '&expert=' + experts[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                }
+            }
             break;
     }
 
@@ -661,10 +710,13 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         }
 
         var $pager = angular.element('<div class="pager"></div>');
+        var selectedPage = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         if (numPages <= 10) {
-            for (var page = 0; page < numPages; page++) {
 
-                angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
+            for (var page = 0; page < numPages; page++) {
+                let pageHtml = (page + 1 == selectedPage) ? '<span class="page-item active"></span>' : '<span class="page-item"></span>';
+
+                angular.element(pageHtml).text(page + 1).on('click', {
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
@@ -678,11 +730,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
 
                 }).appendTo($pager).addClass("clickable");
-
             }
         } else {
-            //Build out pagination based on current selected page
-            var selectedPage = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
             //Add the first page, last page, current page, and the closet page numbers to the current page
             var pagesToSelect = [1, selectedPage - 1, selectedPage, selectedPage + 1, numPages];
 
@@ -751,7 +800,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
 
         //Before moving on, make sure that the pagination value actually exists.
         //If it doesn't, then load the 1st page
-        if(angular.element(paginationSelector + ' #page-number').length < 1) {
+        if(numPages < selectedPage) {
             angular.element(paginationSelector + ' .page-item').first().click();
         } else if (selectedPage > 1) { //Prev button
             angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function(event) {

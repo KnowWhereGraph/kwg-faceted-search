@@ -306,6 +306,11 @@ async function getHazardClasses() {
 async function getExpertSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = {};
 
+    let topicQuery = '';
+    if(parameters["expertTopics"].length > 0) {
+        topicQuery = ` FILTER(?expert IN (kwgr:` + parameters["expertTopics"].join(',kwgr:') + `))`;
+    }
+
     let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
     if(parameters["keyword"]!="") {
         placeQuery +=
@@ -320,8 +325,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         `
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
-        ?entity kwg-ont:hasExpertise ?sortaExpert.
-        ?sortaExpert rdf:type ?expert.
+        ?entity kwg-ont:hasExpertise ?expert${topicQuery}.
         ?expert rdfs:label ?expertLabel.
         ?entity iospress:contributorAffiliation ?affiliation.
         ?affiliation rdfs:label ?affiliationLabel
@@ -353,4 +357,39 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
     return {'count':countResults[0].count.value,'record':Object.values(formattedResults)};
+}
+
+async function getExpertTopics() {
+    let formattedResults = [];
+
+    let hazardQuery = `
+    select distinct ?topic ?label ?subtopic ?sublabel where {
+        ?topic rdfs:subClassOf kwg-ont:ExpertiseTopic.
+        ?topic rdfs:label ?label.
+        ?subtopic rdf:type ?topic.
+        ?subtopic rdfs:label ?sublabel.
+    } ORDER BY ASC(?label)`;
+
+    let queryResults = await query(hazardQuery);
+    for (let row of queryResults) {
+        let topicShortArray = row.topic.value.split("/");
+        let topicShort = topicShortArray[topicShortArray.length - 1];
+        let subTopicShortArray = row.subtopic.value.split("/");
+        let subTopicShort = subTopicShortArray[subTopicShortArray.length - 1];
+        if(topicShort in formattedResults) {
+            //We already have this user, which means we need to grab their expertise
+            formattedResults[topicShort]['expert_subtopic'].push(subTopicShort);
+            formattedResults[topicShort]['expert_sublabel'].push(row.sublabel.value);
+        } else {
+            //New user, so add them
+            formattedResults[topicShort] = {
+                'expert_topic': topicShort,
+                'expert_label': row.label.value,
+                'expert_subtopic': [subTopicShort],
+                'expert_sublabel': [row.sublabel.value],
+            };
+        }
+    }
+
+    return {'topics':Object.values(formattedResults)};
 }
