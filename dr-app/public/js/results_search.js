@@ -190,19 +190,38 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     };
 
     $scope.selectSubList = function($event, functionName) {
-        let childListItems = $event.target.parentNode.nextElementSibling.children;
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+        let childListItems = subListDiv.children;
 
         if($event.target.checked) {
             for(let i=0; i< childListItems.length; i++) {
                 childListItems[i].children[0].checked = true;
             }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
         } else  {
             for(let i=0; i< childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
         }
 
         $scope[functionName]();
+    };
+
+    $scope.showSubList = function($event) {
+        let dropdownImg = $event.target;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+
+        if(subListDiv.style["display"] == "") {
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
+        } else {
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+        }
     };
 
     //Select tab based on url value

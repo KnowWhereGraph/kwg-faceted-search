@@ -67,8 +67,9 @@
                         <li class="ng-binding ng-scope">
                             <input id="Fire" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')">
                             Fire
+                            <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
                         </li>
-                        <ul class="list-group list-group-indented">
+                        <ul class="list-group list-group-indented" style="display: none">
                             <li ng-repeat="hazardUrlFire in hazardUrls['fires']">
                                 <input id="{{hazardUrlFire['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hazardUrlFire['hazard_type_name']}}" name="hazard">
                                 {{hazardUrlFire['hazard_type_name']}}
@@ -86,8 +87,9 @@
                             <li class="ng-binding ng-scope">
                                 <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')">
                                 {{expertTopic['expert_label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
                             </li>
-                            <ul class="list-group list-group-indented">
+                            <ul class="list-group list-group-indented" style="display: none">
                                 <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic']">
                                     <input id="{{expertTopic['expert_topic']+'_'+expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert">
                                     {{expertTopic['expert_sublabel'][$index]}}
