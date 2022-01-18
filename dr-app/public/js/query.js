@@ -324,13 +324,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
         
             ?observationCollection sosa:hasMember ?magnitudeObj.
-            ?magnitudeObj rdfs:label ?magnitudeObjLabel
-            FILTER(contains(?magnitudeObjLabel, 'Observation mag of the earthquake')).
+            ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
             ?magnitudeObj sosa:hasSimpleResult ?magnitude${magnitudeQuery}.
             
             ?observationCollection sosa:hasMember ?quakeDepthObj.
-            ?quakeDepthObj rdfs:label ?quakeDepthObjLabel
-            FILTER(contains(?quakeDepthObjLabel, 'Observation depth of the earthquake')).
+            ?quakeDepthObj sosa:observedProperty kwgr:earthquakeObservableProperty.depth.
             ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth${quakeDepthQuery}.
         }
         union
