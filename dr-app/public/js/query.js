@@ -51,6 +51,61 @@ async function query(srq_query) {
     return (await d_res.json()).results.bindings;
 }
 
+async function getAdministrativeRegion() {
+    let formattedResults = [];
+
+    let regionQuery = `
+    select ?a6 ?a6Label ?a5 ?a5Label ?a4 ?a4Label ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label ?a0 ?a0Label where {
+        ?a6 rdf:type kwg-ont:AdministrativeRegion_6 .
+        ?a6 kwg-ont:locatedIn ?a5 .
+        ?a5 kwg-ont:locatedIn ?a4 .
+        ?a4 kwg-ont:locatedIn ?a3 .
+        ?a3 kwg-ont:locatedIn ?a2 .
+        ?a2 kwg-ont:locatedIn ?a1 .
+        ?a1 kwg-ont:locatedIn ?a0 .
+        ?a6 rdfs:label ?a6Label .
+        ?a5 rdfs:label ?a5Label .
+        ?a4 rdfs:label ?a4Label .
+        ?a3 rdfs:label ?a3Label .
+        ?a2 rdfs:label ?a2Label .
+        ?a1 rdfs:label ?a1Label .
+        ?a0 rdfs:label ?a0Label .
+    }`;
+
+    let queryResults = await query(regionQuery);
+    for (let row of queryResults) {
+        let a6Array = row.a6.value.split("/");
+        let a6 = a6Array[a6Array.length - 1];
+        let a6Label = row.a6Label.value;
+
+        let a5Array = row.a5.value.split("/");
+        let a5 = a5Array[a5Array.length - 1];
+        let a5Label = row.a5Label.value;
+
+        let a4Array = row.a4.value.split("/");
+        let a4 = a4Array[a4Array.length - 1];
+        let a4Label = row.a4Label.value;
+
+        let a3Array = row.a3.value.split("/");
+        let a3 = a3Array[a3Array.length - 1];
+        let a3Label = row.a3Label.value;
+
+        let a2Array = row.a2.value.split("/");
+        let a2 = a2Array[a2Array.length - 1];
+        let a2Label = row.a2Label.value;
+
+        let a1Array = row.a1.value.split("/");
+        let a1 = a1Array[a1Array.length - 1];
+        let a1Label = row.a1Label.value;
+
+        let a0Array = row.a0.value.split("/");
+        let a0 = a0Array[a0Array.length - 1];
+        let a0Label = row.a0Label.value;
+    }
+
+    return {'topics':Object.values(formattedResults)};
+}
+
 //New search function for place in stko-kwg
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];

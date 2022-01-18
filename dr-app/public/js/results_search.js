@@ -117,6 +117,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min']!=null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
+    getAdministrativeRegion().then(function(data) {
+        $scope.administrativeRegions = data;
+        $scope.$apply();
+    }).then(function() {
+        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
+        //     $timeout(function() {
+        //         let expertArr = urlVariables['expert'].split(',');
+        //         for(let i=0; i<expertArr.length; i++) {
+        //             angular.element("#"+expertArr[i]).click();
+        //         }
+        //     });
+        // }
+    });
+
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
         $scope.expertTopics = data;
