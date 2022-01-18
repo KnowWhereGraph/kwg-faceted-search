@@ -106,6 +106,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
         }
     });
+    $scope.hazardFacetMagnitudeMin = (urlVariables['mag-min']!=null && !isNaN(urlVariables['mag-min'])) ? Number.parseInt(urlVariables['mag-min']) : '';
+    $scope.hazardFacetMagnitudeMax = (urlVariables['mag-max']!=null && !isNaN(urlVariables['mag-max'])) ? Number.parseInt(urlVariables['mag-max']) : '';
+    $scope.hazardQuakeDepthMin = (urlVariables['depth-min']!=null && !isNaN(urlVariables['depth-min'])) ? Number.parseInt(urlVariables['depth-min']) : '';
+    $scope.hazardQuakeDepthMax = (urlVariables['depth-max']!=null && !isNaN(urlVariables['depth-max'])) ? Number.parseInt(urlVariables['depth-max']) : '';
     $scope.hazardFacetAcresBurnedMin = (urlVariables['acres-min']!=null && !isNaN(urlVariables['acres-min'])) ? Number.parseInt(urlVariables['acres-min']) : '';
     $scope.hazardFacetAcresBurnedMax = (urlVariables['acres-max']!=null && !isNaN(urlVariables['acres-max'])) ? Number.parseInt(urlVariables['acres-max']) : '';
     $scope.hazardFacetMeanDnbrMin = (urlVariables['dnbr-min']!=null && !isNaN(urlVariables['dnbr-min'])) ? Number.parseInt(urlVariables['dnbr-min']) : '';
@@ -326,6 +330,22 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('date-end', parameters['hazardFacetDateEnd']);
         else
             $scope.removeValue('date-end');
+        if(parameters['hazardFacetMagnitudeMin']!='')
+            $scope.updateURLParameters('mag-min', parameters['hazardFacetMagnitudeMin']);
+        else
+            $scope.removeValue('mag-min');
+        if(parameters['hazardFacetMagnitudeMax']!='')
+            $scope.updateURLParameters('mag-max', parameters['hazardFacetMagnitudeMax']);
+        else
+            $scope.removeValue('mag-max');
+        if(parameters['hazardQuakeDepthMin']!='')
+            $scope.updateURLParameters('depth-min', parameters['hazardQuakeDepthMin']);
+        else
+            $scope.removeValue('depth-min');
+        if(parameters['hazardQuakeDepthMax']!='')
+            $scope.updateURLParameters('depth-max', parameters['hazardQuakeDepthMax']);
+        else
+            $scope.removeValue('depth-max');
         if(parameters['hazardFacetAcresBurnedMin']!='')
             $scope.updateURLParameters('acres-min', parameters['hazardFacetAcresBurnedMin']);
         else
@@ -466,6 +486,18 @@ var getParameters = function() {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+    angular.element("#hazardFacetMagnitudeMin").each((index, div) => {
+        parameters["hazardFacetMagnitudeMin"] = div.value;
+    });
+    angular.element("#hazardFacetMagnitudeMax").each((index, div) => {
+        parameters["hazardFacetMagnitudeMax"] = div.value;
+    });
+    angular.element("#hazardQuakeDepthMin").each((index, div) => {
+        parameters["hazardQuakeDepthMin"] = div.value;
+    });
+    angular.element("#hazardQuakeDepthMax").each((index, div) => {
+        parameters["hazardQuakeDepthMax"] = div.value;
+    });
     angular.element("#hazardFacetAcresBurnedMin").each((index, div) => {
         parameters["hazardFacetAcresBurnedMin"] = div.value;
     });
@@ -561,6 +593,22 @@ var displayBreadCrumbs = function() {
                     hazardUrl = bcURL + '&hazard=' + hazards[j];
                     bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
                 }
+            }
+            if(urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
+                placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Magnitude (min): ' + urlVariables['mag-min'] + '</a></li>';
+            }
+            if(urlVariables['mag-max'] != null && urlVariables['mag-max'] != '') {
+                placeUrl = bcURL + '&mag-max=' + urlVariables['mag-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Magnitude (max): ' + urlVariables['mag-max'] + '</a></li>';
+            }
+            if(urlVariables['depth-min'] != null && urlVariables['depth-min'] != '') {
+                placeUrl = bcURL + '&depth-min=' + urlVariables['depth-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (min): ' + urlVariables['depth-min'] + '</a></li>';
+            }
+            if(urlVariables['depth-max'] != null && urlVariables['depth-max'] != '') {
+                placeUrl = bcURL + '&depth-max=' + urlVariables['depth-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (max): ' + urlVariables['depth-max'] + '</a></li>';
             }
             if(urlVariables['acres-min'] != null && urlVariables['acres-min'] != '') {
                 placeUrl = bcURL + '&acres-min=' + urlVariables['acres-min'];

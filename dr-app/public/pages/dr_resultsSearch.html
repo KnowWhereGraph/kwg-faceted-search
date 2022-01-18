@@ -76,19 +76,27 @@
                             </li>
                         </ul>
                     </ul>
+                    <div>Earthquake: Magnitude (min)</div>
+                    <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-blur="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
+                    <div>Earthquake: Magnitude (max)</div>
+                    <input type="number" class="form-control" id="hazardFacetMagnitudeMax" ng-model="hazardFacetMagnitudeMax" ng-blur="hazardFacetChanged()" max="8" placeholder="Enter maximum magnitude...">
+                    <div>Earthquake: Depth (min)</div>
+                    <input type="number" class="form-control" id="hazardQuakeDepthMin" ng-model="hazardQuakeDepthMin" ng-blur="hazardFacetChanged()" placeholder="Enter minimum depth...">
+                    <div>Earthquake: Depth (max)</div>
+                    <input type="number" class="form-control" id="hazardQuakeDepthMax" ng-model="hazardQuakeDepthMax" ng-blur="hazardFacetChanged()" placeholder="Enter maximum depth...">
                     <!-- Fire Cause -->
                     <div>Fire: Number of Acres Burned (min)</div>
                     <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-blur="hazardFacetChanged()" min="0" placeholder="Enter minimum acres...">
                     <div>Fire: Number of Acres Burned (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-blur="hazardFacetChanged()" placeholder="Enter minimum acres...">
+                    <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-blur="hazardFacetChanged()" placeholder="Enter maximum acres...">
                     <div>Fire: Mean dNBR (min)</div>
                     <input type="number" class="form-control" id="hazardFacetMeanDnbrMin" ng-model="hazardFacetMeanDnbrMin" ng-blur="hazardFacetChanged()" min="-9999" placeholder="Enter minimum mean Dnbr...">
                     <div>Fire: Mean dNBR (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-blur="hazardFacetChanged()" placeholder="Enter minimum mean Dnbr...">
+                    <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-blur="hazardFacetChanged()" placeholder="Enter maximum mean Dnbr...">
                     <div>Fire: Standard Deviation of Mean dNBR (min)</div>
                     <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-blur="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation...">
                     <div>Fire: Standard Deviation of Mean dNBR (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-blur="hazardFacetChanged()" placeholder="Enter minimum standard deviation...">
+                    <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-blur="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
                 </div>
             </li>
             <li id="expertise" ng-show="showExpertiseList">

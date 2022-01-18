@@ -207,6 +207,26 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         placeQuery = ` FILTER(contains(?placeLabel, '${parameters["hazardFacetPlace"]}'))`;
     }
 
+    let magnitudeQuery = '';
+    if(parameters["hazardFacetMagnitudeMin"]!="" || parameters["hazardFacetMagnitudeMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetMagnitudeMin"]!="")
+            facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["hazardFacetMagnitudeMin"]);
+        if(parameters["hazardFacetMagnitudeMax"]!="")
+            facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
+        magnitudeQuery = ` FILTER (` + facetArr.join(' && ') + `)`;
+    }
+
+    let quakeDepthQuery = '';
+    if(parameters["hazardQuakeDepthMin"]!="" || parameters["hazardQuakeDepthMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardQuakeDepthMin"]!="")
+            facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["hazardQuakeDepthMin"]);
+        if(parameters["hazardQuakeDepthMax"]!="")
+            facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
+        quakeDepthQuery = ` FILTER (` + facetArr.join(' && ') + `)`;
+    }
+
     let acresBurnedQuery = '';
     if(parameters["hazardFacetAcresBurnedMin"]!="" || parameters["hazardFacetAcresBurnedMax"]!="") {
         let facetArr = [];
@@ -242,22 +262,29 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity rdf:type ?type${typeQuery}.
             ?type rdfs:subClassOf kwg-ont:HazardEvent.
             ?entity rdfs:label ?label.
-            {
-                ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel${placeQuery}.
-            }
+            ?entity kwg-ont:locatedIn ?place.
+            ?place rdfs:label ?placeLabel${placeQuery}.
             ?entity sosa:phenomenonTime ?time.
-            ?time time:inXSDDate ?timeLabel${dateQuery}
+            ?time time:inXSDDate ?timeLabel${dateQuery}.
+            ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+        
+            ?observationCollection sosa:hasMember ?magnitudeObj.
+            ?magnitudeObj rdfs:label ?magnitudeObjLabel
+            FILTER(contains(?magnitudeObjLabel, 'Observation mag of the earthquake')).
+            ?magnitudeObj sosa:hasSimpleResult ?magnitude${magnitudeQuery}.
+            
+            ?observationCollection sosa:hasMember ?quakeDepthObj.
+            ?quakeDepthObj rdfs:label ?quakeDepthObjLabel
+            FILTER(contains(?quakeDepthObjLabel, 'Observation depth of the earthquake')).
+            ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth${quakeDepthQuery}.
         }
         union
         {
             ?entity rdf:type ?type${typeQuery}.
             ?type rdfs:subClassOf kwg-ont:Fire.
             ?entity rdfs:label ?label.
-            {
-                ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel${placeQuery}.
-            }
+            ?entity kwg-ont:locatedIn ?place.
+            ?place rdfs:label ?placeLabel${placeQuery}.
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?time.
             ?time time:inXSDDate ?timeLabel${dateQuery}.
