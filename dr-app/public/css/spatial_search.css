@@ -183,9 +183,9 @@ ul.filters li p i {
 
 /* 1. height for each module (expertise/place/hazard) */
 
-ul.filters li ul#expertise-list,
+ul.filters li ul#expert-list,
 ul.filters li ul#hazard-list {
-    height: 300px;
+    max-height: 300px;
     overflow-y: auto;
 }
 
@@ -234,6 +234,9 @@ ul.filters .filter div.selectedItem p {
     margin-bottom: 16px;
 }
 
+.list-group-indented {
+    margin-left: 20px;
+}
 
 /*****Data Range******/
 
