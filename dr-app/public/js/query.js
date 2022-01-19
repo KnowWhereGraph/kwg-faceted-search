@@ -393,8 +393,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?observationCollection sosa:phenomenonTime ?time.
             ?time time:hasBeginning ?startTime.
             ?time time:hasEnd ?endTime.
-            ?startTime time:inXSDDate ?startTimeLabel.
-            ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
+            ?startTime time:inXSDDateTime ?startTimeLabel.
+            ?endTime time:inXSDDateTime ?endTimeLabel.${dateQuery}
             optional
             {
                 ?entity geo:hasGeometry/geo:asWKT ?wkt.
@@ -403,6 +403,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
     } ORDER BY ASC(?label)`;
 
+    console.log(hazardQuery);
     let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
