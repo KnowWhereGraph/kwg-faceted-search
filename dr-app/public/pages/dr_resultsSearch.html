@@ -59,7 +59,7 @@
                     <div>Date End</div>
                     <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-blur="hazardFacetChanged()">
                     <div>Hazard Type(s)</div>
-                    <ul class="list-group" id="hazard-list">
+                    <ul class="list-group checkbox-list" id="hazard-list">
                         <li ng-repeat="hazardUrl in hazardUrls['hazards']">
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hazardUrl['hazard_type_name']}}" name="hazard">
                             {{hazardUrl['hazard_type_name']}}
@@ -102,12 +102,56 @@
                     <div>Fire: Standard Deviation of Mean dNBR (max)</div>
                     <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-blur="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
                 </div>
+                <br/>
+                <p class="filter-title">PLACE</p>
+                <div class="filter">
+                    <div>Administrative Regions</div>
+                    <ul class="list-group checkbox-list" id="hazard-region-list">
+                        <section ng-repeat="(a0, a0obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                <input id="hazard_region_{{a0}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazardRegion')">
+                                {{a0obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a1, a1obj) in a0obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="hazard_region_{{a1}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazardRegion')">
+                                        {{a1obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                            <li>
+                                                <input id="hazard_region_{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazardRegion')">
+                                                {{a2obj['label']}}
+                                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                            </li>
+                                            <ul class="list-group list-group-indented" style="display: none">
+                                                <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                                    <input id="hazard_region_{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazardRegion()" value="{{a3}}" name="hazard-region">
+                                                    {{a3obj['label']}}
+                                                </li>
+                                            </ul>
+                                        </section>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
+                    </ul>
+                    <div>Zip Code</div>
+                    <input type="text" class="form-control" id="hazardFacetsZip" ng-model="hazardFacetsZip" ng-blur="hazardFacetChanged()" placeholder="Find by Zip Code...">
+                    <div>US Climate Division</div>
+                    <input type="text" class="form-control" id="hazardFacetsUSCD" ng-model="hazardFacetsUSCD" ng-blur="hazardFacetChanged()" placeholder="Find by US Climate Division...">
+                    <div>National Weather Zone</div>
+                    <input type="text" class="form-control" id="hazardFacetsNWZ" ng-model="hazardFacetsNWZ" ng-blur="hazardFacetChanged()" placeholder="Find by National Weather Zone...">
+                </div>
             </li>
             <li id="expertise" ng-show="showExpertiseList">
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
                     <div>Expert Topic(s)</div>
-                    <ul class="list-group" id="expert-list">
+                    <ul class="list-group checkbox-list" id="expert-list">
                         <section ng-repeat="expertTopic in expertTopics['topics']">
                             <li class="ng-binding ng-scope">
                                 <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')">
@@ -122,6 +166,50 @@
                             </ul>
                         </section>
                     </ul>
+                </div>
+                <br/>
+                <p class="filter-title">PLACE</p>
+                <div class="filter">
+                    <div>Administrative Regions</div>
+                    <ul class="list-group checkbox-list" id="expert-region-list">
+                        <section ng-repeat="(a0, a0obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                <input id="expert_region_{{a0}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectExpertRegion')">
+                                {{a0obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a1, a1obj) in a0obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="expert_region_{{a1}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectExpertRegion')">
+                                        {{a1obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                            <li>
+                                                <input id="expert_region_{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectExpertRegion')">
+                                                {{a2obj['label']}}
+                                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                            </li>
+                                            <ul class="list-group list-group-indented" style="display: none">
+                                                <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                                    <input id="expert_region_{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectExpertRegion()" value="{{a3}}" name="expert-region">
+                                                    {{a3obj['label']}}
+                                                </li>
+                                            </ul>
+                                        </section>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
+                    </ul>
+                    <div>Zip Code</div>
+                    <input type="text" class="form-control" id="expertFacetsZip" ng-model="expertFacetsZip" ng-blur="expertFacetChanged()" placeholder="Find by Zip Code...">
+                    <div>US Climate Division</div>
+                    <input type="text" class="form-control" id="expertFacetsUSCD" ng-model="expertFacetsUSCD" ng-blur="expertFacetChanged()" placeholder="Find by US Climate Division...">
+                    <div>National Weather Zone</div>
+                    <input type="text" class="form-control" id="expertFacetsNWZ" ng-model="expertFacetsNWZ" ng-blur="expertFacetChanged()" placeholder="Find by National Weather Zone...">
                 </div>
             </li>
         </ul>

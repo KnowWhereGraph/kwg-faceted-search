@@ -116,20 +116,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max']!=null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
     $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min']!=null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
-
-    getAdministrativeRegion().then(function(data) {
-        $scope.administrativeRegions = data;
-        $scope.$apply();
-    }).then(function() {
-        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
-        //     $timeout(function() {
-        //         let expertArr = urlVariables['expert'].split(',');
-        //         for(let i=0; i<expertArr.length; i++) {
-        //             angular.element("#"+expertArr[i]).click();
-        //         }
-        //     });
-        // }
-    });
+    $scope.hazardFacetsZip = (urlVariables['hazard-zip']!=null && urlVariables['hazard-zip']!='') ? urlVariables['hazard-zip'] : '';
+    $scope.hazardFacetsUSCD = (urlVariables['hazard-uscd']!=null && urlVariables['hazard-uscd']!='') ? urlVariables['hazard-uscd'] : '';
+    $scope.hazardFacetsNWZ = (urlVariables['hazard-nwz']!=null && urlVariables['hazard-nwz']!='') ? urlVariables['hazard-nwz'] : '';
 
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
@@ -144,6 +133,23 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 }
             });
         }
+    });
+    $scope.expertFacetsZip = (urlVariables['expert-zip']!=null && urlVariables['expert-zip']!='') ? urlVariables['expert-zip'] : '';
+    $scope.expertFacetsUSCD = (urlVariables['expert-uscd']!=null && urlVariables['expert-uscd']!='') ? urlVariables['expert-uscd'] : '';
+    $scope.expertFacetsNWZ = (urlVariables['expert-nwz']!=null && urlVariables['expert-nwz']!='') ? urlVariables['expert-nwz'] : '';
+
+    getAdministrativeRegion().then(function(data) {
+        $scope.administrativeRegions = data;
+        $scope.$apply();
+    }).then(function() {
+        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
+        //     $timeout(function() {
+        //         let expertArr = urlVariables['expert'].split(',');
+        //         for(let i=0; i<expertArr.length; i++) {
+        //             angular.element("#"+expertArr[i]).click();
+        //         }
+        //     });
+        // }
     });
 
     // entire graph initialization
@@ -384,8 +390,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
         else
             $scope.removeValue('stddev-dnbr-max');
+        if(parameters['hazardFacetsZip']!='')
+            $scope.updateURLParameters('hazard-zip', parameters['hazardFacetsZip']);
+        else
+            $scope.removeValue('hazard-zip');
+        if(parameters['hazardFacetsUSCD']!='')
+            $scope.updateURLParameters('hazard-uscd', parameters['hazardFacetsUSCD']);
+        else
+            $scope.removeValue('hazard-uscd');
+        if(parameters['hazardFacetsNWZ']!='')
+            $scope.updateURLParameters('hazard-nwz', parameters['hazardFacetsNWZ']);
+        else
+            $scope.removeValue('hazard-nwz');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
@@ -419,6 +437,56 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
+    $scope.selectHazardRegion = function() {
+        // var parameters = getParameters();
+        //
+        // if(parameters['hazardTypes'].length > 0)
+        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        // else
+        //     $scope.removeValue('hazard');
+        //
+        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        // var response = sendQueries(activeTabName, page, pp, parameters);
+        // var selectors = displayTableByTabName(activeTabName, response);
+        //
+        // response.then(function(result) {
+        //     var countResults = result["count"];
+        //     displayPagination(activeTabName, selectors, countResults, parameters);
+        // });
+    };
+
+    $scope.expertFacetChanged = function() {
+        var parameters = getParameters();
+
+        if(parameters['expertFacetsZip']!='')
+            $scope.updateURLParameters('expert-zip', parameters['expertFacetsZip']);
+        else
+            $scope.removeValue('expert-zip');
+        if(parameters['expertFacetsUSCD']!='')
+            $scope.updateURLParameters('expert-uscd', parameters['expertFacetsUSCD']);
+        else
+            $scope.removeValue('expert-uscd');
+        if(parameters['expertFacetsNWZ']!='')
+            $scope.updateURLParameters('expert-nwz', parameters['expertFacetsNWZ']);
+        else
+            $scope.removeValue('expert-nwz');
+
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
     $scope.selectTopic = function() {
         var parameters = getParameters();
 
@@ -438,6 +506,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
+    };
+
+    $scope.selectExpertRegion = function() {
+        // var parameters = getParameters();
+        //
+        // if(parameters['hazardTypes'].length > 0)
+        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        // else
+        //     $scope.removeValue('hazard');
+        //
+        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        // var response = sendQueries(activeTabName, page, pp, parameters);
+        // var selectors = displayTableByTabName(activeTabName, response);
+        //
+        // response.then(function(result) {
+        //     var countResults = result["count"];
+        //     displayPagination(activeTabName, selectors, countResults, parameters);
+        // });
     };
 });
 
@@ -530,6 +619,20 @@ var getParameters = function() {
     angular.element("#hazardFacetSDMeanDnbrMax").each((index, div) => {
         parameters["hazardFacetSDMeanDnbrMax"] = div.value;
     });
+    let hazardRegions = [];
+    angular.element("input:checkbox[name='hazard-region']:checked").each((index, hazardRegion) => {
+        hazardRegions.push(hazardRegion.value);
+    });
+    parameters["hazardRegions"] = hazardRegions;
+    angular.element("#hazardFacetsZip").each((index, div) => {
+        parameters["hazardFacetsZip"] = div.value;
+    });
+    angular.element("#hazardFacetsUSCD").each((index, div) => {
+        parameters["hazardFacetsUSCD"] = div.value;
+    });
+    angular.element("#hazardFacetsNWZ").each((index, div) => {
+        parameters["hazardFacetsNWZ"] = div.value;
+    });
 
     //People facets
     let expertTopics = [];
@@ -537,6 +640,20 @@ var getParameters = function() {
         expertTopics.push(expert.value);
     });
     parameters["expertTopics"] = expertTopics;
+    let expertRegions = [];
+    angular.element("input:checkbox[name='expert-region']:checked").each((index, expertRegion) => {
+        expertRegions.push(expertRegion.value);
+    });
+    parameters["expertRegions"] = expertRegions;
+    angular.element("#expertFacetsZip").each((index, div) => {
+        parameters["expertFacetsZip"] = div.value;
+    });
+    angular.element("#expertFacetsUSCD").each((index, div) => {
+        parameters["expertFacetsUSCD"] = div.value;
+    });
+    angular.element("#expertFacetsNWZ").each((index, div) => {
+        parameters["expertFacetsNWZ"] = div.value;
+    });
 
     return parameters;
 };
@@ -580,11 +697,11 @@ var displayBreadCrumbs = function() {
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
             if(urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
-                placeUrl = bcURL + '&region=' + urlVariables['uscd'];
+                placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
             }
             if(urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
-                placeUrl = bcURL + '&region=' + urlVariables['nwz'];
+                placeUrl = bcURL + '&nwz=' + urlVariables['nwz'];
                 bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
@@ -648,6 +765,25 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
             }
+            if (urlVariables['hazard-region'] != null && urlVariables['hazard-region'] != '') {
+                var hazardRegions = urlVariables['hazard-region'].split(',');
+                for (var j = 0; j < hazardRegions.length; j++) {
+                    expertUrl = bcURL + '&hazard-region=' + hazardRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + hazardRegions[j] + '</a></li>';
+                }
+            }
+            if(urlVariables['hazard-zip'] != null && urlVariables['hazard-zip'] != '') {
+                placeUrl = bcURL + '&hazard-zip=' + urlVariables['hazard-zip'];
+                bcHTML += '<li><a href="' + placeUrl + '">Hazard Zip Code: ' + urlVariables['hazard-zip'] + '</a></li>';
+            }
+            if(urlVariables['hazard-uscd'] != null && urlVariables['hazard-uscd'] != '') {
+                placeUrl = bcURL + '&hazard-uscd=' + urlVariables['hazard-uscd'];
+                bcHTML += '<li><a href="' + placeUrl + '">Hazard US Climate Division: ' + urlVariables['hazard-uscd'] + '</a></li>';
+            }
+            if(urlVariables['hazard-nwz'] != null && urlVariables['hazard-nwz'] != '') {
+                placeUrl = bcURL + '&hazard-nwz=' + urlVariables['hazard-nwz'];
+                bcHTML += '<li><a href="' + placeUrl + '">Hazard National Weather Zone: ' + urlVariables['hazard-nwz'] + '</a></li>';
+            }
             break;
         case "people":
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
@@ -656,6 +792,25 @@ var displayBreadCrumbs = function() {
                     expertUrl = bcURL + '&expert=' + experts[j];
                     bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
                 }
+            }
+            if (urlVariables['expert-region'] != null && urlVariables['expert-region'] != '') {
+                var expertRegions = urlVariables['expert-region'].split(',');
+                for (var j = 0; j < expertRegions.length; j++) {
+                    expertUrl = bcURL + '&expert-region=' + expertRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + expertRegions[j] + '</a></li>';
+                }
+            }
+            if(urlVariables['expert-zip'] != null && urlVariables['expert-zip'] != '') {
+                placeUrl = bcURL + '&expert-zip=' + urlVariables['expert-zip'];
+                bcHTML += '<li><a href="' + placeUrl + '">expert Zip Code: ' + urlVariables['expert-zip'] + '</a></li>';
+            }
+            if(urlVariables['expert-uscd'] != null && urlVariables['expert-uscd'] != '') {
+                placeUrl = bcURL + '&expert-uscd=' + urlVariables['expert-uscd'];
+                bcHTML += '<li><a href="' + placeUrl + '">expert US Climate Division: ' + urlVariables['expert-uscd'] + '</a></li>';
+            }
+            if(urlVariables['expert-nwz'] != null && urlVariables['expert-nwz'] != '') {
+                placeUrl = bcURL + '&expert-nwz=' + urlVariables['expert-nwz'];
+                bcHTML += '<li><a href="' + placeUrl + '">expert National Weather Zone: ' + urlVariables['expert-nwz'] + '</a></li>';
             }
             break;
     }
