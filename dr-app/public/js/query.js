@@ -124,7 +124,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 
                 ?entity a kwg-ont:AdministrativeRegion.
                 ?entity rdf:type ?type
-                FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+                FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3)).
                 ?entity rdfs:label ?label.
                 ?type rdfs:label ?typeLabel.
                 ?entity geo:hasGeometry/geo:asWKT ?wkt.
@@ -180,7 +180,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         {
             ?entity a kwg-ont:AdministrativeRegion.
             ?entity rdf:type ?type
-            FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+            FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3)).
             ?entity rdfs:label ?label.
             ?type rdfs:label ?typeLabel.
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
@@ -245,8 +245,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     let typeQuery = '';
+    let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
+        typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
     let dateQuery = '';
@@ -263,11 +264,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
         }
         dateQuery = ` FILTER (` + dateArr.join(' && ') + `)`;
-    }
-
-    let placeQuery = '';
-    if(parameters["hazardFacetPlace"]!="") {
-        placeQuery = ` FILTER(contains(?placeLabel, '${parameters["hazardFacetPlace"]}'))`;
     }
 
     let magnitudeQuery = '';
@@ -326,7 +322,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?type rdfs:subClassOf kwg-ont:HazardEvent.
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
-            ?place rdfs:label ?placeLabel${placeQuery}.
+            ?place rdfs:label ?placeLabel.
             ?entity sosa:phenomenonTime ?startTime.
             ?entity sosa:phenomenonTime ?endTime.
             ?startTime time:inXSDDate ?startTimeLabel.
@@ -344,11 +340,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
         union
         {
-            ?entity rdf:type ?type${typeQuery}.
+            ?entity rdf:type ?type${fireTypeQuery}.
             ?type rdfs:subClassOf kwg-ont:Fire.
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
-            ?place rdfs:label ?placeLabel${placeQuery}.
+            ?place rdfs:label ?placeLabel.
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?startTime.
             ?observationCollection sosa:phenomenonTime ?endTime.
@@ -381,7 +377,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             {
                 ?place rdfs:label ?placeLabel.
             }
-            ${placeQuery}
             ?entity kwg-ont:hasImpact ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?time.
             ?time time:hasBeginning ?startTime.
@@ -396,7 +391,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
     } ORDER BY ASC(?label)`;
 
-    console.log(hazardQuery);
     let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
@@ -434,7 +428,8 @@ async function getHazardClasses() {
     let fireQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:Fire.
+        ?type rdfs:subClassOf kwg-ont:Fire
+        FILTER(?type != kwg-ont:Fire).
     } ORDER BY ASC(?label)`;
 
     //Special case for hurricanes
