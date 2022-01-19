@@ -785,6 +785,7 @@ var displayTableByTabName = function(activeTabName, response) {
             var tableBodyAttributes = [];
 
             console.log(recordResults);
+            showHazardMap(recordResults);
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
                 if (selectors["thead"] == "#expertTableTitle") {
@@ -1058,13 +1059,59 @@ function displayMap(fullTextResults, tabName) {
             }
         }
     });
-
-
 }
 
 function showHazardMap(recordResults) {
     console.log("here is to show the hazard map");
+    // clear all the previous markers on the map
+    if (place_markers) {
+        place_markers.removeLayers(markers);
+        markers = [];
+    }
+
+
     recordResults.forEach(e => {
-        // console.log(e["hazard_name"]);
+        console.log("one polygon");
+        if (e["wkt"]) {
+            var wicket = new Wkt.Wkt();
+            var center_lat = 0;
+            var center_lon = 0;
+            var count = 0;
+
+            console.log("wkt: ", e["wkt"]);
+            var coords = [];
+            switch (e["wkt"].split("((")[0].trim()) {
+                case "POLYGON":
+                    coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                    break
+                case "MULTIPOLYGON":
+                    coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                    break
+
+            }
+            coords.forEach(coord => {
+                count += 1;
+                center_lat += coord[1];
+                center_lon += coord[0];
+            });
+            console.log("count is : ", count);
+            if (count) {
+                center_lat = center_lat / count;
+                center_lon = center_lon / count;
+                console.log("center lat: ", center_lat, "center lon: ", center_lon);
+                // L.circle([center_lat, center_lon], {
+                //     color: "red",
+                //     radius: 10000
+                // }).addTo(resultsSearchMap);
+                let place_marker = new L.marker([center_lat, center_lon]);
+                markers.push(place_marker);
+                place_markers.addLayer(place_marker);
+                resultsSearchMap.addLayer(place_markers);
+            }
+
+
+
+        }
+
     })
 }
