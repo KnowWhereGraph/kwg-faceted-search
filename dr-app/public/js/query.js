@@ -1,5 +1,5 @@
 // query.js contains the javascript codes that query data from KnowWhereGraph.
-// Right now the endpoint is set to be KnowWhereGraph-V2 from stko-kwg.
+// Right now the endpoint is set to be KWG-V2 from stko-kwg.
 
 // Prefixes
 const H_PREFIXES = {
@@ -110,11 +110,11 @@ async function getAdministrativeRegion() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
+    let placeQuery = `select ?label ?type ?typeLabel ?entity ?wkt where {`;
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -125,7 +125,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsRegion"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -133,13 +133,14 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 ?entity rdf:type ?type
                 FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
                 ?entity rdfs:label ?label.
-                ?type rdfs:label ?typeLabel
+                ?type rdfs:label ?typeLabel.
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }`);
         }
         if(parameters["placeFacetsZip"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsZip"]}";
                 elastic:entities ?entity.
                 
@@ -147,33 +148,36 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 ?entity rdf:type ?type
                 FILTER(?type=kwg-ont:ZipCodeArea).
                 ?entity rdfs:label ?label.
-                ?type rdfs:label ?typeLabel
+                ?type rdfs:label ?typeLabel.
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }`);
         }
         if(parameters["placeFacetsUSCD"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsUSCD"]}";
                 elastic:entities ?entity.
                 
                 ?entity a kwg-ont:USClimateDivision.
                 ?entity rdf:type ?type
                 FILTER(?type=kwg-ont:USClimateDivision).
-                ?entity rdfs:label ?label
+                ?entity rdfs:label ?label.
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }`);
         }
         if(parameters["placeFacetsNWZ"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsNWZ"]}";
                 elastic:entities ?entity.
                 
                 ?entity a kwg-ont:NWZone.
                 ?entity rdf:type ?type
                 FILTER(?type=kwg-ont:NWZone).
-                ?entity rdfs:label ?label
+                ?entity rdfs:label ?label.
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }`);
         }
         placeQuery += typeQueries.join(' union ');
@@ -185,7 +189,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity rdf:type ?type
             FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
             ?entity rdfs:label ?label.
-            ?type rdfs:label ?typeLabel
+            ?type rdfs:label ?typeLabel.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
         union
         {
@@ -193,21 +198,24 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity rdf:type ?type
             FILTER(?type=kwg-ont:ZipCodeArea).
             ?entity rdfs:label ?label.
-            ?type rdfs:label ?typeLabel
+            ?type rdfs:label ?typeLabel.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
         union
         {
             ?entity a kwg-ont:USClimateDivision.
             ?entity rdf:type ?type
             FILTER(?type=kwg-ont:USClimateDivision).
-            ?entity rdfs:label ?label
+            ?entity rdfs:label ?label.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
         union
         {
             ?entity a kwg-ont:NWZone.
             ?entity rdf:type ?type
             FILTER(?type=kwg-ont:NWZone).
-            ?entity rdfs:label ?label
+            ?entity rdfs:label ?label.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }`;
     }
 
@@ -221,6 +229,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             'place_name':row.label.value,
             'place_type':row.type.value,
             'place_type_name':placeLabel,
+            'wkt':row.wkt.value,
         });
     }
 
@@ -232,11 +241,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?time ?timeLabel where {`;
+    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?time ?timeLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -322,6 +331,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity sosa:phenomenonTime ?time.
             ?time time:inXSDDate ?timeLabel${dateQuery}.
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
         
             ?observationCollection sosa:hasMember ?magnitudeObj.
             ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
@@ -341,6 +351,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?time.
             ?time time:inXSDDate ?timeLabel${dateQuery}.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
             
             ?observationCollection sosa:hasMember ?numAcresBurnedObj.
             ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
@@ -371,6 +382,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'place_name':row.placeLabel.value,
             'date':row.time.value,
             'date_name':row.timeLabel.value,
+            'wkt':row.wkt.value,
         });
     }
 
@@ -425,11 +437,11 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         topicQuery = ` FILTER(?expert IN (kwgr:` + parameters["expertTopics"].join(',kwgr:') + `))`;
     }
 
-    let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
+    let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         placeQuery +=
             `
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -442,7 +454,8 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?entity kwg-ont:hasExpertise ?expert${topicQuery}.
         ?expert rdfs:label ?expertLabel.
         ?entity iospress:contributorAffiliation ?affiliation.
-        ?affiliation rdfs:label ?affiliationLabel
+        ?affiliation rdfs:label ?affiliationLabel.
+        ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
     } ORDER BY ASC(?label)`;
 
     let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
@@ -462,6 +475,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
                 'expertise_name': [row.expertLabel.value],
                 'place': "Insert Place Here",
                 'place_name': "Insert Place Here",
+                'wkt':row.wkt.value,
             };
         }
     }
