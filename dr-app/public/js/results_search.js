@@ -79,43 +79,43 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showHazardTab = true;
 
     //Set the keyword value
-    $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
+    $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
 
     //Set place facet values
-    $scope.placeFacetsRegion = (urlVariables['region']!=null && urlVariables['region']!='') ? urlVariables['region'] : '';
-    $scope.placeFacetsZip = (urlVariables['zip']!=null && urlVariables['zip']!='') ? urlVariables['zip'] : '';
-    $scope.placeFacetsUSCD = (urlVariables['uscd']!=null && urlVariables['uscd']!='') ? urlVariables['uscd'] : '';
-    $scope.placeFacetsNWZ = (urlVariables['nwz']!=null && urlVariables['nwz']!='') ? urlVariables['nwz'] : '';
+    $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
+    $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
+    $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
+    $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    $scope.hazardFacetPlace = (urlVariables['place']!=null && urlVariables['place']!='') ? urlVariables['place'] : '';
-    if(urlVariables['date-start']!=null && urlVariables['date-start']!='')
+    $scope.hazardFacetPlace = (urlVariables['place'] != null && urlVariables['place'] != '') ? urlVariables['place'] : '';
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
-    if(urlVariables['date-end']!=null && urlVariables['date-end']!='')
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
     getHazardClasses().then(function(data) {
         $scope.hazardUrls = data;
         $scope.$apply();
     }).then(function() {
-        if((urlVariables['hazard']!=null && urlVariables['hazard']!='')) {
+        if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
             $timeout(function() {
                 let hazArr = urlVariables['hazard'].split(',');
-                for(let i=0; i<hazArr.length; i++) {
-                    angular.element("#"+hazArr[i]).click();
+                for (let i = 0; i < hazArr.length; i++) {
+                    angular.element("#" + hazArr[i]).click();
                 }
             });
         }
     });
-    $scope.hazardFacetMagnitudeMin = (urlVariables['mag-min']!=null && !isNaN(urlVariables['mag-min'])) ? Number.parseInt(urlVariables['mag-min']) : '';
-    $scope.hazardFacetMagnitudeMax = (urlVariables['mag-max']!=null && !isNaN(urlVariables['mag-max'])) ? Number.parseInt(urlVariables['mag-max']) : '';
-    $scope.hazardQuakeDepthMin = (urlVariables['depth-min']!=null && !isNaN(urlVariables['depth-min'])) ? Number.parseInt(urlVariables['depth-min']) : '';
-    $scope.hazardQuakeDepthMax = (urlVariables['depth-max']!=null && !isNaN(urlVariables['depth-max'])) ? Number.parseInt(urlVariables['depth-max']) : '';
-    $scope.hazardFacetAcresBurnedMin = (urlVariables['acres-min']!=null && !isNaN(urlVariables['acres-min'])) ? Number.parseInt(urlVariables['acres-min']) : '';
-    $scope.hazardFacetAcresBurnedMax = (urlVariables['acres-max']!=null && !isNaN(urlVariables['acres-max'])) ? Number.parseInt(urlVariables['acres-max']) : '';
-    $scope.hazardFacetMeanDnbrMin = (urlVariables['dnbr-min']!=null && !isNaN(urlVariables['dnbr-min'])) ? Number.parseInt(urlVariables['dnbr-min']) : '';
-    $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max']!=null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
-    $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min']!=null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
-    $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
+    $scope.hazardFacetMagnitudeMin = (urlVariables['mag-min'] != null && !isNaN(urlVariables['mag-min'])) ? Number.parseInt(urlVariables['mag-min']) : '';
+    $scope.hazardFacetMagnitudeMax = (urlVariables['mag-max'] != null && !isNaN(urlVariables['mag-max'])) ? Number.parseInt(urlVariables['mag-max']) : '';
+    $scope.hazardQuakeDepthMin = (urlVariables['depth-min'] != null && !isNaN(urlVariables['depth-min'])) ? Number.parseInt(urlVariables['depth-min']) : '';
+    $scope.hazardQuakeDepthMax = (urlVariables['depth-max'] != null && !isNaN(urlVariables['depth-max'])) ? Number.parseInt(urlVariables['depth-max']) : '';
+    $scope.hazardFacetAcresBurnedMin = (urlVariables['acres-min'] != null && !isNaN(urlVariables['acres-min'])) ? Number.parseInt(urlVariables['acres-min']) : '';
+    $scope.hazardFacetAcresBurnedMax = (urlVariables['acres-max'] != null && !isNaN(urlVariables['acres-max'])) ? Number.parseInt(urlVariables['acres-max']) : '';
+    $scope.hazardFacetMeanDnbrMin = (urlVariables['dnbr-min'] != null && !isNaN(urlVariables['dnbr-min'])) ? Number.parseInt(urlVariables['dnbr-min']) : '';
+    $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max'] != null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
+    $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min'] != null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
+    $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max'] != null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
     getAdministrativeRegion().then(function(data) {
         $scope.administrativeRegions = data;
@@ -136,11 +136,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.expertTopics = data;
         $scope.$apply();
     }).then(function() {
-        if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
+        if ((urlVariables['expert'] != null && urlVariables['expert'] != '')) {
             $timeout(function() {
                 let expertArr = urlVariables['expert'].split(',');
-                for(let i=0; i<expertArr.length; i++) {
-                    angular.element("#"+expertArr[i]).click();
+                for (let i = 0; i < expertArr.length; i++) {
+                    angular.element("#" + expertArr[i]).click();
                 }
             });
         }
@@ -155,16 +155,16 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     $scope.keywordSubmit = function($event) {
         var keyword = $scope.inputQuery;
-        if(keyword != '')
+        if (keyword != '')
             $scope.updateURLParameters('keyword', keyword);
         else
             $scope.removeValue('keyword');
 
         var parameters = getParameters();
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -202,8 +202,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.updateURLParameters("tab", urlUpdateTab);
 
         var parameters = getParameters();
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(newActiveTabName, page, pp, parameters);
         var selectors = displayTableByTabName(newActiveTabName, response);
 
@@ -218,28 +218,28 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         let subListDiv = $event.target.parentNode.nextElementSibling;
         let childListItems = subListDiv.children;
 
-        if($event.target.checked) {
-            for(let i=0; i< childListItems.length; i++) {
+        if ($event.target.checked) {
+            for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = true;
             }
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
-        } else  {
-            for(let i=0; i< childListItems.length; i++) {
+        } else {
+            for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
         }
 
-        $scope[functionName]();
+        $scope[functionName]($event);
     };
 
     $scope.showSubList = function($event) {
         let dropdownImg = $event.target;
         let subListDiv = $event.target.parentNode.nextElementSibling;
 
-        if(subListDiv.style["display"] == "") {
+        if (subListDiv.style["display"] == "") {
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
         } else {
@@ -299,27 +299,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetChanged = function() {
         var parameters = getParameters();
 
-        if(parameters['placeFacetsRegion']!='')
+        if (parameters['placeFacetsRegion'] != '')
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
         else
             $scope.removeValue('region');
-        if(parameters['placeFacetsZip']!='')
+        if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
             $scope.removeValue('zip');
-        if(parameters['placeFacetsUSCD']!='')
+        if (parameters['placeFacetsUSCD'] != '')
             $scope.updateURLParameters('uscd', parameters['placeFacetsUSCD']);
         else
             $scope.removeValue('uscd');
-        if(parameters['placeFacetsNWZ']!='')
+        if (parameters['placeFacetsNWZ'] != '')
             $scope.updateURLParameters('nwz', parameters['placeFacetsNWZ']);
         else
             $scope.removeValue('nwz');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -332,63 +332,63 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetChanged = function() {
         var parameters = getParameters();
 
-        if(parameters['hazardFacetPlace']!='')
+        if (parameters['hazardFacetPlace'] != '')
             $scope.updateURLParameters('place', parameters['hazardFacetPlace']);
         else
             $scope.removeValue('place');
-        if(parameters['hazardFacetDateStart']!='')
+        if (parameters['hazardFacetDateStart'] != '')
             $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
         else
             $scope.removeValue('date-start');
-        if(parameters['hazardFacetDateEnd']!='')
+        if (parameters['hazardFacetDateEnd'] != '')
             $scope.updateURLParameters('date-end', parameters['hazardFacetDateEnd']);
         else
             $scope.removeValue('date-end');
-        if(parameters['hazardFacetMagnitudeMin']!='')
+        if (parameters['hazardFacetMagnitudeMin'] != '')
             $scope.updateURLParameters('mag-min', parameters['hazardFacetMagnitudeMin']);
         else
             $scope.removeValue('mag-min');
-        if(parameters['hazardFacetMagnitudeMax']!='')
+        if (parameters['hazardFacetMagnitudeMax'] != '')
             $scope.updateURLParameters('mag-max', parameters['hazardFacetMagnitudeMax']);
         else
             $scope.removeValue('mag-max');
-        if(parameters['hazardQuakeDepthMin']!='')
+        if (parameters['hazardQuakeDepthMin'] != '')
             $scope.updateURLParameters('depth-min', parameters['hazardQuakeDepthMin']);
         else
             $scope.removeValue('depth-min');
-        if(parameters['hazardQuakeDepthMax']!='')
+        if (parameters['hazardQuakeDepthMax'] != '')
             $scope.updateURLParameters('depth-max', parameters['hazardQuakeDepthMax']);
         else
             $scope.removeValue('depth-max');
-        if(parameters['hazardFacetAcresBurnedMin']!='')
+        if (parameters['hazardFacetAcresBurnedMin'] != '')
             $scope.updateURLParameters('acres-min', parameters['hazardFacetAcresBurnedMin']);
         else
             $scope.removeValue('acres-min');
-        if(parameters['hazardFacetAcresBurnedMax']!='')
+        if (parameters['hazardFacetAcresBurnedMax'] != '')
             $scope.updateURLParameters('acres-max', parameters['hazardFacetAcresBurnedMax']);
         else
             $scope.removeValue('acres-max');
-        if(parameters['hazardFacetMeanDnbrMin']!='')
+        if (parameters['hazardFacetMeanDnbrMin'] != '')
             $scope.updateURLParameters('dnbr-min', parameters['hazardFacetMeanDnbrMin']);
         else
             $scope.removeValue('dnbr-min');
-        if(parameters['hazardFacetMeanDnbrMax']!='')
+        if (parameters['hazardFacetMeanDnbrMax'] != '')
             $scope.updateURLParameters('dnbr-max', parameters['hazardFacetMeanDnbrMax']);
         else
             $scope.removeValue('dnbr-max');
-        if(parameters['hazardFacetSDMeanDnbrMin']!='')
+        if (parameters['hazardFacetSDMeanDnbrMin'] != '')
             $scope.updateURLParameters('stddev-dnbr-min', parameters['hazardFacetSDMeanDnbrMin']);
         else
             $scope.removeValue('stddev-dnbr-min');
-        if(parameters['hazardFacetSDMeanDnbrMax']!='')
+        if (parameters['hazardFacetSDMeanDnbrMax'] != '')
             $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
         else
             $scope.removeValue('stddev-dnbr-max');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -398,18 +398,18 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
-    $scope.selectHazard = function() {
+    $scope.selectHazard = function($event) {
         var parameters = getParameters();
 
-        if(parameters['hazardTypes'].length > 0)
+        if (parameters['hazardTypes'].length > 0)
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         else
             $scope.removeValue('hazard');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -417,20 +417,43 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
+
+        console.log("clicked hazard is: ", $event.target.value);
+        if ($event.target.checked) {
+            switch ($event.target.value) {
+                case "EarthquakeEvent":
+                    console.log("the earthquake event is selected");
+                    $scope.hazardPropertiesShow = true;
+                    break
+                case "FireEvent":
+                    console.log("the fire is selected");
+                    $scope.firePropertiesShow = true;
+                    break
+
+            }
+        } else {
+            switch ($event.target.value) {
+                case "EarthquakeEvent":
+                    $scope.hazardPropertiesShow = false;
+                    break
+                case "FireEvent":
+                    $scope.firePropertiesShow = false;
+            }
+        }
     };
 
     $scope.selectTopic = function() {
         var parameters = getParameters();
 
-        if(parameters['expertTopics'].length > 0)
+        if (parameters['expertTopics'].length > 0)
             $scope.updateURLParameters('expert', parameters['expertTopics'].join(','));
         else
             $scope.removeValue('expert');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -469,7 +492,7 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
-    var parameters = {"keyword": getScope().inputQuery};
+    var parameters = { "keyword": getScope().inputQuery };
 
     //Place facets
     angular.element("#placeFacetsRegion").each((index, div) => {
@@ -543,7 +566,7 @@ var getParameters = function() {
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     angular.element("#ttl-results").html('Loading query...');
-    switch(tabName) {
+    switch (tabName) {
         case "Place":
             return getPlaceSearchResults(pageNum, recordNum, parameters);
         case "Hazard":
@@ -564,40 +587,40 @@ var displayBreadCrumbs = function() {
     bcURL += 'tab=' + tab;
     bcHTML += '<li><a href="' + bcURL + '">' + tabCap + '</a></li>';
 
-    if(urlVariables['keyword'] != null && urlVariables['keyword'] != '') {
+    if (urlVariables['keyword'] != null && urlVariables['keyword'] != '') {
         mainUrl = bcURL + '&keyword=' + urlVariables['keyword'];
         bcHTML += '<li><a href="' + mainUrl + '">Keyword: ' + urlVariables['keyword'] + '</a></li>';
     }
 
     switch (tab) {
         case "place":
-            if(urlVariables['region'] != null && urlVariables['region'] != '') {
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
                 placeUrl = bcURL + '&region=' + urlVariables['region'];
                 bcHTML += '<li><a href="' + placeUrl + '">Administrative Region: ' + urlVariables['region'] + '</a></li>';
             }
-            if(urlVariables['zip'] != null && urlVariables['zip'] != '') {
+            if (urlVariables['zip'] != null && urlVariables['zip'] != '') {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
-            if(urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
+            if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
                 placeUrl = bcURL + '&region=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
             }
-            if(urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
+            if (urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
                 placeUrl = bcURL + '&region=' + urlVariables['nwz'];
                 bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
         case "hazard":
-            if(urlVariables['place'] != null && urlVariables['place'] != '') {
+            if (urlVariables['place'] != null && urlVariables['place'] != '') {
                 placeUrl = bcURL + '&place=' + urlVariables['place'];
                 bcHTML += '<li><a href="' + placeUrl + '">Place: ' + urlVariables['place'] + '</a></li>';
             }
-            if(urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+            if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
                 placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
             }
-            if(urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
+            if (urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
                 placeUrl = bcURL + '&date-end=' + urlVariables['date-end'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date End: ' + urlVariables['date-end'] + '</a></li>';
             }
@@ -608,43 +631,43 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
                 }
             }
-            if(urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
+            if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
                 placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Magnitude (min): ' + urlVariables['mag-min'] + '</a></li>';
             }
-            if(urlVariables['mag-max'] != null && urlVariables['mag-max'] != '') {
+            if (urlVariables['mag-max'] != null && urlVariables['mag-max'] != '') {
                 placeUrl = bcURL + '&mag-max=' + urlVariables['mag-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">Magnitude (max): ' + urlVariables['mag-max'] + '</a></li>';
             }
-            if(urlVariables['depth-min'] != null && urlVariables['depth-min'] != '') {
+            if (urlVariables['depth-min'] != null && urlVariables['depth-min'] != '') {
                 placeUrl = bcURL + '&depth-min=' + urlVariables['depth-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (min): ' + urlVariables['depth-min'] + '</a></li>';
             }
-            if(urlVariables['depth-max'] != null && urlVariables['depth-max'] != '') {
+            if (urlVariables['depth-max'] != null && urlVariables['depth-max'] != '') {
                 placeUrl = bcURL + '&depth-max=' + urlVariables['depth-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (max): ' + urlVariables['depth-max'] + '</a></li>';
             }
-            if(urlVariables['acres-min'] != null && urlVariables['acres-min'] != '') {
+            if (urlVariables['acres-min'] != null && urlVariables['acres-min'] != '') {
                 placeUrl = bcURL + '&acres-min=' + urlVariables['acres-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (min): ' + urlVariables['acres-min'] + '</a></li>';
             }
-            if(urlVariables['acres-max'] != null && urlVariables['acres-max'] != '') {
+            if (urlVariables['acres-max'] != null && urlVariables['acres-max'] != '') {
                 placeUrl = bcURL + '&acres-max=' + urlVariables['acres-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (max): ' + urlVariables['acres-max'] + '</a></li>';
             }
-            if(urlVariables['dnbr-min'] != null && urlVariables['dnbr-min'] != '') {
+            if (urlVariables['dnbr-min'] != null && urlVariables['dnbr-min'] != '') {
                 placeUrl = bcURL + '&dnbr-min=' + urlVariables['dnbr-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (min): ' + urlVariables['dnbr-min'] + '</a></li>';
             }
-            if(urlVariables['dnbr-max'] != null && urlVariables['dnbr-max'] != '') {
+            if (urlVariables['dnbr-max'] != null && urlVariables['dnbr-max'] != '') {
                 placeUrl = bcURL + '&dnbr-max=' + urlVariables['dnbr-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (max): ' + urlVariables['dnbr-max'] + '</a></li>';
             }
-            if(urlVariables['stddev-dnbr-min'] != null && urlVariables['stddev-dnbr-min'] != '') {
+            if (urlVariables['stddev-dnbr-min'] != null && urlVariables['stddev-dnbr-min'] != '') {
                 placeUrl = bcURL + '&stddev-dnbr-min=' + urlVariables['stddev-dnbr-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (min): ' + urlVariables['stddev-dnbr-min'] + '</a></li>';
             }
-            if(urlVariables['stddev-dnbr-max'] != null && urlVariables['stddev-dnbr-max'] != '') {
+            if (urlVariables['stddev-dnbr-max'] != null && urlVariables['stddev-dnbr-max'] != '') {
                 placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
             }
@@ -752,6 +775,8 @@ var displayTableByTabName = function(activeTabName, response) {
         var tableBody = angular.element(selectors["tbody"] + " tbody");
         tableBody.empty();
 
+        console.log("get response: ", response);
+
         response.then(function(result) {
             countResults = result["count"];
             recordResults = result["record"];
@@ -779,15 +804,15 @@ var displayTableByTabName = function(activeTabName, response) {
                     var attr = tableBodyAttributes[index];
                     var cellHtml = '';
 
-                    if(Array.isArray(attr)) {
+                    if (Array.isArray(attr)) {
                         let linkArray = [];
 
-                        for(let i=0; i<attr.length; i++) {
+                        for (let i = 0; i < attr.length; i++) {
                             linkArray.push('<a target="_blank" href="' + link[i] + '">' + attr[i] + "</a>")
                         }
 
                         cellHtml = linkArray.join(', ');
-                    }else {
+                    } else {
                         cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
                     }
 
@@ -796,7 +821,9 @@ var displayTableByTabName = function(activeTabName, response) {
 
                 var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
                 tableBody.append(rowHtml);
-            })
+            });
+
+            showHazardMap(recordResults);
 
         }).then(function() {
 
@@ -819,6 +846,7 @@ var displayTableByTabName = function(activeTabName, response) {
         });
 
         //displayMap(response, activeTabName);
+
     }
     return selectors;
 };
@@ -953,7 +981,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
 
         //Before moving on, make sure that the pagination value actually exists.
         //If it doesn't, then load the 1st page
-        if(numPages < selectedPage) {
+        if (numPages < selectedPage) {
             angular.element(paginationSelector + ' .page-item').first().click();
         } else if (selectedPage > 1) { //Prev button
             angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function(event) {
@@ -1032,4 +1060,11 @@ function displayMap(fullTextResults, tabName) {
     });
 
 
+}
+
+function showHazardMap(recordResults) {
+    console.log("here is to show the hazard map");
+    recordResults.forEach(e => {
+        // console.log(e["hazard_name"]);
+    })
 }
