@@ -88,7 +88,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz']!=null && urlVariables['nwz']!='') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    $scope.hazardFacetPlace = (urlVariables['place']!=null && urlVariables['place']!='') ? urlVariables['place'] : '';
     if(urlVariables['date-start']!=null && urlVariables['date-start']!='')
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
     if(urlVariables['date-end']!=null && urlVariables['date-end']!='')
@@ -116,9 +115,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max']!=null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
     $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min']!=null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
-    $scope.hazardFacetsZip = (urlVariables['hazard-zip']!=null && urlVariables['hazard-zip']!='') ? urlVariables['hazard-zip'] : '';
-    $scope.hazardFacetsUSCD = (urlVariables['hazard-uscd']!=null && urlVariables['hazard-uscd']!='') ? urlVariables['hazard-uscd'] : '';
-    $scope.hazardFacetsNWZ = (urlVariables['hazard-nwz']!=null && urlVariables['hazard-nwz']!='') ? urlVariables['hazard-nwz'] : '';
 
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
@@ -134,9 +130,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
         }
     });
-    $scope.expertFacetsZip = (urlVariables['expert-zip']!=null && urlVariables['expert-zip']!='') ? urlVariables['expert-zip'] : '';
-    $scope.expertFacetsUSCD = (urlVariables['expert-uscd']!=null && urlVariables['expert-uscd']!='') ? urlVariables['expert-uscd'] : '';
-    $scope.expertFacetsNWZ = (urlVariables['expert-nwz']!=null && urlVariables['expert-nwz']!='') ? urlVariables['expert-nwz'] : '';
 
     getAdministrativeRegion().then(function(data) {
         $scope.administrativeRegions = data;
@@ -338,10 +331,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetChanged = function() {
         var parameters = getParameters();
 
-        if(parameters['hazardFacetPlace']!='')
-            $scope.updateURLParameters('place', parameters['hazardFacetPlace']);
-        else
-            $scope.removeValue('place');
         if(parameters['hazardFacetDateStart']!='')
             $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
         else
@@ -390,18 +379,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
         else
             $scope.removeValue('stddev-dnbr-max');
-        if(parameters['hazardFacetsZip']!='')
-            $scope.updateURLParameters('hazard-zip', parameters['hazardFacetsZip']);
-        else
-            $scope.removeValue('hazard-zip');
-        if(parameters['hazardFacetsUSCD']!='')
-            $scope.updateURLParameters('hazard-uscd', parameters['hazardFacetsUSCD']);
-        else
-            $scope.removeValue('hazard-uscd');
-        if(parameters['hazardFacetsNWZ']!='')
-            $scope.updateURLParameters('hazard-nwz', parameters['hazardFacetsNWZ']);
-        else
-            $scope.removeValue('hazard-nwz');
 
         var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -437,42 +414,14 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
-    $scope.selectHazardRegion = function() {
-        // var parameters = getParameters();
-        //
-        // if(parameters['hazardTypes'].length > 0)
-        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
-        // else
-        //     $scope.removeValue('hazard');
-        //
-        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
-        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
-        // var response = sendQueries(activeTabName, page, pp, parameters);
-        // var selectors = displayTableByTabName(activeTabName, response);
-        //
-        // response.then(function(result) {
-        //     var countResults = result["count"];
-        //     displayPagination(activeTabName, selectors, countResults, parameters);
-        // });
-    };
-
     $scope.expertFacetChanged = function() {
         var parameters = getParameters();
 
-        if(parameters['expertFacetsZip']!='')
-            $scope.updateURLParameters('expert-zip', parameters['expertFacetsZip']);
-        else
-            $scope.removeValue('expert-zip');
-        if(parameters['expertFacetsUSCD']!='')
-            $scope.updateURLParameters('expert-uscd', parameters['expertFacetsUSCD']);
-        else
-            $scope.removeValue('expert-uscd');
-        if(parameters['expertFacetsNWZ']!='')
-            $scope.updateURLParameters('expert-nwz', parameters['expertFacetsNWZ']);
-        else
-            $scope.removeValue('expert-nwz');
+        //EXAMPLE:
+        // if(parameters['expertFacetsZip']!='')
+        //     $scope.updateURLParameters('expert-zip', parameters['expertFacetsZip']);
+        // else
+        //     $scope.removeValue('expert-zip');
 
         var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -508,7 +457,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
-    $scope.selectExpertRegion = function() {
+    $scope.selectRegion = function() {
         // var parameters = getParameters();
         //
         // if(parameters['hazardTypes'].length > 0)
@@ -575,9 +524,6 @@ var getParameters = function() {
     });
 
     //Hazard facets
-    angular.element("#hazardFacetPlace").each((index, div) => {
-        parameters["hazardFacetPlace"] = div.value;
-    });
     angular.element("#hazardFacetDateStart").each((index, div) => {
         parameters["hazardFacetDateStart"] = div.value;
     });
@@ -619,20 +565,6 @@ var getParameters = function() {
     angular.element("#hazardFacetSDMeanDnbrMax").each((index, div) => {
         parameters["hazardFacetSDMeanDnbrMax"] = div.value;
     });
-    let hazardRegions = [];
-    angular.element("input:checkbox[name='hazard-region']:checked").each((index, hazardRegion) => {
-        hazardRegions.push(hazardRegion.value);
-    });
-    parameters["hazardRegions"] = hazardRegions;
-    angular.element("#hazardFacetsZip").each((index, div) => {
-        parameters["hazardFacetsZip"] = div.value;
-    });
-    angular.element("#hazardFacetsUSCD").each((index, div) => {
-        parameters["hazardFacetsUSCD"] = div.value;
-    });
-    angular.element("#hazardFacetsNWZ").each((index, div) => {
-        parameters["hazardFacetsNWZ"] = div.value;
-    });
 
     //People facets
     let expertTopics = [];
@@ -640,20 +572,13 @@ var getParameters = function() {
         expertTopics.push(expert.value);
     });
     parameters["expertTopics"] = expertTopics;
-    let expertRegions = [];
-    angular.element("input:checkbox[name='expert-region']:checked").each((index, expertRegion) => {
-        expertRegions.push(expertRegion.value);
+
+    //Place sub facets
+    let facetRegions = [];
+    angular.element("input:checkbox[name='region']:checked").each((index, facetRegion) => {
+        facetRegions.push(facetRegion.value);
     });
-    parameters["expertRegions"] = expertRegions;
-    angular.element("#expertFacetsZip").each((index, div) => {
-        parameters["expertFacetsZip"] = div.value;
-    });
-    angular.element("#expertFacetsUSCD").each((index, div) => {
-        parameters["expertFacetsUSCD"] = div.value;
-    });
-    angular.element("#expertFacetsNWZ").each((index, div) => {
-        parameters["expertFacetsNWZ"] = div.value;
-    });
+    parameters["facetRegions"] = facetRegions;
 
     return parameters;
 };
@@ -706,10 +631,6 @@ var displayBreadCrumbs = function() {
             }
             break;
         case "hazard":
-            if(urlVariables['place'] != null && urlVariables['place'] != '') {
-                placeUrl = bcURL + '&place=' + urlVariables['place'];
-                bcHTML += '<li><a href="' + placeUrl + '">Place: ' + urlVariables['place'] + '</a></li>';
-            }
             if(urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
                 placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
@@ -765,24 +686,12 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
             }
-            if (urlVariables['hazard-region'] != null && urlVariables['hazard-region'] != '') {
-                var hazardRegions = urlVariables['hazard-region'].split(',');
-                for (var j = 0; j < hazardRegions.length; j++) {
-                    expertUrl = bcURL + '&hazard-region=' + hazardRegions[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + hazardRegions[j] + '</a></li>';
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
-            }
-            if(urlVariables['hazard-zip'] != null && urlVariables['hazard-zip'] != '') {
-                placeUrl = bcURL + '&hazard-zip=' + urlVariables['hazard-zip'];
-                bcHTML += '<li><a href="' + placeUrl + '">Hazard Zip Code: ' + urlVariables['hazard-zip'] + '</a></li>';
-            }
-            if(urlVariables['hazard-uscd'] != null && urlVariables['hazard-uscd'] != '') {
-                placeUrl = bcURL + '&hazard-uscd=' + urlVariables['hazard-uscd'];
-                bcHTML += '<li><a href="' + placeUrl + '">Hazard US Climate Division: ' + urlVariables['hazard-uscd'] + '</a></li>';
-            }
-            if(urlVariables['hazard-nwz'] != null && urlVariables['hazard-nwz'] != '') {
-                placeUrl = bcURL + '&hazard-nwz=' + urlVariables['hazard-nwz'];
-                bcHTML += '<li><a href="' + placeUrl + '">Hazard National Weather Zone: ' + urlVariables['hazard-nwz'] + '</a></li>';
             }
             break;
         case "people":
@@ -793,24 +702,12 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
                 }
             }
-            if (urlVariables['expert-region'] != null && urlVariables['expert-region'] != '') {
-                var expertRegions = urlVariables['expert-region'].split(',');
-                for (var j = 0; j < expertRegions.length; j++) {
-                    expertUrl = bcURL + '&expert-region=' + expertRegions[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + expertRegions[j] + '</a></li>';
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
-            }
-            if(urlVariables['expert-zip'] != null && urlVariables['expert-zip'] != '') {
-                placeUrl = bcURL + '&expert-zip=' + urlVariables['expert-zip'];
-                bcHTML += '<li><a href="' + placeUrl + '">expert Zip Code: ' + urlVariables['expert-zip'] + '</a></li>';
-            }
-            if(urlVariables['expert-uscd'] != null && urlVariables['expert-uscd'] != '') {
-                placeUrl = bcURL + '&expert-uscd=' + urlVariables['expert-uscd'];
-                bcHTML += '<li><a href="' + placeUrl + '">expert US Climate Division: ' + urlVariables['expert-uscd'] + '</a></li>';
-            }
-            if(urlVariables['expert-nwz'] != null && urlVariables['expert-nwz'] != '') {
-                placeUrl = bcURL + '&expert-nwz=' + urlVariables['expert-nwz'];
-                bcHTML += '<li><a href="' + placeUrl + '">expert National Weather Zone: ' + urlVariables['expert-nwz'] + '</a></li>';
             }
             break;
     }
@@ -938,12 +835,12 @@ var displayTableByTabName = function(activeTabName, response) {
                         let linkArray = [];
 
                         for(let i=0; i<attr.length; i++) {
-                            linkArray.push('<a target="_blank" href="' + link[i] + '">' + attr[i] + "</a>")
+                            linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
                         }
 
                         cellHtml = linkArray.join(', ');
                     }else {
-                        cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
+                        cellHtml = '<a href="' + link + '">' + attr + "</a>";
                     }
 
                     rowBodyHtml += "<td>" + cellHtml + "</td>";
