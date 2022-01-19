@@ -245,8 +245,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     let typeQuery = '';
+    let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
+        typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
     let dateQuery = '';
@@ -339,7 +340,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
         union
         {
-            ?entity rdf:type ?type${typeQuery}.
+            ?entity rdf:type ?type${fireTypeQuery}.
             ?type rdfs:subClassOf kwg-ont:Fire.
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
@@ -427,7 +428,8 @@ async function getHazardClasses() {
     let fireQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:Fire.
+        ?type rdfs:subClassOf kwg-ont:Fire
+        FILTER(?type != kwg-ont:Fire).
     } ORDER BY ASC(?label)`;
 
     //Special case for hurricanes
