@@ -411,16 +411,19 @@ async function getHazardClasses() {
 
 //New search function for expert in stko-kwg
 async function getExpertSearchResults(pageNum, recordNum, parameters) {
-    let formattedResults = {};
+    let formattedResults = [];
 
     let topicQuery = '';
     if(parameters["expertTopics"].length > 0) {
         topicQuery = ` FILTER(?expert IN (kwgr:` + parameters["expertTopics"].join(',kwgr:') + `))`;
     }
 
-    let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel where {`;
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel 
+    (group_concat(distinct ?expert; separator = "||") as ?expertise)
+    (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
+    where {`;
     if(parameters["keyword"]!="") {
-        placeQuery +=
+        expertQuery +=
             `
         ?search a elastic-index:kwg_index_v2_updated;
         elastic:query "${parameters["keyword"]}";
@@ -428,7 +431,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         `;
     }
 
-    placeQuery +=
+    expertQuery +=
         `
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
@@ -436,31 +439,24 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?expert rdfs:label ?expertLabel.
         ?entity iospress:contributorAffiliation ?affiliation.
         ?affiliation rdfs:label ?affiliationLabel
-    } ORDER BY ASC(?label)`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt ORDER BY ASC(?label)`;
 
-    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
-        if(row.entity.value in formattedResults) {
-            //We already have this user, which means we need to grab their expertise
-            formattedResults[row.entity.value]['expertise'].push(row.expert.value);
-            formattedResults[row.entity.value]['expertise_name'].push(row.expertLabel.value);
-        } else {
-            //New user, so add them
-            formattedResults[row.entity.value] = {
-                'expert': row.entity.value,
-                'expert_name': row.label.value,
-                'affiliation': row.affiliation.value,
-                'affiliation_name': row.affiliationLabel.value,
-                'expertise': [row.expert.value],
-                'expertise_name': [row.expertLabel.value],
-                'place': "Insert Place Here",
-                'place_name': "Insert Place Here",
-            };
-        }
+        formattedResults.push({
+            'expert': row.entity.value,
+            'expert_name': row.label.value,
+            'affiliation': row.affiliation.value,
+            'affiliation_name': row.affiliationLabel.value,
+            'expertise': row.expertise.value.split('||'),
+            'expertise_name': row.expertiseLabel.value.split('||'),
+            'place': "Insert Place Here",
+            'place_name': "Insert Place Here",
+        });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
-    return {'count':countResults[0].count.value,'record':Object.values(formattedResults)};
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
 async function getExpertTopics() {
