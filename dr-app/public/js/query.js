@@ -52,20 +52,14 @@ async function query(srq_query) {
 }
 
 async function getAdministrativeRegion() {
-    let formattedResults = [];
+    let formattedResults = {};
 
     let regionQuery = `
-    select ?a6 ?a6Label ?a5 ?a5Label ?a4 ?a4Label ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label ?a0 ?a0Label where {
-        ?a6 rdf:type kwg-ont:AdministrativeRegion_6 .
-        ?a6 kwg-ont:locatedIn ?a5 .
-        ?a5 kwg-ont:locatedIn ?a4 .
-        ?a4 kwg-ont:locatedIn ?a3 .
+    select ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label ?a0 ?a0Label where {
+        ?a3 rdf:type kwg-ont:AdministrativeRegion_3 .
         ?a3 kwg-ont:locatedIn ?a2 .
         ?a2 kwg-ont:locatedIn ?a1 .
         ?a1 kwg-ont:locatedIn ?a0 .
-        ?a6 rdfs:label ?a6Label .
-        ?a5 rdfs:label ?a5Label .
-        ?a4 rdfs:label ?a4Label .
         ?a3 rdfs:label ?a3Label .
         ?a2 rdfs:label ?a2Label .
         ?a1 rdfs:label ?a1Label .
@@ -74,36 +68,35 @@ async function getAdministrativeRegion() {
 
     let queryResults = await query(regionQuery);
     for (let row of queryResults) {
-        let a6Array = row.a6.value.split("/");
-        let a6 = a6Array[a6Array.length - 1];
-        let a6Label = row.a6Label.value;
+        let a0Array = row.a0.value.split("/");
+        let a0 = a0Array[a0Array.length - 1];
+        let a0Label = row.a0Label.value;
 
-        let a5Array = row.a5.value.split("/");
-        let a5 = a5Array[a5Array.length - 1];
-        let a5Label = row.a5Label.value;
-
-        let a4Array = row.a4.value.split("/");
-        let a4 = a4Array[a4Array.length - 1];
-        let a4Label = row.a4Label.value;
-
-        let a3Array = row.a3.value.split("/");
-        let a3 = a3Array[a3Array.length - 1];
-        let a3Label = row.a3Label.value;
-
-        let a2Array = row.a2.value.split("/");
-        let a2 = a2Array[a2Array.length - 1];
-        let a2Label = row.a2Label.value;
+        if(!(a0 in formattedResults))
+            formattedResults[a0] = {'label': a0Label, 'sub_admin_regions': {}}
 
         let a1Array = row.a1.value.split("/");
         let a1 = a1Array[a1Array.length - 1];
         let a1Label = row.a1Label.value;
 
-        let a0Array = row.a0.value.split("/");
-        let a0 = a0Array[a0Array.length - 1];
-        let a0Label = row.a0Label.value;
+        if(!(a1 in formattedResults[a0]["sub_admin_regions"]))
+            formattedResults[a0]["sub_admin_regions"][a1] = {'label': a1Label, 'sub_admin_regions': {}};
+
+        let a2Array = row.a2.value.split("/");
+        let a2 = a2Array[a2Array.length - 1];
+        let a2Label = row.a2Label.value;
+
+        if(!(a2 in formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"]))
+            formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"][a2] = {'label': a2Label, 'sub_admin_regions': {}};
+
+        let a3Array = row.a3.value.split("/");
+        let a3 = a3Array[a3Array.length - 1];
+        let a3Label = row.a3Label.value;
+
+        formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"][a2]["sub_admin_regions"][a3]  = {'label': a3Label};
     }
 
-    return {'topics':Object.values(formattedResults)};
+    return {'regions':formattedResults};
 }
 
 //New search function for place in stko-kwg

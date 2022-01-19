@@ -118,6 +118,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max']!=null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
     getAdministrativeRegion().then(function(data) {
+        console.log(data);
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
@@ -419,6 +420,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     };
 
+    $scope.selectHazardRegion = function() {
+        // var parameters = getParameters();
+        //
+        // if(parameters['hazardTypes'].length > 0)
+        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        // else
+        //     $scope.removeValue('hazard');
+        //
+        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        // var response = sendQueries(activeTabName, page, pp, parameters);
+        // var selectors = displayTableByTabName(activeTabName, response);
+        //
+        // response.then(function(result) {
+        //     var countResults = result["count"];
+        //     displayPagination(activeTabName, selectors, countResults, parameters);
+        // });
+    };
+
     $scope.selectTopic = function() {
         var parameters = getParameters();
 
@@ -438,6 +460,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
+    };
+
+    $scope.selectExpertRegion = function() {
+        // var parameters = getParameters();
+        //
+        // if(parameters['hazardTypes'].length > 0)
+        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        // else
+        //     $scope.removeValue('hazard');
+        //
+        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        // var response = sendQueries(activeTabName, page, pp, parameters);
+        // var selectors = displayTableByTabName(activeTabName, response);
+        //
+        // response.then(function(result) {
+        //     var countResults = result["count"];
+        //     displayPagination(activeTabName, selectors, countResults, parameters);
+        // });
     };
 });
 
