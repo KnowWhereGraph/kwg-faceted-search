@@ -2,7 +2,7 @@ var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
 var placeTitles = ["Name", "Type"];
-var hazardTitles = ["Name", "Type", "Place", "Date"];
+var hazardTitles = ["Name", "Type", "Place", "Start Date","End Date"];
 
 var activeTabName = "";
 var loadedTabs = {};
@@ -924,8 +924,8 @@ var displayTableByTabName = function(activeTabName, response) {
                     attributeLinks = [e["place"], e["place_type"]];
                     tableBodyAttributes = [e["place_name"], e["place_type_name"]];
                 } else if (selectors["thead"] == "#hazardTableTitle") {
-                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
-                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
+                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["start_date_name"], e["end_date_name"]];
                 };
 
                 var numAttributes = attributeLinks.length;

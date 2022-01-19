@@ -75,6 +75,10 @@
                                 {{hazardUrlFire['hazard_type_name']}}
                             </li>
                         </ul>
+                        <li ng-repeat="hurricaneUrl in hazardUrls['hurricanes']">
+                            <input id="{{hurricaneUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hurricaneUrl['hazard_type_name']}}" name="hazard">
+                            {{hurricaneUrl['hazard_type_name']}}
+                        </li>
                     </ul>
                     <div>Earthquake: Magnitude (min)</div>
                     <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-blur="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
