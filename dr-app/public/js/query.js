@@ -1,5 +1,5 @@
 // query.js contains the javascript codes that query data from KnowWhereGraph.
-// Right now the endpoint is set to be KnowWhereGraph-V2 from stko-kwg.
+// Right now the endpoint is set to be KWG-V2 from stko-kwg.
 
 // Prefixes
 const H_PREFIXES = {
@@ -114,7 +114,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -125,7 +125,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsRegion"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -139,7 +139,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsZip"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsZip"]}";
                 elastic:entities ?entity.
                 
@@ -153,7 +153,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsUSCD"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsUSCD"]}";
                 elastic:entities ?entity.
                 
@@ -166,7 +166,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsNWZ"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2_updated;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsNWZ"]}";
                 elastic:entities ?entity.
                 
@@ -236,7 +236,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -429,7 +429,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         placeQuery +=
             `
-        ?search a elastic-index:kwg_index_v2_updated;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
