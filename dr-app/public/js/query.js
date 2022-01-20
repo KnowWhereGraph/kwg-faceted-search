@@ -250,6 +250,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
+    let regionTestQuery = '';
+    if(parameters["facetRegions"].length > 0) {
+        regionTestQuery = `?entity kwg-ont:locatedIn kwgr:` + parameters["facetRegions"][0] + `.`;
+    }
+
     let dateQuery = '';
     if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
         let dateArr = [];
@@ -323,6 +328,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
             ?place rdfs:label ?placeLabel.
+            ${regionTestQuery}
             ?entity sosa:phenomenonTime ?startTime.
             ?entity sosa:phenomenonTime ?endTime.
             ?startTime time:inXSDDate ?startTimeLabel.
@@ -345,6 +351,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
             ?place rdfs:label ?placeLabel.
+            ${regionTestQuery}
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?startTime.
             ?observationCollection sosa:phenomenonTime ?endTime.
@@ -372,6 +379,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity rdf:type ?type${typeQuery}.
             ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
             ?entity rdfs:label ?label.
+            ${regionTestQuer
             ?entity kwg-ont:locatedIn ?place.
             optional
             {
