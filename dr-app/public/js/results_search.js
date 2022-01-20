@@ -139,14 +139,14 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
-        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
-        //     $timeout(function() {
-        //         let expertArr = urlVariables['expert'].split(',');
-        //         for(let i=0; i<expertArr.length; i++) {
-        //             angular.element("#"+expertArr[i]).click();
-        //         }
-        //     });
-        // }
+        if((urlVariables['regions']!=null && urlVariables['regions']!='')) {
+            $timeout(function() {
+                let expertArr = urlVariables['regions'].split(',');
+                for(let i=0; i<expertArr.length; i++) {
+                    angular.element("#"+expertArr[i]).click();
+                }
+            });
+        }
     });
 
     // entire graph initialization
@@ -478,24 +478,24 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     };
 
     $scope.selectRegion = function() {
-        // var parameters = getParameters();
-        //
-        // if(parameters['hazardTypes'].length > 0)
-        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
-        // else
-        //     $scope.removeValue('hazard');
-        //
-        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
-        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
-        // var response = sendQueries(activeTabName, page, pp, parameters);
-        // var selectors = displayTableByTabName(activeTabName, response);
-        //
-        // response.then(function(result) {
-        //     var countResults = result["count"];
-        //     displayPagination(activeTabName, selectors, countResults, parameters);
-        // });
+        var parameters = getParameters();
+
+        if(parameters["facetRegions"].length > 0)
+            $scope.updateURLParameters('regions', parameters['facetRegions'].join(','));
+        else
+            $scope.removeValue('regions');
+
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
     };
 });
 
