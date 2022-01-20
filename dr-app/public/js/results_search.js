@@ -9,6 +9,7 @@ var loadedTabs = {};
 
 var place_markers = new L.MarkerClusterGroup();
 var markers = [];
+var clickedMarker = {};
 
 var resultsSearchMap = null;
 
@@ -502,7 +503,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     };
 });
 
-kwgApp.controller("filters-controller", function($scope) {});
+kwgApp.controller("filters-controller", function($scope) {
+    $scope.message = "filters-controller";
+});
 
 kwgApp.controller("results-controller", function($scope) {});
 
@@ -1121,18 +1124,20 @@ function showHazardMap(recordResults) {
         markers = [];
     }
 
-
     recordResults.forEach(e => {
-        console.log("one polygon");
+        console.log("for each polygon: ");
         if (e["wkt"]) {
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
             var count = 0;
 
-            console.log("wkt: ", e["wkt"]);
+            // console.log("wkt: ", e["wkt"]);
             var coords = [];
             switch (e["wkt"].split("((")[0].trim()) {
+                case "POINT":
+                    coords = wicket.read(e["wkt"]).toJson().coordinates;
+                    break
                 case "POLYGON":
                     coords = wicket.read(e["wkt"]).toJson().coordinates[0];
                     break
@@ -1155,15 +1160,66 @@ function showHazardMap(recordResults) {
                 //     color: "red",
                 //     radius: 10000
                 // }).addTo(resultsSearchMap);
-                let place_marker = new L.marker([center_lat, center_lon]);
+
+                var keys = Object.keys(e).filter(attr => {return attr.indexOf("name") >= 0;});
+                var vals = keys.map(key => { 
+                    val = e[key];
+                    key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
+                    return dd("span: " + key.replaceAll("_", " ") + ": " + val); });
+                var concatDDs = function(rslt, e){
+                    if(rslt.length){
+                        return rslt.concat(dd("br"), e);
+                    }else {
+                        return [rslt, dd("br"), e];
+                    }
+                };
+                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', vals.reduce(concatDDs)));
+                // add marker event listener
+                place_marker.on("click", function(ev){
+                    console.log("you clicked the marker: ", ev.sourceTarget);
+                    console.log("index is: ", markers.indexOf(ev.sourceTarget));
+                    if (!Object.keys(clickedMarker).length){
+                        var index = markers.indexOf(ev.sourceTarget);  
+                        clickedMarker["index"] = index;
+                        clickedMarker["marker"] = ev.sourceTarget;
+                        // console.log("record found in the table", recordInTable);
+                        var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                        clickedMarker["table-element"] = domElement;
+                        clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                        domElement.style.backgroundColor = "pink";
+                    } else {
+                        if (clickedMarker["marker"] != ev.sourceTarget){
+                            // reset the color on the table
+                            clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+
+                            var index = markers.indexOf(ev.sourceTarget);
+                            clickedMarker["index"] = index;
+                            clickedMarker["marker"] = ev.sourceTarget;
+                            var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                            clickedMarker["table-element"] = domElement;
+                            domElement.style.backgroundColor = "pink";
+                        }
+                    }
+                });
+                // add marker popup remove listener
+                place_marker.getPopup().on("remove", function(){
+                    console.log("you removed the popup !");
+                    if(Object.keys(clickedMarker).length){
+                        clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                        clickedMarker = {};
+                    }
+                });
                 markers.push(place_marker);
                 place_markers.addLayer(place_marker);
                 resultsSearchMap.addLayer(place_markers);
             }
-
-
-
         }
 
-    })
+    });
+    // zoom to fit all the markers in the map
+    if(markers.length > 0){
+        resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
+    }
+    
+
 }
