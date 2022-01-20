@@ -78,6 +78,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showPlaceTab = true;
     $scope.showHazardTab = true;
 
+    //facet hazards
+    $scope.earthquakeFacets = true;
+    $scope.fireFacets = true;
+
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
 
@@ -396,10 +400,26 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.selectHazard = function() {
         var parameters = getParameters();
 
-        if(parameters['hazardTypes'].length > 0)
+        if(parameters['hazardTypes'].length > 0) {
+            $scope.earthquakeFacets = false;
+            $scope.fireFacets = false;
+
+            for(let i=0; i<parameters['hazardTypes'].length; i++) {
+                let hazType = parameters['hazardTypes'][i];
+
+                if(hazType.includes('Earthquake'))
+                    $scope.earthquakeFacets = true;
+
+                if(hazType.includes('fire') || hazType.includes('Fire'))
+                    $scope.fireFacets = true;
+            }
+
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
-        else
+        } else {
+            $scope.earthquakeFacets = true;
+            $scope.fireFacets = true;
             $scope.removeValue('hazard');
+        }
 
         var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
