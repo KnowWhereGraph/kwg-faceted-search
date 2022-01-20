@@ -165,9 +165,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "cbsaCode",
+      "fieldName": "contributorFullName",
       "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/cbsaCode"
+        "http://ld.iospress.nl/rdf/ontology/contributorFullName"
       ],
       "indexed": true,
       "stored": true,
@@ -179,9 +179,10 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "cbsaName",
+      "fieldName": "contributorRole",
       "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/cbsaName"
+        "http://ld.iospress.nl/rdf/ontology/contributorRole",
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -193,9 +194,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "siteID",
+      "fieldName": "hasAliase",
       "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/siteID"
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasAliase"
       ],
       "indexed": true,
       "stored": true,
@@ -207,10 +208,9 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "hosts",
+      "fieldName": "hasDBLPID",
       "propertyChain": [
-        "http://www.w3.org/ns/sosa/hosts",
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/pocValue"
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasDBLPID"
       ],
       "indexed": true,
       "stored": true,
@@ -222,37 +222,10 @@ INSERT DATA {
       "objectFields": []
     },
     {
-      "fieldName": "climateDivisionFIPS",
+      "fieldName": "hasExpertise",
       "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionFIPS"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-    {
-      "fieldName": "climateDivisionName",
-      "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionName"
-      ],
-      "indexed": true,
-      "stored": true,
-      "analyzed": true,
-      "multivalued": true,
-      "ignoreInvalidValues": false,
-      "fielddata": false,
-      "array": false,
-      "objectFields": []
-    },
-	{
-      "fieldName": "climateDivisionNumber",
-      "propertyChain": [
-        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionNumber"
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasExpertise",
+        "http://www.w3.org/2000/01/rdf-schema#label"
       ],
       "indexed": true,
       "stored": true,
@@ -277,58 +250,59 @@ INSERT DATA {
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_2",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_3",
     "http://stko-kwg.geog.ucsb.edu/lod/ontology/AdministrativeRegion_4",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/NWZone",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/USClimateDivision",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/ZipCodeArea",
-    "http://stko-kwg.geog.ucsb.edu/lod/ontology/AirQualitySite",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cyclone",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.flood",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.hurricane",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.storm",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.wind",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.acute",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.aid",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.assistance",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cash",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cold_chain",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.damage",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.direct_assistance",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disaster",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disaster_related_illness",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disease",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.displaced_individuals",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.electrocution",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_communication",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_medical",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_preparedness",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.epidemiology",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.exposure",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.health",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.humanitarian",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.illness",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.individuals_vulnerability",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.injury",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.logistical_support",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medical_equipment",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medical_supplies",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medication",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medicine",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.mobile_medical_units",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.mobility",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.nutritional_supplements",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.pharmaceuticals",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.power_outage",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.prevention",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.public_health",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.recovery",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.relief",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.response",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.risk_zone",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.supplies",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.targeted_assistance",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.treatment",
-	"http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.vaccine"
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/NWZone",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/USClimateDivision",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/ZipCodeArea",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Hurricane",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/EarthquakeEvent",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cyclone",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.flood",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.hurricane",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.storm",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.wind",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.acute",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.aid",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.assistance",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cash",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.cold_chain",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.damage",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.direct_assistance",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disaster",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disaster_related_illness",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.disease",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.displaced_individuals",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.electrocution",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_communication",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_medical",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.emergency_preparedness",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.epidemiology",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.exposure",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.health",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.humanitarian",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.illness",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.individuals_vulnerability",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.injury",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.logistical_support",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medical_equipment",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medical_supplies",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medication",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.medicine",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.mobile_medical_units",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.mobility",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.nutritional_supplements",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.pharmaceuticals",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.power_outage",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.prevention",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.public_health",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.recovery",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.relief",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.response",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.risk_zone",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.supplies",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.targeted_assistance",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.treatment",
+    "http://stko-kwg.geog.ucsb.edu/lod/ontology/Topic.vaccine",
+    "http://ld.iospress.nl/rdf/ontology/Contributor"
   ],
   "readonly": false,
   "detectFields": false,
