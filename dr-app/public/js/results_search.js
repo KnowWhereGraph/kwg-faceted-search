@@ -2,7 +2,7 @@ var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
 var placeTitles = ["Name", "Type"];
-var hazardTitles = ["Name", "Type", "Place", "Date"];
+var hazardTitles = ["Name", "Type", "Place", "Start Date","End Date"];
 
 var activeTabName = "";
 var loadedTabs = {};
@@ -88,8 +88,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    $scope.hazardFacetPlace = (urlVariables['place'] != null && urlVariables['place'] != '') ? urlVariables['place'] : '';
-    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+    if(urlVariables['date-start']!=null && urlVariables['date-start']!='')
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
     if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
@@ -117,20 +116,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min'] != null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max'] != null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
-    getAdministrativeRegion().then(function(data) {
-        $scope.administrativeRegions = data;
-        $scope.$apply();
-    }).then(function() {
-        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
-        //     $timeout(function() {
-        //         let expertArr = urlVariables['expert'].split(',');
-        //         for(let i=0; i<expertArr.length; i++) {
-        //             angular.element("#"+expertArr[i]).click();
-        //         }
-        //     });
-        // }
-    });
-
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
         $scope.expertTopics = data;
@@ -144,6 +129,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 }
             });
         }
+    });
+
+    getAdministrativeRegion().then(function(data) {
+        $scope.administrativeRegions = data;
+        $scope.$apply();
+    }).then(function() {
+        // if((urlVariables['expert']!=null && urlVariables['expert']!='')) {
+        //     $timeout(function() {
+        //         let expertArr = urlVariables['expert'].split(',');
+        //         for(let i=0; i<expertArr.length; i++) {
+        //             angular.element("#"+expertArr[i]).click();
+        //         }
+        //     });
+        // }
     });
 
     // entire graph initialization
@@ -332,11 +331,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetChanged = function() {
         var parameters = getParameters();
 
-        if (parameters['hazardFacetPlace'] != '')
-            $scope.updateURLParameters('place', parameters['hazardFacetPlace']);
-        else
-            $scope.removeValue('place');
-        if (parameters['hazardFacetDateStart'] != '')
+        if(parameters['hazardFacetDateStart']!='')
             $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
         else
             $scope.removeValue('date-start');
@@ -385,7 +380,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         else
             $scope.removeValue('stddev-dnbr-max');
 
-        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -442,6 +437,28 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     };
 
+    $scope.expertFacetChanged = function() {
+        var parameters = getParameters();
+
+        //EXAMPLE:
+        // if(parameters['expertFacetsZip']!='')
+        //     $scope.updateURLParameters('expert-zip', parameters['expertFacetsZip']);
+        // else
+        //     $scope.removeValue('expert-zip');
+
+        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
     $scope.selectTopic = function() {
         var parameters = getParameters();
 
@@ -461,6 +478,27 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
+    };
+
+    $scope.selectRegion = function() {
+        // var parameters = getParameters();
+        //
+        // if(parameters['hazardTypes'].length > 0)
+        //     $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        // else
+        //     $scope.removeValue('hazard');
+        //
+        // var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        // var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
+        // var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        // var response = sendQueries(activeTabName, page, pp, parameters);
+        // var selectors = displayTableByTabName(activeTabName, response);
+        //
+        // response.then(function(result) {
+        //     var countResults = result["count"];
+        //     displayPagination(activeTabName, selectors, countResults, parameters);
+        // });
     };
 });
 
@@ -509,9 +547,6 @@ var getParameters = function() {
     });
 
     //Hazard facets
-    angular.element("#hazardFacetPlace").each((index, div) => {
-        parameters["hazardFacetPlace"] = div.value;
-    });
     angular.element("#hazardFacetDateStart").each((index, div) => {
         parameters["hazardFacetDateStart"] = div.value;
     });
@@ -561,6 +596,13 @@ var getParameters = function() {
     });
     parameters["expertTopics"] = expertTopics;
 
+    //Place sub facets
+    let facetRegions = [];
+    angular.element("input:checkbox[name='region']:checked").each((index, facetRegion) => {
+        facetRegions.push(facetRegion.value);
+    });
+    parameters["facetRegions"] = facetRegions;
+
     return parameters;
 };
 
@@ -602,21 +644,17 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
-            if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
-                placeUrl = bcURL + '&region=' + urlVariables['uscd'];
+            if(urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
+                placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
             }
-            if (urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
-                placeUrl = bcURL + '&region=' + urlVariables['nwz'];
+            if(urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
+                placeUrl = bcURL + '&nwz=' + urlVariables['nwz'];
                 bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
         case "hazard":
-            if (urlVariables['place'] != null && urlVariables['place'] != '') {
-                placeUrl = bcURL + '&place=' + urlVariables['place'];
-                bcHTML += '<li><a href="' + placeUrl + '">Place: ' + urlVariables['place'] + '</a></li>';
-            }
-            if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+            if(urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
                 placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
             }
@@ -671,6 +709,13 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
                 bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
             }
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
+                }
+            }
             break;
         case "people":
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
@@ -678,6 +723,13 @@ var displayBreadCrumbs = function() {
                 for (var j = 0; j < experts.length; j++) {
                     expertUrl = bcURL + '&expert=' + experts[j];
                     bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                }
+            }
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
             }
             break;
@@ -795,8 +847,8 @@ var displayTableByTabName = function(activeTabName, response) {
                     attributeLinks = [e["place"], e["place_type"]];
                     tableBodyAttributes = [e["place_name"], e["place_type_name"]];
                 } else if (selectors["thead"] == "#hazardTableTitle") {
-                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
-                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
+                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["start_date_name"], e["end_date_name"]];
                 };
 
                 var numAttributes = attributeLinks.length;
@@ -808,13 +860,13 @@ var displayTableByTabName = function(activeTabName, response) {
                     if (Array.isArray(attr)) {
                         let linkArray = [];
 
-                        for (let i = 0; i < attr.length; i++) {
-                            linkArray.push('<a target="_blank" href="' + link[i] + '">' + attr[i] + "</a>")
+                        for(let i=0; i<attr.length; i++) {
+                            linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
                         }
 
                         cellHtml = linkArray.join(', ');
-                    } else {
-                        cellHtml = '<a target="_blank" href="' + link + '">' + attr + "</a>";
+                    }else {
+                        cellHtml = '<a href="' + link + '">' + attr + "</a>";
                     }
 
                     rowBodyHtml += "<td>" + cellHtml + "</td>";

@@ -52,20 +52,14 @@ async function query(srq_query) {
 }
 
 async function getAdministrativeRegion() {
-    let formattedResults = [];
+    let formattedResults = {};
 
     let regionQuery = `
-    select ?a6 ?a6Label ?a5 ?a5Label ?a4 ?a4Label ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label ?a0 ?a0Label where {
-        ?a6 rdf:type kwg-ont:AdministrativeRegion_6 .
-        ?a6 kwg-ont:locatedIn ?a5 .
-        ?a5 kwg-ont:locatedIn ?a4 .
-        ?a4 kwg-ont:locatedIn ?a3 .
+    select ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label ?a0 ?a0Label where {
+        ?a3 rdf:type kwg-ont:AdministrativeRegion_3 .
         ?a3 kwg-ont:locatedIn ?a2 .
         ?a2 kwg-ont:locatedIn ?a1 .
         ?a1 kwg-ont:locatedIn ?a0 .
-        ?a6 rdfs:label ?a6Label .
-        ?a5 rdfs:label ?a5Label .
-        ?a4 rdfs:label ?a4Label .
         ?a3 rdfs:label ?a3Label .
         ?a2 rdfs:label ?a2Label .
         ?a1 rdfs:label ?a1Label .
@@ -74,36 +68,35 @@ async function getAdministrativeRegion() {
 
     let queryResults = await query(regionQuery);
     for (let row of queryResults) {
-        let a6Array = row.a6.value.split("/");
-        let a6 = a6Array[a6Array.length - 1];
-        let a6Label = row.a6Label.value;
+        let a0Array = row.a0.value.split("/");
+        let a0 = a0Array[a0Array.length - 1];
+        let a0Label = row.a0Label.value;
 
-        let a5Array = row.a5.value.split("/");
-        let a5 = a5Array[a5Array.length - 1];
-        let a5Label = row.a5Label.value;
-
-        let a4Array = row.a4.value.split("/");
-        let a4 = a4Array[a4Array.length - 1];
-        let a4Label = row.a4Label.value;
-
-        let a3Array = row.a3.value.split("/");
-        let a3 = a3Array[a3Array.length - 1];
-        let a3Label = row.a3Label.value;
-
-        let a2Array = row.a2.value.split("/");
-        let a2 = a2Array[a2Array.length - 1];
-        let a2Label = row.a2Label.value;
+        if(!(a0 in formattedResults))
+            formattedResults[a0] = {'label': a0Label, 'sub_admin_regions': {}}
 
         let a1Array = row.a1.value.split("/");
         let a1 = a1Array[a1Array.length - 1];
         let a1Label = row.a1Label.value;
 
-        let a0Array = row.a0.value.split("/");
-        let a0 = a0Array[a0Array.length - 1];
-        let a0Label = row.a0Label.value;
+        if(!(a1 in formattedResults[a0]["sub_admin_regions"]))
+            formattedResults[a0]["sub_admin_regions"][a1] = {'label': a1Label, 'sub_admin_regions': {}};
+
+        let a2Array = row.a2.value.split("/");
+        let a2 = a2Array[a2Array.length - 1];
+        let a2Label = row.a2Label.value;
+
+        if(!(a2 in formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"]))
+            formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"][a2] = {'label': a2Label, 'sub_admin_regions': {}};
+
+        let a3Array = row.a3.value.split("/");
+        let a3 = a3Array[a3Array.length - 1];
+        let a3Label = row.a3Label.value;
+
+        formattedResults[a0]["sub_admin_regions"][a1]["sub_admin_regions"][a2]["sub_admin_regions"][a3]  = {'label': a3Label};
     }
 
-    return {'topics':Object.values(formattedResults)};
+    return {'regions':formattedResults};
 }
 
 //New search function for place in stko-kwg
@@ -131,7 +124,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 
                 ?entity a kwg-ont:AdministrativeRegion.
                 ?entity rdf:type ?type
-                FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+                FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3)).
                 ?entity rdfs:label ?label.
                 ?type rdfs:label ?typeLabel.
                 ?entity geo:hasGeometry/geo:asWKT ?wkt.
@@ -187,7 +180,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         {
             ?entity a kwg-ont:AdministrativeRegion.
             ?entity rdf:type ?type
-            FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3,kwg-ont:AdministrativeRegion_4)).
+            FILTER(?type IN (kwg-ont:AdministrativeRegion_0,kwg-ont:AdministrativeRegion_1,kwg-ont:AdministrativeRegion_2,kwg-ont:AdministrativeRegion_3)).
             ?entity rdfs:label ?label.
             ?type rdfs:label ?typeLabel.
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
@@ -241,7 +234,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?time ?timeLabel ?wkt where {`;
+    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
@@ -252,23 +245,25 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     let typeQuery = '';
+    let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
+        typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
     let dateQuery = '';
     if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
         let dateArr = [];
         if(parameters["hazardFacetDateStart"]!="")
-            dateArr.push(`?timeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+        {
+            dateArr.push(`?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+            dateArr.push(`?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+        }
         if(parameters["hazardFacetDateEnd"]!="")
-            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?timeLabel`);
+        {
+            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel`);
+            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
+        }
         dateQuery = ` FILTER (` + dateArr.join(' && ') + `)`;
-    }
-
-    let placeQuery = '';
-    if(parameters["hazardFacetPlace"]!="") {
-        placeQuery = ` FILTER(contains(?placeLabel, '${parameters["hazardFacetPlace"]}'))`;
     }
 
     let magnitudeQuery = '';
@@ -327,9 +322,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?type rdfs:subClassOf kwg-ont:HazardEvent.
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
-            ?place rdfs:label ?placeLabel${placeQuery}.
-            ?entity sosa:phenomenonTime ?time.
-            ?time time:inXSDDate ?timeLabel${dateQuery}.
+            ?place rdfs:label ?placeLabel.
+            ?entity sosa:phenomenonTime ?startTime.
+            ?entity sosa:phenomenonTime ?endTime.
+            ?startTime time:inXSDDate ?startTimeLabel.
+            ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
         
@@ -343,14 +340,16 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
         union
         {
-            ?entity rdf:type ?type${typeQuery}.
+            ?entity rdf:type ?type${fireTypeQuery}.
             ?type rdfs:subClassOf kwg-ont:Fire.
             ?entity rdfs:label ?label.
             ?entity kwg-ont:locatedIn ?place.
-            ?place rdfs:label ?placeLabel${placeQuery}.
+            ?place rdfs:label ?placeLabel.
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
-            ?observationCollection sosa:phenomenonTime ?time.
-            ?time time:inXSDDate ?timeLabel${dateQuery}.
+            ?observationCollection sosa:phenomenonTime ?startTime.
+            ?observationCollection sosa:phenomenonTime ?endTime.
+            ?startTime time:inXSDDate ?startTimeLabel.
+            ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
             
             ?observationCollection sosa:hasMember ?numAcresBurnedObj.
@@ -368,6 +367,28 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
             ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal${SDMeanDnbrQuery}.
         }
+        union
+        {
+            ?entity rdf:type ?type${typeQuery}.
+            ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
+            ?entity rdfs:label ?label.
+            ?entity kwg-ont:locatedIn ?place.
+            optional
+            {
+                ?place rdfs:label ?placeLabel.
+            }
+            ?entity kwg-ont:hasImpact ?observationCollection.
+            ?observationCollection sosa:phenomenonTime ?time.
+            ?time time:hasBeginning ?startTime.
+            ?time time:hasEnd ?endTime.
+            ?startTime time:inXSDDateTime ?startTimeLabel.
+            ?endTime time:inXSDDateTime ?endTimeLabel.${dateQuery}
+            optional
+            {
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
+            }
+            
+        }
     } ORDER BY ASC(?label)`;
 
     let queryResults = await query(hazardQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
@@ -379,10 +400,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'hazard_type':row.type.value,
             'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1],
             'place':row.place.value,
-            'place_name':row.placeLabel.value,
-            'date':row.time.value,
-            'date_name':row.timeLabel.value,
-            'wkt':row.wkt.value,
+            'place_name':(typeof row.placeLabel  === 'undefined') ? '' : row.placeLabel.value,
+            'start_date':row.startTime.value,
+            'start_date_name':row.startTimeLabel.value,
+            'end_date':row.endTime.value,
+            'end_date_name':row.endTimeLabel.value,
+            'wkt':(typeof row.wkt  === 'undefined') ? '' : row.wkt.value,
         });
     }
 
@@ -393,6 +416,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 async function getHazardClasses() {
     let formattedResults = [];
     let fireResults = [];
+    let hurricaneResults = [];
 
     let hazardQuery = `
     select distinct ?type where {
@@ -404,9 +428,17 @@ async function getHazardClasses() {
     let fireQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:Fire.
+        ?type rdfs:subClassOf kwg-ont:Fire
+        FILTER(?type != kwg-ont:Fire).
     } ORDER BY ASC(?label)`;
 
+    //Special case for hurricanes
+    let hurricaneQuery = `
+    select distinct ?type where {
+        ?entity rdf:type ?type.
+        ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
+    } ORDER BY ASC(?label)`;
+    
     let queryResults = await query(hazardQuery);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
@@ -425,21 +457,34 @@ async function getHazardClasses() {
         });
     }
 
-    return {'hazards':formattedResults, 'fires':fireResults};
+    let queryResultsHurricane = await query(hurricaneQuery);
+    for (let row of queryResultsHurricane) {
+        let hazardLabelArray = row.type.value.split("/");
+        hurricaneResults.push({
+            'hazard_type':row.type.value,
+            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1]
+        });
+    }
+
+    return {'hazards':formattedResults, 'fires':fireResults, 'hurricanes':hurricaneResults};
 }
 
 //New search function for expert in stko-kwg
 async function getExpertSearchResults(pageNum, recordNum, parameters) {
-    let formattedResults = {};
+    let formattedResults = [];
 
     let topicQuery = '';
     if(parameters["expertTopics"].length > 0) {
         topicQuery = ` FILTER(?expert IN (kwgr:` + parameters["expertTopics"].join(',kwgr:') + `))`;
     }
 
-    let placeQuery = `select distinct ?label ?entity ?expert ?expertLabel ?affiliation ?affiliationLabel ?wkt where {`;
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
+    (group_concat(distinct ?expert; separator = "||") as ?expertise)
+    (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
+    where {`;
+
     if(parameters["keyword"]!="") {
-        placeQuery +=
+        expertQuery +=
             `
         ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
@@ -447,7 +492,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         `;
     }
 
-    placeQuery +=
+    expertQuery +=
         `
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
@@ -456,32 +501,25 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?entity iospress:contributorAffiliation ?affiliation.
         ?affiliation rdfs:label ?affiliationLabel.
         ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
-    } ORDER BY ASC(?label)`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt ORDER BY ASC(?label)`;
 
-    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
-        if(row.entity.value in formattedResults) {
-            //We already have this user, which means we need to grab their expertise
-            formattedResults[row.entity.value]['expertise'].push(row.expert.value);
-            formattedResults[row.entity.value]['expertise_name'].push(row.expertLabel.value);
-        } else {
-            //New user, so add them
-            formattedResults[row.entity.value] = {
-                'expert': row.entity.value,
-                'expert_name': row.label.value,
-                'affiliation': row.affiliation.value,
-                'affiliation_name': row.affiliationLabel.value,
-                'expertise': [row.expert.value],
-                'expertise_name': [row.expertLabel.value],
-                'place': "Insert Place Here",
-                'place_name': "Insert Place Here",
-                'wkt':row.wkt.value,
-            };
-        }
+        formattedResults.push({
+            'expert': row.entity.value,
+            'expert_name': row.label.value,
+            'affiliation': row.affiliation.value,
+            'affiliation_name': row.affiliationLabel.value,
+            'expertise': row.expertise.value.split('||'),
+            'expertise_name': row.expertiseLabel.value.split('||'),
+            'place': "Insert Place Here",
+            'place_name': "Insert Place Here",
+            'wkt':row.wkt.value,
+        });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
-    return {'count':countResults[0].count.value,'record':Object.values(formattedResults)};
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
 async function getExpertTopics() {

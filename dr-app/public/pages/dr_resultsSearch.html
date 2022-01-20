@@ -50,16 +50,52 @@
             </li>
 
             <li id="hazard" ng-show="showHazardList">
+                <p class="filter-title">PLACE</p>
+                <div class="filter">
+                    <div>Administrative Regions</div>
+                    <ul class="list-group checkbox-list" id="region-list">
+                        <section ng-repeat="(a0, a0obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                <input id="{{a0}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')">
+                                {{a0obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a1, a1obj) in a0obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="{{a1}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')">
+                                        {{a1obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                            <li>
+                                                <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')">
+                                                {{a2obj['label']}}
+                                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                            </li>
+                                            <ul class="list-group list-group-indented" style="display: none">
+                                                <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                                    <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region">
+                                                    {{a3obj['label']}}
+                                                </li>
+                                            </ul>
+                                        </section>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
+                    </ul>
+                </div>
+                <br/>
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-                    <div>Place</div>
-                    <input type="text" class="form-control" id="hazardFacetPlace" ng-model="hazardFacetPlace" ng-blur="hazardFacetChanged()" placeholder="Find by Place...">
                     <div>Date Start</div>
                     <input type="date" class="form-control" id="hazardFacetDateStart" ng-model="hazardFacetDateStart" ng-blur="hazardFacetChanged()">
                     <div>Date End</div>
                     <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-blur="hazardFacetChanged()">
                     <div>Hazard Type(s)</div>
-                    <ul class="list-group" id="hazard-list">
+                    <ul class="list-group checkbox-list" id="hazard-list">
                         <li ng-repeat="hazardUrl in hazardUrls['hazards']">
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
                         </li>
@@ -72,6 +108,10 @@
                                 <input id="{{hazardUrlFire['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrlFire['hazard_type_name']}}" name="hazard"> {{hazardUrlFire['hazard_type_name']}}
                             </li>
                         </ul>
+                        <li ng-repeat="hurricaneUrl in hazardUrls['hurricanes']">
+                            <input id="{{hurricaneUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard()" value="{{hurricaneUrl['hazard_type_name']}}" name="hazard">
+                            {{hurricaneUrl['hazard_type_name']}}
+                        </li>
                     </ul>
                     <div id="hazardProperties" ng-show="hazardPropertiesShow">
                         <div>Earthquake: Magnitude (min)</div>
@@ -106,7 +146,7 @@
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
                     <div>Expert Topic(s)</div>
-                    <ul class="list-group" id="expert-list">
+                    <ul class="list-group checkbox-list" id="expert-list">
                         <section ng-repeat="expertTopic in expertTopics['topics']">
                             <li class="ng-binding ng-scope">
                                 <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')"> {{expertTopic['expert_label']}}
@@ -120,6 +160,7 @@
                         </section>
                     </ul>
                 </div>
+                <br/>
             </li>
         </ul>
     </div>
