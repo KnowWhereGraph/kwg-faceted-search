@@ -64,7 +64,7 @@ async function getAdministrativeRegion() {
         ?a2 rdfs:label ?a2Label .
         ?a1 rdfs:label ?a1Label .
         ?a0 rdfs:label ?a0Label .
-    }`;
+    } ORDER BY ?a0Label ?a1Label ?a2Label ?a3Label`;
 
     let queryResults = await query(regionQuery);
     for (let row of queryResults) {
