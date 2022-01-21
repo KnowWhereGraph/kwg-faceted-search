@@ -64,13 +64,15 @@ async function getAdministrativeRegion() {
         ?a2 rdfs:label ?a2Label .
         ?a1 rdfs:label ?a1Label .
         ?a0 rdfs:label ?a0Label .
-    }`;
+    } ORDER BY ?a0Label ?a1Label ?a2Label ?a3Label`;
 
     let queryResults = await query(regionQuery);
     for (let row of queryResults) {
         let a0Array = row.a0.value.split("/");
         let a0 = a0Array[a0Array.length - 1];
-        let a0Label = row.a0Label.value;
+        let a0Label = row.a0Label.value.replace('_',' ');
+        if(a0Label=='MissingContinent')
+            a0Label = 'No Continent';
 
         if(!(a0 in formattedResults))
             formattedResults[a0] = {'label': a0Label, 'sub_admin_regions': {}}
@@ -234,7 +236,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
+    let hazardQuery = `select distinct ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
@@ -246,8 +248,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     let typeQuery = '';
     let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
+    let hurricaneTypeQuery = ` FILTER(?type = kwg-ont:Hurricane)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
+        typeQuery = fireTypeQuery = hurricaneTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
     let regionTestQuery = '';
@@ -334,7 +337,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?startTime time:inXSDDate ?startTimeLabel.
             ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
-            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt_raw.
+        	BIND(REPLACE(?wkt_raw, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>", "", "i") AS ?wkt)
         
             ?observationCollection sosa:hasMember ?magnitudeObj.
             ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
@@ -376,10 +380,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
         union
         {
-            ?entity rdf:type ?type${typeQuery}.
-            ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
+            ?entity rdf:type ?type${hurricaneTypeQuery}.
             ?entity rdfs:label ?label.
-            ${regionTestQuer
+            ${regionTestQuery}
             ?entity kwg-ont:locatedIn ?place.
             optional
             {
