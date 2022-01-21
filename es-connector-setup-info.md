@@ -6,7 +6,7 @@ Type the following SPARQL queries for the index creation.
 
 ### Main graph
 
-The repository used is KnowWhereGraph-V2 on http://stko-kwg.geog.ucsb.edu:7200.
+The repository used is KWG-V2 on http://stko-kwg.geog.ucsb.edu:7200.
 
 #### SPARQL Query
 
@@ -25,10 +25,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -39,10 +39,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -54,10 +54,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -68,10 +68,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -83,10 +83,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -98,10 +98,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -112,10 +112,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -127,10 +127,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -142,10 +142,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -157,10 +157,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -171,10 +171,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -186,10 +186,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -200,10 +200,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -214,10 +214,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     },
@@ -229,10 +229,10 @@ INSERT DATA {
       ],
       "indexed": true,
       "stored": true,
-      "analyzed": true,
+      "analyzed": false,
       "multivalued": true,
       "ignoreInvalidValues": false,
-      "fielddata": false,
+      "fielddata": true,
       "array": false,
       "objectFields": []
     }
