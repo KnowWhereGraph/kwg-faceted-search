@@ -248,8 +248,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     let typeQuery = '';
     let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
+    let hurricaneTypeQuery = ` FILTER(?type = kwg-ont:Hurricane)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = fireTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
+        typeQuery = fireTypeQuery = hurricaneTypeQuery = ` FILTER(?type IN (kwg-ont:` + parameters["hazardTypes"].join(',kwg-ont:') + `))`;
     }
 
     let regionTestQuery = '';
@@ -379,8 +380,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
         union
         {
-            ?entity rdf:type ?type${typeQuery}.
-            ?type a kwg-ont:Hurricane.
+            ?entity rdf:type ?type${hurricaneTypeQuery}.
             ?entity rdfs:label ?label.
             ${regionTestQuery}
             ?entity kwg-ont:locatedIn ?place.
