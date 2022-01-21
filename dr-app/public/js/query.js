@@ -236,7 +236,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
+    let hazardQuery = `select distinct ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
@@ -336,7 +336,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?startTime time:inXSDDate ?startTimeLabel.
             ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
-            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity geo:hasGeometry/geo:asWKT ?wkt_raw.
+        	BIND(REPLACE(?wkt_raw, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>", "", "i") AS ?wkt)
         
             ?observationCollection sosa:hasMember ?magnitudeObj.
             ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
