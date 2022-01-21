@@ -633,10 +633,13 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     angular.element("#ttl-results").html('Loading query...');
     switch (tabName) {
         case "Place":
+            angular.element("#placeTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
             return getPlaceSearchResults(pageNum, recordNum, parameters);
         case "Hazard":
+            angular.element("#hazardTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
             return getHazardSearchResults(pageNum, recordNum, parameters);
         case "People":
+            angular.element("#expertTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
             return getExpertSearchResults(pageNum, recordNum, parameters);
         default:
             return {};
@@ -853,6 +856,7 @@ var displayTableByTabName = function(activeTabName, response) {
         console.log("get response: ", response);
 
         response.then(function(result) {
+            angular.element('#loading').remove();
             countResults = result["count"];
             recordResults = result["record"];
 
