@@ -70,7 +70,9 @@ async function getAdministrativeRegion() {
     for (let row of queryResults) {
         let a0Array = row.a0.value.split("/");
         let a0 = a0Array[a0Array.length - 1];
-        let a0Label = row.a0Label.value;
+        let a0Label = row.a0Label.value.replace('_',' ');
+        if(a0Label=='MissingContinent')
+            a0Label = 'No Continent';
 
         if(!(a0 in formattedResults))
             formattedResults[a0] = {'label': a0Label, 'sub_admin_regions': {}}
@@ -377,7 +379,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         union
         {
             ?entity rdf:type ?type${typeQuery}.
-            ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
+            ?type a kwg-ont:Hurricane.
             ?entity rdfs:label ?label.
             ${regionTestQuery}
             ?entity kwg-ont:locatedIn ?place.
