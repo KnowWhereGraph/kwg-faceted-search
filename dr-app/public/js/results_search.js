@@ -280,8 +280,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
 
             resultsSearchMap.on("pm:create", (e) => {
-                console.log("the shape is drawn/finished");
-                console.log(e.shape);
                 var coordinates;
                 var radius;
 
@@ -291,10 +289,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
                     radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
                 }
-
-                console.log("coordinates: ", coordinates);
-                console.log("radius: ", radius);
-
             });
         }
     };
@@ -433,29 +427,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-
-        console.log("clicked hazard is: ", $event.target.value);
-        if ($event.target.checked) {
-            switch ($event.target.value) {
-                case "EarthquakeEvent":
-                    console.log("the earthquake event is selected");
-                    $scope.hazardPropertiesShow = true;
-                    break
-                case "FireEvent":
-                    console.log("the fire is selected");
-                    $scope.firePropertiesShow = true;
-                    break
-
-            }
-        } else {
-            switch ($event.target.value) {
-                case "EarthquakeEvent":
-                    $scope.hazardPropertiesShow = false;
-                    break
-                case "FireEvent":
-                    $scope.firePropertiesShow = false;
-            }
-        }
     };
 
     $scope.expertFacetChanged = function() {
@@ -853,8 +824,6 @@ var displayTableByTabName = function(activeTabName, response) {
         var tableBody = angular.element(selectors["tbody"] + " tbody");
         tableBody.empty();
 
-        console.log("get response: ", response);
-
         response.then(function(result) {
             angular.element('#loading').remove();
             countResults = result["count"];
@@ -863,7 +832,7 @@ var displayTableByTabName = function(activeTabName, response) {
             var attributeLinks = [];
             var tableBodyAttributes = [];
 
-            console.log(recordResults);
+            //console.log(recordResults);
             showHazardMap(recordResults);
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
@@ -1141,7 +1110,6 @@ function displayMap(fullTextResults, tabName) {
 }
 
 function showHazardMap(recordResults) {
-    console.log("here is to show the hazard map");
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
@@ -1149,14 +1117,12 @@ function showHazardMap(recordResults) {
     }
 
     recordResults.forEach(e => {
-        console.log("for each polygon: ");
         if (e["wkt"]) {
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
             var count = 0;
 
-            // console.log("wkt: ", e["wkt"]);
             var coords = [];
             switch (e["wkt"].split("((")[0].trim()) {
                 case "POINT":
@@ -1175,11 +1141,10 @@ function showHazardMap(recordResults) {
                 center_lat += coord[1];
                 center_lon += coord[0];
             });
-            console.log("count is : ", count);
+
             if (count) {
                 center_lat = center_lat / count;
                 center_lon = center_lon / count;
-                console.log("center lat: ", center_lat, "center lon: ", center_lon);
                 // L.circle([center_lat, center_lon], {
                 //     color: "red",
                 //     radius: 10000
@@ -1199,14 +1164,12 @@ function showHazardMap(recordResults) {
                 };
                 let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', vals.reduce(concatDDs)));
                 // add marker event listener
-                place_marker.on("click", function(ev){
-                    console.log("you clicked the marker: ", ev.sourceTarget);
-                    console.log("index is: ", markers.indexOf(ev.sourceTarget));
+                place_marker.on("click", function(ev) {
                     if (!Object.keys(clickedMarker).length){
                         var index = markers.indexOf(ev.sourceTarget);  
                         clickedMarker["index"] = index;
                         clickedMarker["marker"] = ev.sourceTarget;
-                        // console.log("record found in the table", recordInTable);
+
                         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
                         clickedMarker["table-element"] = domElement;
                         clickedMarker["pre-color"] = domElement.style.backgroundColor;
@@ -1227,7 +1190,6 @@ function showHazardMap(recordResults) {
                 });
                 // add marker popup remove listener
                 place_marker.getPopup().on("remove", function(){
-                    console.log("you removed the popup !");
                     if(Object.keys(clickedMarker).length){
                         clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
                         clickedMarker = {};

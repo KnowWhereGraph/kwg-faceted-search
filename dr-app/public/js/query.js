@@ -379,7 +379,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity rdf:type ?type${typeQuery}.
             ?type kwg-ont:fallsUnderTopic kwg-ont:Topic.hurricane.
             ?entity rdfs:label ?label.
-            ${regionTestQuer
+            ${regionTestQuery}
             ?entity kwg-ont:locatedIn ?place.
             optional
             {
