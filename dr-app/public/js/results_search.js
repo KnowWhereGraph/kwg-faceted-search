@@ -872,7 +872,7 @@ var displayTableByTabName = function(activeTabName, response) {
                 tableBody.append(rowHtml);
             });
 
-            showHazardMap(recordResults);
+            // showHazardMap(recordResults);
 
         }).then(function() {
 
@@ -1110,6 +1110,7 @@ function displayMap(fullTextResults, tabName) {
 }
 
 function showHazardMap(recordResults) {
+    console.log("recordResults: ", recordResults);
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
@@ -1118,6 +1119,7 @@ function showHazardMap(recordResults) {
 
     recordResults.forEach(e => {
         if (e["wkt"]) {
+            // console.log("e_wkt: ", e["wkt"]);
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
@@ -1153,46 +1155,49 @@ function showHazardMap(recordResults) {
             //     }
             // });
 
-            // var wktString = "";
-            // var wktType = "";
-            // if (e["wkt"].includes("MULTIPOLYGON")) {
-            //     wktType = "MULTIPOLYGON";
-            //     console.log("here is the multipolygon: ", wktString);
-            // } else if (e["wkt"].includes("POINT")) {
-            //     wktType = "POINT";
-            //     console.log("here is the point: ", wktString);
-            // } else if (e["wkt"].includes("POLYGON")) {
-            //     wktType = "POLYGON";
-            //     console.log("here is the polygon: ", wktString);
-            // }
-            // if (wktType) {
-            //     wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
-            //     switch (wktType) {
-            //         case "POINT":
-            //             console.log(wicket.read(e["wkt"]).toJson().coordinates);
-            //             break
-            //         case "POLYGON":
-            //             console.log(wicket.read(e["wkt"]).toJson().coordinates[0]);
-            //             break
-            //         case "MULTIPOLYGON":
-            //             console.log(wicket.read(e["wkt"]).toJson().coordinates[0][0]);
-            //             break
-            //     }
-            // }
-
-
-            switch (e["wkt"].split("((")[0].trim()) {
-                case "POINT":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates;
-                    break
-                case "POLYGON":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-                    break
-                case "MULTIPOLYGON":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-                    break
-
+            var wktString = "";
+            var wktType = "";
+            if (e["wkt"].includes("MULTIPOLYGON")) {
+                wktType = "MULTIPOLYGON";
+                console.log("here is the multipolygon: ", wktString);
+            } else if (e["wkt"].includes("POINT")) {
+                wktType = "POINT";
+                console.log("here is the point: ", wktString);
+            } else if (e["wkt"].includes("POLYGON")) {
+                wktType = "POLYGON";
+                console.log("here is the polygon: ", wktString);
             }
+            if (wktType) {
+                wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
+                switch (wktType) {
+                    case "POINT":
+                        coords = [wicket.read(e["wkt"]).toJson().coordinates];
+                        console.log(coords);
+                        break
+                    case "POLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                        console.log(coords);
+                        break
+                    case "MULTIPOLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                        console.log(coords);
+                        break
+                }
+            }
+
+
+            // switch (e["wkt"].split("((")[0].trim()) {
+            //     case "POINT":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates;
+            //         break
+            //     case "POLYGON":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+            //         break
+            //     case "MULTIPOLYGON":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+            //         break
+
+            // }
             coords.forEach(coord => {
                 count += 1;
                 center_lat += coord[1];
@@ -1257,6 +1262,7 @@ function showHazardMap(recordResults) {
                 place_markers.addLayer(place_marker);
                 resultsSearchMap.addLayer(place_markers);
             }
+            coords = [];
         }
 
     });
