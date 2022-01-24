@@ -338,7 +338,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
             ?entity geo:hasGeometry/geo:asWKT ?wkt_raw.
-        	BIND(REPLACE(?wkt_raw, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>", "", "i") AS ?wkt)
+        	BIND(REPLACE(STR(?wkt_raw), "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>", "") AS ?wkt)
         
             ?observationCollection sosa:hasMember ?magnitudeObj.
             ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
