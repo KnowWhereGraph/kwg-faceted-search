@@ -2,7 +2,7 @@ var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
 var placeTitles = ["Name", "Type"];
-var hazardTitles = ["Name", "Type", "Place", "Start Date","End Date"];
+var hazardTitles = ["Name", "Type", "Place", "Start Date", "End Date"];
 
 var activeTabName = "";
 var loadedTabs = {};
@@ -93,7 +93,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    if(urlVariables['date-start']!=null && urlVariables['date-start']!='')
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
     if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
@@ -140,11 +140,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
-        if((urlVariables['regions']!=null && urlVariables['regions']!='')) {
+        if ((urlVariables['regions'] != null && urlVariables['regions'] != '')) {
             $timeout(function() {
                 let expertArr = urlVariables['regions'].split(',');
-                for(let i=0; i<expertArr.length; i++) {
-                    angular.element("#"+expertArr[i]).click();
+                for (let i = 0; i < expertArr.length; i++) {
+                    angular.element("#" + expertArr[i]).click();
                 }
             });
         }
@@ -330,7 +330,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetChanged = function() {
         var parameters = getParameters();
 
-        if(parameters['hazardFacetDateStart']!='')
+        if (parameters['hazardFacetDateStart'] != '')
             $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
         else
             $scope.removeValue('date-start');
@@ -379,7 +379,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         else
             $scope.removeValue('stddev-dnbr-max');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'hazard';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -395,17 +395,17 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.selectHazard = function($event) {
         var parameters = getParameters();
 
-        if(parameters['hazardTypes'].length > 0) {
+        if (parameters['hazardTypes'].length > 0) {
             $scope.earthquakeFacets = false;
             $scope.fireFacets = false;
 
-            for(let i=0; i<parameters['hazardTypes'].length; i++) {
+            for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
 
-                if(hazType.includes('Earthquake'))
+                if (hazType.includes('Earthquake'))
                     $scope.earthquakeFacets = true;
 
-                if(hazType.includes('fire') || hazType.includes('Fire'))
+                if (hazType.includes('fire') || hazType.includes('Fire'))
                     $scope.fireFacets = true;
             }
 
@@ -438,10 +438,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         // else
         //     $scope.removeValue('expert-zip');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'people';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -475,15 +475,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.selectRegion = function() {
         var parameters = getParameters();
 
-        if(parameters["facetRegions"].length > 0)
+        if (parameters["facetRegions"].length > 0)
             $scope.updateURLParameters('regions', parameters['facetRegions'].join(','));
         else
             $scope.removeValue('regions');
 
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
 
@@ -641,17 +641,17 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
-            if(urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
+            if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
                 placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
             }
-            if(urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
+            if (urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
                 placeUrl = bcURL + '&nwz=' + urlVariables['nwz'];
                 bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
         case "hazard":
-            if(urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+            if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
                 placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
             }
@@ -856,12 +856,12 @@ var displayTableByTabName = function(activeTabName, response) {
                     if (Array.isArray(attr)) {
                         let linkArray = [];
 
-                        for(let i=0; i<attr.length; i++) {
+                        for (let i = 0; i < attr.length; i++) {
                             linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
                         }
 
                         cellHtml = linkArray.join(', ');
-                    }else {
+                    } else {
                         cellHtml = '<a href="' + link + '">' + attr + "</a>";
                     }
 
@@ -872,7 +872,7 @@ var displayTableByTabName = function(activeTabName, response) {
                 tableBody.append(rowHtml);
             });
 
-            showHazardMap(recordResults);
+            // showHazardMap(recordResults);
 
         }).then(function() {
 
@@ -1110,6 +1110,7 @@ function displayMap(fullTextResults, tabName) {
 }
 
 function showHazardMap(recordResults) {
+    console.log("recordResults: ", recordResults);
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
@@ -1118,24 +1119,85 @@ function showHazardMap(recordResults) {
 
     recordResults.forEach(e => {
         if (e["wkt"]) {
+            // console.log("e_wkt: ", e["wkt"]);
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
             var count = 0;
 
             var coords = [];
-            switch (e["wkt"].split("((")[0].trim()) {
-                case "POINT":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates;
-                    break
-                case "POLYGON":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-                    break
-                case "MULTIPOLYGON":
-                    coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-                    break
+            // e["wkt"].trim().indexOf("POINT")
+            // <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-150.2764 60.7248)
+            // "POLYGON ((-80.56207 25.90283, -80.56177 25.90202, -80.56163 25.90176, -80.56141 25.90155))"
+            // var testWkts = [
+            //     "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-150.2764 60.7248)",
+            //     "POLYGON ((-80.56207 25.90283, -80.56177 25.90202, -80.56163 25.90176, -80.56141 25.90155))",
+            //     "POINT (-66.62604 18.01263)",
+            //     "MULTIPOLYGON (((-88.81751 30.46306, -88.81862 30.46332, -88.81956 30.46368, -88.82047 30.46431)))"
+            // ];
 
+            // testWkts.forEach(testWkt => {
+
+            //     if (testWkt.includes("MULTIPOLYGON")){
+
+            //         // var multipolygonCoords = /\(\(\((.+?)\)\)\)/g.exec(testWkt.split("MULTIPOLYGON"))[1];
+            //         console.log("here is the multipolygon: ", testWkt.substring(testWkt.indexOf("MULTIPOLYGON"), testWkt.length));
+            //         // var regex1 = /\((.+?)\)/g
+
+            //     } else if (testWkt.includes("POINT")){
+            //         // var pointCoords = /\((.+?)\)/g.exec(testWkt.split("POINT"))[1];
+            //         console.log("here is the point: ", testWkt.substring(testWkt.indexOf("POINT"), testWkt.length));
+
+            //     } else if (testWkt.includes("POLYGON")){
+            //         // var polygonCoords = /\(\((.+?)\)\)/g.exec(testWkt.split("POLYGON"))[1];
+            //         console.log("here is the polygon: ", testWkt.substring(testWkt.indexOf("POLYGON"), testWkt.length));
+
+            //     }
+            // });
+
+            var wktString = "";
+            var wktType = "";
+            if (e["wkt"].includes("MULTIPOLYGON")) {
+                wktType = "MULTIPOLYGON";
+                console.log("here is the multipolygon: ", wktString);
+            } else if (e["wkt"].includes("POINT")) {
+                wktType = "POINT";
+                console.log("here is the point: ", wktString);
+            } else if (e["wkt"].includes("POLYGON")) {
+                wktType = "POLYGON";
+                console.log("here is the polygon: ", wktString);
             }
+            if (wktType) {
+                wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
+                switch (wktType) {
+                    case "POINT":
+                        coords = [wicket.read(e["wkt"]).toJson().coordinates];
+                        console.log(coords);
+                        break
+                    case "POLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                        console.log(coords);
+                        break
+                    case "MULTIPOLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                        console.log(coords);
+                        break
+                }
+            }
+
+
+            // switch (e["wkt"].split("((")[0].trim()) {
+            //     case "POINT":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates;
+            //         break
+            //     case "POLYGON":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+            //         break
+            //     case "MULTIPOLYGON":
+            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+            //         break
+
+            // }
             coords.forEach(coord => {
                 count += 1;
                 center_lat += coord[1];
@@ -1150,23 +1212,24 @@ function showHazardMap(recordResults) {
                 //     radius: 10000
                 // }).addTo(resultsSearchMap);
 
-                var keys = Object.keys(e).filter(attr => {return attr.indexOf("name") >= 0;});
-                var vals = keys.map(key => { 
+                var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
+                var vals = keys.map(key => {
                     val = e[key];
                     key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
-                    return dd("span: " + key.replaceAll("_", " ") + ": " + val); });
-                var concatDDs = function(rslt, e){
-                    if(rslt.length){
+                    return dd("span: " + key.replaceAll("_", " ") + ": " + val);
+                });
+                var concatDDs = function(rslt, e) {
+                    if (rslt.length) {
                         return rslt.concat(dd("br"), e);
-                    }else {
+                    } else {
                         return [rslt, dd("br"), e];
                     }
                 };
                 let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', vals.reduce(concatDDs)));
                 // add marker event listener
                 place_marker.on("click", function(ev) {
-                    if (!Object.keys(clickedMarker).length){
-                        var index = markers.indexOf(ev.sourceTarget);  
+                    if (!Object.keys(clickedMarker).length) {
+                        var index = markers.indexOf(ev.sourceTarget);
                         clickedMarker["index"] = index;
                         clickedMarker["marker"] = ev.sourceTarget;
 
@@ -1175,7 +1238,7 @@ function showHazardMap(recordResults) {
                         clickedMarker["pre-color"] = domElement.style.backgroundColor;
                         domElement.style.backgroundColor = "pink";
                     } else {
-                        if (clickedMarker["marker"] != ev.sourceTarget){
+                        if (clickedMarker["marker"] != ev.sourceTarget) {
                             // reset the color on the table
                             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
 
@@ -1189,8 +1252,8 @@ function showHazardMap(recordResults) {
                     }
                 });
                 // add marker popup remove listener
-                place_marker.getPopup().on("remove", function(){
-                    if(Object.keys(clickedMarker).length){
+                place_marker.getPopup().on("remove", function() {
+                    if (Object.keys(clickedMarker).length) {
                         clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
                         clickedMarker = {};
                     }
@@ -1199,13 +1262,14 @@ function showHazardMap(recordResults) {
                 place_markers.addLayer(place_marker);
                 resultsSearchMap.addLayer(place_markers);
             }
+            coords = [];
         }
 
     });
     // zoom to fit all the markers in the map
-    if(markers.length > 0){
+    if (markers.length > 0) {
         resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
     }
-    
+
 
 }
