@@ -1117,6 +1117,7 @@ function showHazardMap(recordResults) {
         markers = [];
     }
 
+    var markerIndex = 0;
     recordResults.forEach(e => {
         if (e["wkt"]) {
             // console.log("e_wkt: ", e["wkt"]);
@@ -1126,78 +1127,36 @@ function showHazardMap(recordResults) {
             var count = 0;
 
             var coords = [];
-            // e["wkt"].trim().indexOf("POINT")
-            // <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-150.2764 60.7248)
-            // "POLYGON ((-80.56207 25.90283, -80.56177 25.90202, -80.56163 25.90176, -80.56141 25.90155))"
-            // var testWkts = [
-            //     "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-150.2764 60.7248)",
-            //     "POLYGON ((-80.56207 25.90283, -80.56177 25.90202, -80.56163 25.90176, -80.56141 25.90155))",
-            //     "POINT (-66.62604 18.01263)",
-            //     "MULTIPOLYGON (((-88.81751 30.46306, -88.81862 30.46332, -88.81956 30.46368, -88.82047 30.46431)))"
-            // ];
-
-            // testWkts.forEach(testWkt => {
-
-            //     if (testWkt.includes("MULTIPOLYGON")){
-
-            //         // var multipolygonCoords = /\(\(\((.+?)\)\)\)/g.exec(testWkt.split("MULTIPOLYGON"))[1];
-            //         console.log("here is the multipolygon: ", testWkt.substring(testWkt.indexOf("MULTIPOLYGON"), testWkt.length));
-            //         // var regex1 = /\((.+?)\)/g
-
-            //     } else if (testWkt.includes("POINT")){
-            //         // var pointCoords = /\((.+?)\)/g.exec(testWkt.split("POINT"))[1];
-            //         console.log("here is the point: ", testWkt.substring(testWkt.indexOf("POINT"), testWkt.length));
-
-            //     } else if (testWkt.includes("POLYGON")){
-            //         // var polygonCoords = /\(\((.+?)\)\)/g.exec(testWkt.split("POLYGON"))[1];
-            //         console.log("here is the polygon: ", testWkt.substring(testWkt.indexOf("POLYGON"), testWkt.length));
-
-            //     }
-            // });
-
             var wktString = "";
             var wktType = "";
             if (e["wkt"].includes("MULTIPOLYGON")) {
                 wktType = "MULTIPOLYGON";
-                console.log("here is the multipolygon: ", wktString);
+                // console.log("here is the multipolygon: ", wktString);
             } else if (e["wkt"].includes("POINT")) {
                 wktType = "POINT";
-                console.log("here is the point: ", wktString);
+                // console.log("here is the point: ", wktString);
             } else if (e["wkt"].includes("POLYGON")) {
                 wktType = "POLYGON";
-                console.log("here is the polygon: ", wktString);
+                // console.log("here is the polygon: ", wktString);
             }
             if (wktType) {
                 wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
                 switch (wktType) {
                     case "POINT":
                         coords = [wicket.read(e["wkt"]).toJson().coordinates];
-                        console.log(coords);
+                        // console.log(coords);
                         break
                     case "POLYGON":
                         coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-                        console.log(coords);
+                        // console.log(coords);
                         break
                     case "MULTIPOLYGON":
                         coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-                        console.log(coords);
+                        // console.log(coords);
                         break
                 }
             }
 
-
-            // switch (e["wkt"].split("((")[0].trim()) {
-            //     case "POINT":
-            //         coords = wicket.read(e["wkt"]).toJson().coordinates;
-            //         break
-            //     case "POLYGON":
-            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-            //         break
-            //     case "MULTIPOLYGON":
-            //         coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-            //         break
-
-            // }
             coords.forEach(coord => {
                 count += 1;
                 center_lat += coord[1];
@@ -1225,9 +1184,19 @@ function showHazardMap(recordResults) {
                         return [rslt, dd("br"), e];
                     }
                 };
-                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', vals.reduce(concatDDs)));
+                // add range slider
+                markerIndex += 1;
+                var dds = vals.reduce(concatDDs);
+                dds.push(dd("br"));
+                dds.push(dd("br"));
+                dds.push(dd("span: Please choose the value of the radius (km): "));
+                dds.push(dd("span.radius_value" + ":200"));
+                dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
+
                 // add marker event listener
                 place_marker.on("click", function(ev) {
+                    // console.log("clicked marker coordinates: ", center_lat, ", ", center_lon, ev.target);
                     if (!Object.keys(clickedMarker).length) {
                         var index = markers.indexOf(ev.sourceTarget);
                         clickedMarker["index"] = index;
@@ -1250,12 +1219,22 @@ function showHazardMap(recordResults) {
                             domElement.style.backgroundColor = "pink";
                         }
                     }
+
+                    // at this time, then find the slider in this marker.
+                    console.log("marker--> ", angular.element(".popup input.radius-range"));
+
+                    addSliderChangeListener(ev.sourceTarget.getLatLng());
                 });
                 // add marker popup remove listener
                 place_marker.getPopup().on("remove", function() {
                     if (Object.keys(clickedMarker).length) {
                         clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
                         clickedMarker = {};
+                    };
+
+                    // also remove the circle on the layer
+                    if (resultsSearchMap.hasLayer(circles)) {
+                        resultsSearchMap.removeLayer(circles);
                     }
                 });
                 markers.push(place_marker);
@@ -1264,12 +1243,50 @@ function showHazardMap(recordResults) {
             }
             coords = [];
         }
-
     });
     // zoom to fit all the markers in the map
     if (markers.length > 0) {
         resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
     }
+}
 
+/**
+ * dynamically display the value of radius
+ */
+let circles;
+var addSliderChangeListener = function(markerCoordinates) {
+    var currentSlider = angular.element(".popup input.radius-range");
 
+    // Circle with default radius
+    var default_radius = 200;
+    angular.element(".radius_value").each((e, v) => {
+        default_radius = v.innerHTML;
+    });
+
+    circles = L.circle([markerCoordinates["lat"], markerCoordinates["lng"]], {
+        color: "red",
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: default_radius * 1000
+    }).addTo(resultsSearchMap);
+
+    currentSlider.on("input", function($event) {
+        var radius = $event.target.value;
+        // console.log("you started to change the slider value: ", $event.target.value, "; text: ", angular.element(".radius_value").innerText);
+        angular.element(".radius_value").each((e, v) => {
+            v.innerHTML = radius;
+        });
+
+        // draw a circle
+        if (resultsSearchMap.hasLayer(circles)) {
+            resultsSearchMap.removeLayer(circles);
+        }
+
+        circles = L.circle([markerCoordinates["lat"], markerCoordinates["lng"]], {
+            color: "red",
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: radius * 1000
+        }).addTo(resultsSearchMap);
+    });
 }
