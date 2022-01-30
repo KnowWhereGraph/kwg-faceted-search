@@ -269,8 +269,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 drawMarker: false,
                 drawCircleMarker: false,
                 drawPolyline: false,
-                drawRectangle: true,
-                drawPolygon: true,
+                drawRectangle: false,
+                drawPolygon: false,
                 drawCircle: true,
 
                 drawControls: true,
@@ -280,6 +280,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
 
             resultsSearchMap.on("pm:create", (e) => {
+                console.log("the circle is created");
+                console.log(e.shape);
                 var coordinates;
                 var radius;
 
@@ -289,6 +291,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
                     radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
                 }
+
+                console.log("drawing coordinates: ", coordinates);
+                console.log("radius: ", radius);
             });
         }
     };
@@ -1188,10 +1193,11 @@ function showHazardMap(recordResults) {
                 markerIndex += 1;
                 var dds = vals.reduce(concatDDs);
                 dds.push(dd("br"));
-                dds.push(dd("br"));
-                dds.push(dd("span: Please choose the value of the radius (km): "));
+                dds.push(dd("b: Please choose the value of the radius (km): "));
                 dds.push(dd("span.radius_value" + ":200"));
                 dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                dds.push(dd("br"));
+                dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
                 let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
 
                 // add marker event listener
@@ -1224,6 +1230,7 @@ function showHazardMap(recordResults) {
                     console.log("marker--> ", angular.element(".popup input.radius-range"));
 
                     addSliderChangeListener(ev.sourceTarget.getLatLng());
+                    addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
                 });
                 // add marker popup remove listener
                 place_marker.getPopup().on("remove", function() {
@@ -1289,4 +1296,16 @@ var addSliderChangeListener = function(markerCoordinates) {
             radius: radius * 1000
         }).addTo(resultsSearchMap);
     });
+}
+
+// after choosing the coordinates, click the button, and collect the parameters for spatial query
+var addPopupQueryButtonClickListener = function(markerCoordinates) {
+    angular.element("#popup-query-btn").on("click", function() {
+        console.log("you clicked the button for spatial query!");
+        var radius = 200;
+        angular.element("input.radius-range").each((e, v) => { radius = v.value; });
+
+        console.log("current coordiantes: lat = ", markerCoordinates["lat"], "; lng = ", markerCoordinates["lng"], "; radius = ", radius);
+    })
+
 }

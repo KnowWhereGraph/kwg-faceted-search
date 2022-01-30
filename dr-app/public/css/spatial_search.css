@@ -713,3 +713,12 @@ table.table-filters tbody tr:nth-child(even) {
         width: 90%;
     }
 }
+
+
+/* popup marker styles */
+
+#popup-query-btn {
+    border-radius: 5px;
+    padding: 1px;
+    border: none;
+}
