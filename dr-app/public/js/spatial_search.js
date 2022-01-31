@@ -26,8 +26,8 @@ spatialSearchMap.pm.addControls({
     drawMarker: false,
     drawCircleMarker: false,
     drawPolyline: false,
-    drawRectangle: true,
-    drawPolygon: true,
+    drawRectangle: false,
+    drawPolygon: false,
     drawCircle: true,
 
     drawControls: true,
