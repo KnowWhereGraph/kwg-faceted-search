@@ -101,6 +101,64 @@ async function getAdministrativeRegion() {
     return {'regions':formattedResults};
 }
 
+async function getZipCodeArea() {
+    let formattedResults = [];
+
+    let zipcodeQuery = `
+    select distinct ?zipcode ?zipcodeArea where {
+        ?zipcodeArea rdf:type kwg-ont:ZipCodeArea;
+                     kwg-ont:hasZipCode ?zipcode.
+    } ORDER BY ASC(?zipcode)`;
+
+    let queryResults = await query(zipcodeQuery);
+    for (let row of queryResults) {
+        let zipcode = row.zipcode.value;
+        let zipcodeArea = row.zipcodeArea.value;
+        formattedResults[zipcode] = zipcodeArea;
+    }
+
+    return {'zipcodes':formattedResults};
+}
+
+async function getUSClimateDivision() {
+    let formattedResults = [];
+
+    let divisionQuery = `
+    select distinct ?division ?divison_label where {
+        ?division rdf:type kwg-ont:USClimateDivision;
+                  rdfs:label ?divison_label.
+    } ORDER BY ASC(?divison_label)`;
+
+    let queryResults = await query(divisionQuery);
+    for (let row of queryResults) {
+        let division = row.division.value;
+        let divison_label = row.divison_label.value;
+        formattedResults[divison_label] = division;
+    }
+
+    return {'divisions':formattedResults};
+}
+
+
+async function getNWZone() {
+    let formattedResults = [];
+
+    let nwzoneQuery = `
+    select distinct ?nwzone ?nwzone_label where {
+        ?nwzone rdf:type kwg-ont:NWZone;
+                rdfs:label ?nwzone_label.
+    } ORDER BY ASC(?nwzone_label)`;
+
+    let queryResults = await query(nwzoneQuery);
+    for (let row of queryResults) {
+        let nwzone = row.nwzone.value;
+        let nwzone_label = row.nwzone_label.value;
+        formattedResults[nwzone_label] = nwzone;
+    }
+
+    return {'nwzones':formattedResults};
+}
+
 //New search function for place in stko-kwg
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];

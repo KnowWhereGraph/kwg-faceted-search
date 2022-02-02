@@ -507,6 +507,54 @@ kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
+kwgApp.directive('autocomplete', function() {
+    return {
+        restrict: 'A',
+        require : 'ngModel',
+        link : function (scope, element, attrs, ngModelCtrl) {
+            getZipCodeArea().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsZip')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['zipcodes']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getUSClimateDivision().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsUSCD')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['divisions']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getNWZone().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsNWZ')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['nwzones']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });           
+        }
+    }
+});
+
 var init = function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895

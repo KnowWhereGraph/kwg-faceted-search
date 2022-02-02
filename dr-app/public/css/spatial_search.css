@@ -722,3 +722,15 @@ table.table-filters tbody tr:nth-child(even) {
     padding: 1px;
     border: none;
 }
+
+/* autocomplete styles */
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
+* html .ui-autocomplete {
+    height: 100px;
+}
