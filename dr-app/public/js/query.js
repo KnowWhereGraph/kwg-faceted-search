@@ -172,7 +172,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:entities ?entity.
                 
                 ?entity a kwg-ont:AdministrativeRegion; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                values ?type {kwg-ont:AdministrativeRegion_0 kwg-ont:AdministrativeRegion_1 kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+                ?entity rdfs:locatedIn* kwgr:Earth.North_America.United_States.USA.5_1
             }`);
         }
         if(parameters["placeFacetsZip"]!="") {
@@ -214,7 +215,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         `
         {
             ?entity a kwg-ont:AdministrativeRegion; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:AdministrativeRegion_0 kwg-ont:AdministrativeRegion_1 kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+            ?entity rdfs:locatedIn* kwgr:Earth.North_America.United_States.USA.5_1
         }
         union
         {
