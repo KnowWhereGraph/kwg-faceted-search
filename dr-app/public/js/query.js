@@ -171,9 +171,19 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
-                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-                ?entity kwg-ont:locatedIn* kwgr:Earth.North_America.United_States.USA.
+                ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+                ?type rdfs:label ?typeLabel
+            }
+            union
+            {
+                ?search a elastic-index:kwg_es_index;
+                elastic:query "${parameters["placeFacetsRegion"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity kwg-ont:locatedIn ?a2.
+                ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
                 ?type rdfs:label ?typeLabel
             }`);
         }
@@ -213,12 +223,17 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         }
         placeQuery += typeQueries.join(' union ');
     } else {
-        placeQuery +=
-        `
+        placeQuery += `
         {
-            ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-            ?entity kwg-ont:locatedIn* kwgr:Earth.North_America.United_States.USA.
+            ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+            ?type rdfs:label ?typeLabel
+        }
+        union
+        {
+            ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity kwg-ont:locatedIn ?a2.
+            ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
             ?type rdfs:label ?typeLabel
         }
         union
