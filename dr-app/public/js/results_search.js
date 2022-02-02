@@ -137,6 +137,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     });
 
     getAdministrativeRegion().then(function(data) {
+        console.log(data);
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
