@@ -152,7 +152,7 @@ async function getNWZone() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select ?label ?type ?entity ?wkt where {`;
+    let placeQuery = `select ?label ?type ?typeLabel ?entity ?wkt where {`;
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
@@ -171,9 +171,20 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
-                ?entity a kwg-ont:AdministrativeRegion; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-                ?entity rdfs:locatedIn* kwgr:Earth.North_America.United_States.USA.5_1
+                ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+                ?type rdfs:label ?typeLabel
+            }
+            union
+            {
+                ?search a elastic-index:kwg_es_index;
+                elastic:query "${parameters["placeFacetsRegion"]}";
+                elastic:entities ?entity.
+                
+                ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity kwg-ont:locatedIn ?a2.
+                ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+                ?type rdfs:label ?typeLabel
             }`);
         }
         if(parameters["placeFacetsZip"]!="") {
@@ -183,8 +194,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsZip"]}";
                 elastic:entities ?entity.
                 
-                ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                values ?type {kwg-ont:ZipCodeArea}
+                ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?type rdfs:label ?typeLabel
             }`);
         }
         if(parameters["placeFacetsUSCD"]!="") {
@@ -194,8 +205,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsUSCD"]}";
                 elastic:entities ?entity.
                 
-                ?entity a kwg-ont:USClimateDivision; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
                 values ?type {kwg-ont:USClimateDivision}
+                ?type rdfs:label ?typeLabel
             }`);
         }
         if(parameters["placeFacetsNWZ"]!="") {
@@ -205,32 +217,39 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsNWZ"]}";
                 elastic:entities ?entity.
                 
-                ?entity a kwg-ont:NWZone; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
                 values ?type {kwg-ont:NWZone}
             }`);
         }
         placeQuery += typeQueries.join(' union ');
     } else {
-        placeQuery +=
-        `
+        placeQuery += `
         {
-            ?entity a kwg-ont:AdministrativeRegion; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-            ?entity rdfs:locatedIn* kwgr:Earth.North_America.United_States.USA.5_1
+            ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+            ?type rdfs:label ?typeLabel
         }
         union
         {
-            ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:ZipCodeArea}
+            ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity kwg-ont:locatedIn ?a2.
+            ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+            ?type rdfs:label ?typeLabel
         }
         union
         {
-            ?entity a kwg-ont:USClimateDivision; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?type rdfs:label ?typeLabel
+        }
+        union
+        {
+            ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
             values ?type {kwg-ont:USClimateDivision}
+            ?type rdfs:label ?typeLabel
         }
         union
         {
-            ?entity a kwg-ont:NWZone; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+            ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
             values ?type {kwg-ont:NWZone}
         }`;
     }
