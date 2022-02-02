@@ -274,13 +274,27 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         typeQuery = fireTypeQuery = hurricaneTypeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
     }
 
-    let regionTestQuery = '';
+    let regionTestQuery = hurricaneRegionQuery = '';
     if(parameters["facetRegions"].length > 0) {
         regionTestQuery = `
-            ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
-            ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-            values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
-            ?hazardCell geo:sfWithin* ?region .`;
+        { 
+             select distinct ?entity where {
+                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
+                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+                 values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
+                 ?hazardCell geo:sfWithin* ?region .
+             }
+         }`;
+        hurricaneRegionQuery = `
+        { 
+             select distinct ?entity where {
+                 ?entity kwg-ont:locatedIn ?hazardZone .
+                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+                 values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
+                 ?hazardCell geo:sfWithin* ?region .
+             }
+         }`;
     }
 
     let dateQuery = '';
@@ -415,7 +429,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                     kwg-ont:locatedIn ?place; 
                     kwg-ont:hasImpact ?observationCollection.
             ${hurricaneTypeQuery}
-            ${regionTestQuery}
+            ${hurricaneRegionQuery}
             optional
             {
                 ?place rdfs:label ?placeLabel.
