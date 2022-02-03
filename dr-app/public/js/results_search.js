@@ -302,6 +302,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
     $scope.placeFacetChanged = function() {
         var parameters = getParameters();
+        console.log(parameters);
 
         if (parameters['placeFacetsRegion'] != '')
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
@@ -540,7 +541,7 @@ kwgApp.directive('autocomplete', function() {
                 }
             });
             getUSClimateDivision().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0])
                 {
                   element.autocomplete({
                       source: Object.keys(data['divisions']),
@@ -553,7 +554,7 @@ kwgApp.directive('autocomplete', function() {
                 }
             });
             getNWZone().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0])
                 {
                   element.autocomplete({
                       source: Object.keys(data['nwzones']),
