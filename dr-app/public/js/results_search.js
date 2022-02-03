@@ -1,7 +1,7 @@
 var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
-var placeTitles = ["Name", "Type"];
+var placeTitles = ["Name", "Type", "Hazards"];
 var hazardTitles = ["Name", "Type", "Place", "Start Date", "End Date"];
 
 var activeTabName = "";
@@ -847,6 +847,7 @@ var displayActiveTab = function() {
 }
 
 var displayTableByTabName = function(activeTabName, response) {
+    console.log("display the table here ");
     var selectors = null;
     var countResults = null;
     var recordResults = null;
@@ -901,7 +902,7 @@ var displayTableByTabName = function(activeTabName, response) {
             var tableBodyAttributes = [];
 
             //console.log(recordResults);
-            showHazardMap(recordResults);
+            showMap(recordResults);
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
                 if (selectors["thead"] == "#expertTableTitle") {
@@ -935,12 +936,20 @@ var displayTableByTabName = function(activeTabName, response) {
 
                     rowBodyHtml += "<td>" + cellHtml + "</td>";
                 }
+                console.log("rowBodyHtml: ", rowBodyHtml);
+
+                if (activeTabName == "Place") {
+                    var hazardCellHtml = addHazardsAttrToPlaceTab();
+                    rowBodyHtml += "<td>" + hazardCellHtml + "</td>";
+                    console.log("here is the Place: ", hazardCellHtml);
+                }
 
                 var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                console.log("rowHtml: ", rowHtml);
                 tableBody.append(rowHtml);
             });
 
-            // showHazardMap(recordResults);
+            // showMap(recordResults);
 
         }).then(function() {
 
@@ -1177,7 +1186,7 @@ function displayMap(fullTextResults, tabName) {
     });
 }
 
-function showHazardMap(recordResults) {
+function showMap(recordResults) {
     console.log("recordResults: ", recordResults);
     // clear all the previous markers on the map
     if (place_markers) {
@@ -1371,4 +1380,26 @@ var addPopupQueryButtonClickListener = function(markerCoordinates) {
         console.log("current coordiantes: lat = ", markerCoordinates["lat"], "; lng = ", markerCoordinates["lng"], "; radius = ", radius);
     })
 
+}
+
+
+// add the icon and count for different hazard types in "Hazard column" in the place tab
+var addHazardsAttrToPlaceTab = function() {
+    var peopleCount = 5;
+    var hurricaneCount = 1;
+    var fireCount = 2;
+    var earthquakeCount = 3;
+
+    var peopleIconSrc = '../images/people-people-icon.svg';
+    var hurricaneIconSrc = "../images/people-hurricane-icon.svg";
+    var fireIconSrc = "../images/people-fire-icon.svg";
+    var earthquakeIconSrc = "../images/people-earthquake-icon.svg";
+
+    var cellHtml = "<ul id='place-hazard-count'>" +
+        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span><span class='tooltiptext'>People</span></li>" +
+        "<li><img src = '" + hurricaneIconSrc + "'></img><span>" + hurricaneCount + "</span></li>" +
+        "<li><img src = '" + fireIconSrc + "'></img><span>" + fireCount + "</span></li>" +
+        "<li><img src = '" + earthquakeIconSrc + "'></img><span>" + earthquakeCount + "</span></li>" +
+        "</ul>";
+    return cellHtml;
 }
