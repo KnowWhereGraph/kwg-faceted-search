@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V3';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu/sparql';
 
 // query
 async function query(srq_query) {
