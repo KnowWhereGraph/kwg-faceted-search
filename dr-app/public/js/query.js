@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu/sparql';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V3';
 
 // query
 async function query(srq_query) {
@@ -293,9 +293,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         typeQuery = fireTypeQuery = hurricaneTypeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
     }
 
-    let regionTestQuery = hurricaneRegionQuery = '';
+    let regionQuery = hurricaneRegionQuery = '';
     if(parameters["facetRegions"].length > 0) {
-        regionTestQuery = `
+        regionQuery = `
         { 
              select distinct ?entity where {
                  ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
@@ -315,6 +315,82 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
              }
          }`;
     }
+    let zipCodeQuery = hurricaneZipCodeQuery = '';
+    if(parameters["placeFacetsZip"]!="") {
+        entityAll = await getZipCodeArea();
+        entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+        entity = entityArray[entityArray.length - 1];
+        zipCodeQuery = `
+        { 
+             select distinct ?entity where {
+                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
+                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+                 values ?zipcode {kwgr:` + entity + `}
+                 ?hazardCell geo:sfWithin|geo:sfOverlaps ?zipcode .
+             }
+         }`;
+        hurricaneZipCodeQuery = `
+        { 
+             select distinct ?entity where {
+                 ?entity kwg-ont:locatedIn ?hazardZone .
+                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+                 values ?zipcode {kwgr:` + entity + `}
+                 ?hazardCell geo:sfWithin|geo:sfOverlaps ?zipcode .
+             }
+         }`;
+    }
+    //TODO::Can't finish USCD or NWZone search until we have s2cell connections
+    // let uscdQuery = hurricaneUSCDQuery = '';
+    // if(parameters["placeFacetsUSCD"]!="") {
+    //     entityAll = await getUSClimateDivision();
+    //     entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+    //     entity = entityArray[entityArray.length - 1];
+    //     uscdQuery = `
+    //     {
+    //          select distinct ?entity where {
+    //              ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
+    //              ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+    //              values ?uscd {kwgr:` + entity + `}
+    //              ?hazardCell geo:sfWithin|geo:sfOverlaps ?uscd . //THIS RELATION NEEDS TO BE UPDATED
+    //          }
+    //      }`;
+    //     hurricaneUSCDQuery = `
+    //     {
+    //          select distinct ?entity where {
+    //              ?entity kwg-ont:locatedIn ?hazardZone .
+    //              ?hazardZone geo:sfConatins ?hazardCell .
+    //              ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+    //              values ?uscd {kwgr:` + entity + `}
+    //              ?hazardCell geo:sfWithin|geo:sfOverlaps ?uscd . //THIS RELATION NEEDS TO BE UPDATED
+    //          }
+    //      }`;
+    // }
+    // let nwZoneQuery = hurricaneNWZoneQuery = '';
+    // if(parameters["placeFacetsNWZ"]!="") {
+    //     entityAll = await getNWZone();
+    //     entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+    //     entity = entityArray[entityArray.length - 1];
+    //     nwZoneQuery = `
+    //     {
+    //          select distinct ?entity where {
+    //              ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
+    //              ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+    //              values ?nwzone {kwgr:` + entity + `}
+    //              ?hazardCell geo:sfWithin|geo:sfOverlaps ?nwzone . //THIS RELATION NEEDS TO BE UPDATED
+    //          }
+    //      }`;
+    //     hurricaneNWZoneQuery = `
+    //     {
+    //          select distinct ?entity where {
+    //              ?entity kwg-ont:locatedIn ?hazardZone .
+    //              ?hazardZone geo:sfConatins ?hazardCell .
+    //              ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
+    //              values ?nwzone {kwgr:` + entity + `}
+    //              ?hazardCell geo:sfWithin|geo:sfOverlaps ?nwzone . //THIS RELATION NEEDS TO BE UPDATED
+    //          }
+    //      }`;
+    // }
 
     let dateQuery = '';
     if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
@@ -412,7 +488,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             
             ${typeQuery}
             ?type rdfs:subClassOf kwg-ont:HazardEvent.
-            ${regionTestQuery}
+            ${regionQuery}
+            ${zipCodeQuery}
             ?place rdfs:label ?placeLabel.
             ?startTime time:inXSDDate ?startTimeLabel.
             ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
@@ -430,7 +507,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                     geo:hasGeometry/geo:asWKT ?wkt.
             ${fireTypeQuery}
             ?type rdfs:subClassOf kwg-ont:Fire.
-            ${regionTestQuery}
+            ${regionQuery}
+            ${zipCodeQuery}
             ?place rdfs:label ?placeLabel.
             ?observationCollection sosa:phenomenonTime ?startTime; 
                                    sosa:phenomenonTime ?endTime.${dateQuery}
@@ -449,6 +527,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                     kwg-ont:hasImpact ?observationCollection.
             ${hurricaneTypeQuery}
             ${hurricaneRegionQuery}
+            ${hurricaneZipCodeQuery}
             optional
             {
                 ?place rdfs:label ?placeLabel.
