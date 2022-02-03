@@ -137,7 +137,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     });
 
     getAdministrativeRegion().then(function(data) {
-        console.log(data);
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
@@ -281,8 +280,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
 
             resultsSearchMap.on("pm:create", (e) => {
-                console.log("the circle is created");
-                console.log(e.shape);
                 var coordinates;
                 var radius;
 
@@ -292,9 +289,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
                     radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
                 }
-
-                console.log("drawing coordinates: ", coordinates);
-                console.log("radius: ", radius);
             });
         }
     };
@@ -302,7 +296,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
     $scope.placeFacetChanged = function() {
         var parameters = getParameters();
-        console.log(parameters);
 
         if (parameters['placeFacetsRegion'] != '')
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
@@ -533,7 +526,6 @@ kwgApp.directive('autocomplete', function() {
                   element.autocomplete({
                       source: Object.keys(data['zipcodes']),
                       select:function (event,ui) {
-                        console.log(ui);
                           ngModelCtrl.$setViewValue(ui.item);
                           scope.$apply();
                       }
@@ -546,7 +538,6 @@ kwgApp.directive('autocomplete', function() {
                   element.autocomplete({
                       source: Object.keys(data['divisions']),
                       select:function (event,ui) {
-                        console.log(ui);
                           ngModelCtrl.$setViewValue(ui.item);
                           scope.$apply();
                       }
@@ -559,7 +550,6 @@ kwgApp.directive('autocomplete', function() {
                   element.autocomplete({
                       source: Object.keys(data['nwzones']),
                       select:function (event,ui) {
-                        console.log(ui);
                           ngModelCtrl.$setViewValue(ui.item);
                           scope.$apply();
                       }
@@ -593,63 +583,40 @@ var getScope = function() {
 // prepare the parameters
 var getParameters = function() {
     var parameters = { "keyword": getScope().inputQuery };
+    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
     //Place facets
-    angular.element("#placeFacetsRegion").each((index, div) => {
-        parameters["placeFacetsRegion"] = div.value;
-    });
-    angular.element("#placeFacetsZip").each((index, div) => {
-        parameters["placeFacetsZip"] = div.value;
-    });
-    angular.element("#placeFacetsUSCD").each((index, div) => {
-        parameters["placeFacetsUSCD"] = div.value;
-    });
-    angular.element("#placeFacetsNWZ").each((index, div) => {
-        parameters["placeFacetsNWZ"] = div.value;
-    });
-
+    parameters["placeFacetsRegion"] = angular.element("#placeFacetsRegion")[0].value;
+    switch(tabName) {
+        case 'place':
+            parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
+            parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
+            parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
+            break;
+        case 'hazard':
+            parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
+            parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
+            parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
+            break;
+    }
     //Hazard facets
-    angular.element("#hazardFacetDateStart").each((index, div) => {
-        parameters["hazardFacetDateStart"] = div.value;
-    });
-    angular.element("#hazardFacetDateEnd").each((index, div) => {
-        parameters["hazardFacetDateEnd"] = div.value;
-    });
+    parameters["hazardFacetDateStart"] = angular.element("#hazardFacetDateStart")[0].value;
+    parameters["hazardFacetDateEnd"] = angular.element("#hazardFacetDateEnd")[0].value;
     let hazardTypes = [];
     angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
-    angular.element("#hazardFacetMagnitudeMin").each((index, div) => {
-        parameters["hazardFacetMagnitudeMin"] = div.value;
-    });
-    angular.element("#hazardFacetMagnitudeMax").each((index, div) => {
-        parameters["hazardFacetMagnitudeMax"] = div.value;
-    });
-    angular.element("#hazardQuakeDepthMin").each((index, div) => {
-        parameters["hazardQuakeDepthMin"] = div.value;
-    });
-    angular.element("#hazardQuakeDepthMax").each((index, div) => {
-        parameters["hazardQuakeDepthMax"] = div.value;
-    });
-    angular.element("#hazardFacetAcresBurnedMin").each((index, div) => {
-        parameters["hazardFacetAcresBurnedMin"] = div.value;
-    });
-    angular.element("#hazardFacetAcresBurnedMax").each((index, div) => {
-        parameters["hazardFacetAcresBurnedMax"] = div.value;
-    });
-    angular.element("#hazardFacetMeanDnbrMin").each((index, div) => {
-        parameters["hazardFacetMeanDnbrMin"] = div.value;
-    });
-    angular.element("#hazardFacetMeanDnbrMax").each((index, div) => {
-        parameters["hazardFacetMeanDnbrMax"] = div.value;
-    });
-    angular.element("#hazardFacetSDMeanDnbrMin").each((index, div) => {
-        parameters["hazardFacetSDMeanDnbrMin"] = div.value;
-    });
-    angular.element("#hazardFacetSDMeanDnbrMax").each((index, div) => {
-        parameters["hazardFacetSDMeanDnbrMax"] = div.value;
-    });
+    parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
+    parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
+    parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
+    parameters["hazardQuakeDepthMax"] = angular.element("#hazardQuakeDepthMax")[0].value;
+    parameters["hazardFacetAcresBurnedMin"] = angular.element("#hazardFacetAcresBurnedMin")[0].value;
+    parameters["hazardFacetAcresBurnedMax"] = angular.element("#hazardFacetAcresBurnedMax")[0].value;
+    parameters["hazardFacetMeanDnbrMin"] = angular.element("#hazardFacetMeanDnbrMin")[0].value;
+    parameters["hazardFacetMeanDnbrMax"] = angular.element("#hazardFacetMeanDnbrMax")[0].value;
+    parameters["hazardFacetSDMeanDnbrMin"] = angular.element("#hazardFacetSDMeanDnbrMin")[0].value;
+    parameters["hazardFacetSDMeanDnbrMax"] = angular.element("#hazardFacetSDMeanDnbrMax")[0].value;
 
     //People facets
     let expertTopics = [];
@@ -847,7 +814,6 @@ var displayActiveTab = function() {
 }
 
 var displayTableByTabName = function(activeTabName, response) {
-    console.log("display the table here ");
     var selectors = null;
     var countResults = null;
     var recordResults = null;
@@ -901,7 +867,6 @@ var displayTableByTabName = function(activeTabName, response) {
             var attributeLinks = [];
             var tableBodyAttributes = [];
 
-            //console.log(recordResults);
             showMap(recordResults);
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
@@ -936,16 +901,13 @@ var displayTableByTabName = function(activeTabName, response) {
 
                     rowBodyHtml += "<td>" + cellHtml + "</td>";
                 }
-                console.log("rowBodyHtml: ", rowBodyHtml);
 
                 if (activeTabName == "Place") {
                     var hazardCellHtml = addHazardsAttrToPlaceTab();
                     rowBodyHtml += "<td>" + hazardCellHtml + "</td>";
-                    console.log("here is the Place: ", hazardCellHtml);
                 }
 
                 var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
-                console.log("rowHtml: ", rowHtml);
                 tableBody.append(rowHtml);
             });
 
@@ -1187,7 +1149,6 @@ function displayMap(fullTextResults, tabName) {
 }
 
 function showMap(recordResults) {
-    console.log("recordResults: ", recordResults);
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
@@ -1197,7 +1158,6 @@ function showMap(recordResults) {
     var markerIndex = 0;
     recordResults.forEach(e => {
         if (e["wkt"]) {
-            // console.log("e_wkt: ", e["wkt"]);
             var wicket = new Wkt.Wkt();
             var center_lat = 0;
             var center_lon = 0;
@@ -1208,28 +1168,22 @@ function showMap(recordResults) {
             var wktType = "";
             if (e["wkt"].includes("MULTIPOLYGON")) {
                 wktType = "MULTIPOLYGON";
-                // console.log("here is the multipolygon: ", wktString);
             } else if (e["wkt"].includes("POINT")) {
                 wktType = "POINT";
-                // console.log("here is the point: ", wktString);
             } else if (e["wkt"].includes("POLYGON")) {
                 wktType = "POLYGON";
-                // console.log("here is the polygon: ", wktString);
             }
             if (wktType) {
                 wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
                 switch (wktType) {
                     case "POINT":
                         coords = [wicket.read(e["wkt"]).toJson().coordinates];
-                        // console.log(coords);
                         break
                     case "POLYGON":
                         coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-                        // console.log(coords);
                         break
                     case "MULTIPOLYGON":
                         coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-                        // console.log(coords);
                         break
                 }
             }
@@ -1274,7 +1228,6 @@ function showMap(recordResults) {
 
                 // add marker event listener
                 place_marker.on("click", function(ev) {
-                    // console.log("clicked marker coordinates: ", center_lat, ", ", center_lon, ev.target);
                     if (!Object.keys(clickedMarker).length) {
                         var index = markers.indexOf(ev.sourceTarget);
                         clickedMarker["index"] = index;
@@ -1299,8 +1252,6 @@ function showMap(recordResults) {
                     }
 
                     // at this time, then find the slider in this marker.
-                    console.log("marker--> ", angular.element(".popup input.radius-range"));
-
                     addSliderChangeListener(ev.sourceTarget.getLatLng());
                     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
                 });
@@ -1351,7 +1302,6 @@ var addSliderChangeListener = function(markerCoordinates) {
 
     currentSlider.on("input", function($event) {
         var radius = $event.target.value;
-        // console.log("you started to change the slider value: ", $event.target.value, "; text: ", angular.element(".radius_value").innerText);
         angular.element(".radius_value").each((e, v) => {
             v.innerHTML = radius;
         });
@@ -1373,11 +1323,8 @@ var addSliderChangeListener = function(markerCoordinates) {
 // after choosing the coordinates, click the button, and collect the parameters for spatial query
 var addPopupQueryButtonClickListener = function(markerCoordinates) {
     angular.element("#popup-query-btn").on("click", function() {
-        console.log("you clicked the button for spatial query!");
         var radius = 200;
         angular.element("input.radius-range").each((e, v) => { radius = v.value; });
-
-        console.log("current coordiantes: lat = ", markerCoordinates["lat"], "; lng = ", markerCoordinates["lng"], "; radius = ", radius);
     })
 
 }
