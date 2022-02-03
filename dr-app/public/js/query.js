@@ -292,7 +292,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
     let hurricaneTypeQuery = ` FILTER(?type = kwg-ont:Hurricane)`;
     if(parameters["hazardTypes"].length > 0) {
-        typeQuery = fireTypeQuery = hurricaneTypeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
+        typeQuery = fireTypeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
+        //This prevents hurricane query from breaking
+        if(!parameters["hazardTypes"].includes('Hurricane'))
+            hurricaneTypeQuery = '';
     }
 
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
@@ -527,8 +530,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ${acresBurnedQuery}
             ${meanDnbrQuery}
             ${SDMeanDnbrQuery}
-        }
-        union
+        }`
+    if(hurricaneTypeQuery!='') {
+        hazardQuery += `union
         {
             ?entity rdf:type ?type; 
                     rdfs:label ?label; 
@@ -552,8 +556,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             {
                 ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }
-        }
-    }`;
+        }`;
+    }
+    hazardQuery += `}`;
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
