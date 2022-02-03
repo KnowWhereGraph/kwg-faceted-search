@@ -137,6 +137,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     });
 
     getAdministrativeRegion().then(function(data) {
+        console.log(data);
         $scope.administrativeRegions = data;
         $scope.$apply();
     }).then(function() {
@@ -497,6 +498,19 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
     };
+}).directive('ngEnter', function() {
+    return function(scope, elem, attrs) {
+        elem.bind("keydown keypress", function(event) {
+            // 13 represents enter button
+            if (event.which === 13) {
+                scope.$apply(function() {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
 });
 
 kwgApp.controller("filters-controller", function($scope) {
@@ -506,6 +520,54 @@ kwgApp.controller("filters-controller", function($scope) {
 kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
+
+kwgApp.directive('autocomplete', function() {
+    return {
+        restrict: 'A',
+        require : 'ngModel',
+        link : function (scope, element, attrs, ngModelCtrl) {
+            getZipCodeArea().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['zipcodes']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getUSClimateDivision().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['divisions']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getNWZone().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['nwzones']),
+                      select:function (event,ui) {
+                        console.log(ui);
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+        }
+    }
+});
 
 var init = function() {
     setTimeout(() => {
