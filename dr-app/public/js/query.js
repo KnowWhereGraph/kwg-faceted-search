@@ -188,36 +188,36 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }`);
         }
         if(parameters["placeFacetsZip"]!="") {
+            entityAll = await getZipCodeArea();
+            entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+            entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_es_index;
-                elastic:query "${parameters["placeFacetsZip"]}";
-                elastic:entities ?entity.
-                
-                ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                values ?entity {kwgr:` + entity + `}
                 ?type rdfs:label ?typeLabel
             }`);
         }
         if(parameters["placeFacetsUSCD"]!="") {
+            entityAll = await getUSClimateDivision();
+            entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+            entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_es_index;
-                elastic:query "${parameters["placeFacetsUSCD"]}";
-                elastic:entities ?entity.
-                
                 ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                values ?entity {kwgr:` + entity + `}
                 values ?type {kwg-ont:USClimateDivision}
                 ?type rdfs:label ?typeLabel
             }`);
         }
         if(parameters["placeFacetsNWZ"]!="") {
+            entityAll = await getNWZone();
+            entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+            entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_es_index;
-                elastic:query "${parameters["placeFacetsNWZ"]}";
-                elastic:entities ?entity.
-                
                 ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                values ?entity {kwgr:` + entity + `}
                 values ?type {kwg-ont:NWZone}
             }`);
         }
@@ -256,7 +256,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     placeQuery += `}`;
 
-    let queryResults = await query(placeQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
         let placeLabel = (typeof row.typeLabel  === 'undefined') ? row.type.value : row.typeLabel.value;
         formattedResults.push({

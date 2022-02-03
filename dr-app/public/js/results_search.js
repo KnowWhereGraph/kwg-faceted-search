@@ -527,7 +527,7 @@ kwgApp.directive('autocomplete', function() {
         require : 'ngModel',
         link : function (scope, element, attrs, ngModelCtrl) {
             getZipCodeArea().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsZip')[0])
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
                 {
                   element.autocomplete({
                       source: Object.keys(data['zipcodes']),
@@ -540,7 +540,7 @@ kwgApp.directive('autocomplete', function() {
                 }
             });
             getUSClimateDivision().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsUSCD')[0])
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsZip')[0])
                 {
                   element.autocomplete({
                       source: Object.keys(data['divisions']),
@@ -553,7 +553,7 @@ kwgApp.directive('autocomplete', function() {
                 }
             });
             getNWZone().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsNWZ')[0])
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsZip')[0])
                 {
                   element.autocomplete({
                       source: Object.keys(data['nwzones']),
@@ -564,7 +564,7 @@ kwgApp.directive('autocomplete', function() {
                       }
                     });
                 }
-            });           
+            });
         }
     }
 });
