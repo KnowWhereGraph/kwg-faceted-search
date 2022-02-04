@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu:7200/repositories/KWG-V3';
+const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu/sparql';
 
 // query
 async function query(srq_query) {
@@ -316,7 +316,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -327,7 +327,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsRegion"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_es_index;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -337,7 +337,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             union
             {
-                ?search a elastic-index:kwg_es_index;
+                ?search a elastic-index:kwg_index_v2;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -441,7 +441,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -814,7 +814,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_index_v2;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
