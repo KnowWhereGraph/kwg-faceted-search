@@ -277,7 +277,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     //Keyword search
-    let hazardQuery = `select distinct ?label ?type ?entity ?place ?placeLabel ?startTime ?startTimeLabel ?endTime ?endTimeLabel ?wkt where {`;
+    let hazardQuery = `select distinct ?label ?type ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
@@ -288,15 +288,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     //Filters out the types of hazards
-    let typeQuery = '';
-    let fireTypeQuery = ` FILTER(?type != kwg-ont:Fire)`;
-    let hurricaneTypeQuery = ` FILTER(?type = kwg-ont:Hurricane)`;
-    if(parameters["hazardTypes"].length > 0) {
-        typeQuery = fireTypeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
-        //This prevents hurricane query from breaking
-        if(!parameters["hazardTypes"].includes('Hurricane'))
-            hurricaneTypeQuery = '';
-    }
+    let typeQuery = 'values ?type {kwg-ont:EarthquakeEvent kwg-ont:Hurricane kwg-ont:Wildfire kwg-ont:WildlandFireUse kwg-ont:PrescribedFire kwg-ont:UnknownFire}';
+    if(parameters["hazardTypes"].length > 0)
+        typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
 
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
     let regionQuery = hurricaneRegionQuery = '';
@@ -304,17 +298,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         regionQuery = `
         { 
              select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
-                 ?hazardCell geo:sfWithin* ?region .
-             }
-         }`;
-        hurricaneRegionQuery = `
-        { 
-             select distinct ?entity where {
-                 ?entity kwg-ont:locatedIn ?hazardZone .
-                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
                  ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
                  values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
                  ?hazardCell geo:sfWithin* ?region .
@@ -329,17 +313,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         zipCodeQuery = `
         { 
              select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?zipcode {kwgr:` + entity + `}
-                 ?hazardCell geo:sfWithin|geo:sfOverlaps ?zipcode .
-             }
-         }`;
-        hurricaneZipCodeQuery = `
-        { 
-             select distinct ?entity where {
-                 ?entity kwg-ont:locatedIn ?hazardZone .
-                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
                  ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
                  values ?zipcode {kwgr:` + entity + `}
                  ?hazardCell geo:sfWithin|geo:sfOverlaps ?zipcode .
@@ -354,17 +328,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         uscdQuery = `
         {
              select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?uscd {kwgr:` + entity + `}
-                 ?uscd geo:sfIntersects ?hazardCell .
-             }
-         }`;
-        hurricaneUSCDQuery = `
-        {
-             select distinct ?entity where {
-                 ?entity kwg-ont:locatedIn ?hazardZone .
-                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
                  ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
                  values ?uscd {kwgr:` + entity + `}
                  ?uscd geo:sfIntersects ?hazardCell .
@@ -379,17 +343,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         nwZoneQuery = `
         {
              select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?nwzone {kwgr:` + entity + `}
-                 ?hazardCell geo:sfWithin ?nwzone .
-             }
-         }`;
-        hurricaneNWZoneQuery = `
-        {
-             select distinct ?entity where {
-                 ?entity kwg-ont:locatedIn ?hazardZone .
-                 ?hazardZone geo:sfConatins ?hazardCell .
+                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
                  ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
                  values ?nwzone {kwgr:` + entity + `}
                  ?hazardCell geo:sfWithin ?nwzone .
@@ -487,78 +441,41 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         {
             ?entity rdf:type ?type; 
-                    rdfs:label ?label; 
-                    kwg-ont:locatedIn ?place; 
-                    sosa:phenomenonTime ?startTime; 
-                    sosa:phenomenonTime ?endTime; 
-                    sosa:isFeatureOfInterestOf ?observationCollection; 
-                    geo:hasGeometry/geo:asWKT ?wkt_raw.
-            
+                    rdfs:label ?label;
+                    kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
+            ?type rdfs:subClassOf ?superClass.
+            values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
             ${typeQuery}
-            ?type rdfs:subClassOf kwg-ont:HazardEvent.
             ${regionQuery}
             ${zipCodeQuery}
             ${uscdQuery}
             ${nwZoneQuery}
-            ?place rdfs:label ?placeLabel.
-            ?startTime time:inXSDDate ?startTimeLabel.
-            ?endTime time:inXSDDate ?endTimeLabel.${dateQuery}
-            BIND(REPLACE(STR(?wkt_raw), "<http://www.opengis.net/def/crs/OGC/1.3/CRS84>", "") AS ?wkt)
-        
-            ${magnitudeQuery}
-            ${quakeDepthQuery}
-        }
-        union
-        {
-            ?entity rdf:type ?type; 
-                    rdfs:label ?label; 
-                    kwg-ont:locatedIn ?place; 
-                    sosa:isFeatureOfInterestOf ?observationCollection; 
-                    geo:hasGeometry/geo:asWKT ?wkt.
-            ${fireTypeQuery}
-            ?type rdfs:subClassOf kwg-ont:Fire.
-            ${regionQuery}
-            ${zipCodeQuery}
-            ${uscdQuery}
-            ${nwZoneQuery}
-            ?place rdfs:label ?placeLabel.
-            ?observationCollection sosa:phenomenonTime ?startTime; 
-                                   sosa:phenomenonTime ?endTime.${dateQuery}
-            ?startTime time:inXSDDate ?startTimeLabel.
-            ?endTime time:inXSDDate ?endTimeLabel.
-            
-            ${acresBurnedQuery}
-            ${meanDnbrQuery}
-            ${SDMeanDnbrQuery}
-        }`
-    if(hurricaneTypeQuery!='') {
-        hazardQuery += `union
-        {
-            ?entity rdf:type ?type; 
-                    rdfs:label ?label; 
-                    kwg-ont:locatedIn ?place; 
-                    kwg-ont:hasImpact ?observationCollection.
-            ${hurricaneTypeQuery}
-            ${hurricaneRegionQuery}
-            ${hurricaneZipCodeQuery}
-            ${hurricaneUSCDQuery}
-            ${hurricaneNWZoneQuery}
             optional
             {
+                ?entity kwg-ont:locatedIn ?place.
                 ?place rdfs:label ?placeLabel.
             }
-            ?observationCollection sosa:phenomenonTime ?time.
-            ?time time:hasBeginning ?startTime; 
-                  time:hasEnd ?endTime.${dateQuery}
-            ?startTime time:inXSDDateTime ?startTimeLabel.
-            ?endTime time:inXSDDateTime ?endTimeLabel.
             optional
             {
-                ?entity geo:hasGeometry/geo:asWKT ?wkt.
+                ?observationCollection sosa:phenomenonTime ?time.
+                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                      time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+                ${dateQuery}
             }
-        }`;
-    }
-    hazardQuery += `}`;
+            optional
+            {
+                ?entity geo:hasGeometry/geo:asWKT ?wkt_raw.
+            }
+            optional
+            {
+                ${magnitudeQuery}
+                ${quakeDepthQuery}
+                ${acresBurnedQuery}
+                ${meanDnbrQuery}
+                ${SDMeanDnbrQuery}
+            }
+        }
+    }`;
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     for (let row of queryResults) {
@@ -568,18 +485,19 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'hazard_name':row.label.value,
             'hazard_type':row.type.value,
             'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1],
-            'place':row.place.value,
+            'place':(typeof row.place  === 'undefined') ? '' : row.place.value,
             'place_name':(typeof row.placeLabel  === 'undefined') ? '' : row.placeLabel.value,
-            'start_date':row.startTime.value,
-            'start_date_name':row.startTimeLabel.value,
-            'end_date':row.endTime.value,
-            'end_date_name':row.endTimeLabel.value,
+            'start_date':(typeof row.time  === 'undefined') ? '' : row.time.value,
+            'start_date_name':(typeof row.startTimeLabel  === 'undefined') ? '' : row.startTimeLabel.value,
+            'end_date':(typeof row.time  === 'undefined') ? '' : row.time.value,
+            'end_date_name':(typeof row.endTimeLabel  === 'undefined') ? '' : row.endTimeLabel.value,
             'wkt':(typeof row.wkt  === 'undefined') ? '' : row.wkt.value,
         });
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
     return {'count':countResults[0].count.value,'record':formattedResults};
+    //return {'count':0,'record':formattedResults};
 }
 
 async function getHazardClasses() {
