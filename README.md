@@ -4,7 +4,7 @@ The web application dr-app is an ongoing faceted search project of KnowWhereGrap
 
 ## Deploying
 
-To deploy dr-app run
+To deploy dr-app run the following from `dr-app/`,
 
 ```
 npm install
