@@ -150,6 +150,16 @@ async function getRandomExpert() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
+    if (typeof(row) == "undefined")
+    {
+        row = {
+            'expert':
+            {'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092'},
+            'expert_label':
+            {'value':'Chenyang Cao'}
+        };
+    }
+
     formattedResults[row.expert_label.value] = row.expert.value;
 
     return {'randomExpert':formattedResults};
@@ -205,6 +215,16 @@ async function getRandomExpertInjuryStorm() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
+    if (typeof(row) == "undefined")
+    {
+        row = {
+            'expert':
+            {'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165'},
+            'expert_label':
+            {'value':'Zhonghua Mao'}
+        };
+    }
+
     formattedResults[row.expert_label.value] = row.expert.value;
 
     return {'randomExpert':formattedResults};
