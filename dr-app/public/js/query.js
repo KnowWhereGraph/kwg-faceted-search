@@ -50,6 +50,166 @@ async function query(srq_query) {
     return (await d_res.json()).results.bindings;
 }
 
+async function getRandomPlace() {
+    let formattedResults = {};
+
+    let randomPlaceQuery = `
+    select distinct ?place ?place_label
+    {
+        {
+            select distinct ?place ?place_label
+            {
+                ?place rdf:type ?place_type;
+                    rdfs:label ?place_label.
+                ?place_type rdfs:subClassOf kwg-ont:AdministrativeRegion.
+            } ORDER BY RAND() LIMIT 1
+        }
+        UNION
+        {
+            select distinct ?place ?place_label
+            {
+                ?place rdf:type kwg-ont:ZipCodeArea;
+                    kwg-ont:hasZipCode ?place_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+        UNION
+        {
+            select distinct ?place ?place_label
+            {
+                ?place rdf:type kwg-ont:USClimateDivision;
+                    rdfs:label ?place_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+        UNION
+        {
+            select distinct ?place ?place_label
+            {
+                ?place rdf:type kwg-ont:NWZone;
+                    rdfs:label ?place_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+    } ORDER BY RAND() LIMIT 1 `;
+
+    let queryResults = await query(randomPlaceQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.place_label.value] = row.place.value;
+
+    return {'randomPlace':formattedResults};
+}
+
+async function getRandomHazard() {
+    let formattedResults = {};
+
+    let randomHazardQuery = `
+    select distinct ?hazard ?hazard_label
+    {
+        {
+            select distinct ?hazard ?hazard_label
+            {
+                ?hazard rdf:type kwg-ont:EarthquakeEvent;
+                        rdfs:label ?hazard_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+        UNION
+        {
+            select distinct ?hazard ?hazard_label
+            {
+                ?hazard rdf:type kwg-ont:Fire;
+                        rdfs:label ?hazard_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+        UNION
+        {
+            select distinct ?hazard ?hazard_label
+            {
+                ?hazard rdf:type kwg-ont:Hurricane;
+                        rdfs:label ?hazard_label.
+            } ORDER BY RAND() LIMIT 1
+        }
+    } ORDER BY RAND() LIMIT 1 `;
+
+    let queryResults = await query(randomHazardQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.hazard_label.value] = row.hazard.value;
+
+    return {'randomHazard':formattedResults};
+}
+
+async function getRandomExpert() {
+    let formattedResults = {};
+
+    let randomExpertQuery = `
+    select distinct ?expert ?expert_label
+    {
+        ?expert rdf:type iospress:Contributor;
+                rdfs:label ?expert_label.
+    } ORDER BY RAND() LIMIT 1`;
+
+    let queryResults = await query(randomExpertQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.expert_label.value] = row.expert.value;
+
+    return {'randomExpert':formattedResults};
+}
+
+async function getRandomWildfire() {
+    let formattedResults = {};
+
+    let randomWildfireQuery = `
+    select distinct ?wildfire ?wildfire_label
+    {
+        ?wildfire rdf:type kwg-ont:Wildfire;
+                rdfs:label ?wildfire_label.
+    } ORDER BY RAND() LIMIT 1`;
+
+    let queryResults = await query(randomWildfireQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.wildfire_label.value] = row.wildfire.value;
+
+    return {'randomWildfire':formattedResults};
+}
+
+async function getRandomEarthquake() {
+    let formattedResults = {};
+
+    let randomEarthquakeQuery = `
+    select distinct ?earthquake ?earthquake_label
+    {
+        ?earthquake rdf:type kwg-ont:EarthquakeEvent;
+                    rdfs:label ?earthquake_label.
+    } ORDER BY RAND() LIMIT 1`;
+
+    let queryResults = await query(randomEarthquakeQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.earthquake_label.value] = row.earthquake.value;
+
+    return {'randomEarthquake':formattedResults};
+}
+
+async function getRandomExpertInjuryStorm() {
+    let formattedResults = {};
+
+    let randomExpertQuery = `
+    select distinct ?expert ?expert_label
+    {
+        ?expert rdf:type iospress:Contributor;
+                kwg-ont:hasExpertise kwgr:hazardtopic.storm.aspecttopic.injury;
+                rdfs:label ?expert_label.
+    } ORDER BY RAND() LIMIT 1`;
+
+    let queryResults = await query(randomExpertQuery);
+
+    let row = queryResults[0];
+    formattedResults[row.expert_label.value] = row.expert.value;
+
+    return {'randomExpert':formattedResults};
+}
+
 async function getAdministrativeRegion() {
     let formattedResults = {};
 
