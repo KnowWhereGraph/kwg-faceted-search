@@ -2,7 +2,7 @@
     <div class="container">
         <div class="nav-path">
             <ul id="breadcrumb-list" class="breadcrumb">
-<!--                <li><a href="" id="curr_page"></a></li>-->
+                <!--                <li><a href="" id="curr_page"></a></li>-->
             </ul>
         </div>
         <h1 id="breadcrumb-header"></h1>
@@ -17,7 +17,7 @@
         <div class="search-dropdown-input">
             <div class="input-group">
                 <label for="keyword">Keyword Search</label>
-                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" id="keyword" placeholder="Enter your query"/>
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" id="keyword" placeholder="Enter your query" />
                 <div class="input-group-append">
                     <button id="input-query-submit" class="btn btn-outline-secondary" type="button" ng-click="keywordSubmit($event)">Search</button>
                 </div>
@@ -38,123 +38,136 @@
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
-
-                    <!-- part2: add div for dynamically showing the selected item -->
-                    <!-- <div class="selectedItem" ng-show="showSelectedPlace">
-                        <input type="checkbox" class="form-check-input me-1" ng-model="checkedPlace" ng-click="unselectPlace()"> <span>{{selectedPlace}}</span>
-                        <p>Sub-Topic
-                            <i class="bi bi-chevron-up"></i>
-                        </p>
-                    </div> -->
-
-                    <!-- part2 -->
-                    <label for="findPlaceFilter">Find Place Filter Search</label>
-                    <input type="text" class="form-control" id="findPlaceFilter" placeholder="Find a filter">
-                    <!-- part3 -->
-                    <ul class="list-group" id="place-list">
-
-                        <li ng-repeat="placeSupertopicUrl in placeSupertopicUrls">
-                            <span><label for="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}">{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}</label><input id="{{getPlaceLabel(placeSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{placeSupertopicUrl}}" name="placeTopic" ng-click="selectPlaceSupertopic($event)">{{getPlaceLabel(placeSupertopicUrl)}}</span>
-                        </li>
-
-                        <!-- <li ng-repeat="placeSupertopicUrl in placeSupertopicsUrls" ng-show="placesTopicShow">
-                            <span><input type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectPlace($event)" value="{{placeSupertopicUrl}}" name="placeTopic">{{getPlaceLabel(placeSupertopicUrl)}}</span>
-                        </li>
-                        <li ng-repeat="subPlace in subPlaces" ng-show="placeSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subPlace}}" name="subplace"> {{getSubplaceLabel(subPlace)}}
-                        </li> -->
-
-                    </ul>
+                    <div>Administrative Region</div>
+                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
+                    <div>Zip Code</div>
+                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
+                    <div>US Climate Division</div>
+                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
+                    <div>National Weather Zone</div>
+                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
                 </div>
             </li>
 
             <li id="hazard" ng-show="showHazardList">
+                <p class="filter-title">PLACE</p>
+                <div class="filter">
+                    <ul class="list-group checkbox-list" id="region-list">
+                        <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                {{a1obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a2}}" name="region">
+                                        {{a2obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region">
+                                            {{a3obj['label']}}
+                                        </li>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
+                        <div>Zip Code</div>
+                        <input autocomplete="true" type="text" class="form-control" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
+                        <div>US Climate Division</div>
+                        <input autocomplete="true" type="text" class="form-control" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
+                        <div>National Weather Zone</div>
+                        <input autocomplete="true" type="text" class="form-control" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
+                    </ul>
+                </div>
+                <br/>
                 <p class="filter-title">HAZARD</p>
                 <div class="filter">
-                    <label for="findHazardFilter">Find Hazard Filter Search</label>
-                    <input type="text" class="form-control" id="findHazardFilter" placeholder="Find a filter">
-
-                    <!-- part3 -->
-                    <ul class="list-group" id="hazard-list">
-                        <!-- <li ng-repeat="hazard in hazards">
-                            <span><input type="checkbox" class="form-check-input me-1" value="{{hazard}}" name="hazard">
-                                {{hazard}}</span>
-                        </li> -->
-                        <li ng-repeat="hazardUrl in hazardUrls">
-                            <span><label for="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}">{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}</label><input id="{{getHazardLabel(hazardUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectHazard($event)" value="{{hazardUrl}}" name="hazard">{{getHazardLabel(hazardUrl)}}</span>
+                    <div>Date Start</div>
+                    <input type="date" class="form-control" id="hazardFacetDateStart" ng-model="hazardFacetDateStart" ng-enter="hazardFacetChanged()">
+                    <div>Date End</div>
+                    <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-enter="hazardFacetChanged()">
+                    <div>Hazard Type(s)</div>
+                    <ul class="list-group checkbox-list" id="hazard-list">
+                        <li ng-repeat="hazardUrl in hazardUrls['hazards']">
+                            <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
+                        </li>
+                        <li class="ng-binding ng-scope">
+                            <input id="Fire" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" value="FireEvent"> Fire
+                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                        </li>
+                        <ul class="list-group list-group-indented" style="display: none">
+                            <li ng-repeat="hazardUrlFire in hazardUrls['fires']">
+                                <input id="{{hazardUrlFire['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrlFire['hazard_type_name']}}" name="hazard"> {{hazardUrlFire['hazard_type_name']}}
+                            </li>
+                        </ul>
+                        <li ng-repeat="hazardUrl in hazardUrls['hurricanes']">
+                            <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
                         </li>
                     </ul>
-
+                    <section ng-show="earthquakeFacets">
+                        <div>Earthquake: Magnitude (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
+                        <div>Earthquake: Magnitude (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetMagnitudeMax" ng-model="hazardFacetMagnitudeMax" ng-enter="hazardFacetChanged()" max="8" placeholder="Enter maximum magnitude...">
+                        <div>Earthquake: Depth (min)</div>
+                        <input type="number" class="form-control" id="hazardQuakeDepthMin" ng-model="hazardQuakeDepthMin" ng-enter="hazardFacetChanged()" placeholder="Enter minimum depth...">
+                        <div>Earthquake: Depth (max)</div>
+                        <input type="number" class="form-control" id="hazardQuakeDepthMax" ng-model="hazardQuakeDepthMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum depth...">
+                    </section>
+                    <section ng-show="fireFacets">
+                        <!-- Fire Cause -->
+                        <div>Fire: Number of Acres Burned (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum acres...">
+                        <div>Fire: Number of Acres Burned (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum acres...">
+                        <div>Fire: Mean dNBR (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMin" ng-model="hazardFacetMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum mean Dnbr...">
+                        <div>Fire: Mean dNBR (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum mean Dnbr...">
+                        <div>Fire: Standard Deviation of Mean dNBR (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation...">
+                        <div>Fire: Standard Deviation of Mean dNBR (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
+                    </section>
                 </div>
             </li>
             <li id="expertise" ng-show="showExpertiseList">
                 <p class="filter-title">EXPERTISE</p>
                 <div class="filter">
-                    <!-- part1 -->
-                    <!-- <p class="filter-type">rdf:type <i class="bi bi-chevron-up"></i></p> -->
-
-                    <!-- part2: add div for dynamically showing selected item -->
-                    <div class="selectedItem" ng-show="showSelectedExpertise">
-                        <label for="selected-expertise">Selected Expertise</label>
-                        <input type="checkbox" id="selected-expertise" class="form-check-input me-1" ng-checked="checkedExpertise" ng-click="unselectExpertise()"> <span>{{selectedExpertise}}</span>
-                        <p>kwg-ont:subTopic
-                            <i class="bi bi-chevron-up"></i>
-                        </p>
-                    </div>
-
-                    <!-- part3 -->
-                    <label for="findExpertiseFilter">Find Hazard Filter Search</label>
-                    <input type="text" class="form-control" id="findExpertiseFilter" placeholder="Find a filter">
-
-                    <!-- part4 -->
-                    <ul class="list-group" id="expertise-list">
-
-                        <li ng-repeat="expertiseSupertopicUrl in expertiseSupertopicUrls" ng-show="expertiseTopicShow">
-                            <span><label for="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}">{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}</label><input id="{{getExpertiseLabel(expertiseSupertopicUrl).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1"
-                                    ng-click="selectExpertise($event)" value="{{expertiseSupertopicUrl}}" name="expertiseSuperTopic">{{getExpertiseLabel(expertiseSupertopicUrl)}}</span>
-                        </li>
-                        <li ng-repeat="expertiseSubtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input id="{{getSubtopicLabel(expertiseSubtopic).replaceAll(' ','_');}}" type="checkbox" class="form-check-input me-1" value="{{expertiseSubtopic}}" name="expertiseSubtopic" ng-click="selectSubTopic($event)"> {{getSubtopicLabel(expertiseSubtopic)}}
-                        </li>
-                        <!-- <li ng-repeat="subtopic in expertiseSubtopics" ng-show="expertiseSubtopicShow">
-                            <input type="checkbox" class="form-check-input me-1" value="{{subtopic}}" name="expertiseSubtopic"> {{subtopic}}
-                        </li> -->
+                    <div>Expert Topic(s)</div>
+                    <ul class="list-group checkbox-list" id="expert-list">
+                        <section ng-repeat="expertTopic in expertTopics['topics']">
+                            <li class="ng-binding ng-scope">
+                                <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')"> {{expertTopic['expert_label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic']">
+                                    <input id="{{expertTopic['expert_topic']+'_'+expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert"> {{expertTopic['expert_sublabel'][$index]}}
+                                </li>
+                            </ul>
+                        </section>
                     </ul>
                 </div>
+                <br/>
             </li>
-
-            <li id="datarange-li">
-                <p class="filter-title" id="data-range">Date Range</p>
-                <form class="data-range-form">
-                    <!-- <input type="text" class="form-control mb-1" id="start-year-input" placeholder="Start Year" name="start-year">
-                    <input type="text" class="form-control mb-1" id="end-year-input" placeholder="End Year" name="end-year"> -->
-                    <label for="daterange">Date Range</label>
-                    <input type="text" class="form-control mb-1" id="daterange" name="daterange" value="01/01/2020 - 12/15/2021">
-
-                    <!-- <button type="submit" class="btn btn-primary mb-2" onclick="getData()">Search</button> -->
-                </form>
-            </li>
-
-
         </ul>
     </div>
     <div class="results" ng-controller="results-controller">
         <div class="results-container">
             <div class="results-count">
-                <p id="ttl-results"><span>{{totalResultsNumber}}</span>Results</p>
+                <p id="ttl-results"></p>
                 <p id="sort-by">Sort By <i class="bi bi-chevron-down"></i></p>
-                <p id="cnfg-tb">Configure Table Columns</p>
             </div>
             <div class="results-nav">
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
 
                     <li class="nav-item" role="presentation" ng-show="showPlaceTab">
                         <button class="btn active" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
-                            <span><img src="../images/Place.svg" alt=""> Place</span>
+                            <span><img src="../images/place.svg" alt=""> Place</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showHazardTab">
@@ -225,25 +238,6 @@
                     </div>
 
                 </div>
-                <!-- <div class="rlts-pagination" ng-controller="pagination-controller as vm">
-                    <div class="per-page"><span>12</span> Per Page
-                        <i class="bi bi-chevron-down"></i>
-                            </div>
-
-
-                            <ul class="pagination">
-                                <li class="page-item active" ng-click="clickPage(1)"><a class="pg-link">1</a></li>
-                                <li class="page-item" ng-click="clickPage(2)"><a class="pg-link">2</a></li>
-                                <li class="page-item" ng-click="clickPage(3)"><a class="pg-link">3</a></li>
-                                <li class="page-item" ng-click="clickPage(4)"><a class="pg-link">4</a></li>
-                                <li class="page-item" ng-click="clickPage(5)"><a class="pg-link">5</a></li>
-                                <li class="page-item"><a class="pg-link">...</a></li>
-                                <li class="page-item" ng-click="clickPage(7)"><a class="pg-link">310</a></li>
-                                <li><button id="nxt-pg">Next</button></li>
-                            </ul>
-
-
-                    </div> -->
 
             </div>
         </div>

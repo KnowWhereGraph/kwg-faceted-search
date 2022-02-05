@@ -20,13 +20,15 @@
     <link rel="stylesheet" href="css/spatial_search.css">
 
     <!-- JQuery -->
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 
     <!-- Angular.js-->
-    <!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script> -->
-    <!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script> -->
-    <script src="//cdn.bootcss.com/angular.js/1.5.8/angular.min.js"></script>
-    <script src="//cdn.bootcss.com/angular.js/1.5.8/angular-route.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.js"></script>
+    <!-- <script src="//cdn.bootcss.com/angular.js/1.5.8/angular.min.js"></script> -->
+    <!-- <script src="//cdn.bootcss.com/angular.js/1.5.8/angular-route.js"></script> -->
     <script src="https://cdn.staticfile.org/angular.js/1.5.0-beta.0/angular-sanitize.min.js"></script>
     <script data-require="angular-ui-router@0.2.10" data-semver="0.2.10" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
     <script data-require="angular-breadcrumb" src="https://rawgit.com/collabo-br/angular-breadcrumb/develop/dist/angular-breadcrumb.js"></script>
@@ -70,6 +72,7 @@
     <!-- <script src="js/eventListeners.js"></script> -->
     <!-- <script src="js/results_filters.js"></script> -->
     <script src="js/results_search.js"></script>
+    <script src="js/explore.js"></script>
     <script src="js/home.js"></script>
 
 </head>
@@ -82,65 +85,53 @@
             <a id="knowwheregraph" href="#/"><img src="images/kwg-icon.png" alt="KnowWhereGraph" id="knowwheregraph-icon"></a>
 
             <div class="right" id="menuToggle">
-              <label for="hamburger">Mobile Menu</label>
-              <input type="checkbox" name="hamburger" id="hamburger"/>
-              <span></span>
-              <span></span>
-              <span></span>
-            <ul class="nav" id="menu">
-                <li class="nav-item">
-                    <a href="#/about">
-                        <p class="item">About</p>
-                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#/explore">
-                        <p class="item">Explore</p>
-                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="" id="navbarDropdown">
-                        <p class="item">Search</p>
-                        <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                    </a>
+                <label for="hamburger">Mobile Menu</label>
+                <input type="checkbox" name="hamburger" id="hamburger" />
+                <span></span>
+                <span></span>
+                <span></span>
+                <ul class="nav" id="menu">
+                    <li class="nav-item">
+                        <a href="#/about">
+                            <p class="item">About</p>
+                            <!--                        <img src="images/dropdown.svg" alt="" class="dropdown-img">-->
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#/explore">
+                            <p class="item">Explore</p>
+                            <!--                        <img src="images/dropdown.svg" alt="" class="dropdown-img">-->
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#/result_search?tab=hazard" id="navbarDropdown">
+                            <p class="item">Search</p>
+                            <!--                        <img src="images/dropdown.svg" alt="" class="dropdown-img">-->
+                        </a>
 
-                    <div class="search-dropdown-input" id="search-dropdown">
-                        <div class="input-group mb-3">
-                            <form action="#/results_filters">
-                                <label for="input-query">Nav Search</label>
-                                <input id="input-query" type="text" class="form-control" placeholder="Enter your query">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit">Search</button>
-                                </div>
-                            </form>
-                        </div>
+                        <!--                    <div class="search-dropdown-input" id="search-dropdown">-->
+                        <!--                        <div class="input-group mb-3">-->
+                        <!--                            <form action="#/results_filters">-->
+                        <!--                                <label for="input-query">Nav Search</label>-->
+                        <!--                                <input id="input-query" type="text" class="form-control" placeholder="Enter your query">-->
+                        <!--                                <div class="input-group-append">-->
+                        <!--                                    <button class="btn btn-outline-secondary" type="submit">Search</button>-->
+                        <!--                                </div>-->
+                        <!--                            </form>-->
+                        <!--                        </div>-->
 
-                        <div class="spatial-search">
-                            <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">
-                            <div>
-                                <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
-                            </div>
-                        </button>
-                        </div>
-                    </div>
+                        <!--                        <div class="spatial-search">-->
+                        <!--                            <button id="spatial-query" type="button" class="btn btn-primary" data-toggle="button">-->
+                        <!--                            <div>-->
+                        <!--                                <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>-->
+                        <!--                            </div>-->
+                        <!--                        </button>-->
+                        <!--                        </div>-->
+                        <!--                    </div>-->
 
-                </li>
-                <li class="nav-item">
-                  <a href="#">
-                    <p class="item">Tools</p>
-                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#">
-                    <p class="item">Contact</p>
-                    <img src="images/dropdown.svg" alt="" class="dropdown-img">
-                  </a>
-                </li>
-            </ul>
-          </div>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <!-- <div class="nav-path"> -->

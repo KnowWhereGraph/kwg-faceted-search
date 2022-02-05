@@ -22,7 +22,7 @@ main#faceted-spatial-search {
 
 .spatial-search .left-filters {
     width: 300px;
-    height: 100%;
+    /* height: 100%; */
     background-color: #D8D8DD;
     box-shadow: 10px 0 64px 0 rgba(0, 0, 0, 0.05);
 }
@@ -183,9 +183,8 @@ ul.filters li p i {
 
 /* 1. height for each module (expertise/place/hazard) */
 
-ul.filters li ul#expertise-list,
-ul.filters li ul#hazard-list {
-    height: 300px;
+ul.filters li ul.checkbox-list {
+    max-height: 300px;
     overflow-y: auto;
 }
 
@@ -232,6 +231,10 @@ ul.filters div.filter div.selectedItem span {
 ul.filters .filter div.selectedItem p {
     margin-top: 20px;
     margin-bottom: 16px;
+}
+
+.list-group-indented {
+    margin-left: 20px;
 }
 
 
@@ -395,13 +398,10 @@ p#cnfg-tb {
 }
 
 p#sort-by {
-  display: none;
+    display: none;
 }
 
-
-p#cnfg-tb {
-
-}
+p#cnfg-tb {}
 
 
 /* 2. Navigation */
@@ -609,11 +609,11 @@ table.table-filters tbody tr:nth-child(even) {
 }
 
 .paginate button.prev {
-  order: 1;
+    order: 1;
 }
 
 .paginate button.next {
-  order: 3;
+    order: 3;
 }
 
 .paginate .pager {
@@ -684,36 +684,102 @@ table.table-filters tbody tr:nth-child(even) {
     font-size: 18px;
 } */
 
-
 @media only screen and (max-width: 1000px) {
-  .spatial-search .results {
-    width: calc(100% - 300px);
-  }
-
-  .spatial-search .map {
-      width: 90%;
-      margin: 40px auto;
-      height: 500px;
-  }
+    .spatial-search .results {
+        width: calc(100% - 300px);
+    }
+    .spatial-search .map {
+        width: 90%;
+        margin: 40px auto;
+        height: 500px;
+    }
 }
 
 @media only screen and (max-width: 750px) {
-  .spatial-search .results {
-    width: 100%;
-    order: 1;
-  }
+    .spatial-search .results {
+        width: 100%;
+        order: 1;
+    }
+    .spatial-search .map {
+        order: 2;
+    }
+    .spatial-search .left-filters {
+        width: 100%;
+        height: 100%;
+        order: 3;
+    }
+    .left-filters .search-dropdown-input,
+    ul.filters {
+        width: 90%;
+    }
+}
 
-  .spatial-search .map {
-    order: 2;
-  }
 
-  .spatial-search .left-filters {
-      width: 100%;
-      height: 100%;
-      order: 3;
-  }
+/* popup marker styles */
 
-  .left-filters .search-dropdown-input, ul.filters {
-    width: 90%;
-  }
+#popup-query-btn {
+    border-radius: 5px;
+    padding: 1px;
+    border: none;
+}
+
+
+/* add earthquake, people, hurricane, fire, and earthquake icons for the place tab*/
+ul#place-hazard-count{
+    padding: 0px;
+    margin: 0 auto;
+    height: 100%;
+    overflow: auto;
+    text-align: center;
+}
+
+ul#place-hazard-count li{
+    /* float: left;
+    padding-right: 10px;
+    margin: 0 auto; */
+    display: inline-table;
+    margin-right: 25px;
+    position: relative;
+}
+
+ul#place-hazard-count li span{
+    display: inline-block;
+    position: absolute;
+    margin-left: 3px;
+}
+
+/* mouse over these icons and show the tip text */
+ul#place-hazard-count li span.tooltiptext{
+    visibility: visible;
+    width: 100px;
+    height: 50px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    
+    /* position */
+    position: absolute;
+    z-index: 100;
+    bottom: 300%;
+    left: 0;
+    /* margin-left: -50px; */
+}
+
+ul#place-hazard-count li:hover .tooltiptext{
+    visibility: visible;
+}
+
+/****************Still working on it*****************/
+/* autocomplete styles */
+
+.ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
+* html .ui-autocomplete {
+    height: 100px;
 }

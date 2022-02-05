@@ -1,3 +1,4 @@
 dr-app/node_modules
 dr-app/package-lock.json
 .DS_Store
+.idea/

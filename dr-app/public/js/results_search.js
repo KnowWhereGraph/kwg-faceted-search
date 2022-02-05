@@ -1,18 +1,16 @@
-var startDate;
-var endDate;
 var parameters = {};
 
-var expertTitles = ["Name", "Affiliation", "Department", "Expertise", "Place"];
-var placeTitles = ["Name", "Type"];
-var hazardTitles = ["Name", "Type", "Place", "Date"];
+var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
+var placeTitles = ["Name", "Type", "Hazards"];
+var hazardTitles = ["Name", "Type", "Place", "Start Date", "End Date"];
 
 var activeTabName = "";
 var loadedTabs = {};
 
 var place_markers = new L.MarkerClusterGroup();
 var markers = [];
+var clickedMarker = {};
 
-var totalResults = 0;
 var resultsSearchMap = null;
 
 //For URL variable tracking
@@ -72,76 +70,87 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     }
 
     // Show expertise, place, and hazard menu in the initial status
-    $scope.showExpertiseList = true;
     $scope.showPlaceList = true;
-    $scope.showHazardList = true;
+    $scope.showHazardList = false;
+    $scope.showExpertiseList = false;
 
     // show expertise, place, and hazard tab
     $scope.showPeopleTab = true;
     $scope.showPlaceTab = true;
     $scope.showHazardTab = true;
 
-    $scope.inputQuery = (urlVariables['keyword']!=null && urlVariables['keyword']!='') ? urlVariables['keyword'] : '';
+    //facet hazards
+    $scope.earthquakeFacets = true;
+    $scope.fireFacets = true;
 
-    // 1. Initialization: Display the expertise super topics, places, and hazard
-    getFilters().then(function(data) {
-        console.log("Data is loaded: ", data);
+    //Set the keyword value
+    $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
 
-        // initialize the place
-        $scope.placeSupertopicUrls = Object.keys(data['Place']);
-        $scope.getPlaceLabel = function(placeSupertopicUrl) {
-            return data['Place'][placeSupertopicUrl];
-        };
+    //Set place facet values
+    $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
+    $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
+    $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
+    $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
-        // initialize the hazard
-        $scope.hazardUrls = Object.keys(data['Hazard']);
-        $scope.getHazardLabel = function(hazardUrl) {
-            return data['Hazard'][hazardUrl];
-        };
-
-        // initialize the expertise super topics
-        $scope.expertiseSupertopicUrls = Object.keys(data['Expertise']);
-        $scope.getExpertiseLabel = function(expertiseSupertopicUrl) {
-            return data['Expertise'][expertiseSupertopicUrl];
-        };
-        $scope.expertiseTopicShow = true;
-
+    //Populate hazard class types and set values
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+        $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
+        $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
+    getHazardClasses().then(function(data) {
+        $scope.hazardUrls = data;
         $scope.$apply();
-
-        if (urlVariables['place'] != null && urlVariables['place'] != '') {
+    }).then(function() {
+        if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
             $timeout(function() {
-                selectedPlaces = urlVariables['place'].split(',');
-                for (var i = 0; i < selectedPlaces.length; i++) {
-                    angular.element("#" + selectedPlaces[i].replaceAll(' ', '_')).click();
+                let hazArr = urlVariables['hazard'].split(',');
+                for (let i = 0; i < hazArr.length; i++) {
+                    angular.element("#" + hazArr[i]).click();
                 }
             });
         }
+    });
+    $scope.hazardFacetMagnitudeMin = (urlVariables['mag-min'] != null && !isNaN(urlVariables['mag-min'])) ? Number.parseInt(urlVariables['mag-min']) : '';
+    $scope.hazardFacetMagnitudeMax = (urlVariables['mag-max'] != null && !isNaN(urlVariables['mag-max'])) ? Number.parseInt(urlVariables['mag-max']) : '';
+    $scope.hazardQuakeDepthMin = (urlVariables['depth-min'] != null && !isNaN(urlVariables['depth-min'])) ? Number.parseInt(urlVariables['depth-min']) : '';
+    $scope.hazardQuakeDepthMax = (urlVariables['depth-max'] != null && !isNaN(urlVariables['depth-max'])) ? Number.parseInt(urlVariables['depth-max']) : '';
+    $scope.hazardFacetAcresBurnedMin = (urlVariables['acres-min'] != null && !isNaN(urlVariables['acres-min'])) ? Number.parseInt(urlVariables['acres-min']) : '';
+    $scope.hazardFacetAcresBurnedMax = (urlVariables['acres-max'] != null && !isNaN(urlVariables['acres-max'])) ? Number.parseInt(urlVariables['acres-max']) : '';
+    $scope.hazardFacetMeanDnbrMin = (urlVariables['dnbr-min'] != null && !isNaN(urlVariables['dnbr-min'])) ? Number.parseInt(urlVariables['dnbr-min']) : '';
+    $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max'] != null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
+    $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min'] != null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
+    $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max'] != null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
 
-        if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
+    //Populate expert topics and set values
+    getExpertTopics().then(function(data) {
+        $scope.expertTopics = data;
+        $scope.$apply();
+    }).then(function() {
+        if ((urlVariables['expert'] != null && urlVariables['expert'] != '')) {
             $timeout(function() {
-                selectedHazards = urlVariables['hazard'].split(',');
-                for (var i = 0; i < selectedHazards.length; i++) {
-                    angular.element("#" + selectedHazards[i].replaceAll(' ', '_')).click();
+                let expertArr = urlVariables['expert'].split(',');
+                for (let i = 0; i < expertArr.length; i++) {
+                    angular.element("#" + expertArr[i]).click();
                 }
-            });
-        }
-
-        if (urlVariables['group'] != null && urlVariables['group'] != '') {
-            $timeout(function() {
-                angular.element("#" + urlVariables['group'].replaceAll(' ', '_')).click();
             });
         }
     });
 
-    // data range initialization
-    $('input[name="daterange"]').daterangepicker({
-        opens: "right"
-    }, function(start, end, label) {
-        startDate = start.format('YYYY-MM-DD');
-        endDate = end.format('YYYY-MM-DD');
+    getAdministrativeRegion().then(function(data) {
+        $scope.administrativeRegions = data;
+        $scope.$apply();
+    }).then(function() {
+        if ((urlVariables['regions'] != null && urlVariables['regions'] != '')) {
+            $timeout(function() {
+                let expertArr = urlVariables['regions'].split(',');
+                for (let i = 0; i < expertArr.length; i++) {
+                    angular.element("#" + expertArr[i]).click();
+                }
+            });
+        }
     });
 
-    // entire graph intialization
+    // entire graph initialization
     init();
 
     $scope.onKeywordChange = function() {
@@ -150,219 +159,97 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     $scope.keywordSubmit = function($event) {
         var keyword = $scope.inputQuery;
-        if(keyword != '')
+        if (keyword != '')
             $scope.updateURLParameters('keyword', keyword);
         else
             $scope.removeValue('keyword');
 
         var parameters = getParameters();
-        var tabName = (urlVariables['tab']!=null && urlVariables['tab']!='') ? urlVariables['tab'] : 'place';
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-        var pp = (urlVariables['pp']!=null && urlVariables['pp']!='') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page']!=null && urlVariables['page']!='') ? parseInt(urlVariables['page']) : 1;
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         var selectors = displayTableByTabName(activeTabName, response);
-        response.then(function(e) {
-            var key = Object.keys(e)[0];
-            var val = e[key];
-            val.then(function(result) {
-                var countResults = result["count"];
-                displayPagination(activeTabName, selectors, countResults, parameters);
-            });
 
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }
-
-    // 2. select options of expertise, hide hazard
-    var selectedElement = null;
-
-    // 2.1. Select expertise and expand the subtopics
-    $scope.expertiseTopicShow = true; // show the super topics
-    $scope.expertiseSubtopicShow = false; // hide the subtopics
-    $scope.showSelectedExpertise = false; // hide the current selected supertopic
-    $scope.selectExpertise = function($event) {
-        // hide the hazard tab and hazard list
-        $scope.showHazardList = !$scope.showHazardList;
-        $scope.showHazardTab = !$scope.showHazardTab;
-        // hide the supertopic list and show the subtopic list
-        $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
-        $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
-        // display the corresponding subtopics
-        selectedElement = $event.target;
-        var currentElement = $event.target.parentNode;
-        var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        $scope.selectedExpertise = topicStr;
-        $scope.showSelectedExpertise = true;
-        $scope.checkedExpertise = true;
-
-        $scope.updateURLParameters('group', topicStr);
-
-        var addedHeight = 50;
-        angular.element(".spatial-search").height(function(n, c) {
-            return c + addedHeight;
-        });
-
-        var selectedTopicUrl = $event.target.value;
-        var subtopics = getSubTopic(selectedTopicUrl);
-        var expertiseSubtopics = null;
-        subtopics.then(function(e) {
-            expertiseSubtopics = e;
-        }).then(function() {
-            $scope.expertiseSubtopics = expertiseSubtopics;
-        }).then(function() {
-            $scope.$apply();
-
-            if (urlVariables['topic'] != null && urlVariables['topic'] != '') {
-                $timeout(function() {
-                    selectedTopics = urlVariables['topic'].split(',');
-                    for (var i = 0; i < selectedTopics.length; i++) {
-                        angular.element("#" + selectedTopics[i].replaceAll(' ', '_')).click();
-                    }
-                });
-            }
-        })
-
-        // $timeout(function() {
-        //     $scope.expertiseSubtopics = expertiseSubtopics;
-        // }, 100);
-        $scope.getSubtopicLabel = function(expertiseSubtopic) {
-            return expertiseSubtopic.topic_label;
-        };
-    };
-    $scope.unselectExpertise = function($event) {
-        $scope.showHazardList = !$scope.showHazardList;
-        $scope.showHazardTab = !$scope.showHazardTab;
-        // set the selected topic invisible
-        $scope.showSelectedExpertise = false;
-        $scope.checkedExpertise = false;
-        // come back to the previous display
-        $scope.expertiseTopicShow = !$scope.expertiseTopicShow;
-        $scope.expertiseSubtopicShow = !$scope.expertiseSubtopicShow;
-
-        $scope.removeValue('group');
-        $scope.removeValue('topic');
-
-        selectedElement.checked = false;
-        selectedElement = null;
-
-        var decreasedHeight = 50;
-        angular.element(".spatial-search").height(function(n, c) {
-            return c - decreasedHeight;
-        });
-    };
-
-    // 2.2. select options of hazard, hide expertise
-    $scope.selectHazard = function($event) {
-        var checkedItems = angular.element("ul#hazard-list li input:checked");
-        if (checkedItems.length) {
-            $scope.showExpertiseList = false;
-            $scope.showPeopleTab = false;
-        } else {
-            $scope.showExpertiseList = true;
-            $scope.showPeopleTab = true;
-        }
-
-        var currentElement = $event.target.parentNode;
-        var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
-            $scope.updateURLParameters('hazard', topicStr, true);
-        else
-            $scope.removeSingleValue('hazard', topicStr);
-
-        // select hazard and interact with the backend, search for it
-        displayActiveTab();
-
-    };
-
-    // 3. Interaction with the backend
-    // 3.1 select subtopic of the expertise, search for it
-    $scope.selectSubTopic = function($event) {
-        var currentElement = $event.target.parentNode;
-        var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
-            $scope.updateURLParameters('topic', topicStr, true);
-        else
-            $scope.removeSingleValue('topic', topicStr);
-
-        displayActiveTab();
-    };
-
-    // 3.2 select place, search for it
-    $scope.selectPlaceSupertopic = function($event) {
-        var currentElement = $event.target.parentNode;
-        var topicStr = currentElement.innerHTML.split(">")[1].trim();
-        if (angular.element("#" + topicStr.replaceAll(' ', '_') + ":checked").length)
-            $scope.updateURLParameters('place', topicStr, true);
-        else
-            $scope.removeSingleValue('place', topicStr);
-
-        displayActiveTab();
-    };
 
     // 4. click on tab
     $scope.clickTab = function($event) {
         var newActiveTabName = "";
         var urlUpdateTab = "";
+        $scope.showPlaceList = false;
+        $scope.showHazardList = false;
+        $scope.showExpertiseList = false;
+
+        //We have to look in two places cause the ng-click function may set the target to a child node rather than the
+        //node it actually belongs to. Why? Who the heck knows.
         var innerHTML = $event.target.innerHTML;
-        if (innerHTML.indexOf("People") != -1) {
+        var currentHTML = $event.currentTarget.innerHTML;
+        if (innerHTML.indexOf("People") != -1 || currentHTML.indexOf("People") != -1) {
+            $scope.showExpertiseList = true;
             urlUpdateTab = "people";
-            newActiveTabName = "Expert";
-        } else if (innerHTML.indexOf("Place") != -1) {
+            newActiveTabName = "People";
+        } else if (innerHTML.indexOf("Place") != -1 || currentHTML.indexOf("Place") != -1) {
+            $scope.showPlaceList = true;
             urlUpdateTab = "place";
             newActiveTabName = "Place";
-        } else if (innerHTML.indexOf("Hazard") != -1) {
+        } else if (innerHTML.indexOf("Hazard") != -1 || currentHTML.indexOf("Hazard") != -1) {
+            $scope.showHazardList = true;
             urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
         }
         $scope.updateURLParameters("tab", urlUpdateTab);
 
-        newParameters = getParameters();
-        activeTabName = newActiveTabName;
+        var parameters = getParameters();
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(newActiveTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(newActiveTabName, response);
 
-        if (JSON.stringify(newParameters) != JSON.stringify(parameters)) {
-            loadedTabs = {};
-            parameters = newParameters;
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(newActiveTabName, selectors, countResults, parameters);
+        });
+    };
 
-            loadedTabs[activeTabName] = true;
+    $scope.selectSubList = function($event, functionName) {
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+        let childListItems = subListDiv.children;
 
-            var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-            var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-            var response = sendQueries(activeTabName, page, pp, parameters);
-            var selectors = displayTableByTabName(activeTabName, response);
-            response.then(function(e) {
-                var key = Object.keys(e)[0];
-                var val = e[key];
-                val.then(function(result) {
-                    var countResults = result["count"];
-                    displayPagination(activeTabName, selectors, countResults, parameters);
-                });
-
-            });
-        } else {
-            // if the parameters are the same, then consider about the tab
-            if (loadedTabs[activeTabName]) {
-                // if the current tab is already loaded
-                displayMap(response, activeTabName);
-
-            } else {
-                var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-                var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-                var response = sendQueries(activeTabName, page, pp, parameters);
-                var selectors = displayTableByTabName(activeTabName, response);
-                response.then(function(e) {
-                    var key = Object.keys(e)[0];
-                    var val = e[key];
-                    val.then(function(result) {
-                        var countResults = result["count"];
-                        displayPagination(activeTabName, selectors, countResults, parameters);
-                    });
-
-                });
-                loadedTabs[activeTabName] = true;
+        if ($event.target.checked) {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
             }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+        } else {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
         }
 
-        displayBreadCrumbs();
+        $scope[functionName]($event);
+    };
+
+    $scope.showSubList = function($event) {
+        let dropdownImg = $event.target;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+
+        if (subListDiv.style["display"] == "") {
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
+        } else {
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+        }
     };
 
     //Select tab based on url value
@@ -382,8 +269,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 drawMarker: false,
                 drawCircleMarker: false,
                 drawPolyline: false,
-                drawRectangle: true,
-                drawPolygon: true,
+                drawRectangle: false,
+                drawPolygon: false,
                 drawCircle: true,
 
                 drawControls: true,
@@ -393,8 +280,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             });
 
             resultsSearchMap.on("pm:create", (e) => {
-                console.log("the shape is drawn/finished");
-                console.log(e.shape);
                 var coordinates;
                 var radius;
 
@@ -404,21 +289,276 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
                     radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
                 }
-
-                console.log("coordinates: ", coordinates);
-                console.log("radius: ", radius);
-
             });
         }
     };
 
+    //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
+    $scope.placeFacetChanged = function() {
+        var parameters = getParameters();
+
+        if (parameters['placeFacetsRegion'] != '')
+            $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
+        else
+            $scope.removeValue('region');
+        if (parameters['placeFacetsZip'] != '')
+            $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
+        else
+            $scope.removeValue('zip');
+        if (parameters['placeFacetsUSCD'] != '')
+            $scope.updateURLParameters('uscd', parameters['placeFacetsUSCD']);
+        else
+            $scope.removeValue('uscd');
+        if (parameters['placeFacetsNWZ'] != '')
+            $scope.updateURLParameters('nwz', parameters['placeFacetsNWZ']);
+        else
+            $scope.removeValue('nwz');
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
+    $scope.hazardFacetChanged = function() {
+        var parameters = getParameters();
+
+        if (parameters['hazardFacetDateStart'] != '')
+            $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
+        else
+            $scope.removeValue('date-start');
+        if (parameters['hazardFacetDateEnd'] != '')
+            $scope.updateURLParameters('date-end', parameters['hazardFacetDateEnd']);
+        else
+            $scope.removeValue('date-end');
+        if (parameters['hazardFacetMagnitudeMin'] != '')
+            $scope.updateURLParameters('mag-min', parameters['hazardFacetMagnitudeMin']);
+        else
+            $scope.removeValue('mag-min');
+        if (parameters['hazardFacetMagnitudeMax'] != '')
+            $scope.updateURLParameters('mag-max', parameters['hazardFacetMagnitudeMax']);
+        else
+            $scope.removeValue('mag-max');
+        if (parameters['hazardQuakeDepthMin'] != '')
+            $scope.updateURLParameters('depth-min', parameters['hazardQuakeDepthMin']);
+        else
+            $scope.removeValue('depth-min');
+        if (parameters['hazardQuakeDepthMax'] != '')
+            $scope.updateURLParameters('depth-max', parameters['hazardQuakeDepthMax']);
+        else
+            $scope.removeValue('depth-max');
+        if (parameters['hazardFacetAcresBurnedMin'] != '')
+            $scope.updateURLParameters('acres-min', parameters['hazardFacetAcresBurnedMin']);
+        else
+            $scope.removeValue('acres-min');
+        if (parameters['hazardFacetAcresBurnedMax'] != '')
+            $scope.updateURLParameters('acres-max', parameters['hazardFacetAcresBurnedMax']);
+        else
+            $scope.removeValue('acres-max');
+        if (parameters['hazardFacetMeanDnbrMin'] != '')
+            $scope.updateURLParameters('dnbr-min', parameters['hazardFacetMeanDnbrMin']);
+        else
+            $scope.removeValue('dnbr-min');
+        if (parameters['hazardFacetMeanDnbrMax'] != '')
+            $scope.updateURLParameters('dnbr-max', parameters['hazardFacetMeanDnbrMax']);
+        else
+            $scope.removeValue('dnbr-max');
+        if (parameters['hazardFacetSDMeanDnbrMin'] != '')
+            $scope.updateURLParameters('stddev-dnbr-min', parameters['hazardFacetSDMeanDnbrMin']);
+        else
+            $scope.removeValue('stddev-dnbr-min');
+        if (parameters['hazardFacetSDMeanDnbrMax'] != '')
+            $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
+        else
+            $scope.removeValue('stddev-dnbr-max');
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'hazard';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
+    $scope.selectHazard = function($event) {
+        var parameters = getParameters();
+
+        if (parameters['hazardTypes'].length > 0) {
+            $scope.earthquakeFacets = false;
+            $scope.fireFacets = false;
+
+            for (let i = 0; i < parameters['hazardTypes'].length; i++) {
+                let hazType = parameters['hazardTypes'][i];
+
+                if (hazType.includes('Earthquake'))
+                    $scope.earthquakeFacets = true;
+
+                if (hazType.includes('fire') || hazType.includes('Fire'))
+                    $scope.fireFacets = true;
+            }
+
+            $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
+        } else {
+            $scope.earthquakeFacets = true;
+            $scope.fireFacets = true;
+            $scope.removeValue('hazard');
+        }
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'hazard';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
+    $scope.expertFacetChanged = function() {
+        var parameters = getParameters();
+
+        //EXAMPLE:
+        // if(parameters['expertFacetsZip']!='')
+        //     $scope.updateURLParameters('expert-zip', parameters['expertFacetsZip']);
+        // else
+        //     $scope.removeValue('expert-zip');
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
+    $scope.selectTopic = function() {
+        var parameters = getParameters();
+
+        if (parameters['expertTopics'].length > 0)
+            $scope.updateURLParameters('expert', parameters['expertTopics'].join(','));
+        else
+            $scope.removeValue('expert');
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+
+    $scope.selectRegion = function() {
+        var parameters = getParameters();
+
+        if (parameters["facetRegions"].length > 0)
+            $scope.updateURLParameters('regions', parameters['facetRegions'].join(','));
+        else
+            $scope.removeValue('regions');
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        var selectors = displayTableByTabName(activeTabName, response);
+
+        response.then(function(result) {
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+        });
+    };
+}).directive('ngEnter', function() {
+    return function(scope, elem, attrs) {
+        elem.bind("keydown keypress", function(event) {
+            // 13 represents enter button
+            if (event.which === 13) {
+                scope.$apply(function() {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
 });
 
-kwgApp.controller("filters-controller", function($scope) {});
+kwgApp.controller("filters-controller", function($scope) {
+    $scope.message = "filters-controller";
+});
 
 kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
+
+kwgApp.directive('autocomplete', function() {
+    return {
+        restrict: 'A',
+        require : 'ngModel',
+        link : function (scope, element, attrs, ngModelCtrl) {
+            getZipCodeArea().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['zipcodes']),
+                      select:function (event,ui) {
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getUSClimateDivision().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['divisions']),
+                      select:function (event,ui) {
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+            getNWZone().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0])
+                {
+                  element.autocomplete({
+                      source: Object.keys(data['nwzones']),
+                      select:function (event,ui) {
+                          ngModelCtrl.$setViewValue(ui.item);
+                          scope.$apply();
+                      }
+                    });
+                }
+            });
+        }
+    }
+});
 
 var init = function() {
     setTimeout(() => {
@@ -442,65 +582,74 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
-    var keyword = "";
-    var expertiseTopics = [];
-    var expertiseSubtopics = [];
-    var places = [];
-    var hazards = [];
+    var parameters = { "keyword": getScope().inputQuery };
+    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
-    keyword = getScope().inputQuery;
-    angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSuperTopic']:checked").each((index, supertopics) => {
-        expertiseTopics.push(supertopics.value);
-    });
-    angular.element("li#expertise ul.list-group input:checkbox[name='expertiseSubtopic']:checked").each((index, subtopics) => {
-        expertiseSubtopics.push(JSON.parse(subtopics.value).topic);
-    });
-    angular.element("li#place ul.list-group input:checkbox[name='placeTopic']:checked").each((index, place) => {
-        places.push(place.value);
-    });
-    angular.element("li#hazard ul.list-group input:checkbox[name='hazard']:checked").each((index, hazard) => {
-        hazards.push(hazard.value);
-    });
-
-
-    if (!startDate) {
-        startDate = "2020-01-01";
+    //Place facets
+    parameters["placeFacetsRegion"] = angular.element("#placeFacetsRegion")[0].value;
+    switch(tabName) {
+        case 'place':
+            parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
+            parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
+            parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
+            break;
+        case 'hazard':
+            parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
+            parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
+            parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
+            break;
     }
-    if (!endDate) {
-        endDate = "2021-12-25";
-    }
-    var start_year = startDate.split("-")[0];
-    var start_month = startDate.split("-")[1];
-    var start_date = startDate.split("-")[2];
+    //Hazard facets
+    parameters["hazardFacetDateStart"] = angular.element("#hazardFacetDateStart")[0].value;
+    parameters["hazardFacetDateEnd"] = angular.element("#hazardFacetDateEnd")[0].value;
+    let hazardTypes = [];
+    angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
+        hazardTypes.push(hazard.value);
+    });
+    parameters["hazardTypes"] = hazardTypes;
+    parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
+    parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
+    parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
+    parameters["hazardQuakeDepthMax"] = angular.element("#hazardQuakeDepthMax")[0].value;
+    parameters["hazardFacetAcresBurnedMin"] = angular.element("#hazardFacetAcresBurnedMin")[0].value;
+    parameters["hazardFacetAcresBurnedMax"] = angular.element("#hazardFacetAcresBurnedMax")[0].value;
+    parameters["hazardFacetMeanDnbrMin"] = angular.element("#hazardFacetMeanDnbrMin")[0].value;
+    parameters["hazardFacetMeanDnbrMax"] = angular.element("#hazardFacetMeanDnbrMax")[0].value;
+    parameters["hazardFacetSDMeanDnbrMin"] = angular.element("#hazardFacetSDMeanDnbrMin")[0].value;
+    parameters["hazardFacetSDMeanDnbrMax"] = angular.element("#hazardFacetSDMeanDnbrMax")[0].value;
 
-    var end_year = endDate.split("-")[0];
-    var end_month = endDate.split("-")[1];
-    var end_date = endDate.split("-")[2];
+    //People facets
+    let expertTopics = [];
+    angular.element("input:checkbox[name='expert']:checked").each((index, expert) => {
+        expertTopics.push(expert.value);
+    });
+    parameters["expertTopics"] = expertTopics;
 
-    return {
-        "keyword": keyword,
-        "expertiseTopics": expertiseTopics,
-        "expertiseSubtopics": expertiseSubtopics,
-        "places": places,
-        "hazards": hazards,
-        "start_year": start_year,
-        "start_month": start_month,
-        "start_date": start_date,
-        "end_year": end_year,
-        "end_month": end_month,
-        "end_date": end_date
-    };
+    //Place sub facets
+    let facetRegions = [];
+    angular.element("input:checkbox[name='region']:checked").each((index, facetRegion) => {
+        facetRegions.push(facetRegion.value);
+    });
+    parameters["facetRegions"] = facetRegions;
 
+    return parameters;
 };
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
-    var response = getFullTextSearchResult(tabName, pageNum, recordNum,
-        parameters["keyword"],
-        parameters["expertiseTopics"], parameters["expertiseSubtopics"],
-        parameters["places"], parameters["hazards"],
-        parameters["start_year"], parameters["start_month"], parameters["start_date"],
-        parameters["end_year"], parameters["end_month"], parameters["end_date"]);
-    return response;
+    angular.element("#ttl-results").html('Loading query...');
+    switch (tabName) {
+        case "Place":
+            angular.element("#placeTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
+            return getPlaceSearchResults(pageNum, recordNum, parameters);
+        case "Hazard":
+            angular.element("#hazardTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
+            return getHazardSearchResults(pageNum, recordNum, parameters);
+        case "People":
+            angular.element("#expertTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
+            return getExpertSearchResults(pageNum, recordNum, parameters);
+        default:
+            return {};
+    }
 }
 
 var displayBreadCrumbs = function() {
@@ -512,36 +661,107 @@ var displayBreadCrumbs = function() {
     bcURL += 'tab=' + tab;
     bcHTML += '<li><a href="' + bcURL + '">' + tabCap + '</a></li>';
 
+    if (urlVariables['keyword'] != null && urlVariables['keyword'] != '') {
+        mainUrl = bcURL + '&keyword=' + urlVariables['keyword'];
+        bcHTML += '<li><a href="' + mainUrl + '">Keyword: ' + urlVariables['keyword'] + '</a></li>';
+    }
+
     switch (tab) {
         case "place":
-            if (urlVariables['place'] != null && urlVariables['place'] != '') {
-                var places = urlVariables['place'].split(',');
-                for (var i = 0; i < places.length; i++) {
-                    placeUrl = bcURL += '&place=' + places[i];
-                    bcHTML += '<li><a href="' + placeUrl + '">' + places[i] + '</a></li>';
-                }
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                placeUrl = bcURL + '&region=' + urlVariables['region'];
+                bcHTML += '<li><a href="' + placeUrl + '">Administrative Region: ' + urlVariables['region'] + '</a></li>';
+            }
+            if (urlVariables['zip'] != null && urlVariables['zip'] != '') {
+                placeUrl = bcURL + '&zip=' + urlVariables['zip'];
+                bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
+            }
+            if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
+                placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
+                bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
+            }
+            if (urlVariables['nwz'] != null && urlVariables['nwz'] != '') {
+                placeUrl = bcURL + '&nwz=' + urlVariables['nwz'];
+                bcHTML += '<li><a href="' + placeUrl + '">National Weather Zone: ' + urlVariables['nwz'] + '</a></li>';
             }
             break;
         case "hazard":
+            if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+                placeUrl = bcURL + '&date-start=' + urlVariables['date-start'];
+                bcHTML += '<li><a href="' + placeUrl + '">Date Start: ' + urlVariables['date-start'] + '</a></li>';
+            }
+            if (urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
+                placeUrl = bcURL + '&date-end=' + urlVariables['date-end'];
+                bcHTML += '<li><a href="' + placeUrl + '">Date End: ' + urlVariables['date-end'] + '</a></li>';
+            }
             if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
                 var hazards = urlVariables['hazard'].split(',');
                 for (var j = 0; j < hazards.length; j++) {
-                    hazardUrl = bcURL += '&hazard=' + hazards[j];
+                    hazardUrl = bcURL + '&hazard=' + hazards[j];
                     bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                }
+            }
+            if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
+                placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Magnitude (min): ' + urlVariables['mag-min'] + '</a></li>';
+            }
+            if (urlVariables['mag-max'] != null && urlVariables['mag-max'] != '') {
+                placeUrl = bcURL + '&mag-max=' + urlVariables['mag-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Magnitude (max): ' + urlVariables['mag-max'] + '</a></li>';
+            }
+            if (urlVariables['depth-min'] != null && urlVariables['depth-min'] != '') {
+                placeUrl = bcURL + '&depth-min=' + urlVariables['depth-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (min): ' + urlVariables['depth-min'] + '</a></li>';
+            }
+            if (urlVariables['depth-max'] != null && urlVariables['depth-max'] != '') {
+                placeUrl = bcURL + '&depth-max=' + urlVariables['depth-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Earthquake depth (max): ' + urlVariables['depth-max'] + '</a></li>';
+            }
+            if (urlVariables['acres-min'] != null && urlVariables['acres-min'] != '') {
+                placeUrl = bcURL + '&acres-min=' + urlVariables['acres-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (min): ' + urlVariables['acres-min'] + '</a></li>';
+            }
+            if (urlVariables['acres-max'] != null && urlVariables['acres-max'] != '') {
+                placeUrl = bcURL + '&acres-max=' + urlVariables['acres-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Acres Burned (max): ' + urlVariables['acres-max'] + '</a></li>';
+            }
+            if (urlVariables['dnbr-min'] != null && urlVariables['dnbr-min'] != '') {
+                placeUrl = bcURL + '&dnbr-min=' + urlVariables['dnbr-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (min): ' + urlVariables['dnbr-min'] + '</a></li>';
+            }
+            if (urlVariables['dnbr-max'] != null && urlVariables['dnbr-max'] != '') {
+                placeUrl = bcURL + '&dnbr-max=' + urlVariables['dnbr-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">Mean dNBR (max): ' + urlVariables['dnbr-max'] + '</a></li>';
+            }
+            if (urlVariables['stddev-dnbr-min'] != null && urlVariables['stddev-dnbr-min'] != '') {
+                placeUrl = bcURL + '&stddev-dnbr-min=' + urlVariables['stddev-dnbr-min'];
+                bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (min): ' + urlVariables['stddev-dnbr-min'] + '</a></li>';
+            }
+            if (urlVariables['stddev-dnbr-max'] != null && urlVariables['stddev-dnbr-max'] != '') {
+                placeUrl = bcURL + '&stddev-dnbr-max=' + urlVariables['stddev-dnbr-max'];
+                bcHTML += '<li><a href="' + placeUrl + '">SD of Mean dNBR (max): ' + urlVariables['stddev-dnbr-max'] + '</a></li>';
+            }
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
             }
             break;
         case "people":
-            if (urlVariables['group'] != null && urlVariables['group'] != '') {
-                groupUrl = bcURL += '&group=' + urlVariables['group'];
-                bcHTML += '<li><a href="' + groupUrl + '">' + urlVariables['group'] + '</a></li>';
-
-                if (urlVariables['topic'] != null && urlVariables['topic'] != '') {
-                    var topics = urlVariables['topic'].split(',');
-                    for (var k = 0; k < topics.length; k++) {
-                        topicUrl = groupUrl += '&topic=' + topics[k];
-                        bcHTML += '<li><a href="' + topicUrl + '">' + topics[k] + '</a></li>';
-                    }
+            if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
+                var experts = urlVariables['expert'].split(',');
+                for (var j = 0; j < experts.length; j++) {
+                    expertUrl = bcURL + '&expert=' + experts[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                }
+            }
+            if (urlVariables['region'] != null && urlVariables['region'] != '') {
+                var facetRegions = urlVariables['region'].split(',');
+                for (var j = 0; j < facetRegions.length; j++) {
+                    expertUrl = bcURL + '&region=' + facetRegions[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
             }
             break;
@@ -558,7 +778,7 @@ var displayActiveTab = function() {
     var activeElement = angular.element(".results-table #pills-tabContent div.active");
     var activeElementID = activeElement[0].id;
     if (activeElementID.endsWith("people")) {
-        activeTabName = "Expert";
+        activeTabName = "People";
     } else if (activeElementID.endsWith("place")) {
         activeTabName = "Place";
     } else if (activeElementID.endsWith("hazard")) {
@@ -599,7 +819,7 @@ var displayTableByTabName = function(activeTabName, response) {
     var recordResults = null;
     var titlesDisplayed = [];
 
-    if (activeTabName == "Expert") {
+    if (activeTabName == "People") {
         selectors = {
             "thead": "#expertTableTitle",
             "tbody": "#expertTableBody",
@@ -638,83 +858,90 @@ var displayTableByTabName = function(activeTabName, response) {
         // Table body
         var tableBody = angular.element(selectors["tbody"] + " tbody");
         tableBody.empty();
-        response.then(function(e) {
-            var key = Object.keys(e)[0];
-            var val = e[key];
-            val.then(function(result) {
-                countResults = result["count"];
-                recordResults = result["record"];
 
-                var attributeLinks = [];
-                var tableBodyAttributes = [];
+        response.then(function(result) {
+            angular.element('#loading').remove();
+            countResults = result["count"];
+            recordResults = result["record"];
 
-                recordResults.forEach(e => {
-                    var rowBodyHtml = "";
-                    if (selectors["thead"] == "#expertTableTitle") {
-                        attributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
-                        tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
-                    } else if (selectors["thead"] == "#placeTableTitle") {
-                        attributeLinks = [e["place"], e["place_type"]];
-                        tableBodyAttributes = [e["place_name"], e["place_type_name"]];
-                    } else if (selectors["thead"] == "#hazardTableTitle") {
-                        attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
-                        tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
-                    };
+            var attributeLinks = [];
+            var tableBodyAttributes = [];
 
-                    var numAttributes = attributeLinks.length;
-                    for (var index = 0; index < numAttributes; index++) {
-                        var link = attributeLinks[index];
-                        var attr = tableBodyAttributes[index];
+            showMap(recordResults);
+            recordResults.forEach(e => {
+                var rowBodyHtml = "";
+                if (selectors["thead"] == "#expertTableTitle") {
+                    attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
+                    tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
+                } else if (selectors["thead"] == "#placeTableTitle") {
+                    attributeLinks = [e["place"], e["place_type"]];
+                    tableBodyAttributes = [e["place_name"], e["place_type_name"]];
+                } else if (selectors["thead"] == "#hazardTableTitle") {
+                    attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["start_date_name"], e["end_date_name"]];
+                };
 
-                        var linkArr = Array.from(new Set(link.split(",")));
-                        var attrArr = Array.from(new Set(attr.split(",")));
-                        var cellHtml = "";
-                        if (linkArr.length == attrArr.length) {
-                            for (var i = 0; i < linkArr.length; i++) {
-                                var href = linkArr[i];
-                                var content = attrArr[i];
-                                cellHtml += '<a target="_blank" href="' + href + '">' + content + "</a>";
-                                if (linkArr.length > 1 && i < linkArr.length - 1) {
-                                    cellHtml += "; <br>";
-                                }
-                            }
+                var numAttributes = attributeLinks.length;
+                for (var index = 0; index < numAttributes; index++) {
+                    var link = attributeLinks[index];
+                    var attr = tableBodyAttributes[index];
+                    var cellHtml = '';
+
+                    if (Array.isArray(attr)) {
+                        let linkArray = [];
+
+                        for (let i = 0; i < attr.length; i++) {
+                            linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
                         }
-                        // rowBodyHtml += "<td>" + '<a target="_blank" href="' + link + '">' + attr + "</a></td>";
-                        rowBodyHtml += "<td>" + cellHtml + "</td>";
+
+                        cellHtml = linkArray.join(', ');
+                    } else {
+                        cellHtml = '<a href="' + link + '">' + attr + "</a>";
                     }
 
-                    var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
-                    tableBody.append(rowHtml);
-                })
+                    rowBodyHtml += "<td>" + cellHtml + "</td>";
+                }
 
-            }).then(function() {
+                if (activeTabName == "Place") {
+                    var hazardCellHtml = addHazardsAttrToPlaceTab();
+                    rowBodyHtml += "<td>" + hazardCellHtml + "</td>";
+                }
 
-                // angular.element(selectors["pagination"]).empty();
-                // var perPage = angular.element('<div class="dropdown per-page">\
-                //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
-                //         <option value="50" selected="selected">50 Per Page</option>\
-                //         <option value="100">100 Per Page</option>\
-                //         <option value="200">200 Per Page</option>\
-                //     </select>\
-                // </div>');
-
-                // perPage.appendTo(selectors["pagination"]);
-                // tablePagination(selectors["tbody"], selectors["pagination"], countResults, 50);
-                // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
-                //     var recordsPerpage = angular.element(this).val();
-
-                //     tablePagination(selectors["tbody"], selectors["pagination"], countResults, recordsPerpage);
-                // })
+                var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+                tableBody.append(rowHtml);
             });
 
-            displayMap(val, activeTabName);
+            // showMap(recordResults);
 
+        }).then(function() {
+
+            // angular.element(selectors["pagination"]).empty();
+            // var perPage = angular.element('<div class="dropdown per-page">\
+            //     <select class="dropdown-menu" aria-labelledby="dropdownMenuButton">\
+            //         <option value="50" selected="selected">50 Per Page</option>\
+            //         <option value="100">100 Per Page</option>\
+            //         <option value="200">200 Per Page</option>\
+            //     </select>\
+            // </div>');
+
+            // perPage.appendTo(selectors["pagination"]);
+            // tablePagination(selectors["tbody"], selectors["pagination"], countResults, 50);
+            // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
+            //     var recordsPerpage = angular.element(this).val();
+
+            //     tablePagination(selectors["tbody"], selectors["pagination"], countResults, recordsPerpage);
+            // })
         });
+
+        //displayMap(response, activeTabName);
+
     }
     return selectors;
 };
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
+    angular.element("#ttl-results").html(countResults + ' Records');
+
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
     perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
@@ -752,10 +979,13 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         }
 
         var $pager = angular.element('<div class="pager"></div>');
+        var selectedPage = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         if (numPages <= 10) {
-            for (var page = 0; page < numPages; page++) {
 
-                angular.element('<span class="page-item"></span>').text(page + 1).on('click', {
+            for (var page = 0; page < numPages; page++) {
+                let pageHtml = (page + 1 == selectedPage) ? '<span class="page-item active"></span>' : '<span class="page-item"></span>';
+
+                angular.element(pageHtml).text(page + 1).on('click', {
                     newPage: page
                 }, function(event) {
                     currentPage = event.data['newPage'];
@@ -769,11 +999,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
 
                 }).appendTo($pager).addClass("clickable");
-
             }
         } else {
-            //Build out pagination based on current selected page
-            var selectedPage = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
             //Add the first page, last page, current page, and the closet page numbers to the current page
             var pagesToSelect = [1, selectedPage - 1, selectedPage, selectedPage + 1, numPages];
 
@@ -837,14 +1064,14 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
             }).appendTo(paginationSelector).addClass("clickable next");
         }
 
-        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-        $pager.appendTo(paginationSelector).find('span.page-item').each(function() {
-            if ($(this).text() == page)
-                $(this).addClass("active");
-        });
+        //Add the page numbers to the html
+        $pager.appendTo(paginationSelector);
 
-        //Prev button
-        if (selectedPage > 1) {
+        //Before moving on, make sure that the pagination value actually exists.
+        //If it doesn't, then load the 1st page
+        if (numPages < selectedPage) {
+            angular.element(paginationSelector + ' .page-item').first().click();
+        } else if (selectedPage > 1) { //Prev button
             angular.element('<button></button>').val(selectedPage).text("Prev").on('click', function(event) {
                 var nextPage = parseInt(angular.element(this).val()) - 1;
                 angular.element(this).val(nextPage);
@@ -919,6 +1146,207 @@ function displayMap(fullTextResults, tabName) {
             }
         }
     });
+}
+
+function showMap(recordResults) {
+    // clear all the previous markers on the map
+    if (place_markers) {
+        place_markers.removeLayers(markers);
+        markers = [];
+    }
+
+    var markerIndex = 0;
+    recordResults.forEach(e => {
+        if (e["wkt"]) {
+            var wicket = new Wkt.Wkt();
+            var center_lat = 0;
+            var center_lon = 0;
+            var count = 0;
+
+            var coords = [];
+            var wktString = "";
+            var wktType = "";
+            if (e["wkt"].includes("MULTIPOLYGON")) {
+                wktType = "MULTIPOLYGON";
+            } else if (e["wkt"].includes("POINT")) {
+                wktType = "POINT";
+            } else if (e["wkt"].includes("POLYGON")) {
+                wktType = "POLYGON";
+            }
+            if (wktType) {
+                wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
+                switch (wktType) {
+                    case "POINT":
+                        coords = [wicket.read(e["wkt"]).toJson().coordinates];
+                        break
+                    case "POLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                        break
+                    case "MULTIPOLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                        break
+                }
+            }
+
+            coords.forEach(coord => {
+                count += 1;
+                center_lat += coord[1];
+                center_lon += coord[0];
+            });
+
+            if (count) {
+                center_lat = center_lat / count;
+                center_lon = center_lon / count;
+                // L.circle([center_lat, center_lon], {
+                //     color: "red",
+                //     radius: 10000
+                // }).addTo(resultsSearchMap);
+
+                var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
+                var vals = keys.map(key => {
+                    val = e[key];
+                    key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
+                    return dd("span: " + key.replaceAll("_", " ") + ": " + val);
+                });
+                var concatDDs = function(rslt, e) {
+                    if (rslt.length) {
+                        return rslt.concat(dd("br"), e);
+                    } else {
+                        return [rslt, dd("br"), e];
+                    }
+                };
+                // add range slider
+                markerIndex += 1;
+                var dds = vals.reduce(concatDDs);
+                dds.push(dd("br"));
+                dds.push(dd("b: Please choose the value of the radius (km): "));
+                dds.push(dd("span.radius_value" + ":200"));
+                dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                dds.push(dd("br"));
+                dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
+                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
+
+                // add marker event listener
+                place_marker.on("click", function(ev) {
+                    if (!Object.keys(clickedMarker).length) {
+                        var index = markers.indexOf(ev.sourceTarget);
+                        clickedMarker["index"] = index;
+                        clickedMarker["marker"] = ev.sourceTarget;
+
+                        var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                        clickedMarker["table-element"] = domElement;
+                        clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                        domElement.style.backgroundColor = "pink";
+                    } else {
+                        if (clickedMarker["marker"] != ev.sourceTarget) {
+                            // reset the color on the table
+                            clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+
+                            var index = markers.indexOf(ev.sourceTarget);
+                            clickedMarker["index"] = index;
+                            clickedMarker["marker"] = ev.sourceTarget;
+                            var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                            clickedMarker["table-element"] = domElement;
+                            domElement.style.backgroundColor = "pink";
+                        }
+                    }
+
+                    // at this time, then find the slider in this marker.
+                    addSliderChangeListener(ev.sourceTarget.getLatLng());
+                    addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
+                });
+                // add marker popup remove listener
+                place_marker.getPopup().on("remove", function() {
+                    if (Object.keys(clickedMarker).length) {
+                        clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                        clickedMarker = {};
+                    };
+
+                    // also remove the circle on the layer
+                    if (resultsSearchMap.hasLayer(circles)) {
+                        resultsSearchMap.removeLayer(circles);
+                    }
+                });
+                markers.push(place_marker);
+                place_markers.addLayer(place_marker);
+                resultsSearchMap.addLayer(place_markers);
+            }
+            coords = [];
+        }
+    });
+    // zoom to fit all the markers in the map
+    if (markers.length > 0) {
+        resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
+    }
+}
+
+/**
+ * dynamically display the value of radius
+ */
+let circles;
+var addSliderChangeListener = function(markerCoordinates) {
+    var currentSlider = angular.element(".popup input.radius-range");
+
+    // Circle with default radius
+    var default_radius = 200;
+    angular.element(".radius_value").each((e, v) => {
+        default_radius = v.innerHTML;
+    });
+
+    circles = L.circle([markerCoordinates["lat"], markerCoordinates["lng"]], {
+        color: "red",
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: default_radius * 1000
+    }).addTo(resultsSearchMap);
+
+    currentSlider.on("input", function($event) {
+        var radius = $event.target.value;
+        angular.element(".radius_value").each((e, v) => {
+            v.innerHTML = radius;
+        });
+
+        // draw a circle
+        if (resultsSearchMap.hasLayer(circles)) {
+            resultsSearchMap.removeLayer(circles);
+        }
+
+        circles = L.circle([markerCoordinates["lat"], markerCoordinates["lng"]], {
+            color: "red",
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: radius * 1000
+        }).addTo(resultsSearchMap);
+    });
+}
+
+// after choosing the coordinates, click the button, and collect the parameters for spatial query
+var addPopupQueryButtonClickListener = function(markerCoordinates) {
+    angular.element("#popup-query-btn").on("click", function() {
+        var radius = 200;
+        angular.element("input.radius-range").each((e, v) => { radius = v.value; });
+    })
+
+}
 
 
+// add the icon and count for different hazard types in "Hazard column" in the place tab
+var addHazardsAttrToPlaceTab = function() {
+    var peopleCount = 5;
+    var hurricaneCount = 1;
+    var fireCount = 2;
+    var earthquakeCount = 3;
+
+    var peopleIconSrc = '../images/people-people-icon.svg';
+    var hurricaneIconSrc = "../images/people-hurricane-icon.svg";
+    var fireIconSrc = "../images/people-fire-icon.svg";
+    var earthquakeIconSrc = "../images/people-earthquake-icon.svg";
+
+    var cellHtml = "<ul id='place-hazard-count'>" +
+        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span><span class='tooltiptext'>People</span></li>" +
+        "<li><img src = '" + hurricaneIconSrc + "'></img><span>" + hurricaneCount + "</span></li>" +
+        "<li><img src = '" + fireIconSrc + "'></img><span>" + fireCount + "</span></li>" +
+        "<li><img src = '" + earthquakeIconSrc + "'></img><span>" + earthquakeCount + "</span></li>" +
+        "</ul>";
+    return cellHtml;
 }
