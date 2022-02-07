@@ -308,7 +308,6 @@ async function getUSClimateDivision() {
     return {'divisions':formattedResults};
 }
 
-
 async function getNWZone() {
     let formattedResults = [];
 
@@ -418,8 +417,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let wktQuery= await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {${entityRawValues.join(' ')}} }`);
     let wktResults = {};
     for(let row of wktQuery) {
-        let wktLiteral = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
-        wktResults[row.entity.value] = wktLiteral;
+        wktResults[row.entity.value] = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
     }
 
     for(let i=0; i<formattedResults.length; i++) {
@@ -431,7 +429,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 }
 
 //New search function for hazard in stko-kwg
-async function getHazardSearchResults(pageNum, recordNum, parameters) {
+async function getHazardSearchResultsOld(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     //Keyword search
@@ -656,6 +654,101 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
     return {'count':countResults[0].count.value,'record':formattedResults};
     //return {'count':0,'record':formattedResults};
+}
+
+//New search function for hazard in stko-kwg
+async function getHazardSearchResults(pageNum, recordNum, parameters) {
+    let formattedResults = [];
+
+    let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+
+    //Keyword search
+    if(parameters["keyword"]!="") {
+        hazardQuery +=
+            `
+        ?search a elastic-index:kwg_es_index;
+        elastic:query "${parameters["keyword"]}";
+        elastic:entities ?entity.
+        `;
+    }
+
+    //Filters out the types of hazards
+    let typeQuery = 'values ?type {kwg-ont:EarthquakeEvent kwg-ont:Hurricane kwg-ont:Wildfire kwg-ont:WildlandFireUse kwg-ont:PrescribedFire kwg-ont:UnknownFire}';
+    if(parameters["hazardTypes"].length > 0)
+        typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
+
+    //Build the full query
+    hazardQuery += `
+        {
+            ?entity rdf:type ?type; 
+                rdfs:label ?label;
+                kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
+            ?type rdfs:subClassOf ?superClass;
+                rdfs:label ?typeLabel.
+            values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
+            ${typeQuery}
+        }
+    }`;
+
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let entityRawValues = [];
+    for (let row of queryResults) {
+        let entityArray = row.entity.value.split("/");
+        entityRawValues.push('kwgr:'+entityArray[entityArray.length - 1]);
+        formattedResults.push({
+            'hazard':row.entity.value,
+            'hazard_name':row.label.value,
+            'hazard_type':row.type.value,
+            'hazard_type_name':row.typeLabel.value
+        });
+    }
+
+    let propertyQuery= await query(`
+        select ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
+            values ?entity {${entityRawValues.join(' ')}} 
+            optional
+            {
+                ?entity kwg-ont:locatedIn ?place.
+                ?place rdfs:label ?placeLabel.
+            }
+            optional
+            {
+                ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
+                ?observationCollection sosa:phenomenonTime ?time.
+                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                      time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+            }
+            optional
+            {
+                ?entity geo:hasGeometry/geo:asWKT ?wkt.
+            }
+        }`
+    );
+    let propResults = {};
+    for(let row of propertyQuery) {
+        let place = (typeof row.place  === 'undefined') ? '' : row.place.value;
+        let place_name = (typeof row.placeLabel  === 'undefined') ? '' : row.placeLabel.value;
+        let start_date = (typeof row.time  === 'undefined') ? '' : row.time.value;
+        let start_date_name = (typeof row.startTimeLabel  === 'undefined') ? '' : row.startTimeLabel.value;
+        let end_date = (typeof row.time  === 'undefined') ? '' : row.time.value;
+        let end_date_name = (typeof row.endTimeLabel  === 'undefined') ? '' : row.endTimeLabel.value;
+        let wkt = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
+        propResults[row.entity.value] = {'place':place, 'place_name':place_name, 'start_date':start_date, 'start_date_name':start_date_name,
+            'end_date':end_date, 'end_date_name':end_date_name, 'wkt':wkt}
+    }
+
+    for(let i=0; i<formattedResults.length; i++) {
+        formattedResults[i]['place'] = propResults[formattedResults[i]['hazard']]['place'];
+        formattedResults[i]['place_name'] = propResults[formattedResults[i]['hazard']]['place_name'];
+        formattedResults[i]['start_date'] = propResults[formattedResults[i]['hazard']]['start_date'];
+        formattedResults[i]['start_date_name'] = propResults[formattedResults[i]['hazard']]['start_date_name'];
+        formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
+        formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
+        formattedResults[i]['wkt'] = propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','');
+    }
+
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
+    return {'count':countResults[0].count.value,'record':formattedResults};
 }
 
 async function getHazardClasses() {
