@@ -265,7 +265,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 position: "topleft",
                 positions: {
                     draw: "topleft",
-                    edit: "topright"
+                    edit: "topleft"
                 },
                 drawMarker: false,
                 drawCircleMarker: false,
@@ -275,9 +275,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 drawCircle: true,
 
                 drawControls: true,
-                editControls: false,
+                editControls: true,
                 optionsControls: true,
-                customControls: true
+                customControls: true,
+                cutPolygon: false,
+                rotateMode: false
+
+
+
+
             });
 
             resultsSearchMap.on("pm:create", (e) => {
@@ -524,44 +530,41 @@ kwgApp.controller("spatialmap-controller", function($scope) {});
 kwgApp.directive('autocomplete', function() {
     return {
         restrict: 'A',
-        require : 'ngModel',
-        link : function (scope, element, attrs, ngModelCtrl) {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
             getZipCodeArea().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['zipcodes']),
-                      select:function (event,ui) {
-                        console.log(ui);
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['zipcodes']),
+                        select: function(event, ui) {
+                            console.log(ui);
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getUSClimateDivision().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsZip')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['divisions']),
-                      select:function (event,ui) {
-                        console.log(ui);
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['divisions']),
+                        select: function(event, ui) {
+                            console.log(ui);
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getNWZone().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsZip')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['nwzones']),
-                      select:function (event,ui) {
-                        console.log(ui);
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['nwzones']),
+                        select: function(event, ui) {
+                            console.log(ui);
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
@@ -573,7 +576,7 @@ var init = function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
         // [40, -109.03]
-        resultsSearchMap = L.map('results-search-map').setView([40.895, -100.036667], 5);
+        resultsSearchMap = L.map('results-search-map').setView([33.733464963369975, -96.40718835164839], 3);
         L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
             tileSize: 512,
             zoomOffset: -1,
@@ -939,7 +942,7 @@ var displayTableByTabName = function(activeTabName, response) {
 
                 if (activeTabName == "Place") {
                     var hazardCellHtml = addHazardsAttrToPlaceTab();
-                    rowBodyHtml += "<td>" + hazardCellHtml + "</td>";
+                    rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
                     console.log("here is the Place: ", hazardCellHtml);
                 }
 
@@ -1323,9 +1326,9 @@ function showMap(recordResults) {
         }
     });
     // zoom to fit all the markers in the map
-    if (markers.length > 0) {
-        resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
-    }
+    // if (markers.length > 0) {
+    //     resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
+    // }
 }
 
 /**
@@ -1395,10 +1398,10 @@ var addHazardsAttrToPlaceTab = function() {
     var earthquakeIconSrc = "../images/people-earthquake-icon.svg";
 
     var cellHtml = "<ul id='place-hazard-count'>" +
-        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span><span class='tooltiptext'>People</span></li>" +
+        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span></li>" +
         "<li><img src = '" + hurricaneIconSrc + "'></img><span>" + hurricaneCount + "</span></li>" +
         "<li><img src = '" + fireIconSrc + "'></img><span>" + fireCount + "</span></li>" +
         "<li><img src = '" + earthquakeIconSrc + "'></img><span>" + earthquakeCount + "</span></li>" +
-        "</ul>";
+        "</ul><span class='tooltiptext'>People</span>";
     return cellHtml;
 }
