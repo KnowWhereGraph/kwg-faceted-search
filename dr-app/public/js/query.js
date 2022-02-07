@@ -39,7 +39,7 @@ async function query(srq_query) {
         //credentials: 'include',
         headers: {
             Accept: 'application/sparql-results+json',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            //'Content-Type': 'application/x-www-form-urlencoded',
             //'Authorization': 'Basic ' + btoa(username + ":" + password),
         },
         body: new URLSearchParams([
@@ -332,7 +332,7 @@ async function getNWZone() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select ?label ?type ?typeLabel ?entity ?wkt where {`;
+    let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
@@ -351,19 +351,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
-                ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
-                ?type rdfs:label ?typeLabel
-            }
-            union
-            {
-                ?search a elastic-index:kwg_es_index;
-                elastic:query "${parameters["placeFacetsRegion"]}";
-                elastic:entities ?entity.
-                
-                ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-                ?entity kwg-ont:locatedIn ?a2.
-                ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+                ?entity a ?type; rdfs:label ?label; geo:hasGeometry ?geo.
+                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                 ?type rdfs:label ?typeLabel
             }`);
         }
@@ -373,7 +362,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?entity rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry ?geo.
                 values ?entity {kwgr:` + entity + `}
                 ?type rdfs:label ?typeLabel
             }`);
@@ -384,7 +373,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry ?geo.
                 values ?entity {kwgr:` + entity + `}
                 values ?type {kwg-ont:USClimateDivision}
                 ?type rdfs:label ?typeLabel
@@ -396,7 +385,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             entity = entityArray[entityArray.length - 1];
             typeQueries.push(`
             {
-                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
+                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry ?geo.
                 values ?entity {kwgr:` + entity + `}
                 values ?type {kwg-ont:NWZone}
             }`);
@@ -405,47 +394,36 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     } else {
         placeQuery += `
         {
-            ?entity a kwg-ont:AdministrativeRegion_2; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            ?entity kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+            ?entity a ?type; rdfs:label|kwg-ont:hasZipCode ?label; geo:hasGeometry ?geo.
+            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
             ?type rdfs:label ?typeLabel
-        }
-        union
-        {
-            ?entity a kwg-ont:AdministrativeRegion_3; rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            ?entity kwg-ont:locatedIn ?a2.
-            ?a2 kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
-            ?type rdfs:label ?typeLabel
-        }
-        union
-        {
-            ?entity a kwg-ont:ZipCodeArea; rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            ?type rdfs:label ?typeLabel
-        }
-        union
-        {
-            ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:USClimateDivision}
-            ?type rdfs:label ?typeLabel
-        }
-        union
-        {
-            ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry/geo:asWKT ?wkt.
-            values ?type {kwg-ont:NWZone}
         }`;
     }
 
     placeQuery += `}`;
 
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let entityRawValues = [];
     for (let row of queryResults) {
-        let placeLabel = (typeof row.typeLabel  === 'undefined') ? row.type.value : row.typeLabel.value;
+        let entityArray = row.entity.value.split("/");
+        entityRawValues.push('kwgr:'+entityArray[entityArray.length - 1]);
         formattedResults.push({
             'place':row.entity.value,
             'place_name':row.label.value,
             'place_type':row.type.value,
-            'place_type_name':placeLabel,
-            'wkt':row.wkt.value,
+            'place_type_name':row.typeLabel.value,
         });
+    }
+
+    let wktQuery= await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {${entityRawValues.join(' ')}} }`);
+    let wktResults = {};
+    for(let row of wktQuery) {
+        let wktLiteral = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
+        wktResults[row.entity.value] = wktLiteral;
+    }
+
+    for(let i=0; i<formattedResults.length; i++) {
+        formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
