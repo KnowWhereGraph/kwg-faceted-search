@@ -31,7 +31,7 @@ spatialSearchMap.pm.addControls({
     drawCircle: true,
 
     drawControls: true,
-    editControls: false,
+    editControls: true,
     optionsControls: true,
     customControls: true
 });
