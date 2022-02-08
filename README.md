@@ -1,12 +1,15 @@
-# KWG-Faceted-Search
+# Faceted Search
 
-The web application dr-app is an ongoing faceted search project of KnowWhereGraph.
+## Developing
 
-## Deploying
+### Adding Modular Components
 
-To deploy dr-app run
+New Angular-specific constructs like components, dependencies, tests, etc should be done using the angular cli.
 
-```
-npm install
-npm start
-```
+For example, use `ng generate component xyz` to create a new component instead of manually creating the source files by hand.
+
+The Angular cli has commands for Components, Materials, Tests, and Dependencies.
+
+## Building
+
+To start the project, run `ng serve ` from the `faceted-search` directory.
