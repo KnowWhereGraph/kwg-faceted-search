@@ -316,7 +316,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if(parameters["keyword"]!="") {
         placeQuery +=`
-        ?search a elastic-index:kwg_index_v2;
+        ?search a elastic-index:kwg_es_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -327,7 +327,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         if(parameters["placeFacetsRegion"]!="") {
             typeQueries.push(`
             {
-                ?search a elastic-index:kwg_index_v2;
+                ?search a elastic-index:kwg_es_index;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -337,7 +337,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             union
             {
-                ?search a elastic-index:kwg_index_v2;
+                ?search a elastic-index:kwg_es_index;
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
@@ -441,7 +441,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         hazardQuery +=
         `
-        ?search a elastic-index:kwg_index_v2;
+        ?search a elastic-index:kwg_es_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -814,7 +814,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if(parameters["keyword"]!="") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_index_v2;
+        ?search a elastic-index:kwg_es_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
