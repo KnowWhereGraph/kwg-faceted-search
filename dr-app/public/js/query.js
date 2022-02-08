@@ -429,123 +429,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 }
 
 //New search function for hazard in stko-kwg
-async function getHazardSearchResultsOld(pageNum, recordNum, parameters) {
-
-
-
-
-
-    //This section includes facets specific to each hazard type
-    let magnitudeQuery = '';
-    if(parameters["hazardFacetMagnitudeMin"]!="" || parameters["hazardFacetMagnitudeMax"]!="") {
-        let facetArr = [];
-        if(parameters["hazardFacetMagnitudeMin"]!="")
-            facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["hazardFacetMagnitudeMin"]);
-        if(parameters["hazardFacetMagnitudeMax"]!="")
-            facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
-        magnitudeQuery = `
-            ?observationCollection sosa:hasMember ?magnitudeObj.
-            ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
-            ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
-    }
-
-    let quakeDepthQuery = '';
-    if(parameters["hazardQuakeDepthMin"]!="" || parameters["hazardQuakeDepthMax"]!="") {
-        let facetArr = [];
-        if(parameters["hazardQuakeDepthMin"]!="")
-            facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["hazardQuakeDepthMin"]);
-        if(parameters["hazardQuakeDepthMax"]!="")
-            facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
-        quakeDepthQuery = `
-            ?observationCollection sosa:hasMember ?quakeDepthObj.
-            ?quakeDepthObj sosa:observedProperty kwgr:earthquakeObservableProperty.depth.
-            ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
-    }
-
-    let acresBurnedQuery = '';
-    if(parameters["hazardFacetAcresBurnedMin"]!="" || parameters["hazardFacetAcresBurnedMax"]!="") {
-        let facetArr = [];
-        if(parameters["hazardFacetAcresBurnedMin"]!="")
-            facetArr.push(`?numAcresBurned > ` + parameters["hazardFacetAcresBurnedMin"]);
-        if(parameters["hazardFacetAcresBurnedMax"]!="")
-            facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
-        acresBurnedQuery = `
-            ?observationCollection sosa:hasMember ?numAcresBurnedObj.
-            ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
-            FILTER(contains(?numAcresBurnedObjLabel, 'Observation of Number Of Acres Burned')).
-            ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
-    }
-
-    let meanDnbrQuery = '';
-    if(parameters["hazardFacetMeanDnbrMin"]!="" || parameters["hazardFacetMeanDnbrMax"]!="") {
-        let facetArr = [];
-        if(parameters["hazardFacetMeanDnbrMin"]!="")
-            facetArr.push(`?meanVal > ` + parameters["hazardFacetMeanDnbrMin"]);
-        if(parameters["hazardFacetMeanDnbrMax"]!="")
-            facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
-        meanDnbrQuery = `
-            ?observationCollection sosa:hasMember ?meanValObj.
-            ?meanValObj rdfs:label ?meanValObjLabel
-            FILTER(contains(?meanValObjLabel, 'Observation of Mean dNBR Value')).
-            ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
-    }
-
-    let SDMeanDnbrQuery = '';
-    if(parameters["hazardFacetSDMeanDnbrMin"]!="" || parameters["hazardFacetSDMeanDnbrMax"]!="") {
-        let facetArr = [];
-        if(parameters["hazardFacetSDMeanDnbrMin"]!="")
-            facetArr.push(`?stanDevMeanVal > ` + parameters["hazardFacetSDMeanDnbrMin"]);
-        if(parameters["hazardFacetSDMeanDnbrMax"]!="")
-            facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
-        SDMeanDnbrQuery = `
-            ?observationCollection sosa:hasMember ?stanDevMeanValObj.
-            ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
-            FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
-            ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
-    }
-
-    //Build the full query
-    hazardQuery += `
-        {
-            ?entity rdf:type ?type; 
-                    rdfs:label ?label;
-                    kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
-            ?type rdfs:subClassOf ?superClass.
-            values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
-            ${typeQuery}
-            ${regionQuery}
-            ${zipCodeQuery}
-            ${uscdQuery}
-            ${nwZoneQuery}
-            optional
-            {
-                ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel.
-            }
-            optional
-            {
-                ?observationCollection sosa:phenomenonTime ?time.
-                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-                      time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
-                ${dateQuery}
-            }
-            optional
-            {
-                ?entity geo:hasGeometry/geo:asWKT ?wkt_raw.
-            }
-            optional
-            {
-                ${magnitudeQuery}
-                ${quakeDepthQuery}
-                ${acresBurnedQuery}
-                ${meanDnbrQuery}
-                ${SDMeanDnbrQuery}
-            }
-        }
-    }`;
-}
-
-//New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
@@ -637,7 +520,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
         }
         dateQuery = `
-            ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
             ?observationCollection sosa:phenomenonTime ?time.
             ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                 time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
@@ -647,13 +529,15 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     //Build the full query
     hazardQuery += `
         ?entity rdf:type ?type; 
-            rdfs:label ?label.
+            rdfs:label ?label;
+            kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
         ?type rdfs:subClassOf ?superClass;
             rdfs:label ?typeLabel.
         values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
+        ${hazardTypeFacets(parameters)}
     }`;
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
@@ -715,6 +599,76 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
     return {'count':countResults[0].count.value,'record':formattedResults};
+}
+
+//These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
+function hazardTypeFacets(parameters) {
+    let typedHazardQuery = '';
+
+    if(parameters["hazardFacetMagnitudeMin"]!="" || parameters["hazardFacetMagnitudeMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetMagnitudeMin"]!="")
+            facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["hazardFacetMagnitudeMin"]);
+        if(parameters["hazardFacetMagnitudeMax"]!="")
+            facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?magnitudeObj.
+            ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
+            ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if(parameters["hazardQuakeDepthMin"]!="" || parameters["hazardQuakeDepthMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardQuakeDepthMin"]!="")
+            facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["hazardQuakeDepthMin"]);
+        if(parameters["hazardQuakeDepthMax"]!="")
+            facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?quakeDepthObj.
+            ?quakeDepthObj sosa:observedProperty kwgr:earthquakeObservableProperty.depth.
+            ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if(parameters["hazardFacetAcresBurnedMin"]!="" || parameters["hazardFacetAcresBurnedMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetAcresBurnedMin"]!="")
+            facetArr.push(`?numAcresBurned > ` + parameters["hazardFacetAcresBurnedMin"]);
+        if(parameters["hazardFacetAcresBurnedMax"]!="")
+            facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?numAcresBurnedObj.
+            ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
+            FILTER(contains(?numAcresBurnedObjLabel, 'Observation of Number Of Acres Burned')).
+            ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if(parameters["hazardFacetMeanDnbrMin"]!="" || parameters["hazardFacetMeanDnbrMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetMeanDnbrMin"]!="")
+            facetArr.push(`?meanVal > ` + parameters["hazardFacetMeanDnbrMin"]);
+        if(parameters["hazardFacetMeanDnbrMax"]!="")
+            facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?meanValObj.
+            ?meanValObj rdfs:label ?meanValObjLabel
+            FILTER(contains(?meanValObjLabel, 'Observation of Mean dNBR Value')).
+            ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if(parameters["hazardFacetSDMeanDnbrMin"]!="" || parameters["hazardFacetSDMeanDnbrMax"]!="") {
+        let facetArr = [];
+        if(parameters["hazardFacetSDMeanDnbrMin"]!="")
+            facetArr.push(`?stanDevMeanVal > ` + parameters["hazardFacetSDMeanDnbrMin"]);
+        if(parameters["hazardFacetSDMeanDnbrMax"]!="")
+            facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?stanDevMeanValObj.
+            ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
+            FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
+            ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    return typedHazardQuery;
 }
 
 async function getHazardClasses() {
