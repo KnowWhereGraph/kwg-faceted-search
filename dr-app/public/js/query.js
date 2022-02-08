@@ -450,60 +450,31 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
 
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
-    let placeSearchQuery = '';
+    let placeEntities = [];
     if(parameters["facetRegions"].length > 0) {
-        placeSearchQuery += `
-        { 
-             select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?region {kwgr:` + parameters["facetRegions"].join(' kwgr:') + `}
-                 ?hazardCell geo:sfWithin* ?region .
-             }
-         }`;
+        placeEntities = parameters["facetRegions"];
     }
     if(parameters["placeFacetsZip"]!="") {
         entityAll = await getZipCodeArea();
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-        entity = entityArray[entityArray.length - 1];
-        placeSearchQuery += `
-        { 
-             select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?zipcode {kwgr:` + entity + `}
-                 ?hazardCell geo:sfWithin|geo:sfOverlaps ?zipcode .
-             }
-         }`;
+        placeEntities.push(entityArray[entityArray.length - 1]);
     }
     if(parameters["placeFacetsUSCD"]!="") {
         entityAll = await getUSClimateDivision();
         entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-        entity = entityArray[entityArray.length - 1];
-        placeSearchQuery += `
-        {
-             select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?uscd {kwgr:` + entity + `}
-                 ?uscd geo:sfIntersects ?hazardCell .
-             }
-         }`;
+        placeEntities.push(entityArray[entityArray.length - 1]);
     }
     if(parameters["placeFacetsNWZ"]!="") {
         entityAll = await getNWZone();
         entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-        entity = entityArray[entityArray.length - 1];
-        placeSearchQuery += `
-        {
-             select distinct ?entity where {
-                 ?entity geo:sfOverlaps|geo:sfWithin|kwg-ont:locatedIn/geo:sfConatins ?hazardCell .
-                 ?hazardCell rdf:type kwg-ont:KWGCellLevel13 .
-                 values ?nwzone {kwgr:` + entity + `}
-                 ?hazardCell geo:sfWithin ?nwzone .
-             }
-         }`;
+        placeEntities.push(entityArray[entityArray.length - 1]);
     }
+    let placeSearchQuery = (placeEntities.length>0) ? `
+        ?entity ?es ?s2Cell .
+        ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+        values ?places {kwgr:` + placeEntities.join(' kwgr:')  + `}
+        ?s2Cell ?sp ?places .`
+        : '';
 
     //Filter by the date hazard occurred
     let dateQuery = '';
