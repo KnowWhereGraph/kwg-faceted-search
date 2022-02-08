@@ -473,9 +473,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ?entity ?es ?s2Cell .
         ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
         values ?places {kwgr:` + placeEntities.join(' kwgr:')  + `}
-        { ?s2Cell ?sp ?places . }
-        UNION
-        { ?places ?ps ?s2Cell . }`
+        ?s2Cell ?sp ?places .`
         : '';
 
     //Filter by the date hazard occurred
