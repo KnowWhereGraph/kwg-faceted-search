@@ -166,17 +166,17 @@
                 <ul class="nav nav-pills" id="pills-tab" role="tablist">
 
                     <li class="nav-item" role="presentation" ng-show="showPlaceTab">
-                        <button class="btn active" id="pills-place-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
+                        <button class="btn active" id="pills-place-tab" ng-click="clickTab($event, 'place')" data-bs-toggle="pill" data-bs-target="#pills-place" type="button" role="tab" aria-controls="pills-place" aria-selected="true">
                             <span><img src="../images/place.svg" alt=""> Place</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showHazardTab">
-                        <button class="btn" id="pills-hazard-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
+                        <button class="btn" id="pills-hazard-tab" ng-click="clickTab($event, 'hazard')" data-bs-toggle="pill" data-bs-target="#pills-hazard" type="button" role="tab" aria-controls="pills-hazard" aria-selected="false">
                             <span><img src="../images/hazard.svg" alt=""> Hazard</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation" ng-show="showPeopleTab">
-                        <button class="btn" id="pills-people-tab" ng-click="clickTab($event)" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
+                        <button class="btn" id="pills-people-tab" ng-click="clickTab($event, 'people')" data-bs-toggle="pill" data-bs-target="#pills-people" type="button" role="tab" aria-controls="pills-people" aria-selected="false">
                             <span><img src="../images/people.svg" alt=""> People</span>
                         </button>
                     </li>
@@ -209,9 +209,9 @@
                         </table>
                         <div id="placeTable-body" class="table-body-container">
 
-                            <table id="placeTableBody" class="table table-filters table-body table-hover">
+                            <table id="placeTable" class="table table-filters table-body table-hover">
 
-                                <tbody></tbody>
+                                <tbody id="placeTableBody"></tbody>
                             </table>
                         </div>
                         <!-- <ul class="pagination" id="placePagination"></ul> -->
@@ -228,9 +228,9 @@
                         </table>
                         <div id="hazardTable-body" class="table-body-container">
 
-                            <table id="hazardTableBody" class="table table-filters table-body table-hover">
+                            <table id="hazardTable" class="table table-filters table-body table-hover">
 
-                                <tbody></tbody>
+                                <tbody id="hazardTableBody"></tbody>
                             </table>
                         </div>
                         <div class="paginate" id="hazardPagination"></div>
