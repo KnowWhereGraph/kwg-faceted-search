@@ -167,18 +167,18 @@ function displayTables(fullTextResults) {
         console.log("place: ", place);
         var expertTableHeadSelectors = {
             "thead": "#expertTableTitle",
-            "tbody": "#expertTableBody",
+            "tbody": "#expertTable",
             "pagination": "#expertPagination"
         };
         var placeTableHeadSelectors = {
             "thead": "#placeTableTitle",
-            "tbody": "#placeTableBody",
+            "tbody": "#placeTable",
             "pagination": "#placePagination"
         };
 
         var hazardTableHeadSelectors = {
             "thead": "#hazardTableTitle",
-            "tbody": "#hazardTableBody",
+            "tbody": "#hazardTable",
             "pagination": "#hazardPagination"
         };
         displayTable(expertTableHeadSelectors, expert);
@@ -228,9 +228,9 @@ function displayTable(selectors, optionPromise) {
                 var expertAttributeLinks = [e["expert"], e["affiliation"], e["department"], e["expertise"], e["place"]];
                 var expertTableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["department_name"], e["expertise_name"], e["place_name"]];
                 var placeAttributeLinks = [e["place"], e["place_type"]];
-                var placeTableBodyAttributes = [e["place_name"], e["place_type_name"]];
+                var placeTableAttributes = [e["place_name"], e["place_type_name"]];
                 var hazardAttributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["date"]];
-                var hazardTableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
+                var hazardTableAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["date_name"]];
 
 
                 var attributeLinks = [];
@@ -238,13 +238,13 @@ function displayTable(selectors, optionPromise) {
 
                 if (selectors["thead"] == "#expertTableTitle") {
                     attributeLinks = expertAttributeLinks;
-                    tableBodyAttributes = expertTableBodyAttributes;
+                    tableBodyAttributes = expertTableAttributes;
                 } else if (selectors["thead"] == "#placeTableTitle") {
                     attributeLinks = placeAttributeLinks;
-                    tableBodyAttributes = placeTableBodyAttributes;
+                    tableBodyAttributes = placeTableAttributes;
                 } else if (selectors["thead"] == "#hazardTableTitle") {
                     attributeLinks = hazardAttributeLinks;
-                    tableBodyAttributes = hazardTableBodyAttributes;
+                    tableBodyAttributes = hazardTableAttributes;
                 }
 
                 var numAttributes = attributeLinks.length;
