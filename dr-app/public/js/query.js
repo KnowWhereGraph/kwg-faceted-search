@@ -503,6 +503,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             FILTER (` + dateArr.join(' && ') + `)`;
     }
 
+    //Filter by a circle on the map
     let spatialSearchQuery = '';
     if (typeof parameters["spatialSearchWkt"] != 'undefined')
     {
@@ -510,6 +511,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
+
     //Build the full query
     hazardQuery += `
         ?entity rdf:type ?type; 
