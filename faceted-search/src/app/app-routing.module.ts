@@ -3,11 +3,13 @@ import { AppComponent  } from './app.component';
 import { ExploreComponent } from './explore/explore.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ResultSearchComponent } from './result-search/result-search.component';
 
 const routes: Routes = [
   {path:'', component: AppComponent},
   {path: 'about', component: AboutComponent},
-  {path: 'explore', component: ExploreComponent}
+  {path: 'explore', component: ExploreComponent},
+  {path: 'result_search', component: ResultSearchComponent}
 ];
 
 @NgModule({
