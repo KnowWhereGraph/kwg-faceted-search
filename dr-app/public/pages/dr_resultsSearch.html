@@ -17,19 +17,20 @@
         <div class="search-dropdown-input">
             <div class="input-group">
                 <label for="keyword">Keyword Search</label>
-                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" id="keyword" placeholder="Enter your query" />
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" id="keyword" placeholder="Keyword search..." />
                 <div class="input-group-append">
                     <button id="input-query-submit" class="btn btn-outline-secondary" type="button" ng-click="keywordSubmit($event)">Search</button>
                 </div>
             </div>
 
-            <div class="spatial-search">
-                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">
-                    <div>
-                        <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>
-                    </div>
-                </button>
-            </div>
+<!--            TODO::Disabling for now-->
+<!--            <div class="spatial-search">-->
+<!--                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">-->
+<!--                    <div>-->
+<!--                        <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>-->
+<!--                    </div>-->
+<!--                </button>-->
+<!--            </div>-->
         </div>
 
         <!-- options for filters -->
