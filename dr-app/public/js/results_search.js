@@ -313,9 +313,50 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (e.shape == "Polygon" || e.shape == "Rectangle") {
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
                 } else if (e.shape == "Circle") {
-                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
-                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
-                }
+                    // the default circle to do spatial search is set to be the one just drawn
+                    var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength-1].getLatLng();
+                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength-1].getRadius();
+                    radius = radius/1000; // convert to radius in kilometers
+
+                    // create the circle object and convert its geometry to the wkt format
+                    var optionsCircle = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};
+                    var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
+                    var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
+                    var circleCoordinates = circle.geometry.coordinates[0];
+                    for (i = 0; i < circleCoordinates.length; i++)
+                    {
+                        circleWkt += circleCoordinates[i][0].toString() + ' '+ circleCoordinates[i][1].toString();
+                        if (i == circleCoordinates.length-1)
+                        {
+                            circleWkt += '))';
+                        }
+                        else
+                        {
+                            circleWkt += ',';
+                        }
+                    }
+                    
+                    // return the parameters for spatial search
+                    var parameters = getParameters();
+                    parameters["spatialSearchWkt"] = circleWkt;
+
+                    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+                    var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+                    var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                    var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+                    var response = sendQueries(activeTabName, page, pp, parameters);
+                    var selectors = displayTableByTabName(activeTabName, response);
+            
+                    response.then(function(result) {
+                        var countResults = result["count"];
+                        displayPagination(activeTabName, selectors, countResults, parameters);
+                    });
+                    $scope.updateURLParameters('polygon', 'circle');
+                    $scope.updateURLParameters('lon', coordinates.lng.toString());
+                    $scope.updateURLParameters('lat', coordinates.lat.toString());
+                    $scope.updateURLParameters('radius', radius.toString());
+                }         
             });
         }
     };

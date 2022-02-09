@@ -399,6 +399,12 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         }`;
     }
 
+    if (typeof parameters["spatialSearchWkt"] != 'undefined')
+    {
+        placeQuery += `
+            ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
+        `;
+    }
     placeQuery += `}`;
 
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
@@ -526,6 +532,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             FILTER (` + dateArr.join(' && ') + `)`;
     }
 
+    let spatialSearchQuery = '';
+    if (typeof parameters["spatialSearchWkt"] != 'undefined')
+    {
+        spatialSearchQuery += `
+            ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
+        `;
+    }
     //Build the full query
     hazardQuery += `
         ?entity rdf:type ?type; 
@@ -538,8 +551,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${placeSearchQuery}
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
+        ${spatialSearchQuery}
     }`;
-
+    
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
     let entityRawValues = [];
     for (let row of queryResults) {
@@ -749,6 +763,15 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         `;
     }
 
+    // use ?affiliation instead of ?entity for expert spatial search
+    let spatialSearchQuery = '';
+    if (typeof parameters["spatialSearchWkt"] != 'undefined')
+    {
+        spatialSearchQuery += `
+            ?affiliation geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
+        `;
+    }
+
     expertQuery +=
         `
         ?entity rdf:type iospress:Contributor.
@@ -759,6 +782,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?entity iospress:contributorAffiliation ?affiliation.
         ?affiliation rdfs:label ?affiliationLabel.
         ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+        ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`;
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
