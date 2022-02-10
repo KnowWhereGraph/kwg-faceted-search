@@ -62,7 +62,7 @@
                             <ul class="list-group list-group-indented" style="display: none">
                                 <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
                                     <li>
-                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a2}}" name="region">
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region">
                                         {{a2obj['label']}}
                                         <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
                                     </li>
