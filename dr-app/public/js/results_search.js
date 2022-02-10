@@ -13,12 +13,36 @@ var clickedMarker = {};
 
 var resultsSearchMap = null;
 
+// The number of ms that are slept before calling a debounced method
+var debounceTimeout = 500;
+
 //For URL variable tracking
 var urlVariables;
 
 kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
     //prep for URL variable tracking
     urlVariables = $location.search();
+
+    /*
+      Returns a debounced function that is called after 'wait' ms.
+      Adapted from https://davidwalsh.name/javascript-debounce-function
+    */
+    let debounce = function(func, wait = 1000, immediate = false) {
+        var timeout;
+        return function() {
+            var context = this,
+                args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
     $scope.updateURLParameters = function(param, value, arr = false) {
             if (arr && urlVariables[param] != null && urlVariables[param] != '') {
                 paramVals = urlVariables[param].split(',');
@@ -157,7 +181,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.inputQuery = this.inputQuery;
     }
 
-    $scope.keywordSubmit = function($event) {
+
+    $scope.keywordSubmit = debounce(function($event) {
         var keyword = $scope.inputQuery;
         if (keyword != '')
             $scope.updateURLParameters('keyword', keyword);
@@ -176,29 +201,26 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    }
+    }, debounceTimeout);
 
     // 4. click on tab
-    $scope.clickTab = function($event) {
+    // clickType is the tab type (eg 'hazard', 'place', 'people')
+    $scope.clickTab = debounce(function($event, clickType) {
         var newActiveTabName = "";
         var urlUpdateTab = "";
         $scope.showPlaceList = false;
         $scope.showHazardList = false;
         $scope.showExpertiseList = false;
 
-        //We have to look in two places cause the ng-click function may set the target to a child node rather than the
-        //node it actually belongs to. Why? Who the heck knows.
-        var innerHTML = $event.target.innerHTML;
-        var currentHTML = $event.currentTarget.innerHTML;
-        if (innerHTML.indexOf("People") != -1 || currentHTML.indexOf("People") != -1) {
+        if (clickType === "people") {
             $scope.showExpertiseList = true;
             urlUpdateTab = "people";
             newActiveTabName = "People";
-        } else if (innerHTML.indexOf("Place") != -1 || currentHTML.indexOf("Place") != -1) {
+        } else if (clickType === "place") {
             $scope.showPlaceList = true;
             urlUpdateTab = "place";
             newActiveTabName = "Place";
-        } else if (innerHTML.indexOf("Hazard") != -1 || currentHTML.indexOf("Hazard") != -1) {
+        } else if (clickType === "hazard") {
             $scope.showHazardList = true;
             urlUpdateTab = "hazard";
             newActiveTabName = "Hazard";
@@ -215,7 +237,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(newActiveTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
     $scope.selectSubList = function($event, functionName) {
         let dropdownImg = $event.target.nextElementSibling;
@@ -289,18 +311,52 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (e.shape == "Polygon" || e.shape == "Rectangle") {
                     coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
                 } else if (e.shape == "Circle") {
-                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLng();
-                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[0].getRadius();
-                }
+                    // the default circle to do spatial search is set to be the one just drawn
+                    var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
+                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
+                    radius = radius / 1000; // convert to radius in kilometers
 
-                console.log("coordinates: ", coordinates);
-                console.log("radius: ", radius);
+                    // create the circle object and convert its geometry to the wkt format
+                    var optionsCircle = { steps: 10, units: 'kilometers', properties: { foo: 'bar' } };
+                    var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
+                    var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
+                    var circleCoordinates = circle.geometry.coordinates[0];
+                    for (i = 0; i < circleCoordinates.length; i++) {
+                        circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
+                        if (i == circleCoordinates.length - 1) {
+                            circleWkt += '))';
+                        } else {
+                            circleWkt += ',';
+                        }
+                    }
+
+                    // return the parameters for spatial search
+                    var parameters = getParameters();
+                    parameters["spatialSearchWkt"] = circleWkt;
+
+                    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+                    var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+                    var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                    var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+                    var response = sendQueries(activeTabName, page, pp, parameters);
+                    var selectors = displayTableByTabName(activeTabName, response);
+
+                    response.then(function(result) {
+                        var countResults = result["count"];
+                        displayPagination(activeTabName, selectors, countResults, parameters);
+                    });
+                    $scope.updateURLParameters('polygon', 'circle');
+                    $scope.updateURLParameters('lon', coordinates.lng.toString());
+                    $scope.updateURLParameters('lat', coordinates.lat.toString());
+                    $scope.updateURLParameters('radius', radius.toString());
+                }
             });
         }
     };
 
     //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
-    $scope.placeFacetChanged = function() {
+    $scope.placeFacetChanged = debounce(function($event) {
         var parameters = getParameters();
 
         if (parameters['placeFacetsRegion'] != '')
@@ -331,9 +387,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
-    $scope.hazardFacetChanged = function() {
+    $scope.hazardFacetChanged = debounce(function() {
         var parameters = getParameters();
 
         if (parameters['hazardFacetDateStart'] != '')
@@ -396,9 +452,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
-    $scope.selectHazard = function($event) {
+    $scope.selectHazard = debounce(function($event) {
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
@@ -433,9 +489,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
-    $scope.expertFacetChanged = function() {
+    //DEVNOTE: This function may be unused
+    $scope.expertFacetChanged = debounce(function($event) {
         var parameters = getParameters();
 
         //EXAMPLE:
@@ -445,6 +502,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         //     $scope.removeValue('expert-zip');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
+
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -455,9 +513,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
-    $scope.selectTopic = function() {
+    $scope.selectTopic = debounce(function($event) {
         var parameters = getParameters();
 
         if (parameters['expertTopics'].length > 0)
@@ -466,6 +524,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.removeValue('expert');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'people';
+
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
@@ -476,9 +535,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 
-    $scope.selectRegion = function() {
+    $scope.selectRegion = debounce(function() {
         var parameters = getParameters();
 
         if (parameters["facetRegions"].length > 0)
@@ -497,7 +556,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
-    };
+    }, debounceTimeout);
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -640,6 +699,7 @@ var getParameters = function() {
 
 var sendQueries = function(tabName, pageNum, recordNum, parameters) {
     angular.element("#ttl-results").html('Loading query...');
+    clearResultsTable(tabName);
     switch (tabName) {
         case "Place":
             angular.element("#placeTable-body").append("<div id='loading' style='text-align:center;'><img src='/images/loading.svg'/></div>");
@@ -653,6 +713,17 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
         default:
             return {};
     }
+}
+
+/*
+  Clears the table pertaining to a particular set of results. This removes any loading icons
+  and the results in the table
+*/
+var clearResultsTable = function(tableName) {
+
+    angular.element("#hazardTable-body #loading").remove();
+    angular.element("#expertTable-body #loading").remove();
+    angular.element("#placeTable-body #loading").remove();
 }
 
 var displayBreadCrumbs = function() {
@@ -825,19 +896,22 @@ var displayTableByTabName = function(activeTabName, response) {
     if (activeTabName == "People") {
         selectors = {
             "thead": "#expertTableTitle",
-            "tbody": "#expertTableBody",
+            "tbody": "#expertTable",
+            "tbodyRes": "expertTableBody",
             "pagination": "#expertPagination"
         };
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
-            "tbody": "#placeTableBody",
+            "tbody": "#placeTable",
+            "tbodyRes": "placeTableBody",
             "pagination": "#placePagination"
         };
     } else if (activeTabName == "Hazard") {
         selectors = {
             "thead": "#hazardTableTitle",
-            "tbody": "#hazardTableBody",
+            "tbody": "#hazardTable",
+            "tbodyRes": "#hazardTableBody",
             "pagination": "#hazardPagination"
         };
     };
@@ -863,6 +937,9 @@ var displayTableByTabName = function(activeTabName, response) {
         tableBody.empty();
 
         response.then(function(result) {
+            // When we get the result, clear the child elements of the table so that they're not
+            // appended to existing rows
+            angular.element(selectors['tbodyRes']).children().remove();
             angular.element('#loading').remove();
             countResults = result["count"];
             recordResults = result["record"];
