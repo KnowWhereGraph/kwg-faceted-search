@@ -301,9 +301,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 cutPolygon: false,
                 rotateMode: false
 
-
-
-
             });
 
             resultsSearchMap.on("pm:create", (e) => {
@@ -592,38 +589,35 @@ kwgApp.directive('autocomplete', function() {
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
             getZipCodeArea().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['zipcodes']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['zipcodes']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getUSClimateDivision().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['divisions']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['divisions']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getNWZone().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['nwzones']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['nwzones']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
@@ -658,7 +652,7 @@ var getParameters = function() {
 
     //Place facets
     parameters["placeFacetsRegion"] = angular.element("#placeFacetsRegion")[0].value;
-    switch(tabName) {
+    switch (tabName) {
         case 'place':
             parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
@@ -1432,10 +1426,10 @@ var addHazardsAttrToPlaceTab = function() {
     var earthquakeIconSrc = "../images/people-earthquake-icon.svg";
 
     var cellHtml = "<ul id='place-hazard-count'>" +
-        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span></li>" +
-        "<li><img src = '" + hurricaneIconSrc + "'></img><span>" + hurricaneCount + "</span></li>" +
-        "<li><img src = '" + fireIconSrc + "'></img><span>" + fireCount + "</span></li>" +
-        "<li><img src = '" + earthquakeIconSrc + "'></img><span>" + earthquakeCount + "</span></li>" +
-        "</ul><span class='tooltiptext'>People</span>";
+        "<li><img src = '" + peopleIconSrc + "'></img><span class='IconCounter'>" + peopleCount + "</span><span class = 'tooltiptext people-tooltiptext'>People</span></li>" +
+        "<li><img src = '" + hurricaneIconSrc + "'></img><span class='IconCounter'>" + hurricaneCount + "</span><span class = 'tooltiptext hurricane-tooltiptext'>Hurricane</span></li>" +
+        "<li><img src = '" + fireIconSrc + "'></img><span class='IconCounter'>" + fireCount + "</span><span class = 'tooltiptext fire-tooltiptext'>Fire</span></li>" +
+        "<li><img src = '" + earthquakeIconSrc + "'></img><span class='IconCounter'>" + earthquakeCount + "</span><span class = 'tooltiptext earthquake-tooltiptext'>Earthquake</span></li>" +
+        "</ul>";
     return cellHtml;
 }
