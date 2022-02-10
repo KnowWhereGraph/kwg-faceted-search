@@ -752,9 +752,12 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?entity kwg-ont:hasExpertise ?expert.
         ${topicQuery}
         ?expert rdfs:label ?expertLabel.
-        ?entity iospress:contributorAffiliation ?affiliation.
-        ?affiliation rdfs:label ?affiliationLabel.
-        ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+        optional
+        {
+            ?entity iospress:contributorAffiliation ?affiliation.
+            ?affiliation rdfs:label ?affiliationLabel.
+            ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+        }
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`;
 
@@ -763,13 +766,13 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         formattedResults.push({
             'expert': row.entity.value,
             'expert_name': row.label.value,
-            'affiliation': row.affiliation.value,
-            'affiliation_name': row.affiliationLabel.value,
+            'affiliation': (typeof row.affiliation  === 'undefined') ? "Insert Affiliation Here" : row.affiliation.value,
+            'affiliation_name': (typeof row.affiliation_name  === 'undefined') ? "Insert Affiliation Here" : row.affiliation_name.value,
             'expertise': row.expertise.value.split('||'),
             'expertise_name': row.expertiseLabel.value.split('||'),
             'place': "Insert Place Here",
             'place_name': "Insert Place Here",
-            'wkt':row.wkt.value,
+            'wkt':(typeof row.wkt  === 'undefined') ? "" : row.wkt.value,
         });
     }
 
