@@ -104,8 +104,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showHazardTab = true;
 
     //facet hazards
-    $scope.earthquakeFacets = true;
-    $scope.fireFacets = true;
+    $scope.earthquakeFacets = false;
+    $scope.fireFacets = false;
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
@@ -458,8 +458,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
-            $scope.earthquakeFacets = false;
-            $scope.fireFacets = false;
+            // $scope.earthquakeFacets = false;
+            // $scope.fireFacets = false;
 
             for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
@@ -1299,42 +1299,42 @@ function showMap(recordResults) {
                 markerIndex += 1;
                 var dds = vals.reduce(concatDDs);
                 dds.push(dd("br"));
-                dds.push(dd("b: Please choose the value of the radius (km): "));
-                dds.push(dd("span.radius_value" + ":200"));
-                dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
-                dds.push(dd("br"));
-                dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
+                // dds.push(dd("b: Please choose the value of the radius (km): "));
+                // dds.push(dd("span.radius_value" + ":200"));
+                // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                // dds.push(dd("br"));
+                // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
                 let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
 
                 // add marker event listener
-                place_marker.on("click", function(ev) {
-                    if (!Object.keys(clickedMarker).length) {
-                        var index = markers.indexOf(ev.sourceTarget);
-                        clickedMarker["index"] = index;
-                        clickedMarker["marker"] = ev.sourceTarget;
+                // place_marker.on("click", function(ev) {
+                //     if (!Object.keys(clickedMarker).length) {
+                //         var index = markers.indexOf(ev.sourceTarget);
+                //         clickedMarker["index"] = index;
+                //         clickedMarker["marker"] = ev.sourceTarget;
 
-                        var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                        clickedMarker["table-element"] = domElement;
-                        clickedMarker["pre-color"] = domElement.style.backgroundColor;
-                        domElement.style.backgroundColor = "pink";
-                    } else {
-                        if (clickedMarker["marker"] != ev.sourceTarget) {
-                            // reset the color on the table
-                            clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //         clickedMarker["table-element"] = domElement;
+                //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                //         domElement.style.backgroundColor = "pink";
+                //     } else {
+                //         if (clickedMarker["marker"] != ev.sourceTarget) {
+                //             // reset the color on the table
+                //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
 
-                            var index = markers.indexOf(ev.sourceTarget);
-                            clickedMarker["index"] = index;
-                            clickedMarker["marker"] = ev.sourceTarget;
-                            var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                            clickedMarker["table-element"] = domElement;
-                            domElement.style.backgroundColor = "pink";
-                        }
-                    }
+                //             var index = markers.indexOf(ev.sourceTarget);
+                //             clickedMarker["index"] = index;
+                //             clickedMarker["marker"] = ev.sourceTarget;
+                //             var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //             clickedMarker["table-element"] = domElement;
+                //             domElement.style.backgroundColor = "pink";
+                //         }
+                //     }
 
-                    // at this time, then find the slider in this marker.
-                    addSliderChangeListener(ev.sourceTarget.getLatLng());
-                    addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
-                });
+                //     // at this time, then find the slider in this marker.
+                //     addSliderChangeListener(ev.sourceTarget.getLatLng());
+                //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
+                // });
                 // add marker popup remove listener
                 place_marker.getPopup().on("remove", function() {
                     if (Object.keys(clickedMarker).length) {
