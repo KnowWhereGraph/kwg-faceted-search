@@ -491,10 +491,12 @@ p#cnfg-tb {}
 
 table.table-filters tbody tr:nth-child(odd) {
     background-color: #FFFFFF;
+    position: relative;
 }
 
 table.table-filters tbody tr:nth-child(even) {
     background-color: #F2F2F4;
+    position: relative;
 }
 
 .results-table .table-body-container table td {
@@ -746,7 +748,7 @@ ul#place-hazard-count li {
     /* position: relative; */
 }
 
-ul#place-hazard-count li span {
+ul#place-hazard-count li span.IconCounter {
     display: inline-block;
     position: absolute;
     margin-left: 3px;
@@ -755,26 +757,51 @@ ul#place-hazard-count li span {
 
 /* mouse over these icons and show the tip text */
 
-.hazardIcons {
-    position: relative;
+td.hazardIcons {
+    /* position: relative; */
+    /* z-index: 9999; */
+    /* background-color: #2BA9BD; */
 }
 
 span.tooltiptext {
     visibility: hidden;
     width: 70px;
-    height: 20px;
+    height: 25px;
     background-color: black;
     color: #fff;
     text-align: center;
     border-radius: 6px;
     position: absolute;
-    top: -10px;
-    /* padding: 2px 0;
     opacity: 0.5;
-    font-size: 12px;
-    margin-left: -45px;
-    top: -10px;
-    position: absolute; */
+    top: -20px;
+}
+
+span.people-tooltiptext {
+    right: calc(33.3% - 8px - (33.3% - 200px)/2 - 48px);
+}
+
+span.hurricane-tooltiptext {
+    right: calc(33.3% - 8px - (33.3% - 200px)/2 - 35px - 51px - 10px);
+}
+
+span.fire-tooltiptext {
+    right: calc((33.3% - 200px)/2 + 50px);
+}
+
+span.earthquake-tooltiptext {
+    width: 80px;
+    right: calc((33.3% - 200px)/2);
+}
+
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }
 
 ul#place-hazard-count li:hover .tooltiptext {
