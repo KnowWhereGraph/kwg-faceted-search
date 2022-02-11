@@ -14,7 +14,7 @@ var clickedMarker = {};
 var resultsSearchMap = null;
 
 // The number of ms that are slept before calling a debounced method
-var debounceTimeout=500;
+var debounceTimeout = 500;
 
 //For URL variable tracking
 var urlVariables;
@@ -27,19 +27,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
       Returns a debounced function that is called after 'wait' ms.
       Adapted from https://davidwalsh.name/javascript-debounce-function
     */
-    let debounce = function(func, wait=1000, immediate=false) {
-      var timeout;
-      return function() {
-        var context = this, args = arguments;
-        var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
+    let debounce = function(func, wait = 1000, immediate = false) {
+        var timeout;
+        return function() {
+            var context = this,
+                args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
         };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
     };
 
     $scope.updateURLParameters = function(param, value, arr = false) {
@@ -103,8 +104,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showHazardTab = true;
 
     //facet hazards
-    $scope.earthquakeFacets = true;
-    $scope.fireFacets = true;
+    $scope.earthquakeFacets = false;
+    $scope.fireFacets = false;
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
@@ -301,9 +302,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 cutPolygon: false,
                 rotateMode: false
 
-
-
-
             });
 
             resultsSearchMap.on("pm:create", (e) => {
@@ -315,28 +313,24 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 } else if (e.shape == "Circle") {
                     // the default circle to do spatial search is set to be the one just drawn
                     var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
-                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength-1].getLatLng();
-                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength-1].getRadius();
-                    radius = radius/1000; // convert to radius in kilometers
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
+                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
+                    radius = radius / 1000; // convert to radius in kilometers
 
                     // create the circle object and convert its geometry to the wkt format
-                    var optionsCircle = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};
+                    var optionsCircle = { steps: 10, units: 'kilometers', properties: { foo: 'bar' } };
                     var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
                     var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
                     var circleCoordinates = circle.geometry.coordinates[0];
-                    for (i = 0; i < circleCoordinates.length; i++)
-                    {
-                        circleWkt += circleCoordinates[i][0].toString() + ' '+ circleCoordinates[i][1].toString();
-                        if (i == circleCoordinates.length-1)
-                        {
+                    for (i = 0; i < circleCoordinates.length; i++) {
+                        circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
+                        if (i == circleCoordinates.length - 1) {
                             circleWkt += '))';
-                        }
-                        else
-                        {
+                        } else {
                             circleWkt += ',';
                         }
                     }
-                    
+
                     // return the parameters for spatial search
                     var parameters = getParameters();
                     parameters["spatialSearchWkt"] = circleWkt;
@@ -347,7 +341,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
                     var response = sendQueries(activeTabName, page, pp, parameters);
                     var selectors = displayTableByTabName(activeTabName, response);
-            
+
                     response.then(function(result) {
                         var countResults = result["count"];
                         displayPagination(activeTabName, selectors, countResults, parameters);
@@ -356,7 +350,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     $scope.updateURLParameters('lon', coordinates.lng.toString());
                     $scope.updateURLParameters('lat', coordinates.lat.toString());
                     $scope.updateURLParameters('radius', radius.toString());
-                }         
+                }
             });
         }
     };
@@ -464,8 +458,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
-            $scope.earthquakeFacets = false;
-            $scope.fireFacets = false;
+            // $scope.earthquakeFacets = false;
+            // $scope.fireFacets = false;
 
             for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
@@ -592,38 +586,35 @@ kwgApp.directive('autocomplete', function() {
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
             getZipCodeArea().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['zipcodes']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['zipcodes']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getUSClimateDivision().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['divisions']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['divisions']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
             getNWZone().then(function(data) {
-                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0])
-                {
-                  element.autocomplete({
-                      source: Object.keys(data['nwzones']),
-                      select:function (event,ui) {
-                          ngModelCtrl.$setViewValue(ui.item);
-                          scope.$apply();
-                      }
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['nwzones']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
                     });
                 }
             });
@@ -658,7 +649,7 @@ var getParameters = function() {
 
     //Place facets
     parameters["placeFacetsRegion"] = angular.element("#placeFacetsRegion")[0].value;
-    switch(tabName) {
+    switch (tabName) {
         case 'place':
             parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
@@ -730,9 +721,9 @@ var sendQueries = function(tabName, pageNum, recordNum, parameters) {
 */
 var clearResultsTable = function(tableName) {
 
-  angular.element("#hazardTable-body #loading").remove();
-  angular.element("#expertTable-body #loading").remove();
-  angular.element("#placeTable-body #loading").remove();
+    angular.element("#hazardTable-body #loading").remove();
+    angular.element("#expertTable-body #loading").remove();
+    angular.element("#placeTable-body #loading").remove();
 }
 
 var displayBreadCrumbs = function() {
@@ -906,21 +897,21 @@ var displayTableByTabName = function(activeTabName, response) {
         selectors = {
             "thead": "#expertTableTitle",
             "tbody": "#expertTable",
-            "tbodyRes":"expertTableBody",
+            "tbodyRes": "expertTableBody",
             "pagination": "#expertPagination"
         };
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
             "tbody": "#placeTable",
-            "tbodyRes":"placeTableBody",
+            "tbodyRes": "placeTableBody",
             "pagination": "#placePagination"
         };
     } else if (activeTabName == "Hazard") {
         selectors = {
             "thead": "#hazardTableTitle",
             "tbody": "#hazardTable",
-            "tbodyRes":"#hazardTableBody",
+            "tbodyRes": "#hazardTableBody",
             "pagination": "#hazardPagination"
         };
     };
@@ -1308,42 +1299,42 @@ function showMap(recordResults) {
                 markerIndex += 1;
                 var dds = vals.reduce(concatDDs);
                 dds.push(dd("br"));
-                dds.push(dd("b: Please choose the value of the radius (km): "));
-                dds.push(dd("span.radius_value" + ":200"));
-                dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
-                dds.push(dd("br"));
-                dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
+                // dds.push(dd("b: Please choose the value of the radius (km): "));
+                // dds.push(dd("span.radius_value" + ":200"));
+                // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                // dds.push(dd("br"));
+                // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
                 let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
 
                 // add marker event listener
-                place_marker.on("click", function(ev) {
-                    if (!Object.keys(clickedMarker).length) {
-                        var index = markers.indexOf(ev.sourceTarget);
-                        clickedMarker["index"] = index;
-                        clickedMarker["marker"] = ev.sourceTarget;
+                // place_marker.on("click", function(ev) {
+                //     if (!Object.keys(clickedMarker).length) {
+                //         var index = markers.indexOf(ev.sourceTarget);
+                //         clickedMarker["index"] = index;
+                //         clickedMarker["marker"] = ev.sourceTarget;
 
-                        var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                        clickedMarker["table-element"] = domElement;
-                        clickedMarker["pre-color"] = domElement.style.backgroundColor;
-                        domElement.style.backgroundColor = "pink";
-                    } else {
-                        if (clickedMarker["marker"] != ev.sourceTarget) {
-                            // reset the color on the table
-                            clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //         clickedMarker["table-element"] = domElement;
+                //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                //         domElement.style.backgroundColor = "pink";
+                //     } else {
+                //         if (clickedMarker["marker"] != ev.sourceTarget) {
+                //             // reset the color on the table
+                //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
 
-                            var index = markers.indexOf(ev.sourceTarget);
-                            clickedMarker["index"] = index;
-                            clickedMarker["marker"] = ev.sourceTarget;
-                            var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                            clickedMarker["table-element"] = domElement;
-                            domElement.style.backgroundColor = "pink";
-                        }
-                    }
+                //             var index = markers.indexOf(ev.sourceTarget);
+                //             clickedMarker["index"] = index;
+                //             clickedMarker["marker"] = ev.sourceTarget;
+                //             var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //             clickedMarker["table-element"] = domElement;
+                //             domElement.style.backgroundColor = "pink";
+                //         }
+                //     }
 
-                    // at this time, then find the slider in this marker.
-                    addSliderChangeListener(ev.sourceTarget.getLatLng());
-                    addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
-                });
+                //     // at this time, then find the slider in this marker.
+                //     addSliderChangeListener(ev.sourceTarget.getLatLng());
+                //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
+                // });
                 // add marker popup remove listener
                 place_marker.getPopup().on("remove", function() {
                     if (Object.keys(clickedMarker).length) {
@@ -1432,10 +1423,10 @@ var addHazardsAttrToPlaceTab = function() {
     var earthquakeIconSrc = "../images/people-earthquake-icon.svg";
 
     var cellHtml = "<ul id='place-hazard-count'>" +
-        "<li><img src = '" + peopleIconSrc + "'></img><span>" + peopleCount + "</span></li>" +
-        "<li><img src = '" + hurricaneIconSrc + "'></img><span>" + hurricaneCount + "</span></li>" +
-        "<li><img src = '" + fireIconSrc + "'></img><span>" + fireCount + "</span></li>" +
-        "<li><img src = '" + earthquakeIconSrc + "'></img><span>" + earthquakeCount + "</span></li>" +
-        "</ul><span class='tooltiptext'>People</span>";
+        "<li><img src = '" + peopleIconSrc + "'></img><span class='IconCounter'>" + peopleCount + "</span><span class = 'tooltiptext people-tooltiptext'>People</span></li>" +
+        "<li><img src = '" + hurricaneIconSrc + "'></img><span class='IconCounter'>" + hurricaneCount + "</span><span class = 'tooltiptext hurricane-tooltiptext'>Hurricane</span></li>" +
+        "<li><img src = '" + fireIconSrc + "'></img><span class='IconCounter'>" + fireCount + "</span><span class = 'tooltiptext fire-tooltiptext'>Fire</span></li>" +
+        "<li><img src = '" + earthquakeIconSrc + "'></img><span class='IconCounter'>" + earthquakeCount + "</span><span class = 'tooltiptext earthquake-tooltiptext'>Earthquake</span></li>" +
+        "</ul>";
     return cellHtml;
 }
