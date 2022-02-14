@@ -43,6 +43,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         };
     };
 
+
+
     $scope.updateURLParameters = function(param, value, arr = false) {
             if (arr && urlVariables[param] != null && urlVariables[param] != '') {
                 paramVals = urlVariables[param].split(',');
@@ -202,6 +204,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
+
+    angular.element("#keyword").bind("keypress", function(event) {
+        if (event.keyCode == "13") {
+            console.log("you pressed enter");
+            $scope.keywordSubmit();
+        }
+    })
 
     // 4. click on tab
     // clickType is the tab type (eg 'hazard', 'place', 'people')
@@ -473,8 +482,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         } else {
-            $scope.earthquakeFacets = true;
-            $scope.fireFacets = true;
+            $scope.earthquakeFacets = false;
+            $scope.fireFacets = false;
             $scope.removeValue('hazard');
         }
 
@@ -636,6 +645,7 @@ var init = function() {
         }).addTo(resultsSearchMap);
     }, 200);
 }
+
 
 //We need this to call the url rewrite
 var getScope = function() {
@@ -900,21 +910,33 @@ var displayTableByTabName = function(activeTabName, response) {
             "tbodyRes": "expertTableBody",
             "pagination": "#expertPagination"
         };
-    } else if (activeTabName == "Place") {
-        selectors = {
-            "thead": "#placeTableTitle",
-            "tbody": "#placeTable",
-            "tbodyRes": "placeTableBody",
-            "pagination": "#placePagination"
+
+        angular.element(".results").css('width', 'calc(100% - 300px)')
+        angular.element("#results-search-map").width(0);
+    } else {
+        if (angular.element("#results-search-map").width() == 0) {
+            angular.element(".results").css('width', 'calc(60% - 150px)')
+            angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+        }
+
+        if (activeTabName == "Place") {
+            selectors = {
+                "thead": "#placeTableTitle",
+                "tbody": "#placeTable",
+                "tbodyRes": "placeTableBody",
+                "pagination": "#placePagination"
+            };
+
+        } else if (activeTabName == "Hazard") {
+            selectors = {
+                "thead": "#hazardTableTitle",
+                "tbody": "#hazardTable",
+                "tbodyRes": "#hazardTableBody",
+                "pagination": "#hazardPagination"
+            };
         };
-    } else if (activeTabName == "Hazard") {
-        selectors = {
-            "thead": "#hazardTableTitle",
-            "tbody": "#hazardTable",
-            "tbodyRes": "#hazardTableBody",
-            "pagination": "#hazardPagination"
-        };
-    };
+    }
+
 
     if (selectors) {
         // Table title
@@ -947,7 +969,12 @@ var displayTableByTabName = function(activeTabName, response) {
             var attributeLinks = [];
             var tableBodyAttributes = [];
 
-            showMap(recordResults);
+            // showMap(recordResults);
+            if (activeTabName != "People") {
+                showMap(recordResults);
+            }
+            console.log(recordResults);
+
             recordResults.forEach(e => {
                 var rowBodyHtml = "";
                 if (selectors["thead"] == "#expertTableTitle") {
@@ -958,7 +985,7 @@ var displayTableByTabName = function(activeTabName, response) {
                     tableBodyAttributes = [e["place_name"], e["place_type_name"]];
                 } else if (selectors["thead"] == "#hazardTableTitle") {
                     attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
-                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], e["start_date_name"], e["end_date_name"]];
+                    tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
                 };
 
                 var numAttributes = attributeLinks.length;
@@ -991,7 +1018,9 @@ var displayTableByTabName = function(activeTabName, response) {
                 tableBody.append(rowHtml);
             });
 
-            // showMap(recordResults);
+
+
+
 
         }).then(function() {
 
@@ -1018,6 +1047,18 @@ var displayTableByTabName = function(activeTabName, response) {
     }
     return selectors;
 };
+
+var dateFormat = function(dateStr) {
+    var date = new Date(dateStr);
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = date.getDate() + " ";
+    var h = date.getHours() + ":";
+    var m = date.getMinutes(0) + ":";
+    var s = date.getSeconds();
+    return Y + M + D;
+
+}
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
     angular.element("#ttl-results").html(countResults + ' Records');

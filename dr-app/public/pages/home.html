@@ -1,79 +1,81 @@
 <header>
-  <div class="container home">
-    <h1>Main Faceted Search Site Tagline Goes Here</h1>
-  </div>
+    <div class="container home">
+        <h1>Faceted Search: Discovery begins here.</h1>
+    </div>
 
-  <div class="search-bar-home">
-    <form>
-      <div class="form-group">
-          <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Search Places, Hazards, and Experts"/>
-          <button class="btn" type="submit" ng-click="keywordSubmit($event)">Search</button>
-      </div>
-    </form>
-  </div>
+    <div class="search-bar-home">
+        <form>
+            <div class="form-group">
+                <input ng-model="inputQuery" ng-change=onKeywordChange() class="form-control" placeholder="Search Places, Hazards, and Experts" />
+                <button class="btn" type="submit" ng-click="keywordSubmit($event)">Search</button>
+            </div>
+        </form>
+    </div>
 </header>
 
 <main id="home">
     <section class="alt about center">
-      <div class="container">
-        <h2>Welcome To KnowWhereGraph</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt molli.</p>
-      </div>
-      <a href="#/about" class="button secondary">Learn More</a>
+        <div class="container">
+            <h2>Welcome To KnowWhereGraph</h2>
+            <p>With billions of data points at your fingertips, charting a path to a well-informed decision presents a navigational challenge. The Faceted Search Interface is a portal for exploring the KnowWhereGraph, a knowledge graph that integrates a
+                wide range of environmental and human data. Whether supporting a humanitarian response following a hurricane or projecting supply-chain consequences of a wildfire, the Faceted Search Interface helps a user target and refine their investigation
+                by exposing properties of the graph’s vast network of geographically referenced data.</p>
+        </div>
+        <a href="#/about" class="button secondary">Learn More</a>
     </section>
     <section class="explore center">
-      <h2>Start Exploring</h2>
-      <div class="container">
-          <div class="popular-sub-topics">
-              <div class="explore-title">
-              </div>
-              <div class="card-group-home columns-3">
-                  <a href="#/result_search?tab=place">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Place</p>
-                          </div>
-                      </div>
-                  </a>
+        <h2>Start Exploring</h2>
+        <div class="container">
+            <div class="popular-sub-topics">
+                <div class="explore-title">
+                </div>
+                <div class="card-group-home columns-3">
+                    <a href="#/result_search?tab=place">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Place</p>
+                            </div>
+                        </div>
+                    </a>
 
-                  <a href="#/result_search?tab=hazard">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Hazard</p>
-                          </div>
-                      </div>
-                  </a>
-                  <a href="#/result_search?tab=people">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Expert</p>
-                          </div>
-                      </div>
-                  </a>
-                  <a href="#/result_search?tab=hazard&hazard=Wildfire">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Wildfire</p>
-                          </div>
-                      </div>
-                  </a>
+                    <a href="#/result_search?tab=hazard">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Hazard</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#/result_search?tab=people">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Expert</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#/result_search?tab=hazard&hazard=Wildfire">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Wildfire</p>
+                            </div>
+                        </div>
+                    </a>
 
-                  <a href="#/result_search?tab=hazard&hazard=EarthquakeEvent">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Earthquake</p>
-                          </div>
-                      </div>
-                  </a>
-                  <a href="#/result_search?tab=people&expert=hazardtopic.storm.aspecttopic.injury">
-                      <div class="card-explore">
-                          <div class="card-body">
-                              <p class="card-title">Injury & Storms</p>
-                          </div>
-                      </div>
-                  </a>
-              </div>
-          </div>
+                    <a href="#/result_search?tab=hazard&hazard=EarthquakeEvent">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Earthquake</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#/result_search?tab=people&expert=hazardtopic.storm.aspecttopic.injury">
+                        <div class="card-explore">
+                            <div class="card-body">
+                                <p class="card-title">Injury & Storms</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
 
 
 
