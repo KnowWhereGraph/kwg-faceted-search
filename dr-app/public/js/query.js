@@ -517,6 +517,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
+    console.log(hazardQuery);
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     let entityRawValues = [];
     for (let row of queryResults) {
@@ -649,6 +650,32 @@ function hazardTypeFacets(parameters) {
             ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
             FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
             ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if (parameters["hazardFacetNumberDeathsMin"] != "" || parameters["hazardFacetNumberDeathsMax"] != "") {
+        let facetArr = [];
+        if (parameters["hazardFacetNumberDeathsMin"] != "")
+            facetArr.push(`?deathDirectVal > ` + parameters["hazardFacetNumberDeathsMin"]);
+        if (parameters["hazardFacetNumberDeathsMax"] != "")
+            facetArr.push(parameters["hazardFacetNumberDeathsMax"] + ` > ?deathDirectVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?deathDirectValObj.
+            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel
+            FILTER(contains(?deathDirectValObjLabel, 'Impact Observation of Death Direct of the Hurricane (Typhoon)')).
+            ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if (parameters["hazardFacetNumberInjuredMin"] != "" || parameters["hazardFacetNumberInjuredMax"] != "") {
+        let facetArr = [];
+        if (parameters["hazardFacetNumberInjuredMin"] != "")
+            facetArr.push(`?injuryDirectVal > ` + parameters["hazardFacetNumberInjuredMin"]);
+        if (parameters["hazardFacetNumberInjuredMax"] != "")
+            facetArr.push(parameters["hazardFacetNumberInjuredMax"] + ` > ?injuryDirectVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?injuryDirectValObj.
+            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel
+            FILTER(contains(?injuryDirectValObjLabel, 'Impact Observation of Injury Direct of the Hurricane (Typhoon)')).
+            ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
     return typedHazardQuery;

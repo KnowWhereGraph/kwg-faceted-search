@@ -132,6 +132,16 @@
                         <div>Fire: Standard Deviation of Mean dNBR (max)</div>
                         <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
                     </section>
+                    <section ng-show="hurricaneFacets">
+                        <div>Hurricane: Number of Deaths (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum deaths...">
+                        <div>Hurricane: Number of Deaths (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMax" ng-model="hazardFacetNumberDeathsMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum deaths...">
+                        <div>Hurricane: Number of Injured Cases (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum injured number...">
+                        <div>Hurricane: Number of Injured Cases (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">    
+                    </section>
                 </div>
             </li>
             <li id="expertise" ng-show="showExpertiseList">
