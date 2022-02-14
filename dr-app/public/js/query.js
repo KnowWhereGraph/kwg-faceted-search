@@ -95,7 +95,7 @@ async function getRandomPlace() {
     let row = queryResults[0];
     formattedResults[row.place_label.value] = row.place.value;
 
-    return {'randomPlace':formattedResults};
+    return { 'randomPlace': formattedResults };
 }
 
 async function getRandomHazard() {
@@ -134,7 +134,7 @@ async function getRandomHazard() {
     let row = queryResults[0];
     formattedResults[row.hazard_label.value] = row.hazard.value;
 
-    return {'randomHazard':formattedResults};
+    return { 'randomHazard': formattedResults };
 }
 
 async function getRandomExpert() {
@@ -150,19 +150,16 @@ async function getRandomExpert() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined")
-    {
+    if (typeof(row) == "undefined") {
         row = {
-            'expert':
-            {'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092'},
-            'expert_label':
-            {'value':'Chenyang Cao'}
+            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092' },
+            'expert_label': { 'value': 'Chenyang Cao' }
         };
     }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
-    return {'randomExpert':formattedResults};
+    return { 'randomExpert': formattedResults };
 }
 
 async function getRandomWildfire() {
@@ -180,7 +177,7 @@ async function getRandomWildfire() {
     let row = queryResults[0];
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
-    return {'randomWildfire':formattedResults};
+    return { 'randomWildfire': formattedResults };
 }
 
 async function getRandomEarthquake() {
@@ -198,7 +195,7 @@ async function getRandomEarthquake() {
     let row = queryResults[0];
     formattedResults[row.earthquake_label.value] = row.earthquake.value;
 
-    return {'randomEarthquake':formattedResults};
+    return { 'randomEarthquake': formattedResults };
 }
 
 async function getRandomExpertInjuryStorm() {
@@ -215,19 +212,16 @@ async function getRandomExpertInjuryStorm() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined")
-    {
+    if (typeof(row) == "undefined") {
         row = {
-            'expert':
-            {'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165'},
-            'expert_label':
-            {'value':'Zhonghua Mao'}
+            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165' },
+            'expert_label': { 'value': 'Zhonghua Mao' }
         };
     }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
-    return {'randomExpert':formattedResults};
+    return { 'randomExpert': formattedResults };
 }
 
 async function getAdministrativeRegion() {
@@ -250,24 +244,24 @@ async function getAdministrativeRegion() {
         let a1 = a1Array[a1Array.length - 1];
         let a1Label = row.a1Label.value;
 
-        if(!(a1 in formattedResults))
-            formattedResults[a1] = {'label': a1Label, 'sub_admin_regions': {}}
+        if (!(a1 in formattedResults))
+            formattedResults[a1] = { 'label': a1Label, 'sub_admin_regions': {} }
 
         let a2Array = row.a2.value.split("/");
         let a2 = a2Array[a2Array.length - 1];
         let a2Label = row.a2Label.value;
 
-        if(!(a2 in formattedResults[a1]["sub_admin_regions"]))
-            formattedResults[a1]["sub_admin_regions"][a2] = {'label': a2Label, 'sub_admin_regions': {}};
+        if (!(a2 in formattedResults[a1]["sub_admin_regions"]))
+            formattedResults[a1]["sub_admin_regions"][a2] = { 'label': a2Label, 'sub_admin_regions': {} };
 
         let a3Array = row.a3.value.split("/");
         let a3 = a3Array[a3Array.length - 1];
         let a3Label = row.a3Label.value;
 
-        formattedResults[a1]["sub_admin_regions"][a2]["sub_admin_regions"][a3]  = {'label': a3Label};
+        formattedResults[a1]["sub_admin_regions"][a2]["sub_admin_regions"][a3] = { 'label': a3Label };
     }
 
-    return {'regions':formattedResults};
+    return { 'regions': formattedResults };
 }
 
 async function getZipCodeArea() {
@@ -286,7 +280,7 @@ async function getZipCodeArea() {
         formattedResults[zipcode] = zipcodeArea;
     }
 
-    return {'zipcodes':formattedResults};
+    return { 'zipcodes': formattedResults };
 }
 
 async function getUSClimateDivision() {
@@ -305,7 +299,7 @@ async function getUSClimateDivision() {
         formattedResults[division_label] = division;
     }
 
-    return {'divisions':formattedResults};
+    return { 'divisions': formattedResults };
 }
 
 async function getNWZone() {
@@ -324,7 +318,7 @@ async function getNWZone() {
         formattedResults[nwzone_label] = nwzone;
     }
 
-    return {'nwzones':formattedResults};
+    return { 'nwzones': formattedResults };
 }
 
 //New search function for place in stko-kwg
@@ -333,17 +327,17 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
 
-    if(parameters["keyword"]!="") {
-        placeQuery +=`
+    if (parameters["keyword"] != "") {
+        placeQuery += `
         ?search a elastic-index:kwg_es_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
 
-    if(parameters["placeFacetsRegion"]!="" | parameters["placeFacetsUSCD"]!="" | parameters["placeFacetsNWZ"]!="" | parameters["placeFacetsZip"]!="") {
+    if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "") {
         let typeQueries = [];
 
-        if(parameters["placeFacetsRegion"]!="") {
+        if (parameters["placeFacetsRegion"] != "") {
             typeQueries.push(`
             {
                 ?search a elastic-index:kwg_es_index;
@@ -355,7 +349,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 ?type rdfs:label ?typeLabel
             }`);
         }
-        if(parameters["placeFacetsZip"]!="") {
+        if (parameters["placeFacetsZip"] != "") {
             entityAll = await getZipCodeArea();
             entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
             entity = entityArray[entityArray.length - 1];
@@ -366,7 +360,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 ?type rdfs:label ?typeLabel
             }`);
         }
-        if(parameters["placeFacetsUSCD"]!="") {
+        if (parameters["placeFacetsUSCD"] != "") {
             entityAll = await getUSClimateDivision();
             entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
             entity = entityArray[entityArray.length - 1];
@@ -378,7 +372,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 ?type rdfs:label ?typeLabel
             }`);
         }
-        if(parameters["placeFacetsNWZ"]!="") {
+        if (parameters["placeFacetsNWZ"] != "") {
             entityAll = await getNWZone();
             entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
             entity = entityArray[entityArray.length - 1];
@@ -399,39 +393,38 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         }`;
     }
 
-    if (typeof parameters["spatialSearchWkt"] != 'undefined')
-    {
+    if (typeof parameters["spatialSearchWkt"] != 'undefined') {
         placeQuery += `
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
     placeQuery += `}`;
 
-    let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     let entityRawValues = [];
     for (let row of queryResults) {
         let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:'+entityArray[entityArray.length - 1]);
+        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
         formattedResults.push({
-            'place':row.entity.value,
-            'place_name':row.label.value,
-            'place_type':row.type.value,
-            'place_type_name':row.typeLabel.value,
+            'place': row.entity.value,
+            'place_name': row.label.value,
+            'place_type': row.type.value,
+            'place_type_name': row.typeLabel.value,
         });
     }
 
-    let wktQuery= await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {${entityRawValues.join(' ')}} }`);
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {${entityRawValues.join(' ')}} }`);
     let wktResults = {};
-    for(let row of wktQuery) {
-        wktResults[row.entity.value] = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
+    for (let row of wktQuery) {
+        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
     }
 
-    for(let i=0; i<formattedResults.length; i++) {
+    for (let i = 0; i < formattedResults.length; i++) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
-    return {'count':countResults[0].count.value,'record':formattedResults};
+    return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
@@ -441,7 +434,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
 
     //Keyword search
-    if(parameters["keyword"]!="") {
+    if (parameters["keyword"] != "") {
         hazardQuery +=
             `
         ?search a elastic-index:kwg_es_index;
@@ -452,47 +445,45 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Filters out the types of hazards
     let typeQuery = 'values ?type {kwg-ont:EarthquakeEvent kwg-ont:Hurricane kwg-ont:Wildfire kwg-ont:WildlandFireUse kwg-ont:PrescribedFire kwg-ont:UnknownFire} #Temporary limiter';
-    if(parameters["hazardTypes"].length > 0)
+    if (parameters["hazardTypes"].length > 0)
         typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
 
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
     let placeEntities = [];
-    if(parameters["facetRegions"].length > 0) {
+    if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
     }
-    if(parameters["placeFacetsZip"]!="") {
+    if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
-    if(parameters["placeFacetsUSCD"]!="") {
+    if (parameters["placeFacetsUSCD"] != "") {
         entityAll = await getUSClimateDivision();
         entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
-    if(parameters["placeFacetsNWZ"]!="") {
+    if (parameters["placeFacetsNWZ"] != "") {
         entityAll = await getNWZone();
         entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
-    let placeSearchQuery = (placeEntities.length>0) ? `
+    let placeSearchQuery = (placeEntities.length > 0) ? `
         ?entity ?es ?s2Cell .
         ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
-        values ?places {kwgr:` + placeEntities.join(' kwgr:')  + `}
-        ?s2Cell ?sp ?places .`
-        : '';
+        values ?places {kwgr:` + placeEntities.join(' kwgr:') + `}
+        ?s2Cell ?sp ?places .` :
+        '';
 
     //Filter by the date hazard occurred
     let dateQuery = '';
-    if(parameters["hazardFacetDateStart"]!="" || parameters["hazardFacetDateEnd"]!="") {
+    if (parameters["hazardFacetDateStart"] != "" || parameters["hazardFacetDateEnd"] != "") {
         let dateArr = [];
-        if(parameters["hazardFacetDateStart"]!="")
-        {
+        if (parameters["hazardFacetDateStart"] != "") {
             dateArr.push(`?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
             dateArr.push(`?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
         }
-        if(parameters["hazardFacetDateEnd"]!="")
-        {
+        if (parameters["hazardFacetDateEnd"] != "") {
             dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel`);
             dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
         }
@@ -505,8 +496,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Filter by a circle on the map
     let spatialSearchQuery = '';
-    if (typeof parameters["spatialSearchWkt"] != 'undefined')
-    {
+    if (typeof parameters["spatialSearchWkt"] != 'undefined') {
         spatialSearchQuery += `
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
@@ -526,21 +516,21 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
     }`;
-    
-    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     let entityRawValues = [];
     for (let row of queryResults) {
         let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:'+entityArray[entityArray.length - 1]);
+        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
         formattedResults.push({
-            'hazard':row.entity.value,
-            'hazard_name':row.label.value,
-            'hazard_type':row.type.value,
-            'hazard_type_name':row.typeLabel.value
+            'hazard': row.entity.value,
+            'hazard_name': row.label.value,
+            'hazard_type': row.type.value,
+            'hazard_type_name': row.typeLabel.value
         });
     }
 
-    let propertyQuery= await query(`
+    let propertyQuery = await query(`
         select ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
             values ?entity {${entityRawValues.join(' ')}} 
             optional
@@ -559,44 +549,50 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             {
                 ?entity geo:hasGeometry/geo:asWKT ?wkt.
             }
-        }`
-    );
+        }`);
     let propResults = {};
-    for(let row of propertyQuery) {
-        let place = (typeof row.place  === 'undefined') ? '' : row.place.value;
-        let place_name = (typeof row.placeLabel  === 'undefined') ? '' : row.placeLabel.value;
-        let start_date = (typeof row.time  === 'undefined') ? '' : row.time.value;
-        let start_date_name = (typeof row.startTimeLabel  === 'undefined') ? '' : row.startTimeLabel.value;
-        let end_date = (typeof row.time  === 'undefined') ? '' : row.time.value;
-        let end_date_name = (typeof row.endTimeLabel  === 'undefined') ? '' : row.endTimeLabel.value;
-        let wkt = (typeof row.wkt  === 'undefined') ? '' : row.wkt.value;
-        propResults[row.entity.value] = {'place':place, 'place_name':place_name, 'start_date':start_date, 'start_date_name':start_date_name,
-            'end_date':end_date, 'end_date_name':end_date_name, 'wkt':wkt}
+    for (let row of propertyQuery) {
+        let place = (typeof row.place === 'undefined') ? '' : row.place.value;
+        let place_name = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value;
+        let start_date = (typeof row.time === 'undefined') ? '' : row.time.value;
+        let start_date_name = (typeof row.startTimeLabel === 'undefined') ? '' : row.startTimeLabel.value;
+        let end_date = (typeof row.time === 'undefined') ? '' : row.time.value;
+        let end_date_name = (typeof row.endTimeLabel === 'undefined') ? '' : row.endTimeLabel.value;
+        let wkt = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
+        propResults[row.entity.value] = {
+            'place': place,
+            'place_name': place_name,
+            'start_date': start_date,
+            'start_date_name': start_date_name,
+            'end_date': end_date,
+            'end_date_name': end_date_name,
+            'wkt': wkt
+        }
     }
 
-    for(let i=0; i<formattedResults.length; i++) {
+    for (let i = 0; i < formattedResults.length; i++) {
         formattedResults[i]['place'] = propResults[formattedResults[i]['hazard']]['place'];
         formattedResults[i]['place_name'] = propResults[formattedResults[i]['hazard']]['place_name'];
         formattedResults[i]['start_date'] = propResults[formattedResults[i]['hazard']]['start_date'];
         formattedResults[i]['start_date_name'] = propResults[formattedResults[i]['hazard']]['start_date_name'];
         formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
         formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
-        formattedResults[i]['wkt'] = propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','');
+        formattedResults[i]['wkt'] = propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '');
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
-    return {'count':countResults[0].count.value,'record':formattedResults};
+    return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
 function hazardTypeFacets(parameters) {
     let typedHazardQuery = '';
 
-    if(parameters["hazardFacetMagnitudeMin"]!="" || parameters["hazardFacetMagnitudeMax"]!="") {
+    if (parameters["hazardFacetMagnitudeMin"] != "" || parameters["hazardFacetMagnitudeMax"] != "") {
         let facetArr = [];
-        if(parameters["hazardFacetMagnitudeMin"]!="")
+        if (parameters["hazardFacetMagnitudeMin"] != "")
             facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["hazardFacetMagnitudeMin"]);
-        if(parameters["hazardFacetMagnitudeMax"]!="")
+        if (parameters["hazardFacetMagnitudeMax"] != "")
             facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?magnitudeObj.
@@ -604,11 +600,11 @@ function hazardTypeFacets(parameters) {
             ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
     }
 
-    if(parameters["hazardQuakeDepthMin"]!="" || parameters["hazardQuakeDepthMax"]!="") {
+    if (parameters["hazardQuakeDepthMin"] != "" || parameters["hazardQuakeDepthMax"] != "") {
         let facetArr = [];
-        if(parameters["hazardQuakeDepthMin"]!="")
+        if (parameters["hazardQuakeDepthMin"] != "")
             facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["hazardQuakeDepthMin"]);
-        if(parameters["hazardQuakeDepthMax"]!="")
+        if (parameters["hazardQuakeDepthMax"] != "")
             facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?quakeDepthObj.
@@ -616,11 +612,11 @@ function hazardTypeFacets(parameters) {
             ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
     }
 
-    if(parameters["hazardFacetAcresBurnedMin"]!="" || parameters["hazardFacetAcresBurnedMax"]!="") {
+    if (parameters["hazardFacetAcresBurnedMin"] != "" || parameters["hazardFacetAcresBurnedMax"] != "") {
         let facetArr = [];
-        if(parameters["hazardFacetAcresBurnedMin"]!="")
+        if (parameters["hazardFacetAcresBurnedMin"] != "")
             facetArr.push(`?numAcresBurned > ` + parameters["hazardFacetAcresBurnedMin"]);
-        if(parameters["hazardFacetAcresBurnedMax"]!="")
+        if (parameters["hazardFacetAcresBurnedMax"] != "")
             facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?numAcresBurnedObj.
@@ -629,11 +625,11 @@ function hazardTypeFacets(parameters) {
             ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
     }
 
-    if(parameters["hazardFacetMeanDnbrMin"]!="" || parameters["hazardFacetMeanDnbrMax"]!="") {
+    if (parameters["hazardFacetMeanDnbrMin"] != "" || parameters["hazardFacetMeanDnbrMax"] != "") {
         let facetArr = [];
-        if(parameters["hazardFacetMeanDnbrMin"]!="")
+        if (parameters["hazardFacetMeanDnbrMin"] != "")
             facetArr.push(`?meanVal > ` + parameters["hazardFacetMeanDnbrMin"]);
-        if(parameters["hazardFacetMeanDnbrMax"]!="")
+        if (parameters["hazardFacetMeanDnbrMax"] != "")
             facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?meanValObj.
@@ -642,11 +638,11 @@ function hazardTypeFacets(parameters) {
             ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
-    if(parameters["hazardFacetSDMeanDnbrMin"]!="" || parameters["hazardFacetSDMeanDnbrMax"]!="") {
+    if (parameters["hazardFacetSDMeanDnbrMin"] != "" || parameters["hazardFacetSDMeanDnbrMax"] != "") {
         let facetArr = [];
-        if(parameters["hazardFacetSDMeanDnbrMin"]!="")
+        if (parameters["hazardFacetSDMeanDnbrMin"] != "")
             facetArr.push(`?stanDevMeanVal > ` + parameters["hazardFacetSDMeanDnbrMin"]);
-        if(parameters["hazardFacetSDMeanDnbrMax"]!="")
+        if (parameters["hazardFacetSDMeanDnbrMax"] != "")
             facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?stanDevMeanValObj.
@@ -682,13 +678,13 @@ async function getHazardClasses() {
         ?entity rdf:type ?type.
         FILTER(?type = kwg-ont:Hurricane).
     }`;
-    
+
     let queryResults = await query(hazardQuery);
     for (let row of queryResults) {
         let hazardLabelArray = row.type.value.split("/");
         formattedResults.push({
-            'hazard_type':row.type.value,
-            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1]
+            'hazard_type': row.type.value,
+            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
         });
     }
 
@@ -696,8 +692,8 @@ async function getHazardClasses() {
     for (let row of queryResultsFire) {
         let hazardLabelArray = row.type.value.split("/");
         fireResults.push({
-            'hazard_type':row.type.value,
-            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1]
+            'hazard_type': row.type.value,
+            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
         });
     }
 
@@ -705,12 +701,12 @@ async function getHazardClasses() {
     for (let row of queryResultsHurricane) {
         let hazardLabelArray = row.type.value.split("/");
         hurricaneResults.push({
-            'hazard_type':row.type.value,
-            'hazard_type_name':hazardLabelArray[hazardLabelArray.length - 1]
+            'hazard_type': row.type.value,
+            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
         });
     }
 
-    return {'hazards':formattedResults, 'fires':fireResults, 'hurricanes':hurricaneResults};
+    return { 'hazards': formattedResults, 'fires': fireResults, 'hurricanes': hurricaneResults };
 }
 
 //New search function for expert in stko-kwg
@@ -718,7 +714,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
     let topicQuery = '';
-    if(parameters["expertTopics"].length > 0) {
+    if (parameters["expertTopics"].length > 0) {
         topicQuery = `values ?expert {kwgr:` + parameters["expertTopics"].join(' kwgr:') + `}`;
     }
 
@@ -727,7 +723,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
 
-    if(parameters["keyword"]!="") {
+    if (parameters["keyword"] != "") {
         expertQuery +=
             `
         ?search a elastic-index:kwg_es_index;
@@ -738,8 +734,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     // use ?affiliation instead of ?entity for expert spatial search
     let spatialSearchQuery = '';
-    if (typeof parameters["spatialSearchWkt"] != 'undefined')
-    {
+    if (typeof parameters["spatialSearchWkt"] != 'undefined') {
         spatialSearchQuery += `
             ?affiliation geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
@@ -761,23 +756,23 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`;
 
-    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum-1)*recordNum);
+    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
         formattedResults.push({
             'expert': row.entity.value,
             'expert_name': row.label.value,
-            'affiliation': (typeof row.affiliation  === 'undefined') ? "Insert Affiliation Here" : row.affiliation.value,
-            'affiliation_name': (typeof row.affiliation_name  === 'undefined') ? "Insert Affiliation Here" : row.affiliation_name.value,
+            'affiliation': (typeof row.affiliation === 'undefined') ? " " : row.affiliation.value,
+            'affiliation_name': (typeof row.affiliation_name === 'undefined') ? " " : row.affiliation_name.value,
             'expertise': row.expertise.value.split('||'),
             'expertise_name': row.expertiseLabel.value.split('||'),
-            'place': "Insert Place Here",
-            'place_name': "Insert Place Here",
-            'wkt':(typeof row.wkt  === 'undefined') ? "" : row.wkt.value,
+            'place': " ",
+            'place_name': " ",
+            'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
-    return {'count':countResults[0].count.value,'record':formattedResults};
+    return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 async function getExpertTopics() {
@@ -797,7 +792,7 @@ async function getExpertTopics() {
         let topicShort = topicShortArray[topicShortArray.length - 1];
         let subTopicShortArray = row.subtopic.value.split("/");
         let subTopicShort = subTopicShortArray[subTopicShortArray.length - 1];
-        if(topicShort in formattedResults) {
+        if (topicShort in formattedResults) {
             //We already have this user, which means we need to grab their expertise
             formattedResults[topicShort]['expert_subtopic'].push(subTopicShort);
             formattedResults[topicShort]['expert_sublabel'].push(row.sublabel.value);
@@ -812,5 +807,5 @@ async function getExpertTopics() {
         }
     }
 
-    return {'topics':Object.values(formattedResults)};
+    return { 'topics': Object.values(formattedResults) };
 }
