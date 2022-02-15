@@ -589,13 +589,13 @@ kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
+// Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('zipDirective', function() {
   return {
     restrict: 'C',
     require: 'ngModel',
     link: function(scope, element, attrs, ngModelCtrl) {
         getZipCodeArea().then(function(data) {
-          console.log("Then called...")
             if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
                 element.autocomplete({
                     source: Object.keys(data['zipcodes']),
@@ -610,6 +610,7 @@ kwgApp.directive('zipDirective', function() {
 }
 });
 
+// Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('uscdDirective', function() {
   return {
     restrict: 'C',
