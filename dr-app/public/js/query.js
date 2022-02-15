@@ -581,7 +581,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
         formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
         formattedResults[i]['wkt'] = (propResults[formattedResults[i]['hazard']]['wkt'] == '') ? propResults[formattedResults[i]['hazard']]['place_wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '') : propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', ''); 
-        console.log(formattedResults[i]['wkt']);
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
