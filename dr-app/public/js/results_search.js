@@ -108,6 +108,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //facet hazards
     $scope.earthquakeFacets = false;
     $scope.fireFacets = false;
+    $scope.hurricaneFacets = false;
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
@@ -146,6 +147,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.hazardFacetMeanDnbrMax = (urlVariables['dnbr-max'] != null && !isNaN(urlVariables['dnbr-max'])) ? Number.parseInt(urlVariables['dnbr-max']) : '';
     $scope.hazardFacetSDMeanDnbrMin = (urlVariables['stddev-dnbr-min'] != null && !isNaN(urlVariables['stddev-dnbr-min'])) ? Number.parseInt(urlVariables['stddev-dnbr-min']) : '';
     $scope.hazardFacetSDMeanDnbrMax = (urlVariables['stddev-dnbr-max'] != null && !isNaN(urlVariables['stddev-dnbr-max'])) ? Number.parseInt(urlVariables['stddev-dnbr-max']) : '';
+    $scope.hazardFacetNumberDeathsMin = (urlVariables['deaths-min'] != null && !isNaN(urlVariables['deaths-min'])) ? Number.parseInt(urlVariables['deaths-min']) : '';
+    $scope.hazardFacetNumberDeathsMax = (urlVariables['deaths-max'] != null && !isNaN(urlVariables['deaths-max'])) ? Number.parseInt(urlVariables['deaths-max']) : '';
+    $scope.hazardFacetNumberInjuredMin = (urlVariables['injured-min'] != null && !isNaN(urlVariables['injured-min'])) ? Number.parseInt(urlVariables['injured-min']) : '';
+    $scope.hazardFacetNumberInjuredMax = (urlVariables['injured-max'] != null && !isNaN(urlVariables['injured-max'])) ? Number.parseInt(urlVariables['injured-max']) : '';
 
     //Populate expert topics and set values
     getExpertTopics().then(function(data) {
@@ -449,6 +454,22 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('stddev-dnbr-max', parameters['hazardFacetSDMeanDnbrMax']);
         else
             $scope.removeValue('stddev-dnbr-max');
+        if (parameters['hazardFacetNumberDeathsMin'] != '')
+            $scope.updateURLParameters('deaths-min', parameters['hazardFacetNumberDeathsMin']);
+        else
+            $scope.removeValue('deaths-min');
+        if (parameters['hazardFacetNumberDeathsMax'] != '')
+            $scope.updateURLParameters('deaths-max', parameters['hazardFacetNumberDeathsMax']);
+        else
+            $scope.removeValue('deaths-max');
+        if (parameters['hazardFacetNumberInjuredMin'] != '')
+            $scope.updateURLParameters('injured-min', parameters['hazardFacetNumberInjuredMin']);
+        else
+            $scope.removeValue('injured-min');
+        if (parameters['hazardFacetNumberInjuredMax'] != '')
+            $scope.updateURLParameters('injured-max', parameters['hazardFacetNumberInjuredMax']);
+        else
+            $scope.removeValue('injured-max');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'hazard';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -478,12 +499,16 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
                 if (hazType.includes('fire') || hazType.includes('Fire'))
                     $scope.fireFacets = true;
+                
+                if (hazType.includes('Hurricane'))
+                    $scope.hurricaneFacets = true;
             }
 
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         } else {
             $scope.earthquakeFacets = false;
             $scope.fireFacets = false;
+            $scope.hurricaneFacets = false;
             $scope.removeValue('hazard');
         }
 
@@ -689,6 +714,10 @@ var getParameters = function() {
     parameters["hazardFacetMeanDnbrMax"] = angular.element("#hazardFacetMeanDnbrMax")[0].value;
     parameters["hazardFacetSDMeanDnbrMin"] = angular.element("#hazardFacetSDMeanDnbrMin")[0].value;
     parameters["hazardFacetSDMeanDnbrMax"] = angular.element("#hazardFacetSDMeanDnbrMax")[0].value;
+    parameters["hazardFacetNumberDeathsMin"] = angular.element("#hazardFacetNumberDeathsMin")[0].value;
+    parameters["hazardFacetNumberDeathsMax"] = angular.element("#hazardFacetNumberDeathsMax")[0].value;
+    parameters["hazardFacetNumberInjuredMin"] = angular.element("#hazardFacetNumberInjuredMin")[0].value;
+    parameters["hazardFacetNumberInjuredMax"] = angular.element("#hazardFacetNumberInjuredMax")[0].value;
 
     //People facets
     let expertTopics = [];
@@ -1042,8 +1071,6 @@ var displayTableByTabName = function(activeTabName, response) {
             // })
         });
 
-        //displayMap(response, activeTabName);
-
     }
     return selectors;
 };
@@ -1212,59 +1239,6 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
             }).appendTo(paginationSelector).addClass("clickable prev");
-        }
-    });
-}
-
-function displayMap(fullTextResults, tabName) {
-    // $("#spatial-search .results-nav ul li button.active")
-
-    fullTextResults.then(function(e) {
-        if (place_markers) {
-            place_markers.removeLayers(markers);
-            markers = [];
-        }
-        // var place = null;
-        // if (tabName == "Expert") {
-        //     place = e.Expert;
-        // } else if (tabName == "Place") {
-        //     place = e.Place;
-        // } else if (tabName == "Hazard") {
-        //     place = e.Hazard;
-        // }
-        var place = e["record"];
-
-        if (place) {
-            // var polygon = L.polygon(latlngs).addTo(resultsSearchMap);
-            var wicket = new Wkt.Wkt();
-            var center_lat = 0;
-            var center_lon = 0;
-            var count = 0;
-            place.forEach(e => {
-                if (e["place_geometry_wkt"]) {
-                    count += 1;
-                    var coords = wicket.read(e["place_geometry_wkt"]).toJson().coordinates;
-                    center_lat += coords[1];
-                    center_lon += coords[0];
-                    let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
-                        dd('b:' + e["place_name"]),
-                        dd('br'),
-                        dd('span:' + e["place"])
-                    ]));
-                    markers.push(place_marker);
-                    place_markers.addLayer(place_marker);
-                }
-
-            });
-            if (count) {
-                center_lat /= count;
-                center_lon /= count;
-
-                resultsSearchMap.panTo(new L.LatLng(center_lat, center_lon));
-                place_markers.addTo(resultsSearchMap);
-            } else {
-                //there is no returned locations
-            }
         }
     });
 }

@@ -531,12 +531,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     let propertyQuery = await query(`
-        select ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
+        select ?entity ?place ?placeLabel ?placeWkt ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
             values ?entity {${entityRawValues.join(' ')}} 
             optional
             {
                 ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel.
+                ?place rdfs:label ?placeLabel;
+                       geo:hasGeometry/geo:asWKT ?placeWkt.
             }
             optional
             {
@@ -554,6 +555,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     for (let row of propertyQuery) {
         let place = (typeof row.place === 'undefined') ? '' : row.place.value;
         let place_name = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value;
+        let place_wkt = (typeof row.placeWkt === 'undefined') ? '' : row.placeWkt.value;
         let start_date = (typeof row.time === 'undefined') ? '' : row.time.value;
         let start_date_name = (typeof row.startTimeLabel === 'undefined') ? '' : row.startTimeLabel.value;
         let end_date = (typeof row.time === 'undefined') ? '' : row.time.value;
@@ -562,6 +564,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         propResults[row.entity.value] = {
             'place': place,
             'place_name': place_name,
+            'place_wkt':place_wkt,
             'start_date': start_date,
             'start_date_name': start_date_name,
             'end_date': end_date,
@@ -577,7 +580,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['start_date_name'] = propResults[formattedResults[i]['hazard']]['start_date_name'];
         formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
         formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
-        formattedResults[i]['wkt'] = propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '');
+        formattedResults[i]['wkt'] = (propResults[formattedResults[i]['hazard']]['wkt'] == '') ? propResults[formattedResults[i]['hazard']]['place_wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '') : propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', ''); 
     }
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
@@ -649,6 +652,32 @@ function hazardTypeFacets(parameters) {
             ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
             FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
             ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if (parameters["hazardFacetNumberDeathsMin"] != "" || parameters["hazardFacetNumberDeathsMax"] != "") {
+        let facetArr = [];
+        if (parameters["hazardFacetNumberDeathsMin"] != "")
+            facetArr.push(`?deathDirectVal > ` + parameters["hazardFacetNumberDeathsMin"]);
+        if (parameters["hazardFacetNumberDeathsMax"] != "")
+            facetArr.push(parameters["hazardFacetNumberDeathsMax"] + ` > ?deathDirectVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?deathDirectValObj.
+            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel
+            FILTER(contains(?deathDirectValObjLabel, 'Impact Observation of Death Direct of the Hurricane (Typhoon)')).
+            ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
+    }
+
+    if (parameters["hazardFacetNumberInjuredMin"] != "" || parameters["hazardFacetNumberInjuredMax"] != "") {
+        let facetArr = [];
+        if (parameters["hazardFacetNumberInjuredMin"] != "")
+            facetArr.push(`?injuryDirectVal > ` + parameters["hazardFacetNumberInjuredMin"]);
+        if (parameters["hazardFacetNumberInjuredMax"] != "")
+            facetArr.push(parameters["hazardFacetNumberInjuredMax"] + ` > ?injuryDirectVal`);
+        typedHazardQuery += `
+            ?observationCollection sosa:hasMember ?injuryDirectValObj.
+            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel
+            FILTER(contains(?injuryDirectValObjLabel, 'Impact Observation of Injury Direct of the Hurricane (Typhoon)')).
+            ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
     return typedHazardQuery;
