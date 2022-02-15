@@ -1071,8 +1071,6 @@ var displayTableByTabName = function(activeTabName, response) {
             // })
         });
 
-        //displayMap(response, activeTabName);
-
     }
     return selectors;
 };
@@ -1241,59 +1239,6 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var selectors = displayTableByTabName(activeTabName, response);
                 displayPagination(activeTabName, selectors, totalRecords, parameters);
             }).appendTo(paginationSelector).addClass("clickable prev");
-        }
-    });
-}
-
-function displayMap(fullTextResults, tabName) {
-    // $("#spatial-search .results-nav ul li button.active")
-
-    fullTextResults.then(function(e) {
-        if (place_markers) {
-            place_markers.removeLayers(markers);
-            markers = [];
-        }
-        // var place = null;
-        // if (tabName == "Expert") {
-        //     place = e.Expert;
-        // } else if (tabName == "Place") {
-        //     place = e.Place;
-        // } else if (tabName == "Hazard") {
-        //     place = e.Hazard;
-        // }
-        var place = e["record"];
-
-        if (place) {
-            // var polygon = L.polygon(latlngs).addTo(resultsSearchMap);
-            var wicket = new Wkt.Wkt();
-            var center_lat = 0;
-            var center_lon = 0;
-            var count = 0;
-            place.forEach(e => {
-                if (e["place_geometry_wkt"]) {
-                    count += 1;
-                    var coords = wicket.read(e["place_geometry_wkt"]).toJson().coordinates;
-                    center_lat += coords[1];
-                    center_lon += coords[0];
-                    let place_marker = new L.marker([coords[1], coords[0]]).bindPopup(dd('.popup', [
-                        dd('b:' + e["place_name"]),
-                        dd('br'),
-                        dd('span:' + e["place"])
-                    ]));
-                    markers.push(place_marker);
-                    place_markers.addLayer(place_marker);
-                }
-
-            });
-            if (count) {
-                center_lat /= count;
-                center_lon /= count;
-
-                resultsSearchMap.panTo(new L.LatLng(center_lat, center_lon));
-                place_markers.addTo(resultsSearchMap);
-            } else {
-                //there is no returned locations
-            }
         }
     });
 }
