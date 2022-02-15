@@ -1,0 +1,111 @@
+.pagination {
+  .contents {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0;
+
+    div {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      width: 350px;
+
+      a {
+        color: $base-dark;
+        font-size: 18px;
+        padding: 0 5px;
+        transition: $transition-regular;
+
+        &:hover {
+          color: $base-dark;
+          transform: scale(1.07, 1.07);
+        }
+
+        &.active {
+          background: $light;
+          border-radius: 100%;
+          color: $base-dark;
+          height: 40px;
+          width: 40px;
+          box-sizing: border-box;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        &.next {
+          background: $base-dark;
+          display: flex;
+          justify-content: center;
+          padding: 0;
+          margin-left: 20px;
+          height: 50px;
+          width: 50px;
+          border-radius: 100%;
+
+          img {
+            transform: rotate(270deg);
+            width: 30%;
+            padding-top: 5px;
+          }
+        }
+
+        &.previous {
+          margin: 0 5px 0 25px;
+          padding: 0 7px 4px 0;
+
+          img {
+            transform: rotate(90deg);
+          }
+        }
+      }
+    }
+  }
+
+  &.dots {
+    .contents {
+      height: 67px;
+
+      div {
+        width: auto;
+
+        .previous {
+          margin-right: 15px;
+        }
+        a.dot {
+          background: $base-dark;
+          border-radius: 100%;
+          height: 10px;
+          opacity: .4;
+          margin: 5px;
+          padding: 0;
+          width: 10px;
+
+          &.active {
+            background: $base-dark;
+            opacity: 1;
+          }
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .pagination {
+    .contents {
+      div {
+        width: 100%;
+        a {
+          &.previous {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

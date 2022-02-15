@@ -1,0 +1,75 @@
+.button {
+  border-radius: 5px;
+  color: $light;
+  padding: 17px 27px;
+  font-size: 18px;
+  display: block;
+  box-sizing: border-box;
+  box-shadow: $shadow-light;
+  transition: $transition-regular;
+  width: max-content;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+
+  span {
+    display: block;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  &.primary {
+    background: $base-dark-alt;
+  }
+
+  &.secondary {
+    background: $light;
+    color: $base-dark;
+  }
+
+  &.tertiary {
+    background-color: $grey-dark;
+    color: $base-dark;
+  }
+
+  &.no-shadow {
+    box-shadow: none;
+  }
+
+  &.full-width {
+    width: 100%;
+  }
+
+  &.centered {
+    text-align: center;
+  }
+
+  &.icon {
+
+  }
+
+  &.chevron {
+  box-shadow: none;
+  color: $base-dark;
+  cursor: pointer;
+  text-align: left;
+  font-size: 18px;
+  height: auto;
+  padding: 0;
+
+  img {
+    margin-left: 5px;
+    transition: $transition-regular;
+    }
+
+  &:hover {
+    color: $base-dark-transparent-50;
+
+    img {
+      transform: rotate(180deg);
+      }
+    }
+  }
+
+}

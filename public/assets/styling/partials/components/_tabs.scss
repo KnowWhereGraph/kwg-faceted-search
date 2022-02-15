@@ -1,0 +1,55 @@
+.tab-container {
+  .arrow-wrap {
+    // overflow-y: hidden;
+    // overflow-x: scroll;
+    // position: relative;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs {
+      display: flex;
+      align-items: center;
+			height: 32px;
+			border-bottom: 3px solid $grey-darker;
+      list-style: none;
+      margin: 25px 0 30px 0;
+      padding: 0;
+      white-space: nowrap;
+      z-index: 0;
+
+      .tab {
+        border-bottom: 3px solid transparent;
+        opacity: 0.6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+				margin-right: 25px;
+        font-size: 18px;
+				padding-bottom: 10px;
+        text-align: center;
+        z-index: 1;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-bottom: 3px solid $base-dark;
+          cursor: pointer;
+          opacity: 1;
+        }
+
+        span {
+          align-items: center;
+          display: flex;
+
+          img {
+          height: 25px;
+          margin-right: 10px;
+          }
+        }
+      }
+      .active {
+        border-bottom: 3px solid $base-dark;
+        opacity: 1;
+      }
+    }
+  }
+}

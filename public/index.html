@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<title>Know Where Graph</title>
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<!-- stylesheets -->
+	<link rel="stylesheet" href="assets/styling/main.css" type="text/css">
+	<!-- JS -->
+	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+	<script src="../assets/javascripts/show-more.js"></script>
+</head>
+
+<body>
+	<section class="landing">
+		<header>
+			<div class="left"> <a href=""><img src="assets/images/svgs/logo-main.svg" alt="Know Where Graph Logo"/></a> </div>
+			<div class="right" id="menuToggle">
+              <input type="checkbox" />
+                <span></span>
+                <span></span>
+                <span></span>
+
+				<ul class="nav" id="menu">
+					<li class="nav-item"> <a class="nav-link" id="about" href="about/">About</a></li>
+					<li class="nav-item"> <a class="nav-link" id="explore" href="explore/">Explore</a></li>
+					<li class="nav-item"> <a class="nav-link" id="search" href="search/">Search</a></li>
+				</ul>
+			</div>
+		</header>
+		<div class="page-title centered">
+			<h1 class="mb-neg5">Say Hello to KnowWhereGraph</h1>
+		</div>
+		<div class="search home">
+	    <form>
+	        <input class="search-input" placeholder="Search Places, Hazards, and Experts"/>
+	        <button class="search-submit" type="submit" ng-click="keywordSubmit($event)">Search</button>
+	    </form>
+  </div>
+		<div class="background">
+			<img src="assets/images/background-landing.png" alt="Background Imagery - County Map of the USA with a vectored web of lines and nodes wrapping across the country, signifying connections" /> </div>
+	</section>
+	<section class="grey pt-120">
+		<div class="blog centered">
+			<h2>Welcome To KnowWhereGraph</h2>
+			<p>Knowledge graphs are not merely a set of technologies but a novel paradigm for the representation, retrieval, and integration of data from highly heterogeneous sources. Within just a few years, knowledge graphs have become a core component of modern search engines, intelligent personal assistants, business intelligence, and so on. Interestingly, despite large-scale data availability, they have not yet been as successful in the realm of environmental data and environmental intelligence services.</p>
+      <a class="button primary mt-20" href="about/">Learn More</a>
+		</div>
+	</section>
+	<section class="grey-dark">
+		<div class="blog centered">
+			<h2>Start Exploring</h2>
+			<div class="columns-3 mt-15">
+				<a class="button secondary" href="about/">Place</a>
+				<a class="button secondary" href="about/">Hazard</a>
+				<a class="button secondary" href="about/">Expert</a>
+				<a class="button secondary" href="about/">Wildfire</a>
+				<a class="button secondary" href="about/">Earthquake</a>
+				<a class="button secondary" href="about/">Injury & Storms</a>
+			</div>
+      <a class="button primary mt-50" href="explore/">Explore More</a>
+		</div>
+	</section>
+	<footer>
+		<div class="footer-wrap">
+			<img src="assets/images/svgs/logo-main.svg" alt="Know Where Graph Logo"/>
+		</div>
+	</footer>
+</body>
+
+</html>

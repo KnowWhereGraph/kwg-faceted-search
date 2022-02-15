@@ -1,0 +1,31 @@
+.more {
+  display: none;
+}
+
+.show-more-wrap.open .more {
+  display: block;
+}
+
+.more-inner {
+  display: none;
+}
+
+.show-more-wrap-inner.open .more-inner {
+  display: block;
+}
+
+.more-inner-2 {
+  display: none;
+}
+
+.show-more-wrap-inner-2.open .more-inner-2 {
+  display: block;
+}
+
+.show-less-wrap.close .less {
+  display: none;
+}
+
+.less > *:last-child {
+  margin-bottom: 30px;
+}

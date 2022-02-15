@@ -1,0 +1,790 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+	<title>Know Where Graph</title>
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<!-- stylesheets -->
+	<link rel="stylesheet" href="../assets/styling/main.css" type="text/css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+	integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+	crossorigin=""/>
+	<!-- JS -->
+	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+	integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+	crossorigin=""></script>
+
+</head>
+
+<body>
+	<section class="landing">
+		<header>
+			<div class="left"> <a href="../"><img src="../assets/images/svgs/logo-main.svg" alt="Know Where Graph Logo"/></a> </div>
+			<div class="right" id="menuToggle">
+              <input type="checkbox" />
+                <span></span>
+                <span></span>
+                <span></span>
+
+				<ul class="nav" id="menu">
+					<li class="nav-item"> <a class="nav-link" id="about" href="../about/">About</a></li>
+					<li class="nav-item"> <a class="nav-link" id="explore" href="../explore/">Explore</a></li>
+					<li class="active nav-item"> <a class="nav-link" id="search" href="../search/">Search</a></li>
+				</ul>
+			</div>
+		</header>
+		<div class="page-title centered">
+			<h1>Search Results</h1>
+		</div>
+		<div class="background">
+			<img src="../assets/images/background-landing.png" alt="Background Imagery - County Map of the USA with a vectored web of lines and nodes wrapping across the country, signifying connections" /> </div>
+	</section>
+	<section class="search-results columns-3">
+		<div class="sidebar">
+			<div class="search">
+				<form>
+				  <label class="sr-only" for="keyword">Enter Your Query</label>
+				  <input class="search-input" type="text" id="keyword" name="keyword" placeholder="Enter your query">
+				  <input class="search-submit" type="submit" value="Search">
+				</form>
+				<a class="hide button tertiary full-width centered no-shadow icon place mt-15 mb-10" href="">Start a Spatial Search</a>
+			</div>
+			<section class="pa-0 pt-40">
+				<h3 class="filter-category">Place</h3>
+        <div class="show-less-wrap">
+          <a class="button chevron show-less mb-10">Administrative Regions<img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+          <div class="less">
+						<div class="checkbox-wrap">
+							<div class="show-more-wrap flex wrap">
+								<label class="checkbox-container filter" for="africa">Africa
+		              <input id="africa" type="checkbox">
+		              <span class="checkmark"></span>
+		            </label>
+								<a class="button chevron show-more"><img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+
+								<div class="more">
+									<div class="show-more-wrap-inner flex wrap">
+										<label class="checkbox-container filter" for="algeria">Algeria
+				              <input id="algeria" type="checkbox">
+				              <span class="checkmark"></span>
+				            </label>
+										<a class="button chevron show-more-inner"><img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+
+										<div class="more-inner">
+											<div class="show-more-wrap-inner-2 flex wrap">
+												<label class="checkbox-container filter" for="blida">Blida
+						              <input id="blida" type="checkbox">
+						              <span class="checkmark"></span>
+						            </label>
+												<a class="button chevron show-more-inner-2"><img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+												<div class="more-inner-2">
+													<label class="checkbox-container filter" for="chebli">Chebli
+							              <input id="chebli" type="checkbox">
+							              <span class="checkmark"></span>
+							            </label>
+													<label class="checkbox-container filter" for="chiffa">Chiffa
+							              <input id="chiffa" type="checkbox">
+							              <span class="checkmark"></span>
+							            </label>
+													<label class="checkbox-container filter" for="chrea">Chrea
+							              <input id="chrea" type="checkbox">
+							              <span class="checkmark"></span>
+							            </label>
+												</div>
+
+												<label class="checkbox-container filter" for="bordj">Bordj Bou Arreridj
+						              <input id="bordj" type="checkbox">
+						              <span class="checkmark"></span>
+						            </label>
+											</div>
+										</div>
+									</div>
+
+			            <label class="checkbox-container filter" for="angola">Angola
+			              <input id="angola" type="checkbox">
+			              <span class="checkmark"></span>
+			            </label>
+								</div>
+
+							</div>
+						</div>
+
+            <label class="checkbox-container filter" for="2">Different Filter Option Goes Here
+              <input id="2" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox-container filter" for="3">Different Filter Option
+              <input id="3" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="4">Different Filter Option Goes Here
+              <input id="4" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="5">Different Filter Option
+              <input id="5" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="6">Different Filter Option Goes Here
+              <input id="6" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="7">Different Filter Option
+              <input id="7" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+				<div class="show-less-wrap">
+          <a class="button chevron show-less mb-10">Filter Sub Category<img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+          <div class="less">
+            <label class="checkbox-container filter" for="8">Filter Option
+              <input id="8" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox-container filter" for="9">Different Filter Option Goes Here
+              <input id="9" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox-container filter" for="10">Different Filter Option
+              <input id="10" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="11">Different Filter Option Goes Here
+              <input id="11" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="12">Different Filter Option
+              <input id="12" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="13">Different Filter Option Goes Here
+              <input id="13" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+						<label class="checkbox-container filter" for="14">Different Filter Option
+              <input id="14" type="checkbox">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+			<section class="pa-0 pt-20">
+				<h3 class="filter-category">Filter Category</h3>
+        <div class="show-less-wrap">
+          <a class="button chevron show-less mb-10">Filter Sub Category<img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+          <div class="less">
+						<label class="label" for="input">This is a Text Input</label>
+            <input class="input" type="text" id="input" name="input" placeholder="Enter your query">
+						<label class="label" for="input2">This is a Text Input</label>
+            <input class="input" type="text" id="input2" name="input" placeholder="Enter your query">
+						<label class="label" for="select">Select Type</label>
+						<select class="select sidebar-select" type="select" id="select" name="select" placeholder="Select an option">
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+						</select>
+          </div>
+        </div>
+      </section>
+			<section class="pa-0 pt-20">
+				<h3 class="filter-category">Filter Category</h3>
+        <div class="show-less-wrap">
+          <a class="button chevron show-less mb-10">Filter Sub Category<img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+          <div class="less">
+						<label class="label" for="number-input">This is a Number Input</label>
+            <input class="input" type="number" id="number-input" name="number-input" placeholder="Enter minimum magnitude">
+						<label class="label" for="number-input2">This is a Number Input</label>
+            <input class="input" type="number" id="number-input2" name="number-input" placeholder="Enter maximum magnitude">
+						<label class="label" for="select">Select Type</label>
+						<select class="select sidebar-select" type="select" id="select" name="select" placeholder="Select an option">
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+						</select>
+          </div>
+        </div>
+      </section>
+			<section class="pa-0 pt-20">
+				<h3 class="filter-category">Filter Category</h3>
+        <div class="show-less-wrap">
+          <a class="button chevron show-less mb-10">Filter Sub Category<img src="../assets/images/svgs/chevron-dark.svg" alt="Chevron"/></a>
+          <div class="less">
+						<label class="label" for="number-input">This is a Date Input</label>
+            <input class="input" type="date" id="number-input" name="number-input" placeholder="Enter minimum magnitude">
+						<label class="label" for="number-input2">This is a Date Input</label>
+            <input class="input" type="date" id="number-input2" name="number-input" placeholder="Enter maximum magnitude">
+						<label class="label" for="select">Select Type</label>
+						<select class="select sidebar-select" type="select" id="select" name="select" placeholder="Select an option">
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+							<option value="">Select an option</option>
+							<option value="">Select another option</option>
+						</select>
+          </div>
+        </div>
+      </section>
+		</div>
+
+		<div class="results">
+			<div class="wrap">
+				<h2>30848 Records</h2>
+
+				<div class="wrap-tabs">
+				<div class="tab-container">
+					<div class="arrow-wrap">
+							<ul class="tabs">
+									<li class="tab active" id="places"><span><img src="../assets/images/svgs/place.svg"/> Places</span></li>
+									<li class="tab" id="hazards"><span><img src="../assets/images/svgs/hazard.svg"/> Hazards</span></li>
+									<li class="tab" id="people"><span><img src="../assets/images/svgs/person.svg"/> People</span></li>
+							</ul>
+					</div>
+			</div>
+
+			<main class="places">
+				<table cellspacing="0" cellpadding="0">
+				  <tr>
+				    <th>Name</th>
+				    <th>Type</th>
+						<th>Hazards</th>
+				  </tr>
+				  <tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span>
+						</td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+					<tr>
+				    <td><a>California</a></td>
+				    <td><a>Admin Region 2</a></td>
+						<td><span><img src="../assets/images/svgs/people.svg"/>4<span>People</span></span>
+							<span><img src="../assets/images/svgs/hurricane.svg"/>4<span>Hurricanes</span></span>
+							<span><img src="../assets/images/svgs/fire.svg"/>4<span>Fires</span></span>
+							<span><img src="../assets/images/svgs/earthquake.svg"/>4<span>Earthquakes</span></span></td>
+				  </tr>
+
+				</table>
+
+				<div class="result-controls flex flex-wrap space-between">
+					<div class="mt-20">
+						<label class="sr-only" for="per-page">Number Per Page</label>
+						<select class="select per-page" type="select" id="per-page" name="per-page" placeholder="50 Per Page">
+							<option value="">50 Per Page</option>
+							<option value="">100 Per Page</option>
+							<option value="">200 Per Page</option>
+							<option value="">Show All</option>
+						</select>
+					</div>
+					<div class="pagination mt-20">
+						<div class="contents">
+							<div>
+								<a href="" class="previous"><img src="../assets/images/svgs/chevron-dark.svg" alt="Previous Chevron Icon"/></a>
+								<a href="" class="active">1</a>
+								<a href="">2</a> <a href="">3</a>
+								<a href="">4</a> <a href="">5</a>
+								<a href="">...</a>
+								<a href="">18</a>
+								<a href="" class="next"><img src="../assets/images/svgs/chevron.svg" alt="Next Chevron Icon"/></a> </div>
+						</div>
+					</div>
+				</div>
+
+			</main>
+
+			<main class="hazards">
+				<table cellspacing="0" cellpadding="0">
+				  <tr>
+				    <th>Name</th>
+				    <th>Type</th>
+				    <th>Place</th>
+						<th>Start Date</th>
+				    <th>End Date</th>
+				  </tr>
+				  <tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfred</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alexander</a></td>
+				    <td><a>Hurricane</a></td>
+				    <td><a>Dorchester</a></td>
+						<td><a>1996-07-12 T01:00:00+05:00</a></td>
+				    <td><a>1996-07-12 T11:00:00+05:00</a></td>
+				  </tr>
+				</table>
+
+				<div class="result-controls flex flex-wrap space-between">
+					<div class="mt-20">
+						<label class="sr-only" for="per-page">Number Per Page</label>
+						<select class="select per-page" type="select" id="per-page" name="per-page" placeholder="50 Per Page">
+							<option value="">50 Per Page</option>
+							<option value="">100 Per Page</option>
+							<option value="">200 Per Page</option>
+							<option value="">Show All</option>
+						</select>
+					</div>
+					<div class="pagination mt-20">
+						<div class="contents">
+							<div>
+								<a href="" class="previous"><img src="../assets/images/svgs/chevron-dark.svg" alt="Previous Chevron Icon"/></a>
+								<a href="" class="active">1</a>
+								<a href="">2</a> <a href="">3</a>
+								<a href="">4</a> <a href="">5</a>
+								<a href="">...</a>
+								<a href="">18</a>
+								<a href="" class="next"><img src="../assets/images/svgs/chevron.svg" alt="Next Chevron Icon"/></a> </div>
+						</div>
+					</div>
+				</div>
+
+			</main>
+
+			<main class="people">
+				<table cellspacing="0" cellpadding="0">
+				  <tr>
+				    <th>Name</th>
+				    <th>Affiliation</th>
+						<th>Expertise</th>
+				    <th>Place</th>
+				  </tr>
+				  <tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+					<tr>
+				    <td><a>Alfreds Futterkiste</a></td>
+				    <td><a>UCL</a></td>
+						<td><a>Topic instance storm</a>, <a>Topic instance medication</a>, <a>Expertise in medication and storm</a></td>
+				    <td><a>Germany</a></td>
+				  </tr>
+
+
+				</table>
+
+				<div class="result-controls flex flex-wrap space-between">
+					<div class="mt-20">
+						<label class="sr-only" for="per-page">Number Per Page</label>
+						<select class="select per-page" type="select" id="per-page" name="per-page" placeholder="50 Per Page">
+							<option value="">50 Per Page</option>
+							<option value="">100 Per Page</option>
+							<option value="">200 Per Page</option>
+							<option value="">Show All</option>
+						</select>
+					</div>
+					<div class="pagination mt-20">
+						<div class="contents">
+							<div>
+								<a href="" class="previous"><img src="../assets/images/svgs/chevron-dark.svg" alt="Previous Chevron Icon"/></a>
+								<a href="" class="active">1</a>
+								<a href="">2</a> <a href="">3</a>
+								<a href="">4</a> <a href="">5</a>
+								<a href="">...</a>
+								<a href="">18</a>
+								<a href="" class="next"><img src="../assets/images/svgs/chevron.svg" alt="Next Chevron Icon"/></a> </div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			</div>
+
+			</div>
+		</div>
+		<div class="map" id="map"></div>
+	</section>
+
+	<footer>
+		<div class="footer-wrap">
+			<img src="../assets/images/svgs/logo-main.svg" alt="Know Where Graph Logo"/>
+		</div>
+	</footer>
+
+	<script>
+	var map = L.map('map').setView([51.505, -0.09], 13);
+
+	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+}).addTo(map);
+
+	</script>
+	<script src="../assets/javascripts/tabs.js"></script>
+	<script src="../assets/javascripts/show-more.js"></script>
+
+</body>
+
+</html>
