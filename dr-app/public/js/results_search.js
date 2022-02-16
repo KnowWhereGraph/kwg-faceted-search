@@ -904,49 +904,9 @@ var displayBreadCrumbs = function() {
     angular.element("#breadcrumb-header").html(tabCap);
 }
 
-// for initial status, click facets
-var displayActiveTab = function() {
-    // find the active tab
-    // var activeTabName = "";
-    var activeElement = angular.element(".results-table #pills-tabContent div.active");
-    var activeElementID = activeElement[0].id;
-    if (activeElementID.endsWith("people")) {
-        activeTabName = "People";
-    } else if (activeElementID.endsWith("place")) {
-        activeTabName = "Place";
-    } else if (activeElementID.endsWith("hazard")) {
-        activeTabName = "Hazard";
-    }
-
-    // get all the parameters
-    var newParameters = getParameters();
-    var response;
-    if (JSON.stringify(parameters) != JSON.stringify(newParameters)) {
-        loadedTabs = {};
-        parameters = newParameters;
-
-        // send queries to the current active tab
-        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-        response = sendQueries(activeTabName, page, pp, parameters);
-
-        // get the count of records and display them in the table
-        var selectors = displayTableByTabName(activeTabName, response);
-        response.then(function(e) {
-            var key = Object.keys(e)[0];
-            var val = e[key];
-            val.then(function(result) {
-                var countResults = result["count"];
-                displayPagination(activeTabName, selectors, countResults, parameters);
-            });
-
-        });
-        loadedTabs[activeTabName] = true;
-    }
-
-}
-
 var displayTableByTabName = function(activeTabName, response) {
+  
+
     var selectors = null;
     var countResults = null;
     var recordResults = null;
