@@ -238,7 +238,12 @@ async function getAdministrativeRegion() {
         ?a1 rdfs:label ?a1Label .
     } ORDER BY ?a1Label ?a2Label ?a3Label`;
 
-    let queryResults = await query(regionQuery);
+    // use cached data for now
+    // let queryResults = await query(regionQuery);
+    us_admin_regions_json = await fetch("/cache/us_admin_regions.json");
+    us_admin_regions_cached = await us_admin_regions_json.json();
+    let queryResults = us_admin_regions_cached.results.bindings;
+
     for (let row of queryResults) {
         let a1Array = row.a1.value.split("/");
         let a1 = a1Array[a1Array.length - 1];
@@ -273,7 +278,12 @@ async function getZipCodeArea() {
                      kwg-ont:hasZipCode ?zipcode.
     } ORDER BY ASC(?zipcode)`;
 
-    let queryResults = await query(zipcodeQuery);
+    // use cached data for now
+    // let queryResults = await query(zipcodeQuery);
+    zipcode_areas_json = await fetch("/cache/zipcode_areas.json");
+    zipcode_areas_cached = await zipcode_areas_json.json();
+    let queryResults = zipcode_areas_cached.results.bindings;
+
     for (let row of queryResults) {
         let zipcode = row.zipcode.value;
         let zipcodeArea = row.zipcodeArea.value;
@@ -292,7 +302,12 @@ async function getUSClimateDivision() {
                   rdfs:label ?division_label.
     } ORDER BY ASC(?division_label)`;
 
-    let queryResults = await query(divisionQuery);
+    // use cached data for now
+    // let queryResults = await query(divisionQuery);
+    us_climate_divisions_json = await fetch("/cache/us_climate_divisions.json");
+    us_climate_divisions_cached = await us_climate_divisions_json.json();
+    let queryResults = us_climate_divisions_cached.results.bindings;
+
     for (let row of queryResults) {
         let division = row.division.value;
         let division_label = row.division_label.value;
@@ -311,7 +326,12 @@ async function getNWZone() {
                 rdfs:label ?nwzone_label.
     } ORDER BY ASC(?nwzone_label)`;
 
-    let queryResults = await query(nwzoneQuery);
+    // use cached data for now
+    // let queryResults = await query(nwzoneQuery);    
+    nwzones_json = await fetch("/cache/nwzones.json");
+    nwzones_cached = await nwzones_json.json();
+    let queryResults = nwzones_cached.results.bindings;
+    
     for (let row of queryResults) {
         let nwzone = row.nwzone.value;
         let nwzone_label = row.nwzone_label.value;

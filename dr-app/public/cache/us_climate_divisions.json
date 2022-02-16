@@ -1,0 +1,3452 @@
+{
+  "head" : {
+    "vars" : [
+      "division",
+      "division_label"
+    ]
+  },
+  "results" : {
+    "bindings" : [
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1001"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1001"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1002"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1002"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1003"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1003"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1004"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1004"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1005"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1005"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1006"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1006"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1007"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1007"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1008"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1008"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1009"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1009"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.101"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 101"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1010"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1010"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.102"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 102"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.103"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 103"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.104"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 104"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.105"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 105"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.106"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 106"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.107"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 107"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.108"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 108"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1101"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1101"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1102"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1102"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1103"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1103"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1104"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1104"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1105"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1105"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1106"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1106"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1107"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1107"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1108"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1108"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1109"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1109"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1201"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1201"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1202"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1202"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1203"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1203"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1204"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1204"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1205"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1205"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1206"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1206"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1207"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1207"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1208"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1208"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1209"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1209"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1301"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1301"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1302"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1302"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1303"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1303"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1304"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1304"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1305"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1305"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1306"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1306"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1307"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1307"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1308"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1308"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1309"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1309"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1401"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1401"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1402"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1402"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1403"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1403"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1404"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1404"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1405"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1405"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1406"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1406"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1407"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1407"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1408"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1408"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1409"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1409"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1501"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1501"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1502"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1502"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1503"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1503"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1504"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1504"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1601"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1601"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1602"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1602"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1603"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1603"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1604"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1604"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1605"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1605"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1606"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1606"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1607"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1607"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1608"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1608"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1609"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1609"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1701"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1701"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1702"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1702"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1703"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1703"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1801"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1801"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1802"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1802"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1803"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1803"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1804"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1804"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1805"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1805"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1806"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1806"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1807"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1807"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1808"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1808"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1901"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1901"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1902"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1902"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.1903"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 1903"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2001"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2001"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2002"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2002"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2003"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2003"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2004"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2004"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2005"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2005"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2006"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2006"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2007"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2007"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2008"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2008"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2009"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2009"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.201"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 201"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2010"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2010"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.202"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 202"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.203"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 203"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.204"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 204"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.205"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 205"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.206"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 206"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.207"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 207"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2101"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2101"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2102"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2102"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2103"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2103"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2104"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2104"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2105"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2105"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2106"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2106"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2107"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2107"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2108"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2108"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2109"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2109"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2201"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2201"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2202"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2202"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2203"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2203"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2204"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2204"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2205"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2205"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2206"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2206"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2207"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2207"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2208"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2208"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2209"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2209"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2210"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2210"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2301"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2301"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2302"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2302"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2303"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2303"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2304"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2304"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2305"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2305"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2306"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2306"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2401"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2401"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2402"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2402"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2403"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2403"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2404"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2404"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2405"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2405"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2406"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2406"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2407"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2407"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2501"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2501"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2502"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2502"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2503"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2503"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2505"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2505"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2506"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2506"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2507"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2507"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2508"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2508"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2509"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2509"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2601"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2601"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2602"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2602"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2603"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2603"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2604"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2604"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2701"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2701"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2702"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2702"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2801"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2801"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2802"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2802"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2803"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2803"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2901"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2901"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2902"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2902"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2903"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2903"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2904"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2904"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2905"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2905"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2906"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2906"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2907"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2907"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.2908"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 2908"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3001"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3001"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3002"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3002"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3003"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3003"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3004"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3004"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3005"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3005"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3006"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3006"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3007"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3007"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3008"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3008"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3009"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3009"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.301"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 301"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3010"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3010"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.302"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 302"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.303"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 303"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.304"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 304"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.305"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 305"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.306"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 306"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.307"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 307"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.308"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 308"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.309"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 309"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3101"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3101"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3102"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3102"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3103"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3103"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3104"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3104"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3105"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3105"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3106"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3106"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3107"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3107"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3108"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3108"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3201"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3201"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3202"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3202"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3203"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3203"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3204"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3204"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3205"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3205"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3206"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3206"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3207"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3207"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3208"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3208"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3209"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3209"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3301"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3301"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3302"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3302"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3303"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3303"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3304"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3304"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3305"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3305"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3306"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3306"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3307"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3307"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3308"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3308"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3309"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3309"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3310"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3310"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3401"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3401"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3402"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3402"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3403"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3403"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3404"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3404"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3405"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3405"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3406"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3406"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3407"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3407"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3408"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3408"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3409"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3409"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3501"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3501"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3502"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3502"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3503"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3503"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3504"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3504"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3505"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3505"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3506"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3506"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3507"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3507"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3508"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3508"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3509"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3509"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3601"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3601"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3602"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3602"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3603"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3603"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3604"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3604"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3605"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3605"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3606"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3606"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3607"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3607"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3608"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3608"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3609"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3609"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3610"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3610"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3701"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3701"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3801"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3801"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3802"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3802"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3803"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3803"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3804"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3804"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3805"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3805"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3806"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3806"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3807"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3807"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3901"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3901"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3902"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3902"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3903"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3903"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3904"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3904"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3905"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3905"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3906"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3906"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3907"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3907"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3908"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3908"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.3909"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 3909"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4001"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4001"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4002"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4002"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4003"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4003"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4004"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4004"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.401"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 401"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.402"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 402"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.403"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 403"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.404"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 404"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.405"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 405"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.406"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 406"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.407"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 407"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4101"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4101"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4102"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4102"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4103"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4103"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4104"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4104"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4105"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4105"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4106"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4106"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4107"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4107"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4108"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4108"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4109"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4109"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4110"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4110"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4201"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4201"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4202"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4202"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4203"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4203"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4204"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4204"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4205"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4205"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4206"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4206"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4207"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4207"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4301"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4301"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4302"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4302"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4303"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4303"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4401"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4401"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4402"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4402"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4403"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4403"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4404"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4404"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4405"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4405"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4406"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4406"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4501"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4501"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4502"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4502"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4503"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4503"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4504"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4504"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4505"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4505"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4506"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4506"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4507"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4507"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4508"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4508"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4509"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4509"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4510"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4510"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4601"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4601"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4602"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4602"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4603"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4603"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4604"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4604"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4605"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4605"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4606"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4606"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4701"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4701"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4702"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4702"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4703"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4703"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4704"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4704"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4705"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4705"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4706"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4706"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4707"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4707"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4708"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4708"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4709"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4709"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4801"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4801"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4802"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4802"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4803"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4803"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4804"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4804"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4805"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4805"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4806"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4806"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4807"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4807"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4808"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4808"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4809"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4809"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.4810"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 4810"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.501"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 501"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.502"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 502"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.503"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 503"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.504"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 504"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.505"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 505"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.601"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 601"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.602"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 602"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.603"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 603"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.701"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 701"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.702"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 702"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.801"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 801"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.802"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 802"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.803"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 803"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.804"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 804"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.805"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 805"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.806"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 806"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.807"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 807"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.901"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 901"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.902"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 902"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.903"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 903"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.904"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 904"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.905"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 905"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.906"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 906"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.907"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 907"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.908"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 908"
+        }
+      },
+      {
+        "division" : {
+          "type" : "uri",
+          "value" : "http://stko-kwg.geog.ucsb.edu/lod/resource/noaaClimateDiv.909"
+        },
+        "division_label" : {
+          "type" : "literal",
+          "value" : "US NOAA Climate Division 909"
+        }
+      }
+    ]
+  }
+}
