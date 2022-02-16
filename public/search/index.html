@@ -41,7 +41,7 @@
 		<div class="background">
 			<img src="../assets/images/background-landing.png" alt="Background Imagery - County Map of the USA with a vectored web of lines and nodes wrapping across the country, signifying connections" /> </div>
 	</section>
-	<section class="search-results columns-3">
+	<section class="search-results flex no-wrap">
 		<div class="sidebar">
 			<div class="search">
 				<form>
@@ -241,6 +241,7 @@
 									<li class="tab active" id="places"><span><img src="../assets/images/svgs/place.svg"/> Places</span></li>
 									<li class="tab" id="hazards"><span><img src="../assets/images/svgs/hazard.svg"/> Hazards</span></li>
 									<li class="tab" id="people"><span><img src="../assets/images/svgs/person.svg"/> People</span></li>
+									<li class="tab" id="map-view"><span><img src="../assets/images/svgs/map.svg"/> Map</span></li>
 							</ul>
 					</div>
 			</div>
@@ -756,11 +757,14 @@
 				</div>
 			</main>
 
+			<main class="map-view">
+				<div class="map" id="map"></div>
+			</main>
+
 			</div>
 
 			</div>
 		</div>
-		<div class="map" id="map"></div>
 	</section>
 
 	<footer>

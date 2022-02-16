@@ -7,9 +7,15 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<!-- stylesheets -->
 	<link rel="stylesheet" href="assets/styling/main.css" type="text/css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+	integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+	crossorigin=""/>
 	<!-- JS -->
 	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 	<script src="../assets/javascripts/show-more.js"></script>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+	integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+	crossorigin=""></script>
 </head>
 
 <body>
@@ -48,25 +54,31 @@
       <a class="button primary mt-20" href="about/">Learn More</a>
 		</div>
 	</section>
-	<section class="grey-dark">
-		<div class="blog centered">
-			<h2>Start Exploring</h2>
-			<div class="columns-3 mt-15">
-				<a class="button secondary" href="about/">Place</a>
-				<a class="button secondary" href="about/">Hazard</a>
-				<a class="button secondary" href="about/">Expert</a>
-				<a class="button secondary" href="about/">Wildfire</a>
-				<a class="button secondary" href="about/">Earthquake</a>
-				<a class="button secondary" href="about/">Injury & Storms</a>
-			</div>
-      <a class="button primary mt-50" href="explore/">Explore More</a>
-		</div>
+
+	<section class="grey-dark py-30">
+		<div class="map no-max-width" id="map" style="height:500px;z-index:1;"></div>
+		<a class="button primary mt-neg30 map-view" href="search/">Explore More</a>
 	</section>
+
 	<footer>
 		<div class="footer-wrap">
 			<img src="assets/images/svgs/logo-main.svg" alt="Know Where Graph Logo"/>
 		</div>
 	</footer>
+
+	<script>
+	var map = L.map('map').setView([51.505, -0.09], 13);
+
+	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+}).addTo(map);
+
+	</script>
 </body>
 
 </html>

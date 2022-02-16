@@ -45,6 +45,11 @@
     text-align: center;
   }
 
+  &.map-view {
+    position: relative;
+    z-index: 2;
+  }
+
   &.icon {
 
   }

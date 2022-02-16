@@ -26,6 +26,10 @@ section {
   align-items: center;
 }
 
+.no-max-width {
+  max-width: initial !important;
+}
+
 .card-section {
   background: $light;
   border-radius: 5px;
