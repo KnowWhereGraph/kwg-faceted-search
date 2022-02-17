@@ -1,7 +1,9 @@
 var parameters = {};
 
 var expertTitles = ["Name", "Affiliation", "Expertise", "Place"];
-var placeTitles = ["Name", "Type", "Hazards"];
+// DEVNOTE: The placeTitles below was commented out for the beta release. We'll eventually want to uncomment it
+//var placeTitles = ["Name", "Type", "Hazards"];
+var placeTitles = ["Name", "Type"];
 var hazardTitles = ["Name", "Type", "Place", "Start Date", "End Date"];
 
 var activeTabName = "";
@@ -1058,7 +1060,6 @@ var displayTableByTabName = function(activeTabName, result, from="") {
           var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
           tableBody.append(rowHtml);
         });
-
     return selectors;
 };
 
