@@ -381,7 +381,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     currentQuery=queryIdentifier;
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
-                      var selectors = displayTableByTabName(activeTabName, response, "resultsSearchMap");
+                      var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
                         var countResults = result["count"];
                         displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
                     });
@@ -513,7 +513,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
           if (currentQuery != queryIdentifier) {
             return;
           }
-          var selectors = displayTableByTabName(activeTabName, response, "hazardFacetChanged");
+          var selectors = displayTableByTabName(activeTabName, result, "hazardFacetChanged");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "hazardFacetChanged");
         });
@@ -559,7 +559,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
           if (currentQuery != queryIdentifier) {
             return;
           }
-          var selectors = displayTableByTabName(activeTabName, response, "selectHazard");
+          var selectors = displayTableByTabName(activeTabName, result, "selectHazard");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, from="selectHazard");
         });
@@ -586,14 +586,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
           if (currentQuery != queryIdentifier) {
             return;
           }
-          var selectors = displayTableByTabName(activeTabName, response, "resultsSearchMap");
+          var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "selectTopic");
         });
     }, debounceTimeout);
 
     $scope.selectRegion = debounce(function() {
-      let queryIdentifier = 6;
         var parameters = getParameters();
 
         if (parameters["facetRegions"].length > 0) {
@@ -614,7 +613,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
           if (currentQuery != queryIdentifier) {
             return;
           }
-          var selectors = displayTableByTabName(activeTabName, response, "selectRegion");
+          var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
         });
@@ -1005,14 +1004,12 @@ var displayTableByTabName = function(activeTabName, result, from="") {
     var countResults = null;
     var recordResults = null;
     var tableBody = angular.element(selectors["tbody"] + " tbody");
-
       // When we get the result, clear the child elements of the table so that they're not
       // appended to existing rows
       angular.element(selectors['tbodyRes']).children().remove();
       angular.element('#loading').remove();
       countResults = result["count"];
       recordResults = result["record"];
-
       var attributeLinks = [];
       var tableBodyAttributes = [];
 
