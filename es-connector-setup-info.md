@@ -6,7 +6,7 @@ Type the following SPARQL queries for the index creation.
 
 ### Main graph
 
-The repository used is KWG-V2 on http://stko-kwg.geog.ucsb.edu:7200.
+The repository used is KWG-V2 on http://stko-kwg.geog.ucsb.edu/graphdb.
 
 #### SPARQL Query
 
