@@ -26,7 +26,7 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'http://stko-kwg.geog.ucsb.edu/sparql';
+const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/sparql';
 
 // query
 async function query(srq_query) {
@@ -489,10 +489,15 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
     let placeSearchQuery = (placeEntities.length > 0) ? `
-        ?entity ?es ?s2Cell .
-        ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+        optional
+        {
+            ?entity ?es ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+        }
+        
+        ?entity kwg-ont:locatedIn ?places.
         values ?places {kwgr:` + placeEntities.join(' kwgr:') + `}
-        ?s2Cell ?sp ?places .` :
+        ` :
         '';
 
     //Filter by the date hazard occurred
