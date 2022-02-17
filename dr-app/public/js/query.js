@@ -701,7 +701,7 @@ function hazardTypeFacets(parameters) {
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?injuryDirectValObj.
             ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
-            ?injuryDirectValObj sosa:observedProperty kwgr:deathDirect.
+            ?injuryDirectValObj sosa:observedProperty kwgr:injuryDirect.
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
