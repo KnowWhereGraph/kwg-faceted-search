@@ -27,9 +27,9 @@ var queryRecords = [];
 
 // Returns a UUID. Taken from https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid
 function uuidv4() {
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
 }
 
 kwgApp.controller("spatialSearchController", function($scope, $timeout, $location) {
@@ -220,10 +220,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-        var selectors = displayTableByTabName(activeTabName, result, "keywordSubmit");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "keywordSubmit");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
@@ -237,6 +237,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     // clickType is the tab type (eg 'hazard', 'place', 'people')
     $scope.clickTab = debounce(function($event, clickType) {
+
+        cleanupFacets($scope);
+
         var newActiveTabName = "";
         var urlUpdateTab = "";
         $scope.showPlaceList = false;
@@ -264,15 +267,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         queryIdentifier = uuidv4();
         currentQuery = queryIdentifier;
-        console.log("Setting currentQuery to... "+currentQuery);
+        console.log("Setting currentQuery to... " + currentQuery);
         var response = sendQueries(newActiveTabName, page, pp, parameters);
 
         prepareNewTable(newActiveTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(newActiveTabName, result, "clickTab");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(newActiveTabName, result, "clickTab");
             var countResults = result["count"];
             displayPagination(newActiveTabName, selectors, countResults, parameters, "clickTab");
         });
@@ -380,10 +383,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
                     var response = sendQueries(activeTabName, page, pp, parameters);
                     let queryIdentifier = uuidv4();
-                    currentQuery=queryIdentifier;
+                    currentQuery = queryIdentifier;
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
-                      var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                        var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
                         var countResults = result["count"];
                         displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
                     });
@@ -426,17 +429,18 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         currentQuery = queryIdentifier;
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(activeTabName, result, "placeFacetChanged");
-          var countResults = result["count"];
-          displayPagination(activeTabName, selectors, countResults, parameters, "placeFacetChanged");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "placeFacetChanged");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "placeFacetChanged");
         });
     }, debounceTimeout);
 
     $scope.hazardFacetChanged = debounce(function() {
         var parameters = getParameters();
+        console.log("hazard facet changed", parameters);
 
         if (parameters['hazardFacetDateStart'] != '')
             $scope.updateURLParameters('date-start', parameters['hazardFacetDateStart']);
@@ -509,19 +513,23 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         let queryIdentifier = uuidv4();
-        currentQuery=queryIdentifier;
+        currentQuery = queryIdentifier;
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(activeTabName, result, "hazardFacetChanged");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "hazardFacetChanged");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "hazardFacetChanged");
         });
     }, debounceTimeout);
 
     $scope.selectHazard = debounce(function($event) {
+        console.log("select the hazard, ", $event.target.value);
+
+        cleanHazardOC($event.target, $scope);
+
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
@@ -536,7 +544,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
                 if (hazType.includes('fire') || hazType.includes('Fire'))
                     $scope.fireFacets = true;
-                
+
                 if (hazType.includes('Hurricane'))
                     $scope.hurricaneFacets = true;
             }
@@ -555,15 +563,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         let queryIdentifier = uuidv4();
-        currentQuery=queryIdentifier;
+        currentQuery = queryIdentifier;
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(activeTabName, result, "selectHazard");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "selectHazard");
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, from="selectHazard");
+            displayPagination(activeTabName, selectors, countResults, parameters, from = "selectHazard");
         });
     }, debounceTimeout);
 
@@ -582,13 +590,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         let queryIdentifier = uuidv4();
-        currentQuery=queryIdentifier;
+        currentQuery = queryIdentifier;
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "selectTopic");
         });
@@ -609,13 +617,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
         var response = sendQueries(activeTabName, page, pp, parameters);
         let queryIdentifier = uuidv4();
-        currentQuery=queryIdentifier;
+        currentQuery = queryIdentifier;
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          if (currentQuery != queryIdentifier) {
-            return;
-          }
-          var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
         });
@@ -644,64 +652,64 @@ kwgApp.controller("spatialmap-controller", function($scope) {});
 
 // Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('zipDirective', function() {
-  return {
-    restrict: 'C',
-    require: 'ngModel',
-    link: function(scope, element, attrs, ngModelCtrl) {
-        getZipCodeArea().then(function(data) {
-            if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
-                element.autocomplete({
-                    source: Object.keys(data['zipcodes']),
-                    select: function(event, ui) {
-                        ngModelCtrl.$setViewValue(ui.item);
-                        scope.$apply();
-                    }
-                });
-            }
-        });
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getZipCodeArea().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['zipcodes']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
     }
-}
 });
 
 // Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('uscdDirective', function() {
-  return {
-    restrict: 'C',
-    require: 'ngModel',
-    link: function(scope, element, attrs, ngModelCtrl) {
-      getUSClimateDivision().then(function(data) {
-        if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
-            element.autocomplete({
-                source: Object.keys(data['divisions']),
-                select: function(event, ui) {
-                    ngModelCtrl.$setViewValue(ui.item);
-                    scope.$apply();
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getUSClimateDivision().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['divisions']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
                 }
             });
         }
-    });
     }
-}
 });
 
 kwgApp.directive('nwzDirective', function() {
-  return {
-    restrict: 'C',
-    require: 'ngModel',
-    link: function(scope, element, attrs, ngModelCtrl) {
-      getNWZone().then(function(data) {
-        if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
-            element.autocomplete({
-                source: Object.keys(data['nwzones']),
-                select: function(event, ui) {
-                    ngModelCtrl.$setViewValue(ui.item);
-                    scope.$apply();
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getNWZone().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
+                    element.autocomplete({
+                        source: Object.keys(data['nwzones']),
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
                 }
             });
         }
-    });
     }
-}
 });
 
 var init = function() {
@@ -933,33 +941,33 @@ var displayBreadCrumbs = function() {
 }
 
 var getSelectors = function(activeTabName) {
-  let selectors;
-  if (activeTabName == "People") {
-    selectors = {
-        "thead": "#expertTableTitle",
-        "tbody": "#expertTable",
-        "tbodyRes": "expertTableBody",
-        "pagination": "#expertPagination"
-    };
+    let selectors;
+    if (activeTabName == "People") {
+        selectors = {
+            "thead": "#expertTableTitle",
+            "tbody": "#expertTable",
+            "tbodyRes": "expertTableBody",
+            "pagination": "#expertPagination"
+        };
 
-    angular.element(".results").css('width', 'calc(100% - 300px)')
-    angular.element("#results-search-map").width(0);
-} else if (activeTabName == "Place") {
+        angular.element(".results").css('width', 'calc(100% - 300px)')
+        angular.element("#results-search-map").width(0);
+    } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
             "tbody": "#placeTable",
             "tbodyRes": "placeTableBody",
             "pagination": "#placePagination"
         };
-  } else if (activeTabName == "Hazard") {
-      selectors = {
-          "thead": "#hazardTableTitle",
-          "tbody": "#hazardTable",
-          "tbodyRes": "#hazardTableBody",
-          "pagination": "#hazardPagination"
-      };
-  };
-  return selectors;
+    } else if (activeTabName == "Hazard") {
+        selectors = {
+            "thead": "#hazardTableTitle",
+            "tbody": "#hazardTable",
+            "tbodyRes": "#hazardTableBody",
+            "pagination": "#hazardPagination"
+        };
+    };
+    return selectors;
 }
 
 // Prepares a new table. This is called before tables are mutated. It ensures that
@@ -967,99 +975,99 @@ var getSelectors = function(activeTabName) {
 // 2. The loading icon shows
 // 3. The map is shown or hidden
 var prepareNewTable = function(activeTabName) {
-  var titlesDisplayed = [];
-  var selectors = getSelectors(activeTabName)
-  // If we're showing the 'People' tab, adjust the table with to make up for an absent map
-  if (activeTabName == "People") {
-    angular.element(".results").css('width', 'calc(100% - 300px)')
-    angular.element("#results-search-map").width(0);
-} else {
-    // If we're not showing people, add the map back to the page
-    if (angular.element("#results-search-map").width() == 0) {
-        angular.element(".results").css('width', 'calc(60% - 150px)')
-        angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+    var titlesDisplayed = [];
+    var selectors = getSelectors(activeTabName)
+        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+    if (activeTabName == "People") {
+        angular.element(".results").css('width', 'calc(100% - 300px)')
+        angular.element("#results-search-map").width(0);
+    } else {
+        // If we're not showing people, add the map back to the page
+        if (angular.element("#results-search-map").width() == 0) {
+            angular.element(".results").css('width', 'calc(60% - 150px)')
+            angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+        }
     }
+
+    // Create and add the table head
+    if (selectors["thead"] == "#expertTableTitle") {
+        titlesDisplayed = expertTitles;
+    } else if (selectors["thead"] == "#placeTableTitle") {
+        titlesDisplayed = placeTitles;
+    } else if (selectors["thead"] == "#hazardTableTitle") {
+        titlesDisplayed = hazardTitles;
+    }
+
+    angular.element(selectors["thead"] + " thead tr").empty();
+    titlesDisplayed.map(e => { return "<th>" + e + "</th>" }).
+    forEach(tableTitleHtml => {
+        angular.element(selectors["thead"] + " thead tr").append(tableTitleHtml);
+    });
+
+    // Recreate the table body. Clear the existing contents
+    var tableBody = angular.element(selectors["tbody"] + " tbody");
+    tableBody.empty();
 }
 
-// Create and add the table head
-  if (selectors["thead"] == "#expertTableTitle") {
-      titlesDisplayed = expertTitles;
-  } else if (selectors["thead"] == "#placeTableTitle") {
-      titlesDisplayed = placeTitles;
-  } else if (selectors["thead"] == "#hazardTableTitle") {
-      titlesDisplayed = hazardTitles;
-  }
-
-  angular.element(selectors["thead"] + " thead tr").empty();
-  titlesDisplayed.map(e => { return "<th>" + e + "</th>" }).
-  forEach(tableTitleHtml => {
-      angular.element(selectors["thead"] + " thead tr").append(tableTitleHtml);
-  });
-
-  // Recreate the table body. Clear the existing contents
-  var tableBody = angular.element(selectors["tbody"] + " tbody");
-  tableBody.empty();
-}
-
-var displayTableByTabName = function(activeTabName, result, from="") {
+var displayTableByTabName = function(activeTabName, result, from = "") {
     var selectors = getSelectors(activeTabName);
     var countResults = null;
     var recordResults = null;
     var tableBody = angular.element(selectors["tbody"] + " tbody");
-      // When we get the result, clear the child elements of the table so that they're not
-      // appended to existing rows
-      angular.element(selectors['tbodyRes']).children().remove();
-      angular.element('#loading').remove();
-      countResults = result["count"];
-      recordResults = result["record"];
-      var attributeLinks = [];
-      var tableBodyAttributes = [];
+    // When we get the result, clear the child elements of the table so that they're not
+    // appended to existing rows
+    angular.element(selectors['tbodyRes']).children().remove();
+    angular.element('#loading').remove();
+    countResults = result["count"];
+    recordResults = result["record"];
+    var attributeLinks = [];
+    var tableBodyAttributes = [];
 
-      if (activeTabName != "People") {
-          showMap(recordResults);
-      }
+    if (activeTabName != "People") {
+        showMap(recordResults);
+    }
 
-      recordResults.forEach(e => {
-          var rowBodyHtml = "";
-          if (selectors["thead"] == "#expertTableTitle") {
-              attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
-              tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
-          } else if (selectors["thead"] == "#placeTableTitle") {
-              attributeLinks = [e["place"], e["place_type"]];
-              tableBodyAttributes = [e["place_name"], e["place_type_name"]];
-          } else if (selectors["thead"] == "#hazardTableTitle") {
-              attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
-              tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
-          };
+    recordResults.forEach(e => {
+        var rowBodyHtml = "";
+        if (selectors["thead"] == "#expertTableTitle") {
+            attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
+            tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
+        } else if (selectors["thead"] == "#placeTableTitle") {
+            attributeLinks = [e["place"], e["place_type"]];
+            tableBodyAttributes = [e["place_name"], e["place_type_name"]];
+        } else if (selectors["thead"] == "#hazardTableTitle") {
+            attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+            tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
+        };
 
-          var numAttributes = attributeLinks.length;
-          for (var index = 0; index < numAttributes; index++) {
-              var link = attributeLinks[index];
-              var attr = tableBodyAttributes[index];
-              var cellHtml = '';
+        var numAttributes = attributeLinks.length;
+        for (var index = 0; index < numAttributes; index++) {
+            var link = attributeLinks[index];
+            var attr = tableBodyAttributes[index];
+            var cellHtml = '';
 
-              if (Array.isArray(attr)) {
-                  let linkArray = [];
-                  for (let i = 0; i < attr.length; i++) {
-                      linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
-                  }
+            if (Array.isArray(attr)) {
+                let linkArray = [];
+                for (let i = 0; i < attr.length; i++) {
+                    linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
+                }
 
-                  cellHtml = linkArray.join(', ');
-              } else {
+                cellHtml = linkArray.join(', ');
+            } else {
                 cellHtml = '<a href="' + link + '">' + attr + "</a>";
-              }
+            }
 
-              rowBodyHtml += "<td>" + cellHtml + "</td>";
-          }
+            rowBodyHtml += "<td>" + cellHtml + "</td>";
+        }
 
-          if (activeTabName == "Place") {
-              var hazardCellHtml = addHazardsAttrToPlaceTab();
-              rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
-          }
+        if (activeTabName == "Place") {
+            var hazardCellHtml = addHazardsAttrToPlaceTab();
+            rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
+        }
 
-          var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
-          tableBody.append(rowHtml);
-        });
+        var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+        tableBody.append(rowHtml);
+    });
     return selectors;
 };
 
@@ -1075,7 +1083,7 @@ var dateFormat = function(dateStr) {
 
 }
 
-var displayPagination = function(activeTabName, selectors, countResults, parameters, from="") {
+var displayPagination = function(activeTabName, selectors, countResults, parameters, from = "") {
     angular.element("#ttl-results").html(countResults + ' Records');
 
     angular.element(selectors["pagination"]).empty();
@@ -1089,7 +1097,7 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
 
     perPage.appendTo(selectors["pagination"]);
     getScope().updateURLParameters("pp", pp.toString());
-    
+
     // Paginate the table with the new content
     tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
 
@@ -1097,13 +1105,13 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
         var recordsPerpage = angular.element(this).val();
         getScope().updateURLParameters("pp", recordsPerpage);
-        
+
         // Repaginate the table
         tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
         var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
         prepareNewTable(activeTabName);
         response.then(function(result) {
-          displayTableByTabName(activeTabName, result, "displayPagination")
+            displayTableByTabName(activeTabName, result, "displayPagination")
         })
     });
 }
@@ -1140,8 +1148,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
-                      var selectors = displayTableByTabName(activeTabName, result, "displayTableByTabName");
-                      displayPagination(activeTabName, selectors, totalRecords, parameters, "displayTableByTabName");
+                        var selectors = displayTableByTabName(activeTabName, result, "displayTableByTabName");
+                        displayPagination(activeTabName, selectors, totalRecords, parameters, "displayTableByTabName");
                     })
 
                 }).appendTo($pager).addClass("clickable");
@@ -1166,8 +1174,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
-                          var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
-                          displayPagination(activeTabName, selectors, totalRecords, parameters, "tablePagination");
+                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                            displayPagination(activeTabName, selectors, totalRecords, parameters, "tablePagination");
                         })
 
                     }).appendTo($pager).addClass("clickable");
@@ -1185,8 +1193,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
-                          var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
-                          displayPagination(activeTabName, selectors, totalRecords, parameters);
+                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                            displayPagination(activeTabName, selectors, totalRecords, parameters);
                         })
 
                     }).appendTo($pager).addClass("clickable");
@@ -1213,8 +1221,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                  var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
-                  displayPagination(activeTabName, selectors, totalRecords, parameters);
+                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                    displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable next");
         }
@@ -1245,8 +1253,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                  var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
-                  displayPagination(activeTabName, selectors, totalRecords, parameters);
+                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                    displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable prev");
         }
@@ -1454,4 +1462,127 @@ var addHazardsAttrToPlaceTab = function() {
         "<li><img src = '" + earthquakeIconSrc + "'></img><span class='IconCounter'>" + earthquakeCount + "</span><span class = 'tooltiptext earthquake-tooltiptext'>Earthquake</span></li>" +
         "</ul>";
     return cellHtml;
+}
+
+// unselect one type of hazard, clean all the OC values + URL
+var cleanHazardOC = function(hazard, $scope) {
+    if (!hazard.checked) {
+        // if the current hazard is unselected ---> clear all corresponding OC properties
+        switch (hazard.value) {
+            case "EarthquakeEvent":
+                console.log("clean OC for earthquake, ");
+                angular.element("#hazardFacetMagnitudeMin")[0].value = "";
+                angular.element("#hazardFacetMagnitudeMax")[0].value = "";
+                angular.element("#hazardQuakeDepthMin")[0].value = "";
+                angular.element("#hazardQuakeDepthMax")[0].value = "";
+                $scope.removeValue('mag-min');
+                $scope.removeValue('mag-max');
+                $scope.removeValue('depth-min');
+                $scope.removeValue('depth-max');
+                break;
+            case "FireEvent":
+                console.log("clean OC for fire");
+                angular.element("#hazardFacetAcresBurnedMin")[0].value = "";
+                angular.element("#hazardFacetAcresBurnedMax")[0].value = "";
+                angular.element("#hazardFacetMeanDnbrMin")[0].value = "";
+                angular.element("#hazardFacetMeanDnbrMax")[0].value = "";
+                angular.element("#hazardFacetSDMeanDnbrMin")[0].value = "";
+                angular.element("#hazardFacetSDMeanDnbrMax")[0].value = "";
+                $scope.removeValue('acres-min');
+                $scope.removeValue('acres-max');
+                $scope.removeValue('dnbr-min');
+                $scope.removeValue('dnbr-max');
+                $scope.removeValue('stddev-dnbr-min');
+                $scope.removeValue('stddev-dnbr-max');
+                break;
+            case "Hurricane":
+                angular.element("#hazardFacetNumberDeathsMin")[0].value = "";
+                angular.element("#hazardFacetNumberDeathsMax")[0].value = "";
+                angular.element("#hazardFacetNumberInjuredMin")[0].value = "";
+                angular.element("#hazardFacetNumberInjuredMax")[0].value = "";
+                $scope.removeValue('deaths-min');
+                $scope.removeValue('deaths-max');
+                $scope.removeValue('injured-min');
+                $scope.removeValue('injured-max');
+                break;
+
+        }
+
+    }
+
+
+}
+
+// clean up all the facetes when changing the tab
+var cleanupFacets = function($scope) {
+    // clean up all place facetes
+    angular.element("#placeFacetsRegion")[0].value = "";
+    angular.element("#placeFacetsZip")[0].value = "";
+    angular.element("#placeFacetsUSCD")[0].value = "";
+    angular.element("#placeFacetsNWZ")[0].value = "";
+    angular.element("#regionFacetsZip")[0].value = "";
+    angular.element("#regionFacetsUSCD")[0].value = "";
+    angular.element("#regionFacetsNWZ")[0].value = "";
+
+    $scope.removeValue("region");
+    $scope.removeValue('zip');
+    $scope.removeValue('uscd');
+    $scope.removeValue('nwz');
+
+    // clean up all hazard facets
+    angular.element("#hazardFacetDateStart")[0].value = "";
+    angular.element("#hazardFacetDateEnd")[0].value = "";
+    angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
+        hazard.value = "";
+        hazard.checked = false;
+    });
+    angular.element("#hazardFacetMagnitudeMin")[0].value = "";
+    angular.element("#hazardFacetMagnitudeMax")[0].value = "";
+    angular.element("#hazardQuakeDepthMin")[0].value = "";
+    angular.element("#hazardQuakeDepthMax")[0].value = "";
+    $scope.removeValue('mag-min');
+    $scope.removeValue('mag-max');
+    $scope.removeValue('depth-min');
+    $scope.removeValue('depth-max');
+    angular.element("#hazardFacetAcresBurnedMin")[0].value = "";
+    angular.element("#hazardFacetAcresBurnedMax")[0].value = "";
+    angular.element("#hazardFacetMeanDnbrMin")[0].value = "";
+    angular.element("#hazardFacetMeanDnbrMax")[0].value = "";
+    angular.element("#hazardFacetSDMeanDnbrMin")[0].value = "";
+    angular.element("#hazardFacetSDMeanDnbrMax")[0].value = "";
+    $scope.removeValue('acres-min');
+    $scope.removeValue('acres-max');
+    $scope.removeValue('dnbr-min');
+    $scope.removeValue('dnbr-max');
+    $scope.removeValue('stddev-dnbr-min');
+    $scope.removeValue('stddev-dnbr-max');
+    angular.element("#hazardFacetNumberDeathsMin")[0].value = "";
+    angular.element("#hazardFacetNumberDeathsMax")[0].value = "";
+    angular.element("#hazardFacetNumberInjuredMin")[0].value = "";
+    angular.element("#hazardFacetNumberInjuredMax")[0].value = "";
+    $scope.removeValue('deaths-min');
+    $scope.removeValue('deaths-max');
+    $scope.removeValue('injured-min');
+    $scope.removeValue('injured-max');
+    $scope.removeValue('hazard');
+    // clean up all people facets
+    angular.element("#expert-list section li input:checkbox:checked").each((index, expert) => {
+        expert.value = "";
+        expert.checked = false;
+    });
+    $scope.removeValue('expert');
+    $scope.removeValue('page');
+
+    // dropdownImg.style["transform"] = "";
+    // subListDiv.style["display"] = "none";
+    // collapse sublist
+    // angular.element("#expert-list section li img")[0].style["transform"] = "";
+    // angular.element("#expert-list section ul")[0].style["display"] = "none";
+    angular.element("#expert-list section li img").each((index, dropdownImg) => {
+        dropdownImg.style["transform"] = "";
+    });
+    angular.element("#expert-list section ul").each((index, subListDiv) => {
+        subListDiv.style["display"] = "none";
+    });
+
 }
