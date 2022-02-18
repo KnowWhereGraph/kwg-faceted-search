@@ -1060,10 +1060,13 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
             rowBodyHtml += "<td>" + cellHtml + "</td>";
         }
 
+        /*
+        DEVNOTE: We'll want to re-enable this when the data supports it
         if (activeTabName == "Place") {
             var hazardCellHtml = addHazardsAttrToPlaceTab();
             rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
         }
+        */
 
         var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
         tableBody.append(rowHtml);
