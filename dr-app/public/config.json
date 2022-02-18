@@ -2,7 +2,7 @@
     "description":"configuration for full-text search on KnowWhereGraph",
     "repository": [
         {
-            "endpoint":"http://stko-roy.geog.ucsb.edu:7202/repositories/KnowWhereGraph-V1"
+            "endpoint":"http://stko-roy.geog.ucsb.edu/graphdb/repositories/KnowWhereGraph-V1"
         },
         {
             "endpoint":"https://stko-kwg.geog.ucsb.edu/sparql",

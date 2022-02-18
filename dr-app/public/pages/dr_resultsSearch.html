@@ -23,14 +23,14 @@
                 </div>
             </div>
 
-<!--            TODO::Disabling for now-->
-<!--            <div class="spatial-search">-->
-<!--                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">-->
-<!--                    <div>-->
-<!--                        <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>-->
-<!--                    </div>-->
-<!--                </button>-->
-<!--            </div>-->
+            <!--            TODO::Disabling for now-->
+            <!--            <div class="spatial-search">-->
+            <!--                <button id="spatial-query" type="button" class="btn" data-toggle="button" ng-click="spatialSearchDraw()">-->
+            <!--                    <div>-->
+            <!--                        <i class="bi bi-geo-alt"></i><span>Start a Spatial Search</span>-->
+            <!--                    </div>-->
+            <!--                </button>-->
+            <!--            </div>-->
         </div>
 
         <!-- options for filters -->
@@ -42,11 +42,11 @@
                     <div>Administrative Region</div>
                     <input autocomplete="true" type="text" class="form-control" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
                     <div>Zip Code</div>
-                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
+                    <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
                     <div>US Climate Division</div>
-                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
+                    <input autocomplete="true" type="text" class="form-control uscd-directive" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
                     <div>National Weather Zone</div>
-                    <input autocomplete="true" type="text" class="form-control" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
+                    <input autocomplete="true" type="text" class="form-control nwz-directive" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
                 </div>
             </li>
 
@@ -57,19 +57,18 @@
                         <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
                             <li class="ng-binding ng-scope">
                                 {{a1obj['label']}}
-                                <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                             </li>
                             <ul class="list-group list-group-indented" style="display: none">
                                 <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
                                     <li>
-                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a2}}" name="region">
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region">
                                         {{a2obj['label']}}
                                         <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
                                     </li>
                                     <ul class="list-group list-group-indented" style="display: none">
                                         <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
-                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region">
-                                            {{a3obj['label']}}
+                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region"> {{a3obj['label']}}
                                         </li>
                                     </ul>
                                 </section>
@@ -77,11 +76,11 @@
                         </section>
                     </ul>
                     <div>Zip Code</div>
-                    <input autocomplete="true" type="text" class="form-control" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
+                    <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
                     <div>US Climate Division</div>
-                    <input autocomplete="true" type="text" class="form-control" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
+                    <input autocomplete="true" type="text" class="form-control uscd-directive" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
                     <div>National Weather Zone</div>
-                    <input autocomplete="true" type="text" class="form-control" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
+                    <input autocomplete="true" type="text" class="form-control nwz-directive" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
                 </div>
                 <br/>
                 <p class="filter-title">HAZARD</p>
@@ -132,6 +131,16 @@
                         <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation...">
                         <div>Fire: Standard Deviation of Mean dNBR (max)</div>
                         <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
+                    </section>
+                    <section ng-show="hurricaneFacets">
+                        <div>Hurricane: Number of Deaths (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum deaths...">
+                        <div>Hurricane: Number of Deaths (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMax" ng-model="hazardFacetNumberDeathsMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum deaths...">
+                        <div>Hurricane: Number of Injured Cases (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum injured number...">
+                        <div>Hurricane: Number of Injured Cases (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">    
                     </section>
                 </div>
             </li>
