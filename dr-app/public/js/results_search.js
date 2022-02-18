@@ -1007,6 +1007,10 @@ var prepareNewTable = function(activeTabName) {
     // Recreate the table body. Clear the existing contents
     var tableBody = angular.element(selectors["tbody"] + " tbody");
     tableBody.empty();
+
+    // Clear the pagination section
+    var paginationSection = angular.element(selectors["pagination"]);
+    paginationSection.empty();
 }
 
 var displayTableByTabName = function(activeTabName, result, from = "") {
