@@ -488,17 +488,41 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
-    let placeSearchQuery = (placeEntities.length > 0) ? `
-        optional
+
+    let placeSearchQuery = ``;
+    if (placeEntities.length > 0)
+    {
+        let placesConnectedToS2 = [];
+        let placesLocatedIn = [];
+        for (let i = 0 ; i < placeEntities.length; i++)
         {
+            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+            {
+                placesConnectedToS2.push(placeEntities[i]);
+            }
+            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+            {
+                placesLocatedIn.push(placeEntities[i]);
+            }
+        }
+        if (placesConnectedToS2.length > 0)
+        {
+            placeSearchQuery += `
             ?entity ?es ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+            ?s2Cell ?p ?placesConnectedToS2.
+            `;  
         }
-        
-        ?entity kwg-ont:locatedIn ?places.
-        values ?places {kwgr:` + placeEntities.join(' kwgr:') + `}
-        ` :
-        '';
+        if (placesLocatedIn.length > 0)
+        {
+            placeSearchQuery += `
+            ?entity kwg-ont:locatedIn ?places.
+            values ?places {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+            `;
+        }
+    }
+
 
     //Filter by the date hazard occurred
     let dateQuery = '';
