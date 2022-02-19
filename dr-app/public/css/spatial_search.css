@@ -237,6 +237,7 @@ ul.filters .filter div.selectedItem p {
     margin-left: 20px;
 }
 
+<<<<<<< HEAD
 .conditional-facets {
   padding-top: 2rem;
 }
@@ -244,6 +245,8 @@ ul.filters .filter div.selectedItem p {
 .feature-type {
   margin-bottom: 0.5rem;
 }
+=======
+>>>>>>> 230b87cf (update my repo)
 
 /*****Data Range******/
 
@@ -830,8 +833,11 @@ ul#place-hazard-count li:hover .tooltiptext {
 
 * html .ui-autocomplete {
     height: 100px;
+<<<<<<< HEAD
 }
 
 #timeoutModal {
   top: 25%;
+=======
+>>>>>>> 230b87cf (update my repo)
 }
