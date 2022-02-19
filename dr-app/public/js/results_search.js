@@ -1007,6 +1007,10 @@ var prepareNewTable = function(activeTabName) {
     // Recreate the table body. Clear the existing contents
     var tableBody = angular.element(selectors["tbody"] + " tbody");
     tableBody.empty();
+
+    // Clear the pagination section
+    var paginationSection = angular.element(selectors["pagination"]);
+    paginationSection.empty();
 }
 
 var displayTableByTabName = function(activeTabName, result, from = "") {
@@ -1060,10 +1064,13 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
             rowBodyHtml += "<td>" + cellHtml + "</td>";
         }
 
+        /*
+        DEVNOTE: We'll want to re-enable this when the data supports it
         if (activeTabName == "Place") {
             var hazardCellHtml = addHazardsAttrToPlaceTab();
             rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
         }
+        */
 
         var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
         tableBody.append(rowHtml);

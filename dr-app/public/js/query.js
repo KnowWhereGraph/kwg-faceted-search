@@ -687,8 +687,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberDeathsMax"] + ` > ?deathDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?deathDirectValObj.
-            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel
-            FILTER(contains(?deathDirectValObjLabel, 'Impact Observation of Death Direct of the Hurricane (Typhoon)')).
+            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel.
+            ?deathDirectValObj sosa:observedProperty kwgr:deathDirect.
             ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -700,8 +700,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberInjuredMax"] + ` > ?injuryDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?injuryDirectValObj.
-            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel
-            FILTER(contains(?injuryDirectValObjLabel, 'Impact Observation of Injury Direct of the Hurricane (Typhoon)')).
+            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
+            ?injuryDirectValObj sosa:observedProperty kwgr:injuryDirect.
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
