@@ -650,6 +650,36 @@ kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
+// Directive that's responsible for autofilling the admin region field
+kwgApp.directive('regionDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getNonHierarchicalAdministrativeRegion().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsRegion')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['regions']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
 // Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('zipDirective', function() {
     return {
@@ -710,6 +740,7 @@ kwgApp.directive('uscdDirective', function() {
     }
 });
 
+// Directive that's responsible for autofilling the nwzone field
 kwgApp.directive('nwzDirective', function() {
     return {
         restrict: 'C',

@@ -269,6 +269,41 @@ async function getAdministrativeRegion() {
     return { 'regions': formattedResults };
 }
 
+async function getNonHierarchicalAdministrativeRegion() {
+    let formattedResults = [];
+
+    let adminQuery = `
+    select distinct ?admin ?admin_label
+    {
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_2;
+                   rdfs:label ?admin_label;
+                   kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+        }
+        UNION
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_3;
+                   rdfs:label ?admin_label;
+                   kwg-ont:locatedIn ?admin_upper_level.
+            ?admin_upper_level kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+        }
+    } ORDER BY ASC(?admin)`;
+
+    // use cached data for now
+    // let queryResults = await query(adminQuery);
+    us_admin_regions_nonhierarchical_json = await fetch("/cache/us_admin_regions_nonhierarchical.json");
+    us_admin_regions_nonhierarchical_cached = await us_admin_regions_nonhierarchical_json.json();
+    let queryResults = us_admin_regions_nonhierarchical_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let admin = row.admin.value;
+        let admin_label = row.admin_label.value;
+        formattedResults[admin_label] = admin;
+    }
+
+    return { 'regions': formattedResults };
+}
+
 async function getZipCodeArea() {
     let formattedResults = [];
 
