@@ -347,6 +347,9 @@ async function getAdministrativeRegion() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
 async function getNonHierarchicalAdministrativeRegion() {
     let formattedResults = [];
 
@@ -356,14 +359,23 @@ async function getNonHierarchicalAdministrativeRegion() {
         {
             ?admin rdf:type kwg-ont:AdministrativeRegion_2;
                    rdfs:label ?admin_label;
+<<<<<<< HEAD
                    kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA.
+=======
+                   kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
         }
         UNION
         {
             ?admin rdf:type kwg-ont:AdministrativeRegion_3;
                    rdfs:label ?admin_label;
+<<<<<<< HEAD
                    kwg-ont:sfWithin ?admin_upper_level.
             ?admin_upper_level kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA.
+=======
+                   kwg-ont:locatedIn ?admin_upper_level.
+            ?admin_upper_level kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
         }
     } ORDER BY ASC(?admin)`;
 
@@ -382,8 +394,11 @@ async function getNonHierarchicalAdministrativeRegion() {
     return { 'regions': formattedResults };
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
 async function getZipCodeArea() {
     let formattedResults = [];
 

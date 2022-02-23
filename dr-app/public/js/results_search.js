@@ -864,9 +864,42 @@ kwgApp.controller("results-controller", function($scope) {});
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Directive that's responsible for autofilling the admin region field
 kwgApp.directive('regionDirective', function() {
 =======
+=======
+// Directive that's responsible for autofilling the admin region field
+kwgApp.directive('regionDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getNonHierarchicalAdministrativeRegion().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsRegion')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['regions']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
 // Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('zipDirective', function() {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
@@ -936,6 +969,7 @@ kwgApp.directive('zipDirective', function() {
     }
 });
 
+<<<<<<< HEAD
 // Directive that's responsible for autofilling the fips field
 kwgApp.directive('fipsDirective', function() {
     return {
@@ -1006,6 +1040,9 @@ kwgApp.directive('uscdDirective', function() {
 // Directive that's responsible for autofilling the nwzone field
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+// Directive that's responsible for autofilling the nwzone field
+>>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
 kwgApp.directive('nwzDirective', function() {
     return {
         restrict: 'C',
