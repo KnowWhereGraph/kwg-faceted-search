@@ -120,21 +120,31 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     //facet hazards
     $scope.earthquakeFacets = false;
+<<<<<<< HEAD
     $scope.mtbsFireFacets = false;
     $scope.noaaFacets = false;
+=======
+    $scope.fireFacets = false;
+    $scope.hurricaneFacets = false;
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
 
     //Set place facet values
     $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
+<<<<<<< HEAD
     $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
     $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
     $scope.placeFacetsFIPS = (urlVariables['fips'] != null && urlVariables['fips'] != '') ? urlVariables['fips'] : '';
+=======
+    $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
+<<<<<<< HEAD
     if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
     }
@@ -144,6 +154,14 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
       getHazardClasses().then(function(data) {
         $scope.hazards = data;
+=======
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+        $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
+        $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
+    getHazardClasses().then(function(data) {
+        $scope.hazardUrls = data;
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         $scope.$apply();
     }).then(function() {
         if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
@@ -191,14 +209,21 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     }).then(function() {
         if ((urlVariables['regions'] != null && urlVariables['regions'] != '')) {
             $timeout(function() {
+<<<<<<< HEAD
                 let regionArr = urlVariables['regions'].split(',');
                 for (let i = 0; i < regionArr.length; i++) {
                     angular.element("#" + regionArr[i]).click();
+=======
+                let expertArr = urlVariables['regions'].split(',');
+                for (let i = 0; i < expertArr.length; i++) {
+                    angular.element("#" + expertArr[i]).click();
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                 }
             });
         }
     });
 
+<<<<<<< HEAD
     getGNISFeature().then(function(data) {
         $scope.buildupAreaList = Object.keys(data["gnisFeatureTypes"]["Built Up Area"]);
         $scope.SurfaceWaterSubList = Object.keys(data["gnisFeatureTypes"]["Surface Water"]);
@@ -206,6 +231,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.$apply();
     });
 
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     // entire graph initialization
     init();
 
@@ -235,7 +262,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "keywordSubmit");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
@@ -279,6 +310,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         queryIdentifier = uuidv4();
         currentQuery = queryIdentifier;
+<<<<<<< HEAD
+=======
+        console.log("Setting currentQuery to... " + currentQuery);
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         var response = sendQueries(newActiveTabName, page, pp, parameters);
 
         prepareNewTable(newActiveTabName);
@@ -286,6 +321,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(newActiveTabName, result);
             var countResults = result["count"];
             displayPagination(newActiveTabName, selectors, countResults, parameters);
@@ -344,6 +380,31 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
           }
+=======
+            var selectors = displayTableByTabName(newActiveTabName, result, "clickTab");
+            var countResults = result["count"];
+            displayPagination(newActiveTabName, selectors, countResults, parameters, "clickTab");
+        });
+    }, debounceTimeout);
+
+    $scope.selectSubList = function($event, functionName) {
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+        let childListItems = subListDiv.children;
+
+        if ($event.target.checked) {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
+            }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+        } else {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         }
 
         $scope[functionName]($event);
@@ -352,6 +413,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showSubList = function($event) {
         let dropdownImg = $event.target;
         let subListDiv = $event.target.parentNode.nextElementSibling;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         if (subListDiv.style["display"] == "") {
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
@@ -367,9 +432,88 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         angular.element("#pills-" + activeTab + "-tab").click();
     });
 
+<<<<<<< HEAD
     $scope.spatialSearchDraw = addDrawCircle();
 
     // add drawCircle
+=======
+    $scope.spatialSearchDraw = function() {
+        if (resultsSearchMap) {
+            resultsSearchMap.pm.addControls({
+                position: "topleft",
+                positions: {
+                    draw: "topleft",
+                    edit: "topleft"
+                },
+                drawMarker: false,
+                drawCircleMarker: false,
+                drawPolyline: false,
+                drawRectangle: false,
+                drawPolygon: false,
+                drawCircle: true,
+
+                drawControls: true,
+                editControls: true,
+                optionsControls: true,
+                customControls: true,
+                cutPolygon: false,
+                rotateMode: false
+
+            });
+
+            resultsSearchMap.on("pm:create", (e) => {
+                var coordinates;
+                var radius;
+
+                if (e.shape == "Polygon" || e.shape == "Rectangle") {
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
+                } else if (e.shape == "Circle") {
+                    // the default circle to do spatial search is set to be the one just drawn
+                    var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
+                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
+                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
+                    radius = radius / 1000; // convert to radius in kilometers
+
+                    // create the circle object and convert its geometry to the wkt format
+                    var optionsCircle = { steps: 10, units: 'kilometers', properties: { foo: 'bar' } };
+                    var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
+                    var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
+                    var circleCoordinates = circle.geometry.coordinates[0];
+                    for (i = 0; i < circleCoordinates.length; i++) {
+                        circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
+                        if (i == circleCoordinates.length - 1) {
+                            circleWkt += '))';
+                        } else {
+                            circleWkt += ',';
+                        }
+                    }
+
+                    // return the parameters for spatial search
+                    var parameters = getParameters();
+                    parameters["spatialSearchWkt"] = circleWkt;
+
+                    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+                    var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+                    var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                    var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+                    var response = sendQueries(activeTabName, page, pp, parameters);
+                    let queryIdentifier = uuidv4();
+                    currentQuery = queryIdentifier;
+                    prepareNewTable(activeTabName);
+                    response.then(function(result) {
+                        var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                        var countResults = result["count"];
+                        displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
+                    });
+                    $scope.updateURLParameters('polygon', 'circle');
+                    $scope.updateURLParameters('lon', coordinates.lng.toString());
+                    $scope.updateURLParameters('lat', coordinates.lat.toString());
+                    $scope.updateURLParameters('radius', radius.toString());
+                }
+            });
+        }
+    };
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 
     //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
     $scope.placeFacetChanged = debounce(function($event) {
@@ -379,19 +523,25 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
         else
             $scope.removeValue('region');
+<<<<<<< HEAD
         if (parameters['placeFacetsGNIS'] != '') {
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
         } else {
             $scope.removeValue('gnis');
         }
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
             $scope.removeValue('zip');
+<<<<<<< HEAD
         if (parameters['placeFacetsFIPS'] != '')
             $scope.updateURLParameters('fips', parameters['placeFacetsFIPS']);
         else
             $scope.removeValue('fips');
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         if (parameters['placeFacetsUSCD'] != '')
             $scope.updateURLParameters('uscd', parameters['placeFacetsUSCD']);
         else
@@ -413,9 +563,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "placeFacetChanged");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "placeFacetChanged");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         });
     }, debounceTimeout);
 
@@ -500,18 +656,34 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "hazardFacetChanged");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "hazardFacetChanged");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         });
     }, debounceTimeout);
 
     $scope.selectHazard = debounce(function($event) {
+<<<<<<< HEAD
+=======
+        console.log("select the hazard, ", $event.target.value);
+
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         cleanHazardOC($event.target, $scope);
 
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
+<<<<<<< HEAD
+=======
+            // $scope.earthquakeFacets = false;
+            // $scope.fireFacets = false;
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 
             for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
@@ -519,18 +691,31 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (hazType.includes('Earthquake'))
                     $scope.earthquakeFacets = true;
 
+<<<<<<< HEAD
                 if (hazType.includes('Fire') && hazType.includes('MTBS'))
                     $scope.mtbsFireFacets = true;
 
                 if (hazType.includes('Hurricane'))
                     $scope.noaaFacets = true;
+=======
+                if (hazType.includes('fire') || hazType.includes('Fire'))
+                    $scope.fireFacets = true;
+
+                if (hazType.includes('Hurricane'))
+                    $scope.hurricaneFacets = true;
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             }
 
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         } else {
             $scope.earthquakeFacets = false;
+<<<<<<< HEAD
             $scope.mtbsFireFacets = false;
             $scope.noaaFacets = false;
+=======
+            $scope.fireFacets = false;
+            $scope.hurricaneFacets = false;
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             $scope.removeValue('hazard');
         }
 
@@ -546,9 +731,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "selectHazard");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, from = "selectHazard");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         });
     }, debounceTimeout);
 
@@ -573,9 +764,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "selectTopic");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         });
     }, debounceTimeout);
 
@@ -600,6 +797,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
@@ -636,6 +834,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
 
 
+=======
+            var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
+        });
+    }, debounceTimeout);
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -658,18 +863,34 @@ kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
+<<<<<<< HEAD
 // Directive that's responsible for autofilling the admin region field
 kwgApp.directive('regionDirective', function() {
+=======
+// Directive that's responsible for autofilling the zipcode field
+kwgApp.directive('zipDirective', function() {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     return {
         restrict: 'C',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
+<<<<<<< HEAD
             getNonHierarchicalAdministrativeRegion().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsRegion')[0]) {
                     element.autocomplete({
                         source: function(request, response) {
                             var matches = $.map(Object.keys(data['regions']), function(item) {
                                 if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
+=======
+            getZipCodeArea().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['zipcodes']), function(item){
+                                if (item.indexOf(request.term) === 0)
+                                {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                                     return item;
                                 }
                             });
@@ -687,6 +908,7 @@ kwgApp.directive('regionDirective', function() {
 });
 
 // Directive that's responsible for autofilling the zipcode field
+<<<<<<< HEAD
 kwgApp.directive('zipDirective', function() {
     return {
         restrict: 'C',
@@ -743,6 +965,8 @@ kwgApp.directive('fipsDirective', function() {
 });
 
 // Directive that's responsible for autofilling the us climate division field
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 kwgApp.directive('uscdDirective', function() {
     return {
         restrict: 'C',
@@ -751,9 +975,17 @@ kwgApp.directive('uscdDirective', function() {
             getUSClimateDivision().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
                     element.autocomplete({
+<<<<<<< HEAD
                         source: function(request, response) {
                             var matches = $.map(Object.keys(data['divisions']), function(item) {
                                 if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
+=======
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['divisions']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                                     return item;
                                 }
                             });
@@ -770,7 +1002,10 @@ kwgApp.directive('uscdDirective', function() {
     }
 });
 
+<<<<<<< HEAD
 // Directive that's responsible for autofilling the nwzone field
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 kwgApp.directive('nwzDirective', function() {
     return {
         restrict: 'C',
@@ -779,15 +1014,27 @@ kwgApp.directive('nwzDirective', function() {
             getNWZone().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
                     element.autocomplete({
+<<<<<<< HEAD
                         source: function(request, response) {
                             var matches = $.map(Object.keys(data['nwzones']), function(item) {
                                 if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
+=======
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['nwzones']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                                     return item;
                                 }
                             });
                             response(matches);
+<<<<<<< HEAD
                         },
                         select: function(event, ui) {
+=======
+                        },                        select: function(event, ui) {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
                         }
@@ -810,8 +1057,11 @@ var init = function() {
             attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
             crossOrigin: true
         }).addTo(resultsSearchMap);
+<<<<<<< HEAD
         addCheckboxesForDisplayMap();
         addDrawCircle();
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     }, 200);
 }
 
@@ -823,7 +1073,10 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     var parameters = { "keyword": getScope().inputQuery };
     var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
@@ -832,13 +1085,19 @@ var getParameters = function() {
     switch (tabName) {
         case 'place':
             parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
+<<<<<<< HEAD
             parameters["placeFacetsFIPS"] = angular.element("#placeFacetsFIPS")[0].value;
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
             break;
         case 'hazard':
             parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
+<<<<<<< HEAD
             parameters["placeFacetsFIPS"] = angular.element("#regionFacetsFIPS")[0].value;
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
             break;
@@ -846,13 +1105,19 @@ var getParameters = function() {
     //Hazard facets
     parameters["hazardFacetDateStart"] = angular.element("#hazardFacetDateStart")[0].value;
     parameters["hazardFacetDateEnd"] = angular.element("#hazardFacetDateEnd")[0].value;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     let hazardTypes = [];
     angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+<<<<<<< HEAD
     
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
     parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
     parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
@@ -882,6 +1147,7 @@ var getParameters = function() {
     });
     parameters["facetRegions"] = facetRegions;
 
+<<<<<<< HEAD
     //Place sub facets
     let facetGNIS = [];
     angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
@@ -891,6 +1157,8 @@ var getParameters = function() {
         }
     });
     parameters["facetGNIS"] = facetGNIS;
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     return parameters;
 };
 
@@ -943,18 +1211,24 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&region=' + urlVariables['region'];
                 bcHTML += '<li><a href="' + placeUrl + '">Administrative Region: ' + urlVariables['region'] + '</a></li>';
             }
+<<<<<<< HEAD
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 placeUrl = bcURL + '&gnis=' + urlVariables['gnis'];
                 bcHTML += '<li><a href="' + placeUrl + '">GNIS Feature Type: ' + urlVariables['gnis'] + '</a></li>';
             }
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             if (urlVariables['zip'] != null && urlVariables['zip'] != '') {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
+<<<<<<< HEAD
             if (urlVariables['fips'] != null && urlVariables['fips'] != '') {
                 placeUrl = bcURL + '&fips=' + urlVariables['fips'];
                 bcHTML += '<li><a href="' + placeUrl + '">FIPS Code: ' + urlVariables['fips'] + '</a></li>';
             }
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
                 placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
@@ -973,6 +1247,16 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&date-end=' + urlVariables['date-end'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date End: ' + urlVariables['date-end'] + '</a></li>';
             }
+<<<<<<< HEAD
+=======
+            if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
+                var hazards = urlVariables['hazard'].split(',');
+                for (var j = 0; j < hazards.length; j++) {
+                    hazardUrl = bcURL + '&hazard=' + hazards[j];
+                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                }
+            }
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
                 placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Magnitude (min): ' + urlVariables['mag-min'] + '</a></li>';
@@ -1020,6 +1304,7 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
             }
+<<<<<<< HEAD
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 var facetGNIS = urlVariables['gnis'].split(',');
                 for (var j = 0; j < facetGNIS.length; j++) {
@@ -1027,15 +1312,22 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
                 }
             }
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             break;
         case "people":
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
                 var experts = urlVariables['expert'].split(',');
                 for (var j = 0; j < experts.length; j++) {
+<<<<<<< HEAD
                     // expertUrl = bcURL + '&expert=' + experts[j];
                     // bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
                     (j == 0) ? (expertUrl += experts[j]) : (expertUrl += "," + experts[j]);
 
+=======
+                    expertUrl = bcURL + '&expert=' + experts[j];
+                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                 }
             }
             if (urlVariables['region'] != null && urlVariables['region'] != '') {
@@ -1045,6 +1337,7 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetRegions[j] + '</a></li>';
                 }
             }
+<<<<<<< HEAD
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 var facetGNIS = urlVariables['gnis'].split(',');
                 for (var j = 0; j < facetGNIS.length; j++) {
@@ -1052,6 +1345,8 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
                 }
             }
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             break;
     }
 
@@ -1069,8 +1364,13 @@ var getSelectors = function(activeTabName) {
             "pagination": "#expertPagination"
         };
 
+<<<<<<< HEAD
         //angular.element(".results").css('width', 'calc(100% - 300px)')
         //angular.element("#results-search-map").width(0);
+=======
+        angular.element(".results").css('width', 'calc(100% - 300px)')
+        angular.element("#results-search-map").width(0);
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
@@ -1089,16 +1389,34 @@ var getSelectors = function(activeTabName) {
     return selectors;
 }
 
+<<<<<<< HEAD
 // Prepares a new table. This is called before tables are updated. It ensures that
+=======
+// Prepares a new table. This is called before tables are mutated. It ensures that
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 // 1. The content is cleared
 // 2. The loading icon shows
 // 3. The map is shown or hidden
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
+<<<<<<< HEAD
     var selectors = getSelectors(activeTabName);
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+=======
+    var selectors = getSelectors(activeTabName)
+        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+    if (activeTabName == "People") {
+        angular.element(".results").css('width', 'calc(100% - 300px)')
+        angular.element("#results-search-map").width(0);
+    } else {
+        // If we're not showing people, add the map back to the page
+        if (angular.element("#results-search-map").width() == 0) {
+            angular.element(".results").css('width', 'calc(60% - 150px)')
+            angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+        }
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     }
 
     // Create and add the table head
@@ -1125,7 +1443,11 @@ var prepareNewTable = function(activeTabName) {
     paginationSection.empty();
 }
 
+<<<<<<< HEAD
 var displayTableByTabName = function(activeTabName, result) {
+=======
+var displayTableByTabName = function(activeTabName, result, from = "") {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     var selectors = getSelectors(activeTabName);
     var countResults = null;
     var recordResults = null;
@@ -1139,6 +1461,7 @@ var displayTableByTabName = function(activeTabName, result) {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
+<<<<<<< HEAD
     /*     if (activeTabName != "People") {
             showMap(recordResults);
         } */
@@ -1192,6 +1515,56 @@ var displayTableByTabName = function(activeTabName, result) {
             tableBody.append(rowHtml);
         });
     }
+=======
+    if (activeTabName != "People") {
+        showMap(recordResults);
+    }
+
+    recordResults.forEach(e => {
+        var rowBodyHtml = "";
+        if (selectors["thead"] == "#expertTableTitle") {
+            attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
+            tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
+        } else if (selectors["thead"] == "#placeTableTitle") {
+            attributeLinks = [e["place"], e["place_type"]];
+            tableBodyAttributes = [e["place_name"], e["place_type_name"]];
+        } else if (selectors["thead"] == "#hazardTableTitle") {
+            attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+            tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
+        };
+
+        var numAttributes = attributeLinks.length;
+        for (var index = 0; index < numAttributes; index++) {
+            var link = attributeLinks[index];
+            var attr = tableBodyAttributes[index];
+            var cellHtml = '';
+
+            if (Array.isArray(attr)) {
+                let linkArray = [];
+                for (let i = 0; i < attr.length; i++) {
+                    linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
+                }
+
+                cellHtml = linkArray.join(', ');
+            } else {
+                cellHtml = '<a href="' + link + '">' + attr + "</a>";
+            }
+
+            rowBodyHtml += "<td>" + cellHtml + "</td>";
+        }
+
+        /*
+        DEVNOTE: We'll want to re-enable this when the data supports it
+        if (activeTabName == "Place") {
+            var hazardCellHtml = addHazardsAttrToPlaceTab();
+            rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
+        }
+        */
+
+        var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+        tableBody.append(rowHtml);
+    });
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     return selectors;
 };
 
@@ -1204,6 +1577,7 @@ var dateFormat = function(dateStr) {
     var m = date.getMinutes(0) + ":";
     var s = date.getSeconds();
     return Y + M + D;
+<<<<<<< HEAD
 }
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
@@ -1212,6 +1586,13 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     } else {
       angular.element("#ttl-results").html('At least ' + countResults + ' results');
     }
+=======
+
+}
+
+var displayPagination = function(activeTabName, selectors, countResults, parameters, from = "") {
+    angular.element("#ttl-results").html(countResults + ' Records');
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
@@ -1229,6 +1610,7 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
 
     // Set an event handler for the 'change' event that updates the query parameters and re-paginates
+<<<<<<< HEAD
     // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
     angular.element("body").on("change", selectors["pagination"] + " .per-page select", function() {
         // angular.element(" .per-page select").on("change", function() {
@@ -1267,6 +1649,19 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             }
             
         });
+=======
+    angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
+        var recordsPerpage = angular.element(this).val();
+        getScope().updateURLParameters("pp", recordsPerpage);
+
+        // Repaginate the table
+        tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
+        var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
+        prepareNewTable(activeTabName);
+        response.then(function(result) {
+            displayTableByTabName(activeTabName, result, "displayPagination")
+        })
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     });
 }
 
@@ -1276,6 +1671,10 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         var currentPage = 0;
         var $table = angular.element(this);
         $table.on('repaginate', function() {});
+<<<<<<< HEAD
+=======
+
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
         var numPages = Math.ceil(totalRecords / numPerPage);
 
         if (angular.element(paginationSelector + 　" div.pager")) {
@@ -1301,8 +1700,13 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
+<<<<<<< HEAD
                         var selectors = displayTableByTabName(activeTabName, result);
                         displayPagination(activeTabName, selectors, totalRecords, parameters);
+=======
+                        var selectors = displayTableByTabName(activeTabName, result, "displayTableByTabName");
+                        displayPagination(activeTabName, selectors, totalRecords, parameters, "displayTableByTabName");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                     })
 
                 }).appendTo($pager).addClass("clickable");
@@ -1327,8 +1731,13 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
+<<<<<<< HEAD
                             var selectors = displayTableByTabName(activeTabName, result);
                             displayPagination(activeTabName, selectors, totalRecords, parameters);
+=======
+                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                            displayPagination(activeTabName, selectors, totalRecords, parameters, "tablePagination");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                         })
 
                     }).appendTo($pager).addClass("clickable");
@@ -1346,7 +1755,11 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
+<<<<<<< HEAD
                             var selectors = displayTableByTabName(activeTabName, result);
+=======
+                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                             displayPagination(activeTabName, selectors, totalRecords, parameters);
                         })
 
@@ -1374,7 +1787,11 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
+<<<<<<< HEAD
                     var selectors = displayTableByTabName(activeTabName, result);
+=======
+                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable next");
@@ -1406,7 +1823,11 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
+<<<<<<< HEAD
                     var selectors = displayTableByTabName(activeTabName, result);
+=======
+                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable prev");
@@ -1414,13 +1835,18 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
     });
 }
 
+<<<<<<< HEAD
 function showMap(recordResults, activeTabName) {
+=======
+function showMap(recordResults) {
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
         markers = [];
     }
 
+<<<<<<< HEAD
 
     var markerIndex = 0;
     if (Object.keys(recordResults).length > 0)
@@ -1569,6 +1995,127 @@ function showMap(recordResults, activeTabName) {
         });
     }
 
+=======
+    var markerIndex = 0;
+    recordResults.forEach(e => {
+        if (e["wkt"]) {
+            var wicket = new Wkt.Wkt();
+            var center_lat = 0;
+            var center_lon = 0;
+            var count = 0;
+
+            var coords = [];
+            var wktString = "";
+            var wktType = "";
+            if (e["wkt"].includes("MULTIPOLYGON")) {
+                wktType = "MULTIPOLYGON";
+            } else if (e["wkt"].includes("POINT")) {
+                wktType = "POINT";
+            } else if (e["wkt"].includes("POLYGON")) {
+                wktType = "POLYGON";
+            }
+            if (wktType) {
+                wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
+                switch (wktType) {
+                    case "POINT":
+                        coords = [wicket.read(e["wkt"]).toJson().coordinates];
+                        break
+                    case "POLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                        break
+                    case "MULTIPOLYGON":
+                        coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                        break
+                }
+            }
+
+            coords.forEach(coord => {
+                count += 1;
+                center_lat += coord[1];
+                center_lon += coord[0];
+            });
+
+            if (count) {
+                center_lat = center_lat / count;
+                center_lon = center_lon / count;
+                // L.circle([center_lat, center_lon], {
+                //     color: "red",
+                //     radius: 10000
+                // }).addTo(resultsSearchMap);
+
+                var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
+                var vals = keys.map(key => {
+                    val = e[key];
+                    key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
+                    return dd("span: " + key.replaceAll("_", " ") + ": " + val);
+                });
+                var concatDDs = function(rslt, e) {
+                    if (rslt.length) {
+                        return rslt.concat(dd("br"), e);
+                    } else {
+                        return [rslt, dd("br"), e];
+                    }
+                };
+                // add range slider
+                markerIndex += 1;
+                var dds = vals.reduce(concatDDs);
+                dds.push(dd("br"));
+                // dds.push(dd("b: Please choose the value of the radius (km): "));
+                // dds.push(dd("span.radius_value" + ":200"));
+                // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                // dds.push(dd("br"));
+                // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
+                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
+
+                // add marker event listener
+                // place_marker.on("click", function(ev) {
+                //     if (!Object.keys(clickedMarker).length) {
+                //         var index = markers.indexOf(ev.sourceTarget);
+                //         clickedMarker["index"] = index;
+                //         clickedMarker["marker"] = ev.sourceTarget;
+
+                //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //         clickedMarker["table-element"] = domElement;
+                //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                //         domElement.style.backgroundColor = "pink";
+                //     } else {
+                //         if (clickedMarker["marker"] != ev.sourceTarget) {
+                //             // reset the color on the table
+                //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+
+                //             var index = markers.indexOf(ev.sourceTarget);
+                //             clickedMarker["index"] = index;
+                //             clickedMarker["marker"] = ev.sourceTarget;
+                //             var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                //             clickedMarker["table-element"] = domElement;
+                //             domElement.style.backgroundColor = "pink";
+                //         }
+                //     }
+
+                //     // at this time, then find the slider in this marker.
+                //     addSliderChangeListener(ev.sourceTarget.getLatLng());
+                //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
+                // });
+                // add marker popup remove listener
+                place_marker.getPopup().on("remove", function() {
+                    if (Object.keys(clickedMarker).length) {
+                        clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                        clickedMarker = {};
+                    };
+
+                    // also remove the circle on the layer
+                    if (resultsSearchMap.hasLayer(circles)) {
+                        resultsSearchMap.removeLayer(circles);
+                    }
+                });
+                markers.push(place_marker);
+                place_markers.addLayer(place_marker);
+                resultsSearchMap.addLayer(place_markers);
+            }
+            coords = [];
+        }
+    });
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     // zoom to fit all the markers in the map
     // if (markers.length > 0) {
     //     resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
@@ -1695,6 +2242,7 @@ var cleanHazardOC = function(hazard, $scope) {
 
 }
 
+<<<<<<< HEAD
 // clean up all the facets when changing the tab
 var cleanupFacets = function($scope) {
     // clean up all place facets
@@ -1722,6 +2270,21 @@ var cleanupFacets = function($scope) {
     $scope.removeValue("gnis");
     $scope.removeValue('zip');
     $scope.removeValue("fips");
+=======
+// clean up all the facetes when changing the tab
+var cleanupFacets = function($scope) {
+    // clean up all place facetes
+    angular.element("#placeFacetsRegion")[0].value = "";
+    angular.element("#placeFacetsZip")[0].value = "";
+    angular.element("#placeFacetsUSCD")[0].value = "";
+    angular.element("#placeFacetsNWZ")[0].value = "";
+    angular.element("#regionFacetsZip")[0].value = "";
+    angular.element("#regionFacetsUSCD")[0].value = "";
+    angular.element("#regionFacetsNWZ")[0].value = "";
+
+    $scope.removeValue("region");
+    $scope.removeValue('zip');
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     $scope.removeValue('uscd');
     $scope.removeValue('nwz');
 
@@ -1769,6 +2332,14 @@ var cleanupFacets = function($scope) {
     $scope.removeValue('expert');
     $scope.removeValue('page');
 
+<<<<<<< HEAD
+=======
+    // dropdownImg.style["transform"] = "";
+    // subListDiv.style["display"] = "none";
+    // collapse sublist
+    // angular.element("#expert-list section li img")[0].style["transform"] = "";
+    // angular.element("#expert-list section ul")[0].style["display"] = "none";
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     angular.element("#expert-list section li img").each((index, dropdownImg) => {
         dropdownImg.style["transform"] = "";
     });
@@ -1776,6 +2347,7 @@ var cleanupFacets = function($scope) {
         subListDiv.style["display"] = "none";
     });
 
+<<<<<<< HEAD
 }
 
 // add button group for displaying markers according to different clicked tab
@@ -1872,4 +2444,6 @@ var addCheckboxesForDisplayMap = function() {
         return div;
     };
     command.addTo(resultsSearchMap);
+=======
+>>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 }
