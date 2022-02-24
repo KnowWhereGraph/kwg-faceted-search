@@ -1611,12 +1611,12 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
             if (Array.isArray(attr)) {
                 let linkArray = [];
                 for (let i = 0; i < attr.length; i++) {
-                    linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
+                    linkArray.push('<a href="' + link[i] + '" target="_blank">' + attr[i] + "</a>")
                 }
 
                 cellHtml = linkArray.join(', ');
             } else {
-                cellHtml = '<a href="' + link + '">' + attr + "</a>";
+                cellHtml = '<a href="' + link + '" target="_blank">' + attr + "</a>";
             }
 
             rowBodyHtml += "<td>" + cellHtml + "</td>";
@@ -2451,6 +2451,7 @@ var cleanupFacets = function($scope) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 // add button group for displaying markers according to different clicked tab
@@ -2552,6 +2553,8 @@ var addCheckboxesForDisplayMap = function() {
 =======
 =======
 >>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
+=======
+>>>>>>> 4d8b9680 (Search result links now open in a new tab)
 =======
 var parameters = {};
 
@@ -4242,5 +4245,12 @@ var addCheckboxesForDisplayMap = function() {
     };
     command.addTo(resultsSearchMap);
 >>>>>>> 2cde3a08 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
+<<<<<<< HEAD
 >>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
+=======
+}
+=======
+}
+>>>>>>> 5e906337 (Search result links now open in a new tab)
+>>>>>>> 4d8b9680 (Search result links now open in a new tab)
