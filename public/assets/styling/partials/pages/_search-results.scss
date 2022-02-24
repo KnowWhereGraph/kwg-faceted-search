@@ -22,7 +22,7 @@
 
   .results {
     background: $grey-dark;
-    width: calc(100% - 300px) !important;
+    width: calc(50% - 180px) !important;
     z-index: 1;
 
     .wrap {
@@ -138,16 +138,17 @@
   .map {
     background: $grey-light;
     box-shadow: $shadow-light;
-    height: 500px;
-    position: sticky !important;
-    top: 20px;
-    width: 100% !important;
+    width: calc(50% - 180px) !important;
   }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1000px) {
   .search-results {
       flex-wrap: wrap !important;
+
+    &.columns-3 {
+     flex-wrap: wrap !important;
+    }
 
     .sidebar {
       order: 3;
@@ -157,5 +158,11 @@
       order: 1;
       width: 100% !important;
     }
+    .map {
+     order: 2;
+     height: 300px;
+     margin: 30px;
+     width: 100% !important;
+   }
   }
 }
