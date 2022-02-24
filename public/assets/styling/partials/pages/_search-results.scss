@@ -22,7 +22,7 @@
 
   .results {
     background: $grey-dark;
-    width: calc(50% - 180px) !important;
+    width: calc(60% - 180px) !important;
     z-index: 1;
 
     .wrap {
@@ -138,7 +138,7 @@
   .map {
     background: $grey-light;
     box-shadow: $shadow-light;
-    width: calc(50% - 180px) !important;
+    width: calc(40% - 180px) !important;
   }
 }
 
