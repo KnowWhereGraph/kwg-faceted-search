@@ -1054,12 +1054,12 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
             if (Array.isArray(attr)) {
                 let linkArray = [];
                 for (let i = 0; i < attr.length; i++) {
-                    linkArray.push('<a href="' + link[i] + '">' + attr[i] + "</a>")
+                    linkArray.push('<a href="' + link[i] + '" target="_blank">' + attr[i] + "</a>")
                 }
 
                 cellHtml = linkArray.join(', ');
             } else {
-                cellHtml = '<a href="' + link + '">' + attr + "</a>";
+                cellHtml = '<a href="' + link + '" target="_blank">' + attr + "</a>";
             }
 
             rowBodyHtml += "<td>" + cellHtml + "</td>";
