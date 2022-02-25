@@ -628,6 +628,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
         });
     }, debounceTimeout);
+
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -1166,17 +1167,47 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
     tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
 
     // Set an event handler for the 'change' event that updates the query parameters and re-paginates
-    angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
-        var recordsPerpage = angular.element(this).val();
-        getScope().updateURLParameters("pp", recordsPerpage);
+    // angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
+    angular.element("body").on("change", selectors["pagination"] + " .per-page select", function() {
+        // angular.element(" .per-page select").on("change", function() {
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var selectors = getSelectors(activeTabName);
 
-        // Repaginate the table
-        tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, recordsPerpage, parameters);
-        var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
         prepareNewTable(activeTabName);
+        var recordsPerpage = angular.element(this).val();
+        console.log("here you changed the page to : ", recordsPerpage);
+
+        angular.element(selectors["pagination"]).empty();
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != recordsPerpage) ? recordsPerpage : parseInt(urlVariables['pp']);
+
+        perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
+        perPageHTML += (pp == 20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
+        perPageHTML += (pp == 50) ? '<option value="50" selected="selected">50 Per Page</option>' : '<option value="50">50 Per Page</option>';
+        perPageHTML += (pp == 100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
+        perPageHTML += '</select></div>';
+        var perPage = angular.element(perPageHTML);
+        console.log("per page: ", perPage);
+        perPage.appendTo(selectors["pagination"]);
+        getScope().updateURLParameters("pp", pp.toString());
+        tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
+        // **********************************************
+
+        // clear the page of the current perpage, make sure each perpage change starts with the 1st page
+        if (urlVariables['page']) {
+            delete urlVariables['page'];
+        }
+
+        // **********************************************
+
+        var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
         response.then(function(result) {
-            displayTableByTabName(activeTabName, result, "displayPagination")
-        })
+            displayTableByTabName(activeTabName, result, "displayPagination");
+            angular.element("#ttl-results").html(result['count'] + ' Records');
+        });
+
+        // ******************
+
     });
 }
 
