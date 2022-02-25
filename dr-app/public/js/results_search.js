@@ -651,6 +651,36 @@ kwgApp.controller("results-controller", function($scope) {});
 
 kwgApp.controller("spatialmap-controller", function($scope) {});
 
+// Directive that's responsible for autofilling the admin region field
+kwgApp.directive('regionDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getNonHierarchicalAdministrativeRegion().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsRegion')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['regions']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
 // Directive that's responsible for autofilling the zipcode field
 kwgApp.directive('zipDirective', function() {
     return {
@@ -660,7 +690,16 @@ kwgApp.directive('zipDirective', function() {
             getZipCodeArea().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
                     element.autocomplete({
-                        source: Object.keys(data['zipcodes']),
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['zipcodes']), function(item){
+                                if (item.indexOf(request.term) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -681,7 +720,16 @@ kwgApp.directive('uscdDirective', function() {
             getUSClimateDivision().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
                     element.autocomplete({
-                        source: Object.keys(data['divisions']),
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['divisions']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -693,6 +741,7 @@ kwgApp.directive('uscdDirective', function() {
     }
 });
 
+// Directive that's responsible for autofilling the nwzone field
 kwgApp.directive('nwzDirective', function() {
     return {
         restrict: 'C',
@@ -701,8 +750,16 @@ kwgApp.directive('nwzDirective', function() {
             getNWZone().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
                     element.autocomplete({
-                        source: Object.keys(data['nwzones']),
-                        select: function(event, ui) {
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['nwzones']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },                        select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
                         }

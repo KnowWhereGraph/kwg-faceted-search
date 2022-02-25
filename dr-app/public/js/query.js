@@ -269,6 +269,41 @@ async function getAdministrativeRegion() {
     return { 'regions': formattedResults };
 }
 
+async function getNonHierarchicalAdministrativeRegion() {
+    let formattedResults = [];
+
+    let adminQuery = `
+    select distinct ?admin ?admin_label
+    {
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_2;
+                   rdfs:label ?admin_label;
+                   kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+        }
+        UNION
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_3;
+                   rdfs:label ?admin_label;
+                   kwg-ont:locatedIn ?admin_upper_level.
+            ?admin_upper_level kwg-ont:locatedIn kwgr:Earth.North_America.United_States.USA.
+        }
+    } ORDER BY ASC(?admin)`;
+
+    // use cached data for now
+    // let queryResults = await query(adminQuery);
+    us_admin_regions_nonhierarchical_json = await fetch("/cache/us_admin_regions_nonhierarchical.json");
+    us_admin_regions_nonhierarchical_cached = await us_admin_regions_nonhierarchical_json.json();
+    let queryResults = us_admin_regions_nonhierarchical_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let admin = row.admin.value;
+        let admin_label = row.admin_label.value;
+        formattedResults[admin_label] = admin;
+    }
+
+    return { 'regions': formattedResults };
+}
+
 async function getZipCodeArea() {
     let formattedResults = [];
 
@@ -488,17 +523,41 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
-    let placeSearchQuery = (placeEntities.length > 0) ? `
-        optional
+
+    let placeSearchQuery = ``;
+    if (placeEntities.length > 0)
+    {
+        let placesConnectedToS2 = [];
+        let placesLocatedIn = [];
+        for (let i = 0 ; i < placeEntities.length; i++)
         {
+            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+            {
+                placesConnectedToS2.push(placeEntities[i]);
+            }
+            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+            {
+                placesLocatedIn.push(placeEntities[i]);
+            }
+        }
+        if (placesConnectedToS2.length > 0)
+        {
+            placeSearchQuery += `
             ?entity ?es ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+            ?s2Cell ?p ?placesConnectedToS2.
+            `;  
         }
-        
-        ?entity kwg-ont:locatedIn ?places.
-        values ?places {kwgr:` + placeEntities.join(' kwgr:') + `}
-        ` :
-        '';
+        if (placesLocatedIn.length > 0)
+        {
+            placeSearchQuery += `
+            ?entity kwg-ont:locatedIn ?places.
+            values ?places {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+            `;
+        }
+    }
+
 
     //Filter by the date hazard occurred
     let dateQuery = '';
