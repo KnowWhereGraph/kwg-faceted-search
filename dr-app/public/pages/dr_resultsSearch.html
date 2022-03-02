@@ -62,9 +62,8 @@
                             <ul class="list-group list-group-indented" style="display: none">
                                 <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
                                     <li>
-                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region">
-                                        {{a2obj['label']}}
-                                        <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                                     </li>
                                     <ul class="list-group list-group-indented" style="display: none">
                                         <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
@@ -140,7 +139,7 @@
                         <div>Hurricane: Number of Injured Cases (min)</div>
                         <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum injured number...">
                         <div>Hurricane: Number of Injured Cases (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">    
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">
                     </section>
                 </div>
             </li>
@@ -254,5 +253,6 @@
 
     </div>
 
-    <div class="map" id="results-search-map" ng-controller="spatialmap-controller"></div>
+    <div class="map" id="results-search-map" ng-controller="spatialmap-controller">
+    </div>
 </main>

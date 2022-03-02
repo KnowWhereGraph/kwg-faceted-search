@@ -83,4 +83,103 @@
         </div>
         <a href="#/explore" class="button secondary">Explore More</a>
     </section>
+    <section class="home-map">
+        <div class="map" id="home-map"></div>
+    </section>
+
+    <script>
+        var homeMap = L.map('home-map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+        }).addTo(homeMap);
+
+        // add circle drawing
+
+        if (homeMap) {
+            homeMap.pm.addControls({
+                position: "topleft",
+                positions: {
+                    draw: "topleft",
+                    edit: "topleft"
+                },
+                drawMarker: false,
+                drawCircleMarker: false,
+                drawPolyline: false,
+                drawRectangle: false,
+                drawPolygon: false,
+                drawCircle: true,
+
+                drawControls: true,
+                editControls: true,
+                optionsControls: true,
+                customControls: true,
+                cutPolygon: false,
+                rotateMode: false
+
+            });
+
+            homeMap.on("pm:create", (e) => {
+                var coordinates;
+                var radius;
+
+                if (e.shape == "Polygon" || e.shape == "Rectangle") {
+                    coordinates = homeMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
+                } else if (e.shape == "Circle") {
+                    // the default circle to do spatial search is set to be the one just drawn
+                    var spatialDrawLength = homeMap.pm.getGeomanDrawLayers().length;
+                    coordinates = homeMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
+                    radius = homeMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
+                    radius = radius / 1000; // convert to radius in kilometers
+
+                    // create the circle object and convert its geometry to the wkt format
+                    var optionsCircle = {
+                        steps: 10,
+                        units: 'kilometers',
+                        properties: {
+                            foo: 'bar'
+                        }
+                    };
+                    var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
+                    var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
+                    var circleCoordinates = circle.geometry.coordinates[0];
+                    for (i = 0; i < circleCoordinates.length; i++) {
+                        circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
+                        if (i == circleCoordinates.length - 1) {
+                            circleWkt += '))';
+                        } else {
+                            circleWkt += ',';
+                        }
+                    }
+
+                    // return the parameters for spatial search
+                    // var parameters = getParameters();
+                    // parameters["spatialSearchWkt"] = circleWkt;
+
+                    // var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+                    // var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+                    // var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                    // var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+                    // var response = sendQueries(activeTabName, page, pp, parameters);
+                    // let queryIdentifier = uuidv4();
+                    // currentQuery = queryIdentifier;
+                    // prepareNewTable(activeTabName);
+                    // response.then(function(result) {
+                    //     var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                    //     var countResults = result["count"];
+                    //     displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
+                    // });
+                    // $scope.updateURLParameters('polygon', 'circle');
+                    // $scope.updateURLParameters('lon', coordinates.lng.toString());
+                    // $scope.updateURLParameters('lat', coordinates.lat.toString());
+                    // $scope.updateURLParameters('radius', radius.toString());
+                }
+            });
+        };
+    </script>
 </main>
