@@ -6,6 +6,7 @@ body,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 html,
 body {
     overflow-x: hidden;
@@ -13,6 +14,11 @@ body {
 html, body {
   overflow-x: hidden;
 >>>>>>> 230b87cf (update my repo)
+=======
+html,
+body {
+    overflow-x: hidden;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 ul li {
@@ -20,6 +26,7 @@ ul li {
 }
 
 a {
+<<<<<<< HEAD
 <<<<<<< HEAD
     text-decoration: none;
 }
@@ -35,17 +42,24 @@ label {
 
 =======
   text-decoration: none;
+=======
+    text-decoration: none;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 label {
-  display: none;
+    display: none;
 }
 
 .container {
-  max-width: 960px !important;
+    max-width: 960px !important;
 }
 
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 /* breadcrum */
 
 .breadcrumb li span {
@@ -57,6 +71,7 @@ label {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* breadcrum end */
 
@@ -64,10 +79,18 @@ label {
 /* header */
 
 =======
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 /* breadcrum end */
 
+
 /* header */
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 header {
     width: 100%;
     height: auto;
@@ -80,6 +103,7 @@ header {
 }
 
 header .container {
+<<<<<<< HEAD
 <<<<<<< HEAD
     padding: 160px 30px 50px 30px;
 }
@@ -119,76 +143,90 @@ nav div.display-expert {
     position: absolute;
 =======
   padding: 160px 30px 50px 30px;
+=======
+    padding: 160px 30px 50px 30px;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 header .container h1 {
-  color: #fff;
+    color: #fff;
 }
 
 header .container.home {
-  text-align: center;
-  max-width: 500px;
+    text-align: center;
+    max-width: 500px;
 }
 
 .search-bar-home {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: auto;
-  margin-bottom: -30px;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: -30px;
 }
 
 .search-bar-home input {
-  height: 60px;
-  box-shadow: 0 15px 25px 0 rgba(0,0,0,0.10);
-  padding-left: 25px;
-  transition: all .2s ease;
+    height: 60px;
+    box-shadow: 0 15px 25px 0 rgba(0, 0, 0, 0.10);
+    padding-left: 25px;
+    transition: all .2s ease;
 }
 
 .search-bar-home input:hover {
-  transform: scale(1.005);
+    transform: scale(1.005);
 }
 
 .search-bar-home button {
-  background-color: #2BA9BD !important;
-  margin: 3px;
-  transition: all .2s ease;
+    background-color: #2BA9BD !important;
+    margin: 3px;
+    transition: all .2s ease;
 }
 
 .search-bar-home button:hover {
-  transform: scale(1.05);
-  color: #fff;
+    transform: scale(1.05);
+    color: #fff;
 }
 
 
 /* nav */
 
 nav {
-  width: 100%;
-  padding: 0;
-  position: absolute;
-  z-index: 9;
+    width: 100%;
+    padding: 0;
+    position: absolute;
+    z-index: 9;
 }
 
 nav .container {
-  max-width: 960px !important;
+    max-width: 960px !important;
 }
 
+
 /* 0. Integrate the repetative codes */
+
 nav div.nav-path,
+<<<<<<< HEAD
 nav div.display-expert{
     position:absolute;
 >>>>>>> 230b87cf (update my repo)
+=======
+nav div.display-expert {
+    position: absolute;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     left: 41px;
 }
 
 nav div.nav-path a,
 nav div.display-expert,
 <<<<<<< HEAD
+<<<<<<< HEAD
 ul.nav li p.item {
 =======
 ul.nav li p.item{
 >>>>>>> 230b87cf (update my repo)
+=======
+ul.nav li p.item {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     color: #FFFFFF;
     letter-spacing: 0;
     font-family: sans-serif;
@@ -198,9 +236,13 @@ ul.nav li p.item{
 
 /* 1. KnowWhereGraph Icon */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 nav img#knowwheregraph-icon {
     float: left;
     padding-left: 20px;
@@ -209,12 +251,18 @@ nav img#knowwheregraph-icon {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* 2. Direct Relief Icon */
 
 =======
 /* 2. Direct Relief Icon */
 >>>>>>> 230b87cf (update my repo)
+=======
+
+/* 2. Direct Relief Icon */
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 nav div#direct_relief_container {
     float: left;
     margin-top: 44px;
@@ -222,31 +270,45 @@ nav div#direct_relief_container {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* 3. Dynamic path (breadcrumb) */
 
 =======
 /* 3. Dynamic path (breadcrumb) */
 >>>>>>> 230b87cf (update my repo)
+=======
+
+/* 3. Dynamic path (breadcrumb) */
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 nav div.nav-path {
     top: 144px;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.nav-path .breadcrumb>li+li:before {
 =======
 div.nav-path .breadcrumb > li + li:before{
 >>>>>>> 230b87cf (update my repo)
+=======
+div.nav-path .breadcrumb>li+li:before {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     color: #FFFFFF;
     content: "\00a0/\00a0";
     opacity: 0.5;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.nav-path ul li a {
 =======
 div.nav-path ul li a{
 >>>>>>> 230b87cf (update my repo)
+=======
+div.nav-path ul li a {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     text-decoration: none;
     color: #FFFFFF;
     /* font-family: sans-serif; */
@@ -258,6 +320,7 @@ div.nav-path ul li a{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.nav-path ul#explore-expertise1 li a#curr_page {
     opacity: 1;
 }
@@ -267,11 +330,19 @@ div.nav-path ul#explore-expertise1 li a#curr_page {
 
 =======
 div.nav-path ul#explore-expertise1 li a#curr_page{
+=======
+div.nav-path ul#explore-expertise1 li a#curr_page {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     opacity: 1;
 }
 
+
 /* 4. Current page name */
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 nav div.display-expert {
     top: 180px;
 }
@@ -288,9 +359,13 @@ nav div.display-expert span#expert-name {
 
 /* 5. Navigation menu */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 ul.nav {
     float: right;
     margin-top: 47px;
@@ -303,14 +378,19 @@ ul.nav li {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ul.nav li a {
 =======
 ul.nav li a{
 >>>>>>> 230b87cf (update my repo)
+=======
+ul.nav li a {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     text-decoration: none;
     display: flex;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* 5.1 Dropdown menu */
@@ -320,6 +400,12 @@ nav div.search-dropdown-input {
 /* 5.1 Dropdown menu */
 nav div.search-dropdown-input{
 >>>>>>> 230b87cf (update my repo)
+=======
+
+/* 5.1 Dropdown menu */
+
+nav div.search-dropdown-input {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     width: 333px;
     height: 134px;
     border-radius: 5px;
@@ -332,15 +418,20 @@ nav div.search-dropdown-input{
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 input#input-query {
 =======
 input#input-query{
 >>>>>>> 230b87cf (update my repo)
+=======
+input#input-query {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     font-style: italic;
     font-size: 12px;
 }
 
 div.search-dropdown-input div.input-group form {
+<<<<<<< HEAD
 <<<<<<< HEAD
     display: flex;
     align-items: stretch;
@@ -356,10 +447,19 @@ div.search-dropdown-input div.input-group button {
 
 div.search-dropdown-input div.input-group button{
 >>>>>>> 230b87cf (update my repo)
+=======
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+div.search-dropdown-input div.input-group button {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     background-color: black;
     color: #FFFFFF;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -370,11 +470,17 @@ div.spatial-search {
 
 div.spatial-search{
 >>>>>>> 230b87cf (update my repo)
+=======
+}
+
+div.spatial-search {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     padding: 0px;
 }
 
 
 /* Mobile Menu */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #menuToggle input {
@@ -486,153 +592,146 @@ div.spatial-search{
 =======
 #menuToggle input{
   display: none;
+=======
+
+#menuToggle input {
+    display: none;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 @media screen and (max-width: 850px) {
-
-  nav ul {
-    display: block;
-    text-align: right;
-  }
-
-  #menuToggle {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    right: 65px;
-    top: 30px;
-    margin-top: 25px;
-    z-index: 4;
-    -webkit-user-select: none;
-    user-select: none;
-    transition: all .2s ease;
-  }
-
-  #menuToggle input
-  {
-    display: flex;
-    width: 40px;
-    height: 32px;
-    position: absolute;
-    cursor: pointer;
-    opacity: 0;
-    z-index: 2;
-  }
-
-  #menuToggle span
-  {
-    display: flex;
-    width: 29px;
-    height: 2px;
-    margin-bottom: 5px;
-    position: relative;
-    background: #ffffff;
-    border-radius: 3px;
-    z-index: 1;
-    transform-origin: 5px 0px;
-    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                opacity 0.55s ease;
-  }
-
-  #menuToggle span:first-child
-  {
-    transform-origin: 0% 0%;
-  }
-
-  #menuToggle span:nth-last-child(2)
-  {
-    transform-origin: 0% 100%;
-  }
-
-  #menuToggle input:checked ~ span
-  {
-    opacity: 1;
-    transform: rotate(45deg) translate(-3px, -1px);
-  }
-  #menuToggle input:checked ~ span:nth-last-child(3)
-  {
-    opacity: 0;
-    transform: rotate(0deg) scale(0.2, 0.2);
-  }
-
-  #menuToggle input:checked ~ span:nth-last-child(2)
-  {
-    transform: rotate(-45deg) translate(0, -1px);
-  }
-
-  #menu
-  {
-    display: flex;
-    flex-direction: column;
-    align-content: end;
-    align-items: end;
-    position: absolute;
-    width: 260px;
-    height: 110vh;
-    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
-    margin: -85px 0 0 -280px;
-    padding: 50px 80px 50px 50px;
-    padding-top: 175px;
-    background-color: #1C1E41;
-    -webkit-font-smoothing: antialiased;
-    top: -40px;
-    right: -70px;
-    transform-origin: 0% 0%;
-    transform: translate(100%, 0);
-    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-  }
-
-  nav ul li {
-    padding: 10px 0;
-    border: none;
-  }
-
-  nav ul li:hover {
-    border: none;
-  }
-
-  #menuToggle input:checked ~ ul
-  {
-    transform: none;
-  }
-
-  nav ul li.active {
-    border: none;
-    padding: 10px 0;
-  }
-  nav ul li.active:hover {
-    border: none;
-    padding: 10px 0;
-  }
+    nav ul {
+        display: block;
+        text-align: right;
+    }
+    #menuToggle {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        right: 65px;
+        top: 30px;
+        margin-top: 25px;
+        z-index: 4;
+        -webkit-user-select: none;
+        user-select: none;
+        transition: all .2s ease;
+    }
+    #menuToggle input {
+        display: flex;
+        width: 40px;
+        height: 32px;
+        position: absolute;
+        cursor: pointer;
+        opacity: 0;
+        z-index: 2;
+    }
+    #menuToggle span {
+        display: flex;
+        width: 29px;
+        height: 2px;
+        margin-bottom: 5px;
+        position: relative;
+        background: #ffffff;
+        border-radius: 3px;
+        z-index: 1;
+        transform-origin: 5px 0px;
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), opacity 0.55s ease;
+    }
+    #menuToggle span:first-child {
+        transform-origin: 0% 0%;
+    }
+    #menuToggle span:nth-last-child(2) {
+        transform-origin: 0% 100%;
+    }
+    #menuToggle input:checked~span {
+        opacity: 1;
+        transform: rotate(45deg) translate(-3px, -1px);
+    }
+    #menuToggle input:checked~span:nth-last-child(3) {
+        opacity: 0;
+        transform: rotate(0deg) scale(0.2, 0.2);
+    }
+    #menuToggle input:checked~span:nth-last-child(2) {
+        transform: rotate(-45deg) translate(0, -1px);
+    }
+    #menu {
+        display: flex;
+        flex-direction: column;
+        align-content: end;
+        align-items: end;
+        position: absolute;
+        width: 260px;
+        height: 110vh;
+        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+        margin: -85px 0 0 -280px;
+        padding: 50px 80px 50px 50px;
+        padding-top: 175px;
+        background-color: #1C1E41;
+        -webkit-font-smoothing: antialiased;
+        top: -40px;
+        right: -70px;
+        transform-origin: 0% 0%;
+        transform: translate(100%, 0);
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    }
+    nav ul li {
+        padding: 10px 0;
+        border: none;
+    }
+    nav ul li:hover {
+        border: none;
+    }
+    #menuToggle input:checked~ul {
+        transform: none;
+    }
+    nav ul li.active {
+        border: none;
+        padding: 10px 0;
+    }
+    nav ul li.active:hover {
+        border: none;
+        padding: 10px 0;
+    }
 }
 
 @media screen and (max-width: 450px) {
-  nav .left a img {
-    width: 170px;
-  }
+    nav .left a img {
+        width: 170px;
+    }
 }
 
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 /* div.spatial-search div{
     background-color: red;
 } */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.spatial-search div i {
 =======
 div.spatial-search div i{
 >>>>>>> 230b87cf (update my repo)
+=======
+div.spatial-search div i {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     float: left;
     font-size: 20px;
     line-height: 100%;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.spatial-search button#spatial-query {
 =======
 div.spatial-search button#spatial-query{
 >>>>>>> 230b87cf (update my repo)
+=======
+div.spatial-search button#spatial-query {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     color: #00021F;
     background-color: #C1C1C9;
     border: 0px;
@@ -645,18 +744,25 @@ ul li span.item {
     /* color: #FFFFFF; */
     /* font-family: sans-serif; */
 <<<<<<< HEAD
+<<<<<<< HEAD
     /* letter-spacing: 0; */
 =======
      /* letter-spacing: 0; */
 >>>>>>> 230b87cf (update my repo)
+=======
+    /* letter-spacing: 0; */
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     font-size: 18px;
     font-weight: 500;
     line-height: 21px;
     text-align: right;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 230b87cf (update my repo)
+=======
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 ul.nav li img {
@@ -666,12 +772,18 @@ ul.nav li img {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* Main content */
 
 =======
 /* Main content */
 >>>>>>> 230b87cf (update my repo)
+=======
+
+/* Main content */
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 main {
     position: relative;
     width: 100%;
@@ -679,6 +791,7 @@ main {
 }
 
 section.alt {
+<<<<<<< HEAD
 <<<<<<< HEAD
     background-color: #D9D9DE;
 }
@@ -787,108 +900,130 @@ section.center {
 
 =======
   background-color: #D9D9DE;
+=======
+    background-color: #D9D9DE;
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 section.about {
-  padding-top: 90px;
-  padding-bottom: 70px;
+    padding-top: 90px;
+    padding-bottom: 70px;
 }
 
 section.about .container {
-  max-width: 900px;
+    max-width: 900px;
 }
 
 section.about p {
-  margin-bottom: 50px;
+    margin-bottom: 50px;
 }
 
 section.explore {
-  padding: 70px 0 120px;
-  max-width: 960px;
-  margin: 0 auto;
+    /* padding: 70px 0 120px; */
+    padding: 70px 0 90px;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 section.explore .container {
-  max-width: 900px;
-  margin-bottom: 50px;
+    max-width: 900px;
+    margin-bottom: 50px;
 }
 
 section.center {
-  text-align: center;
+    text-align: center;
+}
+
+section.home-map {
+    padding: 90px 0 120px;
+    background-color: #D9D9DE;
+}
+
+section.home-map #home-map {
+    height: 500px;
+    width: 50%;
+    border-radius: 5px;
+    margin: 0 auto;
+    box-shadow: 0 5px 15px 0 rgb(0 0 0 / 20%);
 }
 
 .button {
-  height: 50px;
-  display: inline-block;
-  padding: 12px 30px;
-  color: #fff;
-  text-decoration: none;
-  box-shadow: 0 5px 15px 0 rgba(0,0,0,0.20);
-  border-radius: 5px;
-  transition: all .2s ease;
+    height: 50px;
+    display: inline-block;
+    padding: 12px 30px;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.20);
+    border-radius: 5px;
+    transition: all .2s ease;
 }
 
 .button:hover {
-  transform: scale(1.05);
-  color: #fff;
+    transform: scale(1.05);
+    color: #fff;
 }
 
 .button.secondary {
-  background-color: #252648;
+    background-color: #252648;
 }
 
-.columns-3 > * {
-  width: 31%;
+.columns-3>* {
+    width: 31%;
 }
 
 .explore-topics {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .card-group-home {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 40px;
 }
 
-.card-explore-icon, .card-explore {
-  background: #FFFFFF;
-  box-shadow: 0 10px 64px 0 rgba(0,0,0,0.05);
-  border-radius: 5px;
-  transition: all .2s ease;
+.card-explore-icon,
+.card-explore {
+    background: #FFFFFF;
+    box-shadow: 0 10px 64px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+    transition: all .2s ease;
 }
 
-.card-explore-icon:hover, .card-explore:hover {
-  transform: scale(1.02);
+.card-explore-icon:hover,
+.card-explore:hover {
+    transform: scale(1.02);
 }
 
-.card-explore-icon .card-body .card-title, .card-explore .card-body .card-title {
-  color: #00021F;
-  font-weight: bold;
-  margin-bottom: 0;
+.card-explore-icon .card-body .card-title,
+.card-explore .card-body .card-title {
+    color: #00021F;
+    font-weight: bold;
+    margin-bottom: 0;
 }
 
 .card-explore-icon {
-  padding: 30px 0 10px;
+    padding: 30px 0 10px;
 }
 
 .card-explore-icon .card-img-top {
-  height: 50px;
+    height: 50px;
 }
 
 .card-explore {
-  text-align: center;
+    text-align: center;
 }
 
-.card-explore .card-body {
-
-}
+.card-explore .card-body {}
 
 
 /* Footer */
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 footer {
     clear: left;
 }
@@ -927,10 +1062,14 @@ footer div div input {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 input.form-control::-webkit-input-placeholder {
 =======
 input.form-control::-webkit-input-placeholder{
 >>>>>>> 230b87cf (update my repo)
+=======
+input.form-control::-webkit-input-placeholder {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     color: #00021F;
     opacity: 0.8;
     font-family: sans-serif;
@@ -956,6 +1095,7 @@ div.form-group button {
 
 div.form-group button:hover {
 <<<<<<< HEAD
+<<<<<<< HEAD
     color: #fff;
     transform: scale(1.05);
 }
@@ -968,6 +1108,13 @@ footer div.footer {
 
 footer div.footer{
 >>>>>>> 230b87cf (update my repo)
+=======
+    color: #fff;
+    transform: scale(1.05);
+}
+
+footer div.footer {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     height: 256px;
     background-color: #00021F;
     padding-top: 74px;
@@ -986,9 +1133,12 @@ div.icons-footer img#kwg-icon-footer {
     position: absolute;
     top: 16px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 230b87cf (update my repo)
+=======
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 }
 
 div.icons-footer p {
@@ -1008,10 +1158,14 @@ div.icons-footer p {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 div.icons-footer div#funded {
 =======
 div.icons-footer div#funded{
 >>>>>>> 230b87cf (update my repo)
+=======
+div.icons-footer div#funded {
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     width: 83px;
     height: 108px;
     position: absolute;
@@ -1038,6 +1192,7 @@ div.icons-footer div#funded span {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @media only screen and (max-width: 1000px) {
     .search-bar-home {
         padding: 0 30px;
@@ -1063,29 +1218,36 @@ div.icons-footer div#funded span {
 }
 =======
 
+=======
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 @media only screen and (max-width: 1000px) {
-  .search-bar-home {
-    padding: 0 30px;
-  }
-
-  div.form-group button {
-    right: 40px;
-  }
-
-  .about p {
-    padding: 0 30px;
-  }
+    .search-bar-home {
+        padding: 0 30px;
+    }
+    div.form-group button {
+        right: 40px;
+    }
+    .about p {
+        padding: 0 30px;
+    }
 }
 
 @media only screen and (max-width: 700px) {
-  .columns-3 > * {
-    width: 47%;
-  }
+    .columns-3>* {
+        width: 47%;
+    }
 }
 
 @media only screen and (max-width: 500px) {
+<<<<<<< HEAD
   .columns-3 > * {
     width: 100%;
   }
 }
 >>>>>>> 230b87cf (update my repo)
+=======
+    .columns-3>* {
+        width: 100%;
+    }
+}
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)

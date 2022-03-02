@@ -162,6 +162,7 @@
                                 <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
                                     <li>
 <<<<<<< HEAD
+<<<<<<< HEAD
                                         <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
                                         <img src="images/dropdown.svg" ng-click="showSubList($event)" />
 =======
@@ -169,6 +170,10 @@
                                         {{a2obj['label']}}
                                         <img src="images/dropdown.svg" ng-click="showSubList($event)"/>
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
                                     </li>
                                     <ul class="list-group list-group-indented" style="display: none">
                                         <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
@@ -309,8 +314,12 @@
                         <div>Hurricane: Number of Injured Cases (min)</div>
                         <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum injured number...">
                         <div>Hurricane: Number of Injured Cases (max)</div>
+<<<<<<< HEAD
                         <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">    
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
                     </section>
                 </div>
             </li>
@@ -438,9 +447,12 @@
     </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="map" id="results-search-map" ng-controller="spatialmap-controller">
     </div>
 =======
+=======
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
     <div class="map" id="results-search-map" ng-controller="spatialmap-controller"></div>
 
 <<<<<<< HEAD
@@ -706,5 +718,12 @@
     <div class="map" id="results-search-map" ng-controller="spatialmap-controller"></div>
 
 >>>>>>> 0bf31404 (update my repo)
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+=======
+    <div class="map" id="results-search-map" ng-controller="spatialmap-controller">
+    </div>
+>>>>>>> 2cde3a08 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
+>>>>>>> c3818201 (1. Add map and support circle function in home page; 2. change the hazard & place icons for spatial search; 3. add checbox grounp to choose different type (people, place, hazard) for map visualization; 4. add circle functionality for further spatial search)
 </main>
