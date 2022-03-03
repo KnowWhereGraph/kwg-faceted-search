@@ -1,0 +1,24 @@
+<div class="places">
+
+  <div class="table-container">
+
+  <mat-table [dataSource]="places" class="searchTable">
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Type Column -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
+  </mat-table>
+
+</div>
+</div>

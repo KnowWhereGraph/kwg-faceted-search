@@ -1,0 +1,34 @@
+@import "variables.scss";
+
+// HTML styles used across all scss sheets
+.html {
+  height: 100%;
+  overflow-x: hidden !important;
+}
+
+.body {
+  background: $base-dark;
+  box-sizing: border-box;
+  font-family: Sans-Serif;
+  color: $base-dark;
+  margin: 0;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100% !important;
+  position: relative;
+}
+
+.a {
+  text-decoration: none;
+}
+
+.sr-only {
+  display: none;
+}
+
+.hide {
+  display: none !important;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="25px" viewBox="0 0 22 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>person</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="KWG---Results-&amp;-Filters---Map" transform="translate(-667.000000, -375.000000)" stroke="#00021F" stroke-width="2.3368">
+            <g id="person" transform="translate(669.000000, 377.000000)">
+                <path d="M18,21 L18,18.6666667 C18,16.0893378 15.9852814,14 13.5,14 L4.5,14 C2.01471863,14 0,16.0893378 0,18.6666667 L0,21" id="Path"></path>
+                <ellipse id="Oval" cx="9" cy="4.66666667" rx="4.5" ry="4.66666667"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,57 @@
+<div class="facets">
+  <div class="search-box">
+    <form class="search-form">
+      <label class="sr-only" for="keyword">Enter Your Query</label>
+      <input class="search-input" type="text" id="keyword" name="keyword" placeholder="Enter your query">
+      <input class="search-submit" type="submit" value="Search">
+    </form>
+  </div>
+
+  <!-- Place Facets -->
+  <div *ngIf="selectedTabIndex === 0" class="place-facets">
+    <h3>Place</h3>
+    <span class="search-header">
+      Administrative Regions
+    </span>
+    <br>
+    <span class="search-header">
+      Zip Code
+    </span>
+    <br>
+    <span class="search-header">
+      US Climate Division
+    </span>
+    <br>
+    <span class="search-header">
+      National Weather Zone
+    </span>
+  </div>
+
+  <!-- Hazard Facets -->
+  <div *ngIf="selectedTabIndex === 1" class="place-facets">
+    <h3>Place</h3>
+    <span class="search-header">
+      Zip Code
+    </span>
+    <br>
+    <span class="search-header">
+      US Climate Division
+    </span>
+    <br>
+    <span class="search-header">
+      National Weather Zone
+    </span>
+    <h3>Hazard</h3>
+    <span class="search-header">
+      Start Date
+    </span>
+    <br>
+    <span class="search-header">
+      End Date
+    </span>
+    <br>
+    <span class="search-header">
+      Hazard Types
+    </span>
+  </div>
+</div>
