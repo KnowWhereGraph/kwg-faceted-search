@@ -143,6 +143,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
+    $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
 
     //Populate hazard class types and set values
 <<<<<<< HEAD
@@ -557,6 +558,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('nwz', parameters['placeFacetsNWZ']);
         else
             $scope.removeValue('nwz');
+        if (parameters['placeFacetsGNIS'] != '')
+            $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
+        else
+            $scope.removeValue('gnis');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -1015,8 +1020,11 @@ kwgApp.directive('fipsDirective', function() {
 });
 
 // Directive that's responsible for autofilling the us climate division field
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> fbf3a2a0 (Add autocomplete search for GNIS features)
 kwgApp.directive('uscdDirective', function() {
     return {
         restrict: 'C',
@@ -1090,7 +1098,43 @@ kwgApp.directive('nwzDirective', function() {
                             response(matches);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fbf3a2a0 (Add autocomplete search for GNIS features)
                         },
+=======
+                        },                        
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
+// Directive that's responsible for autofilling the gnis feature field
+kwgApp.directive('gnisDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getGNISFeature().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsGNIS')[0] | element[0] == angular.element('#regionFacetsGNIS')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['gnisFeatures']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },                        
+>>>>>>> 7fc0abaa (Add autocomplete search for GNIS features)
                         select: function(event, ui) {
 =======
                         },                        select: function(event, ui) {
@@ -1160,6 +1204,7 @@ var getParameters = function() {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
+            parameters["placeFacetsGNIS"] = angular.element("#placeFacetsGNIS")[0].value;
             break;
         case 'hazard':
             parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
@@ -1169,6 +1214,7 @@ var getParameters = function() {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
+            parameters["placeFacetsGNIS"] = angular.element("#regionFacetsGNIS")[0].value;
             break;
     }
     //Hazard facets
@@ -2379,15 +2425,18 @@ var cleanupFacets = function($scope) {
     angular.element("#placeFacetsZip")[0].value = "";
     angular.element("#placeFacetsUSCD")[0].value = "";
     angular.element("#placeFacetsNWZ")[0].value = "";
+    angular.element("#placeFacetsGNIS")[0].value = "";
     angular.element("#regionFacetsZip")[0].value = "";
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
+    angular.element("#regionFacetsGNIS")[0].value = "";
 
     $scope.removeValue("region");
     $scope.removeValue('zip');
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     $scope.removeValue('uscd');
     $scope.removeValue('nwz');
+    $scope.removeValue('gnis');
 
     // clean up all hazard facets
     angular.element("#hazardFacetDateStart")[0].value = "";
