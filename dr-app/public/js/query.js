@@ -376,6 +376,32 @@ async function getNWZone() {
     return { 'nwzones': formattedResults };
 }
 
+async function getGNISFeature() {
+    let formattedResults = [];
+
+    let gnisQuery = `
+    select distinct ?gnisFeature ?gnisFeature_label where {
+        ?gnisFeature rdf:type ?gnisFeatureType;
+                     rdfs:label ?gnisFeature_label.
+        ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType.
+        values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
+    } ORDER BY ASC(?gnisFeature)`;
+
+    // use cached data for now
+    // let queryResults = await query(zipcodeQuery);
+    gnis_features_json = await fetch("/cache/gnis_features_10000.json"); // this needs to be changed later
+    gnis_features_cached = await gnis_features_json.json();
+    let queryResults = gnis_features_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let gnisFeature = row.gnisFeature.value;
+        let gnisFeature_label = row.gnisFeature_label.value;
+        formattedResults[gnisFeature_label] = gnisFeature;
+    }
+
+    return { 'gnisFeatures': formattedResults };
+}
+
 //New search function for place in stko-kwg
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
