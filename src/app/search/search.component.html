@@ -1,0 +1,41 @@
+
+  <body class="search-body">
+  <!-- The left hand facets -->
+  <app-facets [selectedTabIndex]="selectedTabIndex"></app-facets>
+  <div class="facets-body">
+  <!-- The number of results from the last query -->
+  <span class="results-count">{{resultsCount}} Results</span>
+
+  <!-- The 'Place', 'Hazard', 'People' tab groups -->
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChanged($event);">
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="../../assets/images/svgs/place.svg">
+        <span>Place</span>
+      </ng-template>
+      <ng-template matTabContent>
+      <app-places-table (resultsCountEvent)="changeResultsCount($event)"></app-places-table>
+    </ng-template>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="../../assets/images/svgs/hazard.svg">
+        <span>Hazard</span>
+      </ng-template>
+    <ng-template matTabContent>
+      <app-hazards-table (resultsCountEvent)="changeResultsCount($event)"></app-hazards-table>
+    </ng-template>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <img src="../../assets/images/svgs/people.svg">
+        <span>People</span>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+  </div>
+</body>
