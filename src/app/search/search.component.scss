@@ -1,11 +1,7 @@
 @import "../../variables.scss";
 
 .search-body {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  grid-template-rows: 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  display: flex;
   background-color: #CFCFD5;
 }
 .facets-body {
