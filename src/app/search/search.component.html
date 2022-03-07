@@ -34,6 +34,9 @@
         <img src="../../assets/images/svgs/people.svg">
         <span>People</span>
       </ng-template>
+      <ng-template matTabContent>
+        <app-people-table (resultsCountEvent)="changeResultsCount($event)"></app-people-table>
+      </ng-template>
     </mat-tab>
 
   </mat-tab-group>
