@@ -1,0 +1,37 @@
+<div class="hazards">
+
+  <div class="table-container">
+
+  <mat-table [dataSource]="people" class="searchTable">
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Affiliation Column -->
+    <ng-container matColumnDef="affiliation">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Affiliation </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.affiliation}} </mat-cell>
+    </ng-container>
+
+    <!-- Expertise Column -->
+    <ng-container matColumnDef="expertise">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Expertise </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.expertise}} </mat-cell>
+    </ng-container>
+
+    <!-- Place Column -->
+    <ng-container matColumnDef="place">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Place </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.place}} </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="peopleColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: peopleColumns;"></mat-row>
+  </mat-table>
+
+</div>
+</div>
