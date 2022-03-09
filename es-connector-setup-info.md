@@ -306,6 +306,34 @@ INSERT DATA {
       "fielddata": false,
       "array": false,
       "objectFields": []
+    },
+    {
+      "fieldName": "climateDivisionFIPS",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/climateDivisionFIPS"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
+    },
+    {
+      "fieldName": "hasFIPS",
+      "propertyChain": [
+        "http://stko-kwg.geog.ucsb.edu/lod/ontology/hasFIPS"
+      ],
+      "indexed": true,
+      "stored": true,
+      "analyzed": true,
+      "multivalued": true,
+      "ignoreInvalidValues": false,
+      "fielddata": false,
+      "array": false,
+      "objectFields": []
     }
   ],
   "languages": [],
