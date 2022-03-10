@@ -1,6 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { QueryService } from '../services/query.service'
 
 @Component({
   selector: 'app-places-table',
@@ -13,45 +14,69 @@ export class PlacesTableComponent implements OnInit {
   placesColumns: Array<String> = ["name", "type"];
   // The data source that's responsible for fetching data
   placesDataSource: MatTableDataSource<Place>;
+  places: Array<Place> = [];
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
+  // Paginator attached to the table
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // The number of results that the user wants to see in the table
+  public pageSize = 20;
+  // The current table page that the user is on
+  public currentPage = 0;
+  // The number of results
+  public totalSize = 0;
 
-  constructor() {
+  constructor(private queryService: QueryService) {
     // Initialize the places data to an empty array
     this.placesDataSource = new MatTableDataSource();
-    console.log("Places ctor")
    }
 
   ngOnInit(): void {
-    // Un-mocked, this is where the initial query is made for the initial list of results
-    // this.places should be updated, and then
     this.placesDataSource = new MatTableDataSource(this.places);
-
-    // Update the number of results
-    this.resultsCountEvent.emit(this.places.length);
+    this.populateTable();
+    this.queryService.getPlacesCount().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response)
+        this.totalSize = results[0]['COUNT']['value'];
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+      },
+      error: response => {
+        console.error("There was an error while retrieving the number of results", response)
+      }
+    })
   }
 
-  // Un-mocked, this should be empty
-  places: Array<Place> = [
-    {
-      name: "California",
-      type: "Admin Region 2",
-    },
-    {
-      name: "California",
-      type: "Admin Region 2",
-    },
-    {
-      name: "California",
-      type: "Admin Region 2",
-    },
-    {
-      name: "California",
-      type: "Admin Region 2",
-    },
-  ]
-}
+  ngAfterViewInit() {
+    this.paginator.page.subscribe((event) => {
+      this.pageSize = event.pageSize;
+      let offset = event.pageIndex*this.pageSize;
+      this.populateTable(offset);
+    });
+  }
 
+  /**
+   * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
+   * which gets inserted into the subsequent query.
+   * @param offset The query offset
+   */
+   populateTable(offset:number=0) {
+    // A map of a place's URI to its properties that are retrieved from the database
+    this.queryService.getAllPlaces(this.pageSize, offset).subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response)
+        this.places = [];
+        for (var result of results) {
+          this.places.push({
+            "name": result["label"]["value"],
+            "type": result["typeLabel"]["value"],
+          })
+        }
+        this.placesDataSource = new MatTableDataSource(this.places);
+      }
+   });
+  }
+}
 // Prototype for Places
 export interface Place {
   name: string;
