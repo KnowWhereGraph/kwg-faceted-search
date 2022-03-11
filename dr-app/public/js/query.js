@@ -328,6 +328,35 @@ async function getZipCodeArea() {
     return { 'zipcodes': formattedResults };
 }
 
+async function getFIPS(){
+    let formattedResults = [];
+
+    let zipcodeQuery = `
+    select distinct ?fips
+    {
+        {
+            ?adminRegion kwg-ont:hasFIPS ?fips.
+        }
+        UNION
+        {
+            ?climateDivision kwg-ont:climateDivisionFIPS ?fips.
+        }
+    } ORDER BY ?fips`;
+
+    // use cached data for now
+    // let queryResults = await query(zipcodeQuery);
+    fips_json = await fetch("/cache/fips.json");
+    fips_cached = await fips_json.json();
+    let queryResults = fips_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let fips = row.fips.value;
+        formattedResults[fips] = fips;
+    }
+
+    return { 'fips': formattedResults };
+}
+
 async function getUSClimateDivision() {
     let formattedResults = [];
 

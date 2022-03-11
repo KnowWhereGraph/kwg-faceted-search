@@ -129,6 +129,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //Set place facet values
     $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
     $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
+    $scope.placeFacetsFIPS = (urlVariables['fips'] != null && urlVariables['fips'] != '') ? urlVariables['fips'] : '';
     $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
     $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
@@ -412,6 +413,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
             $scope.removeValue('zip');
+        if (parameters['placeFacetsFIPS'] != '')
+            $scope.updateURLParameters('fips', parameters['placeFacetsFIPS']);
+        else
+            $scope.removeValue('fips');
         if (parameters['placeFacetsUSCD'] != '')
             $scope.updateURLParameters('uscd', parameters['placeFacetsUSCD']);
         else
@@ -716,6 +721,36 @@ kwgApp.directive('zipDirective', function() {
     }
 });
 
+// Directive that's responsible for autofilling the fips field
+kwgApp.directive('fipsDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getFIPS().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsFIPS')[0] | element[0] == angular.element('#regionFacetsFIPS')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['fips']), function(item){
+                                if (item.indexOf(request.term) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
 // Directive that's responsible for autofilling the us climate division field
 kwgApp.directive('uscdDirective', function() {
     return {
@@ -837,12 +872,14 @@ var getParameters = function() {
     switch (tabName) {
         case 'place':
             parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
+            parameters["placeFacetsFIPS"] = angular.element("#placeFacetsFIPS")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
             parameters["placeFacetsGNIS"] = angular.element("#placeFacetsGNIS")[0].value;
             break;
         case 'hazard':
             parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
+            parameters["placeFacetsFIPS"] = angular.element("#regionFacetsFIPS")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
             parameters["placeFacetsGNIS"] = angular.element("#regionFacetsGNIS")[0].value;
@@ -1651,10 +1688,12 @@ var cleanupFacets = function($scope) {
     // clean up all place facetes
     angular.element("#placeFacetsRegion")[0].value = "";
     angular.element("#placeFacetsZip")[0].value = "";
+    angular.element("#placeFacetsFIPS")[0].value = "";
     angular.element("#placeFacetsUSCD")[0].value = "";
     angular.element("#placeFacetsNWZ")[0].value = "";
     angular.element("#placeFacetsGNIS")[0].value = "";
     angular.element("#regionFacetsZip")[0].value = "";
+    angular.element("#regionFacetsFIPS")[0].value = "";
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
     angular.element("#regionFacetsGNIS")[0].value = "";
