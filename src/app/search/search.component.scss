@@ -5,14 +5,22 @@
   background-color: #CFCFD5;
 }
 .facets-body {
-  padding-top: 3rem;
+  padding-top: 1rem;
   padding-left: 2rem;
-  width: 60%;
+  width: 50%;
+}
+
+.map-container {
+  width: 40%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 30px;
 }
 
 .results-count {
-  font-size: large;
-  padding-left: 2rem;
+  font-size: 2rem;
   margin-bottom: 0.5em;
   height: 3rem;
 }

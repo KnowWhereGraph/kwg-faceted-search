@@ -21,6 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import { HazardsTableComponent } from './hazards-table/hazards-table.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PeopleTableComponent } from './people-table/people-table.component';
+import { MapComponent } from './map/map.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { PeopleTableComponent } from './people-table/people-table.component';
     FacetsComponent,
     HazardsTableComponent,
     PeopleTableComponent,
+    MapComponent,
 
   ],
   imports: [
