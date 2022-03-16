@@ -98,20 +98,28 @@
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <div>FIPS Code</div>
                     <input autocomplete="true" type="text" class="form-control fips-directive" id="placeFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Find an FIPS Code...">
 =======
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                    <div style="display: none;">FIPS Code</div>
+                    <input style="display: none;" autocomplete="true" type="text" class="form-control fips-directive" id="placeFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Find an FIPS Code...">
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                     <div>US Climate Division</div>
                     <input autocomplete="true" type="text" class="form-control uscd-directive" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
 =======
+=======
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                     <div>GNIS</div>
                     <input type="text" class="form-control gnis-directive" id="placeFacetsGNIS" placeholder="Find the GNIS">
                     <ul class="list-group checkbox-list" id="gnis-list">
@@ -148,7 +156,14 @@
                     <div>GNIS Feature</div>
                     <input autocomplete="true" type="text" class="form-control gnis-directive" id="placeFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
 >>>>>>> 7fc0abaa (Add autocomplete search for GNIS features)
+<<<<<<< HEAD
 >>>>>>> fbf3a2a0 (Add autocomplete search for GNIS features)
+=======
+=======
+                    <div style="display: none;">GNIS Feature</div>
+                    <input style="display: none;" autocomplete="true" type="text" class="form-control gnis-directive" id="placeFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
+>>>>>>> 2a8b3b08 (Start transitioning from KWG-V3 to KWG-Staging)
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                 </div>
             </li>
 
@@ -227,18 +242,23 @@
                     <br/>
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
+<<<<<<< HEAD
                     <div>FIPS Code</div>
                     <input autocomplete="true" type="text" class="form-control fips-directive" id="regionFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Search by FIPS Code...">
 =======
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                    <div style="display: none;">FIPS Code</div>
+                    <input style="display: none;" autocomplete="true" type="text" class="form-control fips-directive" id="regionFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Search by FIPS Code...">
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                     <div>US Climate Division</div>
                     <input autocomplete="true" type="text" class="form-control uscd-directive" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
-                    <div>GNIS Feature</div>
-                    <input autocomplete="true" type="text" class="form-control gnis-directive" id="regionFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
+                    <div style="display: none;">GNIS Feature</div>
+                    <input style="display: none;" autocomplete="true" type="text" class="form-control gnis-directive" id="regionFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
                 </div>
                 <br/>
                 <p class="filter-title">HAZARD</p>
@@ -384,9 +404,14 @@
                                     <input id="{{expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert"> {{expertTopic['expert_sublabel'][$index]}}
 =======
                             <ul class="list-group list-group-indented" style="display: none">
+<<<<<<< HEAD
                                 <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic']">
                                     <input id="{{expertTopic['expert_topic']+'_'+expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert"> {{expertTopic['expert_sublabel'][$index]}}
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                                <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic'] track by $index">
+                                    <input id="{{expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert"> {{expertTopic['expert_sublabel'][$index]}}
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                                 </li>
                             </ul>
                         </section>

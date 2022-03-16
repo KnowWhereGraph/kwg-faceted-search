@@ -1480,12 +1480,17 @@ var getSelectors = function(activeTabName) {
         };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         //angular.element(".results").css('width', 'calc(100% - 300px)')
         //angular.element("#results-search-map").width(0);
 =======
         angular.element(".results").css('width', 'calc(100% - 300px)')
         angular.element("#results-search-map").width(0);
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+        //angular.element(".results").css('width', 'calc(100% - 300px)')
+        //angular.element("#results-search-map").width(0);
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
@@ -1515,6 +1520,7 @@ var getSelectors = function(activeTabName) {
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
 <<<<<<< HEAD
+<<<<<<< HEAD
     var selectors = getSelectors(activeTabName);
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
@@ -1522,6 +1528,11 @@ var prepareNewTable = function(activeTabName) {
 =======
     var selectors = getSelectors(activeTabName)
         // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+=======
+    var selectors = getSelectors(activeTabName);
+/*     
+    // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
     if (activeTabName == "People") {
         angular.element(".results").css('width', 'calc(100% - 300px)')
         angular.element("#results-search-map").width(0);
@@ -1532,6 +1543,11 @@ var prepareNewTable = function(activeTabName) {
             angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
         }
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+    }
+ */
+    if (angular.element("#results-search-map").width() == 0) {
+        angular.element(".results").css('width', 'calc(60% - 150px)')
+        angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
     }
 
     // Create and add the table head
@@ -1576,6 +1592,7 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     /*     if (activeTabName != "People") {
             showMap(recordResults);
@@ -1631,9 +1648,18 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
         });
     }
 =======
+=======
+>>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
     if (activeTabName != "People") {
         showMap(recordResults, activeTabName);
     }
+=======
+/*     if (activeTabName != "People") {
+        showMap(recordResults);
+    } */
+
+    showMap(recordResults);
+>>>>>>> 2a8b3b08 (Start transitioning from KWG-V3 to KWG-Staging)
 
     recordResults.forEach(e => {
         var rowBodyHtml = "";
