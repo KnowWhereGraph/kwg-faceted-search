@@ -2,7 +2,7 @@
 
   <div class="table-container">
 
-  <mat-table [dataSource]="places" class="searchTable">
+  <mat-table [dataSource]="placesDataSource" class="search-table">
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
@@ -19,6 +19,6 @@
     <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
   </mat-table>
-
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
 </div>
 </div>

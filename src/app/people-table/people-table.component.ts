@@ -1,23 +1,22 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator'
 import {MatTableDataSource} from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
 
 @Component({
-  selector: 'app-places-table',
-  templateUrl: './places-table.component.html',
-  styleUrls: ['./places-table.component.scss']
+  selector: 'app-people-table',
+  templateUrl: './people-table.component.html',
+  styleUrls: ['./people-table.component.scss']
 })
-
-export class PlacesTableComponent implements OnInit {
+export class PeopleTableComponent implements OnInit {
   // Columns for the table
-  placesColumns: Array<String> = ["name", "type"];
+  peopleColumns: Array<String> = ["name", "affiliation", "expertise", "place"];
   // The data source that's responsible for fetching data
-  placesDataSource: MatTableDataSource<Place>;
-  places: Array<Place> = [];
+  people: Array<Person> = [];
+  peopleDataSource: MatTableDataSource<Person>;
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
-  // Paginator attached to the table
+  // Pagniator on the table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // The number of results that the user wants to see in the table
   public pageSize = 20;
@@ -27,14 +26,13 @@ export class PlacesTableComponent implements OnInit {
   public totalSize = 0;
 
   constructor(private queryService: QueryService) {
-    // Initialize the places data to an empty array
-    this.placesDataSource = new MatTableDataSource();
-   }
+    this.peopleDataSource = new MatTableDataSource();
+  }
 
   ngOnInit(): void {
-    this.placesDataSource = new MatTableDataSource(this.places);
+    this.peopleDataSource = new MatTableDataSource(this.people);
     this.populateTable();
-    this.queryService.getPlacesCount().subscribe({
+    this.queryService.getPeopleCount().subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -46,39 +44,44 @@ export class PlacesTableComponent implements OnInit {
       }
     })
   }
-
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
-      this.populateTable(offset);
+      //this.populateTable(offset);
     });
   }
 
+
   /**
-   * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
+   * Populates the data table with people. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
    * which gets inserted into the subsequent query.
    * @param offset The query offset
    */
    populateTable(offset:number=0) {
-    // A map of a place's URI to its properties that are retrieved from the database
-    this.queryService.getAllPlaces(this.pageSize, offset).subscribe({
+
+    this.queryService.getAllPeople(this.pageSize, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-        this.places = [];
+        this.people = [];
         for (var result of results) {
-          this.places.push({
+           this.people.push({
             "name": result["label"]["value"],
-            "type": result["typeLabel"]["value"],
+            "affiliation": "NA",
+            "expertise": result["expertiseLabel"]["value"],
+            "place": "NA",
           })
         }
-        this.placesDataSource = new MatTableDataSource(this.places);
+        this.peopleDataSource = new MatTableDataSource(this.people);
       }
    });
   }
 }
-// Prototype for Places
-export interface Place {
+
+// Prototype for Person
+export interface Person {
   name: string;
-  type: string,
+  affiliation: string,
+  expertise: string,
+  place: string,
 }

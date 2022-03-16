@@ -19,6 +19,10 @@ import { FacetsComponent } from './facets/facets.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { HazardsTableComponent } from './hazards-table/hazards-table.component';
+import { HttpClientModule } from '@angular/common/http';
+import { PeopleTableComponent } from './people-table/people-table.component';
+import { MapComponent } from './map/map.component';
+
 
 @NgModule({
   declarations: [
@@ -32,10 +36,14 @@ import { HazardsTableComponent } from './hazards-table/hazards-table.component';
     SearchComponent,
     PlacesTableComponent,
     FacetsComponent,
-    HazardsTableComponent
+    HazardsTableComponent,
+    PeopleTableComponent,
+    MapComponent,
+
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     MatTableModule,
     MatTabsModule,
     MatPaginatorModule,
