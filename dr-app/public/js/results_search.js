@@ -1083,8 +1083,8 @@ var getSelectors = function(activeTabName) {
             "pagination": "#expertPagination"
         };
 
-        angular.element(".results").css('width', 'calc(100% - 300px)')
-        angular.element("#results-search-map").width(0);
+        //angular.element(".results").css('width', 'calc(100% - 300px)')
+        //angular.element("#results-search-map").width(0);
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
@@ -1109,8 +1109,9 @@ var getSelectors = function(activeTabName) {
 // 3. The map is shown or hidden
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
-    var selectors = getSelectors(activeTabName)
-        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+    var selectors = getSelectors(activeTabName);
+/*     
+    // If we're showing the 'People' tab, adjust the table with to make up for an absent map
     if (activeTabName == "People") {
         angular.element(".results").css('width', 'calc(100% - 300px)')
         angular.element("#results-search-map").width(0);
@@ -1120,6 +1121,11 @@ var prepareNewTable = function(activeTabName) {
             angular.element(".results").css('width', 'calc(60% - 150px)')
             angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
         }
+    }
+ */
+    if (angular.element("#results-search-map").width() == 0) {
+        angular.element(".results").css('width', 'calc(60% - 150px)')
+        angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
     }
 
     // Create and add the table head
@@ -1160,9 +1166,11 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
-    if (activeTabName != "People") {
+/*     if (activeTabName != "People") {
         showMap(recordResults);
-    }
+    } */
+
+    showMap(recordResults);
 
     recordResults.forEach(e => {
         var rowBodyHtml = "";
