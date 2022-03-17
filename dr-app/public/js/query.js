@@ -928,6 +928,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     	?affiliationLoc rdf:type ?affiliationLoc_type;
                      	rdfs:label ?affiliationLoc_label.
     	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
+        filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
@@ -939,15 +940,14 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expert_name': row.label.value,
             'affiliation': (typeof row.affiliation === 'undefined') ? " " : row.affiliation.value,
             'affiliation_name': (typeof row.affiliationLabel === 'undefined') ? " " : row.affiliationLabel.value,
-            'expertise': row.expertise.value.split('||'),
-            'expertise_name': row.expertiseLabel.value.split('||'),
+            'expertise': row.expertise.value.split('||').slice(0,10),
+            'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
             'place': row.affiliationLoc.value,
             'place_name': row.affiliationLoc_label.value,
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
 
-    console.log(formattedResults);
     let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
