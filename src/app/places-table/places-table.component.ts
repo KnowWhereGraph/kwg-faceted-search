@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
@@ -17,14 +17,8 @@ export class PlacesTableComponent implements OnInit {
   places: Array<Place> = [];
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
-  // Paginator attached to the table
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  // The number of results that the user wants to see in the table
-  public pageSize = 20;
-  // The current table page that the user is on
-  public currentPage = 0;
-  // The number of results
-  public totalSize = 0;
+  // Event that notifies the parent component that a query has finished
+  @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
 
   constructor(private queryService: QueryService) {
     // Initialize the places data to an empty array
@@ -37,9 +31,9 @@ export class PlacesTableComponent implements OnInit {
     this.queryService.getPlacesCount().subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-        this.totalSize = results[0]['COUNT']['value'];
+        let totalSize: number = results[0]['COUNT']['value'];
         // Update the number of results
-        this.resultsCountEvent.emit(this.totalSize);
+        this.resultsCountEvent.emit(totalSize);
       },
       error: response => {
         console.error("There was an error while retrieving the number of results", response)
@@ -48,31 +42,36 @@ export class PlacesTableComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    /*
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
       this.populateTable(offset);
-    });
+    });*/
   }
 
   /**
    * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
    * which gets inserted into the subsequent query.
    * @param offset The query offset
+   * @param count The number of results to retrieve
    */
-   populateTable(offset:number=0) {
+   populateTable(offset:number=0, count: number=20) {
     // A map of a place's URI to its properties that are retrieved from the database
-    this.queryService.getAllPlaces(this.pageSize, offset).subscribe({
+    this.queryService.getAllPlaces(count, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.places = [];
+        console.log(results)
         for (var result of results) {
           this.places.push({
             "name": result["label"]["value"],
             "type": result["typeLabel"]["value"],
           })
         }
+        console.log(this.places)
         this.placesDataSource = new MatTableDataSource(this.places);
+        this.searchQueryFinishedEvent.emit(true);
       }
    });
   }

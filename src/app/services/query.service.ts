@@ -97,7 +97,6 @@ export class QueryService {
    * @param entities: An array of entity URI's
    **/
   getHazardProperties(entities: Array<string>) {
-    console.log(entities)
     let query = `SELECT ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {
       values ?entity {${entities.join(' ')}}
       optional
@@ -195,8 +194,7 @@ export class QueryService {
    * @returns An observable that the caller can watch
    */
        getAllPeople(limit: number=20, offset=0) {
-        let query = `
-        SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
+        let query = `SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
         let headers = this.getRequestHeaders();
         let body = this.getRequestBody(query);
         return this.http.post(this.endpoint, body, headers);

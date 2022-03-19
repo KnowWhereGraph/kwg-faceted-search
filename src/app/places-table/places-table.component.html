@@ -1,24 +1,17 @@
-<div class="places">
+<mat-table [dataSource]="placesDataSource" class="results-table">
 
-  <div class="table-container">
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+  </ng-container>
 
-  <mat-table [dataSource]="placesDataSource" class="search-table">
+  <!-- Type Column -->
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+  </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
-    </ng-container>
-
-    <!-- Type Column -->
-    <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
-  </mat-table>
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
-</div>
-</div>
+  <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
+</mat-table>

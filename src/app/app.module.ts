@@ -12,9 +12,9 @@ import { ExploreComponent } from './explore/explore.component';
 import { SearchComponent } from './search/search.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table'
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { PlacesTableComponent } from './places-table/places-table.component'
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { FacetsComponent } from './facets/facets.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +22,7 @@ import { HazardsTableComponent } from './hazards-table/hazards-table.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PeopleTableComponent } from './people-table/people-table.component';
 import { MapComponent } from './map/map.component';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @NgModule({
   declarations: [
@@ -49,6 +49,7 @@ import { MapComponent } from './map/map.component';
     MatPaginatorModule,
     MatInputModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     RouterModule.forRoot([
     {path: '', component: IndexComponent},
     {path: 'about', component: AboutComponent},
