@@ -9,7 +9,6 @@ import { QueryService } from '../services/query.service'
   styleUrls: ['./hazards-table.component.scss']
 })
 export class HazardsTableComponent implements OnInit {
-
   // Holds all of the hazards that are actively being displayed in the table
   hazards: Array<Hazard> = [];
   // Columns for the table
@@ -27,6 +26,8 @@ export class HazardsTableComponent implements OnInit {
 
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
+  // Event that notifies the parent component that a query has finished
+  @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
 
   constructor(private queryService: QueryService) {
     this.hazardsDataSource = new MatTableDataSource();
@@ -110,8 +111,8 @@ export class HazardsTableComponent implements OnInit {
               endDate: record.endDateName,
             })
           }
-          console.log(this.hazards);
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
+          this.searchQueryFinishedEvent.emit(true);
         },
         error: error => {
           console.log("Error getting the hazard properties", error)

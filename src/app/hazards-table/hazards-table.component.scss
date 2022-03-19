@@ -1,0 +1,18 @@
+.mat-column-name {
+  padding-right: 1rem;
+  width: 5rem;
+  font-size: 1rem;
+}
+
+.mat-column-type {
+  width:3rem;
+}
+
+.mat-column-place {
+  width:3rem;
+}
+
+// Highlight rows on hover
+tr.results-row:hover {
+  background: #777;
+}

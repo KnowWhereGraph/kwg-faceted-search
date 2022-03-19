@@ -1,9 +1,18 @@
 .facets {
   padding-right: 2rem;
   padding-left: 2rem;
-  padding-top: 2rem;
   background: #D8D8DD;
   height: 100%;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap:wrap;
+  width: 100%;
+}
+
+.search-box {
+  padding-top: 1rem;
 }
 
 .search-button {
@@ -13,28 +22,22 @@
   width: 3rem;
 }
 
-.search-form {
-  display: flex;
-  flex-wrap:wrap;
-  width: 100%;
+.search-input {
+  border: none;
+  border-radius: 5px 0 0 5px;
+  font-size: 14px;
+  height: 2.5rem;
+  outline: none;
+  width: 4rem;
 }
 
-.search-input {
-    border: none;
-    border-radius: 5px 0 0 5px;
-    font-size: 14px;
-    height: 2.5rem;
-    outline: none;
-    width: 4rem;
-  }
-  .search-submit {
-    height: 2.5rem;
-    width: 3rem;
-    font-size: 14px;
-    background: #00021F;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    color: #FFF;
-    cursor: pointer;
-  }
-
+.search-submit {
+  height: 2.5rem;
+  width: 3rem;
+  font-size: 14px;
+  background: #00021F;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  color: #FFF;
+  cursor: pointer;
+}

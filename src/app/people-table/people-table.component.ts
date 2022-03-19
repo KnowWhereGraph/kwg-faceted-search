@@ -16,6 +16,8 @@ export class PeopleTableComponent implements OnInit {
   peopleDataSource: MatTableDataSource<Person>;
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
+  // Event that notifies the parent component that a query has finished
+  @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
   // Pagniator on the table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // The number of results that the user wants to see in the table
@@ -48,7 +50,7 @@ export class PeopleTableComponent implements OnInit {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
-      //this.populateTable(offset);
+      this.populateTable(offset);
     });
   }
 
@@ -73,6 +75,7 @@ export class PeopleTableComponent implements OnInit {
           })
         }
         this.peopleDataSource = new MatTableDataSource(this.people);
+        this.searchQueryFinishedEvent.emit(true);
       }
    });
   }

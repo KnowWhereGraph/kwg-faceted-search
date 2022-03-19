@@ -10,7 +10,7 @@
   background: $base-dark;
   box-sizing: border-box;
   font-family: Sans-Serif;
-  color: $base-dark;
+  color: #00021F;
   margin: 0;
   overflow-x: hidden;
   height: 100%;
@@ -34,5 +34,45 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .table-container {
-  height: 45rem;
+  height: 100%;
+}
+
+.mat-row:nth-child(even){
+  background-color: $grey-light;
+}
+.mat-row:nth-child(even):hover{
+  background-color: #c4c4cc;
+}
+
+.mat-row:nth-child(odd):hover{
+background-color: #ececec;
+}
+
+.mat-header-cell {
+  font-size: large;
+  color: black;
+  box-shadow: solid black;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper  {
+  display: flex;
+  flex-direction: column;
+}
+
+.start-column {
+  padding-right: 1rem;
+}
+
+.mat-cell {
+  font-size: large;
+}
+
+.mat-row {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.results-table {
+  height:80%;
+  table-layout:fixed;
 }
