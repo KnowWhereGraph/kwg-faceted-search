@@ -43,6 +43,7 @@ export class MapComponent implements OnInit {
 
     tiles.addTo(this.map);
 
+    // add the circle drawing, edits, and clear functions to support further spatial search on the homepage 
     if(this.map){
       this.map.pm.addControls({
         position: "topleft",
