@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-
+import { MatPaginator } from '@angular/material/paginator';
+import { PlacesTableComponent } from '../places-table/places-table.component';
 
 @Component({
   selector: 'app-search',
@@ -14,26 +15,53 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
  */
 export class SearchComponent implements OnInit {
 
-  // The current number of results for a query
-  resultsCount: number;
+  // Tracks the active tab
   selectedTabIndex: number = 0;
+  // Tracks whether the counting query has finished
+  isCounting: boolean;;
+  // Tracks whether the searching query has finished
+  isSearching: boolean;;
+  // The number of results that the user wants to see in the table
+  public pageSize: number = 20;
+  // The current table page that the user is on
+  public currentPage: number = 0;
+  // The number of results
+  public totalSize: number = 0;
+  @ViewChild(MatPaginator) placesPaginator: MatPaginator;
+
+  @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
+  /**
+   * Create a new search component
+   *
+   * @param cd
+   */
   constructor(private cd: ChangeDetectorRef) {
-    this.resultsCount = 0;
+    this.totalSize = 0;
+    this.isCounting = true;
+    this.isSearching = true;
   }
 
   // An event handler for changes to the number of query results
   changeResultsCount(newCount: number) {
-    console.log("Got event")
-    this.resultsCount = newCount;
+    this.totalSize = newCount;
+    this.isCounting = false;
+  }
 
+  /**
+   * Event handler that gets triggered by a child component when a main
+   * search query finishes
+   */
+  searchQueryFinished() {
+    this.isSearching = false;
   }
 
   // An event handler that gets triggered when the tab changes
   onTabChanged(tabChangeEvent: MatTabChangeEvent) {
     let clickedIndex = tabChangeEvent.index;
-    console.log("index: " + clickedIndex)
-    // Emit the change event to the facets controller
-
+    // When the tab changes the child component runs the counting and search queries
+    // Update the corresponding state variables to reflect this
+    this.isCounting = true;
+    this.isSearching = true;
   }
 
   ngOnInit(): void {
@@ -41,25 +69,11 @@ export class SearchComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.cd.detectChanges();
-}
+    this.placesPaginator.page.subscribe((event) => {
+      this.pageSize = event.pageSize;
+      let offset = event.pageIndex * this.pageSize;
+      this.placesTable.populateTable(offset, this.pageSize);
+    });
+  }
 
-}
-
-
-export interface Hazard {
-  id: string;
-  name: string;
-  type: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-}
-
-
-
-export interface Person {
-  id: string;
-  name: string;
-  location: string;
-  expertise: string;
 }
