@@ -32,7 +32,7 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG-Stag
 async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
-
+    d_form.append('infer','false'); // disable inference
     let d_res = await fetch(P_ENDPOINT, {
         method: 'POST',
         mode: 'cors',
@@ -46,6 +46,7 @@ async function query(srq_query) {
             ...(d_form),
         ]),
     });
+
 
     return (await d_res.json()).results.bindings;
 }
@@ -333,14 +334,14 @@ async function getFIPS(){
     let formattedResults = [];
 
     let zipcodeQuery = `
-    select distinct ?fips
+    select distinct ?fips ?region
     {
         {
-            ?adminRegion kwg-ont:hasFIPS ?fips.
+            ?region kwg-ont:hasFIPS ?fips.
         }
         UNION
         {
-            ?climateDivision kwg-ont:climateDivisionFIPS ?fips.
+            ?region kwg-ont:climateDivisionFIPS ?fips.
         }
     } ORDER BY ?fips`;
 
@@ -352,7 +353,8 @@ async function getFIPS(){
 
     for (let row of queryResults) {
         let fips = row.fips.value;
-        formattedResults[fips] = fips;
+        let region = row.region.value;
+        formattedResults[fips] = region;
     }
 
     return { 'fips': formattedResults };
@@ -445,7 +447,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         elastic:entities ?entity.`;
     }
 
-    if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
+    if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "" | parameters["placeFacetsFIPS"] != "")
     {
         let typeQueries = [];
 
@@ -471,6 +473,18 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 values ?entity {kwgr:` + entity + `}
                 ?type rdfs:label ?typeLabel.
                 values ?type {kwg-ont:ZipCodeArea}
+            }`);
+        }
+        if (parameters["placeFacetsFIPS"] != "") {
+            entityAll = await getFIPS();
+            entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+            entity = entityArray[entityArray.length - 1];
+            typeQueries.push(`
+            {
+                ?entity rdf:type ?type; kwg-ont:hasFIPS|kwg-ont:climateDivisionFIPS ?label.
+                values ?entity {kwgr:` + entity + `}
+                ?type rdfs:label ?typeLabel.
+                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:USClimateDivision}
             }`);
         }
         if (parameters["placeFacetsUSCD"] != "") {
@@ -661,7 +675,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
     }`;
-
+    
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     let entityRawValues = [];
     for (let row of queryResults) {
@@ -688,8 +702,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             {
                 ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
                 ?observationCollection sosa:phenomenonTime ?time.
-                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-                      time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDateTime ?startTimeLabel;
+                      time:hasEnd/time:inXSDDateTime|time:inXSDDateTime ?endTimeLabel.
             }
             optional
             {
@@ -835,11 +849,10 @@ async function getHazardClasses() {
 
     let hazardQuery = `
     select distinct ?type where {
-        ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:HazardEvent.
+        ?type rdfs:subClassOf kwg-ont:Hazard.
     }`;
 
-    //Special case for fires
+/*     //Special case for fires
     let fireQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
@@ -851,7 +864,7 @@ async function getHazardClasses() {
     select distinct ?type where {
         ?entity rdf:type ?type.
         FILTER(?type = kwg-ont:NOAAHurricane).
-    }`;
+    }`; */
 
     let queryResults = await query(hazardQuery);
     for (let row of queryResults) {
@@ -862,7 +875,7 @@ async function getHazardClasses() {
         });
     }
 
-    let queryResultsFire = await query(fireQuery);
+/*     let queryResultsFire = await query(fireQuery);
     for (let row of queryResultsFire) {
         let hazardLabelArray = row.type.value.split("/");
         fireResults.push({
@@ -878,9 +891,10 @@ async function getHazardClasses() {
             'hazard_type': row.type.value,
             'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
         });
-    }
+    } */
 
-    return { 'hazards': formattedResults, 'fires': fireResults, 'hurricanes': hurricaneResults };
+    //return { 'hazards': formattedResults, 'fires': fireResults, 'hurricanes': hurricaneResults };
+    return { 'hazards': formattedResults};
 }
 
 //New search function for expert in stko-kwg
