@@ -324,82 +324,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         angular.element("#pills-" + activeTab + "-tab").click();
     });
 
-    $scope.spatialSearchDraw = function() {
-        if (resultsSearchMap) {
-            resultsSearchMap.pm.addControls({
-                position: "topleft",
-                positions: {
-                    draw: "topleft",
-                    edit: "topleft"
-                },
-                drawMarker: false,
-                drawCircleMarker: false,
-                drawPolyline: false,
-                drawRectangle: false,
-                drawPolygon: false,
-                drawCircle: true,
+    $scope.spatialSearchDraw = addDrawCircle();
 
-                drawControls: true,
-                editControls: true,
-                optionsControls: true,
-                customControls: true,
-                cutPolygon: false,
-                rotateMode: false
-
-            });
-
-            resultsSearchMap.on("pm:create", (e) => {
-                var coordinates;
-                var radius;
-
-                if (e.shape == "Polygon" || e.shape == "Rectangle") {
-                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
-                } else if (e.shape == "Circle") {
-                    // the default circle to do spatial search is set to be the one just drawn
-                    var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
-                    coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
-                    radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
-                    radius = radius / 1000; // convert to radius in kilometers
-
-                    // create the circle object and convert its geometry to the wkt format
-                    var optionsCircle = { steps: 10, units: 'kilometers', properties: { foo: 'bar' } };
-                    var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
-                    var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
-                    var circleCoordinates = circle.geometry.coordinates[0];
-                    for (i = 0; i < circleCoordinates.length; i++) {
-                        circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
-                        if (i == circleCoordinates.length - 1) {
-                            circleWkt += '))';
-                        } else {
-                            circleWkt += ',';
-                        }
-                    }
-
-                    // return the parameters for spatial search
-                    var parameters = getParameters();
-                    parameters["spatialSearchWkt"] = circleWkt;
-
-                    var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
-                    var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
-                    var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
-                    var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
-                    var response = sendQueries(activeTabName, page, pp, parameters);
-                    let queryIdentifier = uuidv4();
-                    currentQuery = queryIdentifier;
-                    prepareNewTable(activeTabName);
-                    response.then(function(result) {
-                        var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
-                        var countResults = result["count"];
-                        displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
-                    });
-                    $scope.updateURLParameters('polygon', 'circle');
-                    $scope.updateURLParameters('lon', coordinates.lng.toString());
-                    $scope.updateURLParameters('lat', coordinates.lat.toString());
-                    $scope.updateURLParameters('radius', radius.toString());
-                }
-            });
-        }
-    };
+    // add drawCircle
 
     //These functions handle changing of facet values. They are added to the url, and then tables are regenerated
     $scope.placeFacetChanged = debounce(function($event) {
@@ -670,11 +597,9 @@ kwgApp.directive('regionDirective', function() {
             getNonHierarchicalAdministrativeRegion().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsRegion')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['regions']), function(item){
-                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['regions']), function(item) {
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
                                     return item;
                                 }
                             });
@@ -700,11 +625,9 @@ kwgApp.directive('zipDirective', function() {
             getZipCodeArea().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsZip')[0] | element[0] == angular.element('#regionFacetsZip')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['zipcodes']), function(item){
-                                if (item.indexOf(request.term) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['zipcodes']), function(item) {
+                                if (item.indexOf(request.term) === 0) {
                                     return item;
                                 }
                             });
@@ -760,11 +683,9 @@ kwgApp.directive('uscdDirective', function() {
             getUSClimateDivision().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsUSCD')[0] | element[0] == angular.element('#regionFacetsUSCD')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['divisions']), function(item){
-                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['divisions']), function(item) {
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
                                     return item;
                                 }
                             });
@@ -790,11 +711,9 @@ kwgApp.directive('nwzDirective', function() {
             getNWZone().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsNWZ')[0] | element[0] == angular.element('#regionFacetsNWZ')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['nwzones']), function(item){
-                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['nwzones']), function(item) {
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0) {
                                     return item;
                                 }
                             });
@@ -853,6 +772,8 @@ var init = function() {
             attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
             crossOrigin: true
         }).addTo(resultsSearchMap);
+        addCheckboxesForDisplayMap();
+        addDrawCircle();
     }, 200);
 }
 
@@ -1439,12 +1360,13 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
     });
 }
 
-function showMap(recordResults) {
+function showMap(recordResults, activeTabName) {
     // clear all the previous markers on the map
     if (place_markers) {
         place_markers.removeLayers(markers);
         markers = [];
     }
+
 
     var markerIndex = 0;
     recordResults.forEach(e => {
@@ -1515,7 +1437,31 @@ function showMap(recordResults) {
                 // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
                 // dds.push(dd("br"));
                 // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
-                let place_marker = new L.marker([center_lat, center_lon]).bindPopup(dd('.popup', dds));
+
+                var placeIcon = L.icon({
+                    iconUrl: '../images/people-earthquake-icon.svg',
+                    iconSize: [38, 95],
+                    iconAnchor: [22, 94],
+                    popupAnchor: [12, -90]
+                });
+                // activeTabName != "People
+
+                var hazardIcon = L.icon({
+                    iconUrl: '../images/people-people-icon.svg',
+                    iconSize: [38, 95],
+                    iconAnchor: [22, 94],
+                    popupAnchor: [12, -90]
+                });
+
+                var icon = placeIcon;
+                if (activeTabName == "Place") {
+                    icon = placeIcon;
+                } else if (activeTabName == "Hazard") {
+                    icon = hazardIcon;
+                }
+
+
+                let place_marker = new L.marker([center_lat, center_lon], { icon: icon }).bindPopup(dd('.popup', dds));
 
                 // add marker event listener
                 // place_marker.on("click", function(ev) {
@@ -1768,4 +1714,100 @@ var cleanupFacets = function($scope) {
         subListDiv.style["display"] = "none";
     });
 
+}
+
+// add button group for displaying markers according to different clicked tab
+// click hazard button, then display all the hazard markers; click place button, then display all the place
+
+var addDrawCircle = function() {
+    if (resultsSearchMap) {
+        resultsSearchMap.pm.addControls({
+            position: "topleft",
+            positions: {
+                draw: "topleft",
+                edit: "topleft"
+            },
+            drawMarker: false,
+            drawCircleMarker: false,
+            drawPolyline: false,
+            drawRectangle: false,
+            drawPolygon: false,
+            drawCircle: true,
+
+            drawControls: true,
+            editControls: true,
+            optionsControls: true,
+            customControls: true,
+            cutPolygon: false,
+            rotateMode: false
+
+        });
+
+        resultsSearchMap.on("pm:create", (e) => {
+            var coordinates;
+            var radius;
+
+            if (e.shape == "Polygon" || e.shape == "Rectangle") {
+                coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[0].getLatLngs()[0];
+            } else if (e.shape == "Circle") {
+                // the default circle to do spatial search is set to be the one just drawn
+                var spatialDrawLength = resultsSearchMap.pm.getGeomanDrawLayers().length;
+                coordinates = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getLatLng();
+                radius = resultsSearchMap.pm.getGeomanDrawLayers()[spatialDrawLength - 1].getRadius();
+                radius = radius / 1000; // convert to radius in kilometers
+
+                // create the circle object and convert its geometry to the wkt format
+                var optionsCircle = { steps: 10, units: 'kilometers', properties: { foo: 'bar' } };
+                var circle = turf.circle([coordinates.lng, coordinates.lat], radius, optionsCircle);
+                var circleWkt = '<http://www.opengis.net/def/crs/OGC/1.3/CRS84>POLYGON((';
+                var circleCoordinates = circle.geometry.coordinates[0];
+                for (i = 0; i < circleCoordinates.length; i++) {
+                    circleWkt += circleCoordinates[i][0].toString() + ' ' + circleCoordinates[i][1].toString();
+                    if (i == circleCoordinates.length - 1) {
+                        circleWkt += '))';
+                    } else {
+                        circleWkt += ',';
+                    }
+                }
+
+                // return the parameters for spatial search
+                var parameters = getParameters();
+                parameters["spatialSearchWkt"] = circleWkt;
+
+                var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+                var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+                var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+                var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+                var response = sendQueries(activeTabName, page, pp, parameters);
+                let queryIdentifier = uuidv4();
+                currentQuery = queryIdentifier;
+                prepareNewTable(activeTabName);
+                response.then(function(result) {
+                    var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                    var countResults = result["count"];
+                    displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
+                });
+                // $scope.updateURLParameters('polygon', 'circle');
+                // $scope.updateURLParameters('lon', coordinates.lng.toString());
+                // $scope.updateURLParameters('lat', coordinates.lat.toString());
+                // $scope.updateURLParameters('radius', radius.toString());
+            }
+        });
+    }
+};
+var addCheckboxesForDisplayMap = function() {
+    var command = L.control({ position: 'topright' });
+    command.onAdd = function(map) {
+        var div = L.DomUtil.create('div');
+        div.innerHTML = `
+        <div class="leaflet-control-layers leaflet-control-layers-expanded">
+          <form>
+            <input class="leaflet-control-layers-overlays" id="place-marker" onclick=toggleFunction(this.checked) type="checkbox" checked> Place </input>
+            <input class="leaflet-control-layers-overlays" id="hazard-marker" onclick=toggleFunction(this.checked) type="checkbox" checked> Hazard </input>
+            <input class="leaflet-control-layers-overlays" id="people-marker" onclick=toggleFunction(this.checked) type="checkbox" checked> People </input>
+          </form>
+        </div>`;
+        return div;
+    };
+    command.addTo(resultsSearchMap);
 }
