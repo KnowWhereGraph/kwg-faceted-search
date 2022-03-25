@@ -1039,8 +1039,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["hazardTypes"].length > 0)
         typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
 
+<<<<<<< HEAD
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
+>>>>>>> 441d5b2f ((1) Enable the use of fips in hazard search (2) Correct frontend settings for GNIS)
     let placeEntities = [];
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
@@ -1138,6 +1142,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 =======
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+        placeEntities.push(entityArray[entityArray.length - 1]);
+    }
+    if (parameters["placeFacetsFIPS"] != "") {
+        entityAll = await getFIPS();
+        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
     if (parameters["placeFacetsUSCD"] != "") {
