@@ -47,6 +47,38 @@
                     <input autocomplete="true" type="text" class="form-control uscd-directive" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
+                    <div>GNIS</div>
+                    <input type="text" class="form-control gnis-directive" id="placeFacetsGNIS" placeholder="Find the GNIS">
+                    <ul class="list-group checkbox-list" id="gnis-list">
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectGNISCheckbox($event)"> BuiltUpArea
+                        </li>
+                        <ul id="buildupAreaSubList" ng-show="showBuildupArea">
+                            <li ng-repeat="element in buildupAreaList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                            </li>
+                        </ul>
+
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectGNISCheckbox($event)"> SurfaceWater
+                        </li>
+                        <ul id="SurfaceWaterSubList" ng-show="showSurfaceWater">
+                            <li ng-repeat="element in SurfaceWaterSubList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                            </li>
+                        </ul>
+
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectGNISCheckbox($event)"> Terrain
+                        </li>
+                        <ul id="TerrainSubList" ng-show="showTerrain">
+                            <li ng-repeat="element in TerrainSubList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                            </li>
+                        </ul>
+                    </ul>
+                    <div>FIPS</div>
+                    <input type="text" class="form-control fips-directive" id="placeFacetsFIPS" placeholder="Find the FIPS">
                 </div>
             </li>
 

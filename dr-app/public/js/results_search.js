@@ -556,6 +556,77 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
+    // GNIS facets
+    $scope.buildupAreaList = ["Airport", "Arch", "Bar", "Bridge", "Building", "Canal", "Cemetery", "Church", "Crossing",
+        "Dam", "Harbor", "Hospital", "Mine", "Oil Field", "Park", "Populated Place", "Post Office", "School", "Tower", "Trail", "Tunnel", "Well"
+    ];
+    $scope.SurfaceWaterSubList = ["Arroyo", "Basin", "Bay", "Beach", "Bend", "Canal",
+        "Channel", "Crater", "Dam", "Glacier", "Gut", "Lake", "Rapids", "Reservoir", "Spring", "Stream", "Swamp", "Waterfall"
+    ];
+    $scope.TerrainSubList = ["Arch", "Bar", "Basin", "Beach", "Bench", "Cape", "Cliff", "Crater", "Flat", "Gap", "Island", "Isthmus",
+        "Lava", "Mountain Range", "Plain", "Ridge", "Rock", "Slope", "Summit", "Valley"
+    ];
+
+    $scope.selectGNISCheckbox = function($event) {
+        console.log("u clicked.........");
+        console.log($event.target.checked);
+        console.log($event.target);
+        var id = $event.target.id;
+        var checked = $event.target.checked;
+        switch (id) {
+            case "buildupArea":
+                console.log("this is buildup area");
+                // checked ? ($scope.showBuildupArea = true) : ($scope.showBuildupArea = false);
+                if (checked) {
+                    $scope.showBuildupArea = true;
+                    var elements = angular.element("ul#buildupAreaSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showBuildupArea = false;
+                    var elements = angular.element("ul#buildupAreaSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+            case "surfacewater":
+                console.log("this is surfacewater -- >");
+                if (checked) {
+                    $scope.showSurfaceWater = true;
+                    var elements = angular.element("ul#SurfaceWaterSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showSurfaceWater = false;
+                    var elements = angular.element("ul#SurfaceWaterSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+            case "terrian":
+                console.log("this is terrian");
+                if (checked) {
+                    $scope.showTerrain = true;
+                    var elements = angular.element("ul#TerrainSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showTerrain = false;
+                    var elements = angular.element("ul#TerrainSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+        }
+
+    }
+
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
