@@ -578,7 +578,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["hazardTypes"].length > 0)
         typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
 
-    //These filters handle search by place type (regions, zipcode, nwz, uscd)
+    //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
     let placeEntities = [];
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
@@ -586,6 +586,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+        placeEntities.push(entityArray[entityArray.length - 1]);
+    }
+    if (parameters["placeFacetsFIPS"] != "") {
+        entityAll = await getFIPS();
+        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
     }
     if (parameters["placeFacetsUSCD"] != "") {

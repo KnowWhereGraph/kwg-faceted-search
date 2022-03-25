@@ -50,7 +50,7 @@
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
                     <div>GNIS</div>
-                    <input type="text" class="form-control gnis-directive" id="placeFacetsGNIS" placeholder="Find the GNIS">
+                    <input type="text" class="form-control gnis-directive" id="placeFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
                             <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectGNISCheckbox($event)"> BuiltUpArea
@@ -79,8 +79,6 @@
                             </li>
                         </ul>
                     </ul>
-                    <div>FIPS</div>
-                    <input type="text" class="form-control fips-directive" id="placeFacetsFIPS" placeholder="Find the FIPS">
                 </div>
             </li>
 
@@ -110,14 +108,14 @@
                     </ul>
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
-                    <div style="display: none;">FIPS Code</div>
-                    <input style="display: none;" autocomplete="true" type="text" class="form-control fips-directive" id="regionFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Search by FIPS Code...">
+                    <div>FIPS Code</div>
+                    <input autocomplete="true" type="text" class="form-control fips-directive" id="regionFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Search by FIPS Code...">
                     <div>US Climate Division</div>
                     <input autocomplete="true" type="text" class="form-control uscd-directive" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
                     <div style="display: none;">GNIS Feature</div>
-                    <input style="display: none;" autocomplete="true" type="text" class="form-control gnis-directive" id="regionFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
+                    <input style="display: none;" autocomplete="true" type="text" class="form-control gnis-directive" id="regionFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Search by GNIS Feature...">
                 </div>
                 <br/>
                 <p class="filter-title">HAZARD</p>
