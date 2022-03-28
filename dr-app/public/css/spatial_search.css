@@ -237,6 +237,9 @@ ul.filters .filter div.selectedItem p {
     margin-left: 20px;
 }
 
+.conditional-facets {
+  padding-top: 2rem;
+}
 
 /*****Data Range******/
 
