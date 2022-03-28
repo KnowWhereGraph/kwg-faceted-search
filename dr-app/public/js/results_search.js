@@ -129,8 +129,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //Set place facet values
     $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
     $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
+    $scope.placeFacetsFIPS = (urlVariables['fips'] != null && urlVariables['fips'] != '') ? urlVariables['fips'] : '';
     $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
+    $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
 
     //Populate hazard class types and set values
     if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
@@ -338,6 +340,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
             $scope.removeValue('zip');
+        if (parameters['placeFacetsFIPS'] != '')
+            $scope.updateURLParameters('fips', parameters['placeFacetsFIPS']);
+        else
+            $scope.removeValue('fips');
         if (parameters['placeFacetsUSCD'] != '')
             $scope.updateURLParameters('uscd', parameters['placeFacetsUSCD']);
         else
@@ -346,6 +352,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('nwz', parameters['placeFacetsNWZ']);
         else
             $scope.removeValue('nwz');
+        if (parameters['placeFacetsGNIS'] != '')
+            $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
+        else
+            $scope.removeValue('gnis');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -705,7 +715,37 @@ kwgApp.directive('zipDirective', function() {
     }
 });
 
-// Directive that's responsible for autofilling the zipcode field
+// Directive that's responsible for autofilling the fips field
+kwgApp.directive('fipsDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getFIPS().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsFIPS')[0] | element[0] == angular.element('#regionFacetsFIPS')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['fips']), function(item){
+                                if (item.indexOf(request.term) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
+// Directive that's responsible for autofilling the us climate division field
 kwgApp.directive('uscdDirective', function() {
     return {
         restrict: 'C',
@@ -749,7 +789,37 @@ kwgApp.directive('nwzDirective', function() {
                                 }
                             });
                             response(matches);
-                        },
+                        },                        
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
+// Directive that's responsible for autofilling the gnis feature field
+kwgApp.directive('gnisDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getGNISFeature().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsGNIS')[0] | element[0] == angular.element('#regionFacetsGNIS')[0]) {
+                    element.autocomplete({
+                        source: function(request, response)
+                        {
+                            var matches = $.map(Object.keys(data['gnisFeatures']), function(item){
+                                if (item.toUpperCase().indexOf(request.term.toUpperCase()) === 0)
+                                {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },                        
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -794,13 +864,17 @@ var getParameters = function() {
     switch (tabName) {
         case 'place':
             parameters["placeFacetsZip"] = angular.element("#placeFacetsZip")[0].value;
+            parameters["placeFacetsFIPS"] = angular.element("#placeFacetsFIPS")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
+            parameters["placeFacetsGNIS"] = angular.element("#placeFacetsGNIS")[0].value;
             break;
         case 'hazard':
             parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
+            parameters["placeFacetsFIPS"] = angular.element("#regionFacetsFIPS")[0].value;
             parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
+            parameters["placeFacetsGNIS"] = angular.element("#regionFacetsGNIS")[0].value;
             break;
     }
     //Hazard facets
@@ -1001,8 +1075,8 @@ var getSelectors = function(activeTabName) {
             "pagination": "#expertPagination"
         };
 
-        angular.element(".results").css('width', 'calc(100% - 300px)')
-        angular.element("#results-search-map").width(0);
+        //angular.element(".results").css('width', 'calc(100% - 300px)')
+        //angular.element("#results-search-map").width(0);
     } else if (activeTabName == "Place") {
         selectors = {
             "thead": "#placeTableTitle",
@@ -1027,8 +1101,9 @@ var getSelectors = function(activeTabName) {
 // 3. The map is shown or hidden
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
-    var selectors = getSelectors(activeTabName)
-        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+    var selectors = getSelectors(activeTabName);
+/*     
+    // If we're showing the 'People' tab, adjust the table with to make up for an absent map
     if (activeTabName == "People") {
         angular.element(".results").css('width', 'calc(100% - 300px)')
         angular.element("#results-search-map").width(0);
@@ -1038,6 +1113,11 @@ var prepareNewTable = function(activeTabName) {
             angular.element(".results").css('width', 'calc(60% - 150px)')
             angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
         }
+    }
+ */
+    if (angular.element("#results-search-map").width() == 0) {
+        angular.element(".results").css('width', 'calc(60% - 150px)')
+        angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
     }
 
     // Create and add the table head
@@ -1078,9 +1158,11 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
-    if (activeTabName != "People") {
-        showMap(recordResults, activeTabName);
-    }
+/*     if (activeTabName != "People") {
+        showMap(recordResults);
+    } */
+
+    showMap(recordResults);
 
     recordResults.forEach(e => {
         var rowBodyHtml = "";
@@ -1631,16 +1713,21 @@ var cleanupFacets = function($scope) {
     // clean up all place facetes
     angular.element("#placeFacetsRegion")[0].value = "";
     angular.element("#placeFacetsZip")[0].value = "";
+    angular.element("#placeFacetsFIPS")[0].value = "";
     angular.element("#placeFacetsUSCD")[0].value = "";
     angular.element("#placeFacetsNWZ")[0].value = "";
+    angular.element("#placeFacetsGNIS")[0].value = "";
     angular.element("#regionFacetsZip")[0].value = "";
+    angular.element("#regionFacetsFIPS")[0].value = "";
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
+    angular.element("#regionFacetsGNIS")[0].value = "";
 
     $scope.removeValue("region");
     $scope.removeValue('zip');
     $scope.removeValue('uscd');
     $scope.removeValue('nwz');
+    $scope.removeValue('gnis');
 
     // clean up all hazard facets
     angular.element("#hazardFacetDateStart")[0].value = "";
