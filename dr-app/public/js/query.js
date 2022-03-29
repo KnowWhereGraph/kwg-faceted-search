@@ -18,9 +18,13 @@ const H_PREFIXES = {
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
 <<<<<<< HEAD
+<<<<<<< HEAD
     usgs:'http://gnis-ld.org/lod/usgs/ontology/',
 =======
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    usgs:'http://gnis-ld.org/lod/usgs/ontology/',
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
     'iospress': 'http://ld.iospress.nl/rdf/ontology/',
 };
@@ -570,11 +574,15 @@ async function getGNISFeature() {
 
     let gnisQuery = `
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     select distinct ?gnisFeatureType ?gnisFeatureType_label ?gnisFeatureSuperType ?gnisFeatureSuperType_label
     {
         ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType;
                          rdfs:label ?gnisFeatureType_label.
         ?gnisFeatureSuperType rdfs:label ?gnisFeatureSuperType_label.
+<<<<<<< HEAD
         values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
     } ORDER BY ASC(?gnisFeature)`;
 
@@ -601,22 +609,25 @@ async function getGNISFeature() {
         ?gnisFeature rdf:type ?gnisFeatureType;
                      rdfs:label ?gnisFeature_label.
         ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType.
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
         values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
     } ORDER BY ASC(?gnisFeature)`;
 
-    // use cached data for now
-    // let queryResults = await query(zipcodeQuery);
-    gnis_features_json = await fetch("/cache/gnis_features_10000.json"); // this needs to be changed later
-    gnis_features_cached = await gnis_features_json.json();
-    let queryResults = gnis_features_cached.results.bindings;
+    let queryResults = await query(gnisQuery);
+
+    formattedResults["Built Up Area"] = {};
+    formattedResults["Surface Water"] = {};
+    formattedResults["Terrain"] = {};
 
     for (let row of queryResults) {
-        let gnisFeature = row.gnisFeature.value;
-        let gnisFeature_label = row.gnisFeature_label.value;
-        formattedResults[gnisFeature_label] = gnisFeature;
+        let gnisFeatureType = row.gnisFeatureType.value;
+        let gnisFeatureType_label = row.gnisFeatureType_label.value;
+        let gnisFeatureSuperType_label = row.gnisFeatureSuperType_label.value;
+        formattedResults[gnisFeatureSuperType_label][gnisFeatureType_label] = gnisFeatureType;
     }
 
-    return { 'gnisFeatures': formattedResults };
+    return { 'gnisFeatureTypes': formattedResults };
 }
 
 >>>>>>> fbf3a2a0 (Add autocomplete search for GNIS features)

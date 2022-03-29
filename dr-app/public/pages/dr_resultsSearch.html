@@ -95,6 +95,7 @@
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
                     <div>Administrative Region</div>
                     <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
+<<<<<<< HEAD
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
 <<<<<<< HEAD
@@ -122,22 +123,26 @@
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
                     <div>GNIS</div>
                     <input type="text" class="form-control gnis-directive" id="placeFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Find a GNIS Feature...">
+=======
+                    <br/>
+                    <div>GNIS Feature Type</div>
+>>>>>>> 1993d30b (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectGNISCheckbox($event)"> BuiltUpArea
+                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectGNISCheckbox($event)"> Built Up Area
                         </li>
                         <ul id="buildupAreaSubList" ng-show="showBuildupArea">
                             <li ng-repeat="element in buildupAreaList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                             </li>
                         </ul>
 
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectGNISCheckbox($event)"> SurfaceWater
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectGNISCheckbox($event)"> Surface Water
                         </li>
                         <ul id="SurfaceWaterSubList" ng-show="showSurfaceWater">
                             <li ng-repeat="element in SurfaceWaterSubList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                             </li>
                         </ul>
 
@@ -146,10 +151,11 @@
                         </li>
                         <ul id="TerrainSubList" ng-show="showTerrain">
                             <li ng-repeat="element in TerrainSubList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" value="{{element}}"> {{element}}
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                             </li>
                         </ul>
                     </ul>
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <div>FIPS</div>
                     <input type="text" class="form-control fips-directive" id="placeFacetsFIPS" placeholder="Find the FIPS">
@@ -169,7 +175,22 @@
 =======
 =======
 >>>>>>> b9e7971f ((1) Enable the use of fips in hazard search (2) Correct frontend settings for GNIS)
+<<<<<<< HEAD
 >>>>>>> 441d5b2f ((1) Enable the use of fips in hazard search (2) Correct frontend settings for GNIS)
+=======
+=======
+                    <br/>
+                    <div>Zip Code</div>
+                    <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
+                    <div>FIPS Code</div>
+                    <input autocomplete="true" type="text" class="form-control fips-directive" id="placeFacetsFIPS" ng-model="placeFacetsFIPS" ng-enter="placeFacetChanged()" placeholder="Find an FIPS Code...">
+                    <div>US Climate Division</div>
+                    <input autocomplete="true" type="text" class="form-control uscd-directive" id="placeFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Find a US Climate Division...">
+                    <div>National Weather Zone</div>
+                    <input autocomplete="true" type="text" class="form-control nwz-directive" id="placeFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Find a National Weather Zone...">
+
+>>>>>>> 1993d30b (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
                 </div>
             </li>
 
@@ -245,6 +266,39 @@
                         </section>
                     </ul>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                    <br/>
+                    <div>GNIS Feature Type</div>
+                    <ul class="list-group checkbox-list" id="gnis-list">
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectGNISCheckbox($event)"> Built Up Area
+                        </li>
+                        <ul id="buildupAreaSubList" ng-show="showBuildupArea">
+                            <li ng-repeat="element in buildupAreaList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+                            </li>
+                        </ul>
+
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectGNISCheckbox($event)"> Surface Water
+                        </li>
+                        <ul id="SurfaceWaterSubList" ng-show="showSurfaceWater">
+                            <li ng-repeat="element in SurfaceWaterSubList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+                            </li>
+                        </ul>
+
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectGNISCheckbox($event)"> Terrain
+                        </li>
+                        <ul id="TerrainSubList" ng-show="showTerrain">
+                            <li ng-repeat="element in TerrainSubList">
+                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+                            </li>
+                        </ul>
+                    </ul>
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
                     <br/>
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
@@ -268,8 +322,6 @@
                     <input autocomplete="true" type="text" class="form-control uscd-directive" id="regionFacetsUSCD" ng-model="placeFacetsUSCD" ng-enter="placeFacetChanged()" placeholder="Search by US Climate Division...">
                     <div>National Weather Zone</div>
                     <input autocomplete="true" type="text" class="form-control nwz-directive" id="regionFacetsNWZ" ng-model="placeFacetsNWZ" ng-enter="placeFacetChanged()" placeholder="Search by National Weather Zone...">
-                    <div style="display: none;">GNIS Feature</div>
-                    <input style="display: none;" autocomplete="true" type="text" class="form-control gnis-directive" id="regionFacetsGNIS" ng-model="placeFacetsGNIS" ng-enter="placeFacetChanged()" placeholder="Search by GNIS Feature...">
                 </div>
                 <br/>
                 <p class="filter-title">HAZARD</p>

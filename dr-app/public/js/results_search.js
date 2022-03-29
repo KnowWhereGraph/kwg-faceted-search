@@ -135,6 +135,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //Set place facet values
     $scope.placeFacetsRegion = (urlVariables['region'] != null && urlVariables['region'] != '') ? urlVariables['region'] : '';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
     $scope.placeFacetsZip = (urlVariables['zip'] != null && urlVariables['zip'] != '') ? urlVariables['zip'] : '';
     $scope.placeFacetsFIPS = (urlVariables['fips'] != null && urlVariables['fips'] != '') ? urlVariables['fips'] : '';
@@ -143,7 +146,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     $scope.placeFacetsUSCD = (urlVariables['uscd'] != null && urlVariables['uscd'] != '') ? urlVariables['uscd'] : '';
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
-    $scope.placeFacetsGNIS = (urlVariables['gnis'] != null && urlVariables['gnis'] != '') ? urlVariables['gnis'] : '';
 
     //Populate hazard class types and set values
 <<<<<<< HEAD
@@ -212,6 +214,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         if ((urlVariables['regions'] != null && urlVariables['regions'] != '')) {
             $timeout(function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 let regionArr = urlVariables['regions'].split(',');
                 for (let i = 0; i < regionArr.length; i++) {
                     angular.element("#" + regionArr[i]).click();
@@ -220,12 +223,20 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 for (let i = 0; i < expertArr.length; i++) {
                     angular.element("#" + expertArr[i]).click();
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                let regionArr = urlVariables['regions'].split(',');
+                for (let i = 0; i < regionArr.length; i++) {
+                    angular.element("#" + regionArr[i]).click();
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
                 }
             });
         }
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     getGNISFeature().then(function(data) {
         $scope.buildupAreaList = Object.keys(data["gnisFeatureTypes"]["Built Up Area"]);
         $scope.SurfaceWaterSubList = Object.keys(data["gnisFeatureTypes"]["Surface Water"]);
@@ -233,8 +244,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.$apply();
     });
 
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     // entire graph initialization
     init();
 
@@ -532,6 +546,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         else
             $scope.removeValue('region');
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (parameters['placeFacetsGNIS'] != '') {
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
         } else {
@@ -539,6 +554,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+        if (parameters['placeFacetsGNIS'] != '')
+            $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
+        else
+            $scope.removeValue('gnis');
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
         if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
@@ -558,10 +579,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('nwz', parameters['placeFacetsNWZ']);
         else
             $scope.removeValue('nwz');
-        if (parameters['placeFacetsGNIS'] != '')
-            $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
-        else
-            $scope.removeValue('gnis');
 
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
@@ -852,7 +869,121 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
         });
     }, debounceTimeout);
+<<<<<<< HEAD
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+
+    $scope.selectSubList = function($event, functionName) {
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListDiv = $event.target.parentNode.nextElementSibling;
+        let childListItems = subListDiv.children;
+
+        if ($event.target.checked) {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
+            }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+        } else {
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
+        }
+
+        $scope[functionName]($event);
+    };
+
+    $scope.selectGNISCheckbox = function($event) {
+        console.log("u clicked.........");
+        console.log($event.target.checked);
+        console.log($event.target);
+        var id = $event.target.id;
+        var checked = $event.target.checked;
+        switch (id) {
+            case "buildupArea":
+                console.log("this is built-up area");
+                // checked ? ($scope.showBuildupArea = true) : ($scope.showBuildupArea = false);
+                if (checked) {
+                    $scope.showBuildupArea = true;
+                    var elements = angular.element("ul#buildupAreaSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showBuildupArea = false;
+                    var elements = angular.element("ul#buildupAreaSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+            case "surfacewater":
+                console.log("this is surfacewater -- >");
+                if (checked) {
+                    $scope.showSurfaceWater = true;
+                    var elements = angular.element("ul#SurfaceWaterSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showSurfaceWater = false;
+                    var elements = angular.element("ul#SurfaceWaterSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+            case "terrian":
+                console.log("this is terrian");
+                if (checked) {
+                    $scope.showTerrain = true;
+                    var elements = angular.element("ul#TerrainSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = true;
+                    }
+                } else {
+                    $scope.showTerrain = false;
+                    var elements = angular.element("ul#TerrainSubList li input");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].checked = false;
+                    }
+                }
+                break;
+        }
+
+        $scope["selectGNISType"]($event);
+    };
+
+    $scope.selectGNISType = debounce(function() {
+        var parameters = getParameters();
+
+        if (parameters["facetGNIS"].length > 0) {
+            $scope.updateURLParameters('gnis', parameters['facetGNIS'].join(','));
+        } else {
+            $scope.removeValue('gnis');
+        }
+
+        var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
+        var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
+        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
+        var page = (urlVariables['page'] != null && urlVariables['page'] != '') ? parseInt(urlVariables['page']) : 1;
+        var response = sendQueries(activeTabName, page, pp, parameters);
+        let queryIdentifier = uuidv4();
+        currentQuery = queryIdentifier;
+        prepareNewTable(activeTabName);
+        response.then(function(result) {
+            if (currentQuery != queryIdentifier) {
+                return;
+            }
+            var selectors = displayTableByTabName(activeTabName, result, "selectGNIS");
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters, "selectGNIS");
+        });
+    }, debounceTimeout);
+
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -1115,6 +1246,7 @@ kwgApp.directive('nwzDirective', function() {
     }
 });
 
+<<<<<<< HEAD
 // Directive that's responsible for autofilling the gnis feature field
 kwgApp.directive('gnisDirective', function() {
     return {
@@ -1153,6 +1285,8 @@ kwgApp.directive('gnisDirective', function() {
     }
 });
 
+=======
+>>>>>>> 1993d30b (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
 var init = function() {
     setTimeout(() => {
         // -77.036667, lng: 38.895
@@ -1204,7 +1338,6 @@ var getParameters = function() {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#placeFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#placeFacetsNWZ")[0].value;
-            parameters["placeFacetsGNIS"] = angular.element("#placeFacetsGNIS")[0].value;
             break;
         case 'hazard':
             parameters["placeFacetsZip"] = angular.element("#regionFacetsZip")[0].value;
@@ -1214,7 +1347,6 @@ var getParameters = function() {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
             parameters["placeFacetsUSCD"] = angular.element("#regionFacetsUSCD")[0].value;
             parameters["placeFacetsNWZ"] = angular.element("#regionFacetsNWZ")[0].value;
-            parameters["placeFacetsGNIS"] = angular.element("#regionFacetsGNIS")[0].value;
             break;
     }
     //Hazard facets
@@ -1263,6 +1395,7 @@ var getParameters = function() {
     parameters["facetRegions"] = facetRegions;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     //Place sub facets
     let facetGNIS = [];
     angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
@@ -1274,6 +1407,15 @@ var getParameters = function() {
     parameters["facetGNIS"] = facetGNIS;
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+    //Place sub facets
+    let facetGNIS = [];
+    angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
+        facetGNIS.push(subFacetGNIS.value);
+    });
+    parameters["facetGNIS"] = facetGNIS;
+
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     return parameters;
 };
 
@@ -1327,23 +1469,35 @@ var displayBreadCrumbs = function() {
                 bcHTML += '<li><a href="' + placeUrl + '">Administrative Region: ' + urlVariables['region'] + '</a></li>';
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 placeUrl = bcURL + '&gnis=' + urlVariables['gnis'];
                 bcHTML += '<li><a href="' + placeUrl + '">GNIS Feature Type: ' + urlVariables['gnis'] + '</a></li>';
             }
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['zip'] != null && urlVariables['zip'] != '') {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
                 bcHTML += '<li><a href="' + placeUrl + '">Zip Code: ' + urlVariables['zip'] + '</a></li>';
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['fips'] != null && urlVariables['fips'] != '') {
                 placeUrl = bcURL + '&fips=' + urlVariables['fips'];
                 bcHTML += '<li><a href="' + placeUrl + '">FIPS Code: ' + urlVariables['fips'] + '</a></li>';
             }
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['uscd'] != null && urlVariables['uscd'] != '') {
                 placeUrl = bcURL + '&uscd=' + urlVariables['uscd'];
                 bcHTML += '<li><a href="' + placeUrl + '">US Climate Division: ' + urlVariables['uscd'] + '</a></li>';
@@ -1420,6 +1574,9 @@ var displayBreadCrumbs = function() {
                 }
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 var facetGNIS = urlVariables['gnis'].split(',');
                 for (var j = 0; j < facetGNIS.length; j++) {
@@ -1427,8 +1584,11 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
                 }
             }
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             break;
         case "people":
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
@@ -1453,6 +1613,9 @@ var displayBreadCrumbs = function() {
                 }
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 var facetGNIS = urlVariables['gnis'].split(',');
                 for (var j = 0; j < facetGNIS.length; j++) {
@@ -1460,8 +1623,11 @@ var displayBreadCrumbs = function() {
                     bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
                 }
             }
+<<<<<<< HEAD
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
             break;
     }
 
@@ -2428,6 +2594,7 @@ var cleanupFacets = function($scope) {
     angular.element("#regionFacetsFIPS")[0].value = "";
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
+<<<<<<< HEAD
 
     // Uncheck all of the GNIS facets
     angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
@@ -2456,13 +2623,19 @@ var cleanupFacets = function($scope) {
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
     angular.element("#regionFacetsGNIS")[0].value = "";
+=======
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
 
     $scope.removeValue("region");
+    $scope.removeValue("gnis");
     $scope.removeValue('zip');
+<<<<<<< HEAD
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+    $scope.removeValue("fips");
+>>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
     $scope.removeValue('uscd');
     $scope.removeValue('nwz');
-    $scope.removeValue('gnis');
 
     // clean up all hazard facets
     angular.element("#hazardFacetDateStart")[0].value = "";
