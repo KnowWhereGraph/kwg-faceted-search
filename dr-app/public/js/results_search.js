@@ -486,7 +486,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (hazType.includes('Earthquake'))
                     $scope.earthquakeFacets = true;
 
-                if (hazType.includes('fire') || hazType.includes('Fire'))
+                if (hazType.includes('Fire'))
                     $scope.fireFacets = true;
 
                 if (hazType.includes('Hurricane'))
@@ -934,7 +934,6 @@ var getParameters = function() {
         facetGNIS.push(subFacetGNIS.value);
     });
     parameters["facetGNIS"] = facetGNIS;
-
     return parameters;
 };
 
@@ -1763,6 +1762,11 @@ var cleanupFacets = function($scope) {
     angular.element("#regionFacetsFIPS")[0].value = "";
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
+
+    angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
+        gnis.value = "";
+        gnis.checked = false;
+    });
 
     $scope.removeValue("region");
     $scope.removeValue("gnis");

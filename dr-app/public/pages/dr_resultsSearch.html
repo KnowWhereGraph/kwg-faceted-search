@@ -160,18 +160,18 @@
                         <li ng-repeat="hazardUrl in hazardUrls['hazards']">
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
                         </li>
-                        <li class="ng-binding ng-scope">
+<!--                         <li class="ng-binding ng-scope">
                             <input id="Fire" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" value="FireEvent"> Fire
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                        </li>
-                        <ul class="list-group list-group-indented" style="display: none">
+                        </li> -->
+<!--                         <ul class="list-group list-group-indented" style="display: none">
                             <li ng-repeat="hazardUrlFire in hazardUrls['fires']">
                                 <input id="{{hazardUrlFire['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrlFire['hazard_type_name']}}" name="hazard"> {{hazardUrlFire['hazard_type_name']}}
                             </li>
                         </ul>
                         <li ng-repeat="hazardUrl in hazardUrls['hurricanes']">
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
-                        </li>
+                        </li> -->
                     </ul>
                     <section ng-show="earthquakeFacets">
                         <div>Earthquake: Magnitude (min)</div>
