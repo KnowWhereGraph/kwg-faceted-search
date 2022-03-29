@@ -721,6 +721,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     $scope.earthquakeFacets = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (hazType.includes('Fire') && hazType.includes('MTBS'))
                     $scope.mtbsFireFacets = true;
 
@@ -728,6 +729,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                     $scope.noaaFacets = true;
 =======
                 if (hazType.includes('fire') || hazType.includes('Fire'))
+=======
+                if (hazType.includes('Fire'))
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
                     $scope.fireFacets = true;
 
                 if (hazType.includes('Hurricane'))
@@ -1414,8 +1418,11 @@ var getParameters = function() {
         facetGNIS.push(subFacetGNIS.value);
     });
     parameters["facetGNIS"] = facetGNIS;
+<<<<<<< HEAD
 
 >>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
+=======
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     return parameters;
 };
 
@@ -2604,6 +2611,11 @@ var cleanupFacets = function($scope) {
           gnis.nextElementSibling.style["transform"] = "";
           gnis.parentNode.nextElementSibling.style["display"] = "none";
         }
+    });
+
+    angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
+        gnis.value = "";
+        gnis.checked = false;
     });
 
     $scope.removeValue("region");

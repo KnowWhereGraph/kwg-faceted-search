@@ -74,11 +74,16 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/sparql';
 const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG-Staging';
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
 
+var infer = 'false';
 // query
 async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
+<<<<<<< HEAD
 
+=======
+    d_form.append('infer', infer); // disable inference
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     let d_res = await fetch(P_ENDPOINT, {
         method: 'POST',
         mode: 'cors',
@@ -254,9 +259,20 @@ async function getRandomWildfire() {
 
     let row = queryResults[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+
+    if (typeof(row) == "undefined") {
+        row = {
+            'wildfire': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/hazard.162134.978925' },
+            'wildfire_label': { 'value': 'Wildfire Occurred in POWDER RIVER from 2021-08-08-1330 to 2021-08-21-0700, MST' }
+        };
+    }
+
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
     return { 'randomWildfire': formattedResults };
@@ -864,7 +880,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         elastic:entities ?entity.`;
     }
 
+<<<<<<< HEAD
     if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
+=======
+    if (parameters["placeFacetsRegion"] != "" | parameters["facetGNIS"].length > 0 | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     {
         let typeQueries = [];
 
@@ -875,9 +895,22 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 elastic:query "${parameters["placeFacetsRegion"]}";
                 elastic:entities ?entity.
                 
-                ?entity a ?type; rdfs:label ?label; geo:hasGeometry ?geo.
+                ?entity a ?type; rdfs:label ?label.
                 values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                 ?type rdfs:label ?typeLabel
+            }`);
+        }
+        if (parameters["facetGNIS"].length > 0) {
+            let entityArray = parameters["facetGNIS"];
+            for (i = 0; i < entityArray.length; i++)
+            {
+                entityArray[i] = entityArray[i].replace(' ','');
+            }
+            typeQueries.push(`
+            {                
+                ?entity a ?type; rdfs:label ?label.
+                ?type rdfs:label ?typeLabel.
+                values ?type {usgs:` + entityArray.join(' usgs:') + `}
             }`);
         }
         if (parameters["placeFacetsZip"] != "") {
@@ -955,11 +988,15 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 =======
     placeQuery += `}`;
 
+    infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    infer = 'false';
+
     let entityRawValues = [];
     for (let row of queryResults) {
-        let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
+        //let entityArray = row.entity.value.split("/");
+        //entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
+        entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
             'place_name': row.label.value,
@@ -969,6 +1006,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     if (entityRawValues.length == 0)
     {
@@ -986,6 +1024,15 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     for (let row of wktQuery) {
         wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    infer = 'true'; // the parameter infer is temporarily set to be true.
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
+    infer = 'false';
+
+    let wktResults = {};
+    for (let row of wktQuery) {
+        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','');
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     }
 
     for (let i = 0; i < formattedResults.length; i++) {
@@ -1032,6 +1079,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     //Filters out the types of hazards
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let typeQuery = ``;
     let hazardTypes = parameters["hazardTypes"];
 
@@ -1047,18 +1095,50 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     let typeQuery = 'values ?type {kwg-ont:Earthquake kwg-ont:NOAAHurricane kwg-ont:Wildfire kwg-ont:WildlandFireUse kwg-ont:PrescribedFire} #Temporary limiter';
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
+=======
+    let typeQuery = `?type rdfs:subClassOf ?superType.`;
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     if (parameters["hazardTypes"].length > 0)
-        typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
+    {
+        typeQuery += `filter (?type in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `) || ?superType in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `))`;
+    }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     //These filters handle search by place type (regions, zipcode, nwz, uscd)
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
 =======
     //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
 >>>>>>> 441d5b2f ((1) Enable the use of fips in hazard search (2) Correct frontend settings for GNIS)
+=======
+    //These filters handle search by place type (regions, gnis, zipcode, fips, nwz, uscd)
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     let placeEntities = [];
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
+    }
+    if (parameters["facetGNIS"].length > 0) {
+        let gnisTypeArray = parameters["facetGNIS"];
+        for (i = 0; i < gnisTypeArray.length; i++)
+        {
+            gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
+        }
+        let gnisFilter = ``;
+        if (parameters["keyword"] != "") {
+            gnisFilter = `filter not exists {filter contains(?gnisEntity_label,"${parameters["keyword"]}")}`;
+        }
+        let gnisEntities = await query(`
+            select distinct ?gnisEntity ?gnisType
+            {
+                ?gnisEntity rdf:type ?gnisType.
+                values ?gnisType {usgs:` + gnisTypeArray.join(' usgs:') + `}
+                ${gnisFilter}
+            }
+        `);
+        for (let row of gnisEntities) {
+            entityArray = row.gnisEntity.value.split("/"); 
+            placeEntities.push('usgs:'+entityArray[entityArray.length - 1]);
+        }
     }
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
@@ -1178,7 +1258,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         let placesLocatedIn = [];
         for (let i = 0 ; i < placeEntities.length; i++)
         {
-            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+            if (placeEntities[i].startsWith('usgs') || placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
             {
                 placesConnectedToS2.push(placeEntities[i]);
             }
@@ -1213,6 +1293,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         let dateArr = [];
         if (parameters["hazardFacetDateStart"] != "") {
 <<<<<<< HEAD
+<<<<<<< HEAD
             dateArr.push(`(?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
             dateArr.push(`(?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
         }
@@ -1227,16 +1308,25 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
             dateArr.push(`?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
             dateArr.push(`?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+=======
+            dateArr.push(`(?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
+            dateArr.push(`(?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
         }
         if (parameters["hazardFacetDateEnd"] != "") {
-            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel`);
-            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?startTimeLabel)`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?endTimeLabel)`);
         }
         dateQuery = `
             ?observationCollection sosa:phenomenonTime ?time.
+<<<<<<< HEAD
             ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                 time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+            ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                  time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
             FILTER (` + dateArr.join(' && ') + `)`;
     }
 
@@ -1251,6 +1341,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     //Build the full query
     hazardQuery += `
         ?entity rdf:type ?type; 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 rdfs:label ?label;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
@@ -1269,6 +1360,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             rdfs:label ?typeLabel.
         values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+                rdfs:label ?label;
+                sosa:isFeatureOfInterestOf ?observationCollection.
+        ?type rdfs:subClassOf kwg-ont:Hazard;
+              rdfs:label ?typeLabel.
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
@@ -1282,7 +1379,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
     
+    infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+<<<<<<< HEAD
 
     let hazardEntites = [];
     for (let row of queryResults) {
@@ -1349,6 +1448,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
       return { 'count': countResults[0].count.value, 'record': formattedResults };
 =======
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+=======
+    infer = 'false';
+
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     let entityRawValues = [];
     for (let row of queryResults) {
         let entityArray = row.entity.value.split("/");
@@ -1372,10 +1475,15 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             }
             optional
             {
-                ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
+                ?entity sosa:isFeatureOfInterestOf ?observationCollection.
                 ?observationCollection sosa:phenomenonTime ?time.
+<<<<<<< HEAD
                 ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                       time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+=======
+                ?time time:inXSDDateTime|time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                      time:inXSDDateTime|time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
             }
             optional
             {
@@ -1576,8 +1684,6 @@ async function getHazardClasses() {
 
 async function getHazardClasses() {
     let formattedResults = [];
-    let fireResults = [];
-    let hurricaneResults = [];
 
     let hazardQuery = `
     select distinct ?type where {
@@ -1585,6 +1691,7 @@ async function getHazardClasses() {
         ?type rdfs:subClassOf kwg-ont:HazardEvent.
     }`;
 
+<<<<<<< HEAD
     //Special case for fires
     let fireQuery = `
     select distinct ?type where {
@@ -1599,8 +1706,14 @@ async function getHazardClasses() {
         FILTER(?type = kwg-ont:NOAAHurricane).
     }`;
 
+=======
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
     let queryResults = await query(hazardQuery);
     for (let row of queryResults) {
+        if (row.type.value.includes("http") == false) // this if statement is add to bypass empty nodes that are retrieved
+        {
+            continue;
+        }
         let hazardLabelArray = row.type.value.split("/");
         formattedResults.push({
             'hazard_type': row.type.value,
@@ -1608,6 +1721,7 @@ async function getHazardClasses() {
         });
     }
 
+<<<<<<< HEAD
     let queryResultsFire = await query(fireQuery);
     for (let row of queryResultsFire) {
         let hazardLabelArray = row.type.value.split("/");
@@ -1628,6 +1742,9 @@ async function getHazardClasses() {
 
     return { 'hazards': formattedResults, 'fires': fireResults, 'hurricanes': hurricaneResults };
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    return { 'hazards': formattedResults};
+>>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
 }
 
 //New search function for expert in stko-kwg
