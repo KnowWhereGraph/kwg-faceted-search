@@ -16,6 +16,7 @@ const H_PREFIXES = {
     ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
+    usgs:'http://gnis-ld.org/lod/usgs/ontology/',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
     'iospress': 'http://ld.iospress.nl/rdf/ontology/',
 };
@@ -412,26 +413,28 @@ async function getGNISFeature() {
     let formattedResults = [];
 
     let gnisQuery = `
-    select distinct ?gnisFeature ?gnisFeature_label where {
-        ?gnisFeature rdf:type ?gnisFeatureType;
-                     rdfs:label ?gnisFeature_label.
-        ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType.
+    select distinct ?gnisFeatureType ?gnisFeatureType_label ?gnisFeatureSuperType ?gnisFeatureSuperType_label
+    {
+        ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType;
+                         rdfs:label ?gnisFeatureType_label.
+        ?gnisFeatureSuperType rdfs:label ?gnisFeatureSuperType_label.
         values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
     } ORDER BY ASC(?gnisFeature)`;
 
-    // use cached data for now
-    // let queryResults = await query(zipcodeQuery);
-    gnis_features_json = await fetch("/cache/gnis_features_10000.json"); // this needs to be changed later
-    gnis_features_cached = await gnis_features_json.json();
-    let queryResults = gnis_features_cached.results.bindings;
+    let queryResults = await query(gnisQuery);
+
+    formattedResults["Built Up Area"] = {};
+    formattedResults["Surface Water"] = {};
+    formattedResults["Terrain"] = {};
 
     for (let row of queryResults) {
-        let gnisFeature = row.gnisFeature.value;
-        let gnisFeature_label = row.gnisFeature_label.value;
-        formattedResults[gnisFeature_label] = gnisFeature;
+        let gnisFeatureType = row.gnisFeatureType.value;
+        let gnisFeatureType_label = row.gnisFeatureType_label.value;
+        let gnisFeatureSuperType_label = row.gnisFeatureSuperType_label.value;
+        formattedResults[gnisFeatureSuperType_label][gnisFeatureType_label] = gnisFeatureType;
     }
 
-    return { 'gnisFeatures': formattedResults };
+    return { 'gnisFeatureTypes': formattedResults };
 }
 
 //New search function for place in stko-kwg
