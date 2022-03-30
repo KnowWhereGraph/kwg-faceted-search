@@ -241,6 +241,10 @@ ul.filters .filter div.selectedItem p {
   padding-top: 2rem;
 }
 
+.feature-type {
+  margin-bottom: 0.5rem;
+}
+
 /*****Data Range******/
 
 li#datarange-li form {
