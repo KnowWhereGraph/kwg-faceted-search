@@ -59,10 +59,17 @@
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <div class="feature-type">Feature Type</div>
                   <ul class="list-group checkbox-list" id="gnis-list">
                     <li>
                         <input type="checkbox" class="form-check-input me-1" id="buildupArea" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+=======
+                  <div class="feature-type">Feature Type</div>
+                  <ul class="list-group checkbox-list" id="gnis-list">
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+>>>>>>> e80e0df9 (Re-order the feature type facet)
                         <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                     </li>
                     <ul id="buildupAreaSubList" style="display: none">
@@ -72,7 +79,11 @@
                     </ul>
 
                     <li>
+<<<<<<< HEAD
                         <input type="checkbox" class="form-check-input me-1" id="surfacewater" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+=======
+                        <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+>>>>>>> e80e0df9 (Re-order the feature type facet)
                         <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                     </li>
                     <ul id="SurfaceWaterSubList" style="display: none">
@@ -82,7 +93,11 @@
                     </ul>
 
                     <li>
+<<<<<<< HEAD
                         <input type="checkbox" class="form-check-input me-1" id="terrian" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+=======
+                        <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+>>>>>>> e80e0df9 (Re-order the feature type facet)
                         <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                     </li>
                     <ul id="TerrainSubList" style="display: none">
@@ -90,11 +105,16 @@
                             <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                         </li>
                     </ul>
+<<<<<<< HEAD
                   </ul>
 =======
 >>>>>>> 59a7ac68 (Enable autocomplete search for administrative regions)
+=======
+                </ul>
+>>>>>>> e80e0df9 (Re-order the feature type facet)
                     <div>Administrative Region</div>
                     <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                     <div>Zip Code</div>
@@ -202,6 +222,8 @@
                     <br/>
 =======
 >>>>>>> 291246cb (Use the existing functions to handle the dropdown logic)
+=======
+>>>>>>> c0929781 (Re-order the feature type facet)
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
                     <div>FIPS Code</div>
