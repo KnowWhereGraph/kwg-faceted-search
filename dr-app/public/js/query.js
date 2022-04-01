@@ -593,7 +593,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+    let hazardQuery = `select distinct * where {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -606,10 +606,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     //Filters out the types of hazards
-    let typeQuery = `?type rdfs:subClassOf ?superType.`;
+    let typeQuery = ``;
     if (parameters["hazardTypes"].length > 0)
     {
-        typeQuery += `filter (?type in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `) || ?superType in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `))`;
+        typeQuery += `filter (?type in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `))`;
     }
 
     //These filters handle search by place type (regions, gnis, zipcode, fips, nwz, uscd)
@@ -727,9 +727,19 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                sosa:isFeatureOfInterestOf ?observationCollection.
+                sosa:isFeatureOfInterestOf ?observationCollection;
+                geo:hasGeometry/geo:asWKT ?wkt.
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
+        optional
+        {
+            ?entity kwg-ont:sfWithin ?place.
+            ?place rdfs:label ?placeLabel.
+            filter not exists {filter contains(?placeLabel,"S2 Cell") }
+        }
+        ?observationCollection sosa:phenomenonTime ?time.
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
@@ -737,82 +747,35 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
     
+    console.log(hazardQuery);
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     infer = 'false';
 
-    let entityRawValues = [];
     for (let row of queryResults) {
-        let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
         formattedResults.push({
             'hazard': row.entity.value,
             'hazard_name': row.label.value,
             'hazard_type': row.type.value,
-            'hazard_type_name': row.typeLabel.value
+            'hazard_type_name': row.typeLabel.value,
+            'place':(typeof row.place === 'undefined') ? '' : row.place.value,
+            'place_name':(typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value,
+            'start_date':row.time.value,
+            'start_date_name':row.startTimeLabel.value,
+            'end_date':row.time.value,
+            'end_date_name':row.endTimeLabel.value,      
+            'wkt':row.wkt.value
         });
     }
 
-    let propertyQuery = await query(`
-        select ?entity ?place ?placeLabel ?placeWkt ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
-            values ?entity {${entityRawValues.join(' ')}} 
-            optional
-            {
-                ?entity kwg-ont:sfWithin ?place.
-                ?place rdfs:label ?placeLabel;
-                       geo:hasGeometry/geo:asWKT ?placeWkt.
-            }
-            optional
-            {
-                ?entity sosa:isFeatureOfInterestOf ?observationCollection.
-                ?observationCollection sosa:phenomenonTime ?time.
-                ?time time:inXSDDateTime|time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-                      time:inXSDDateTime|time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
-            }
-            optional
-            {
-                ?entity geo:hasGeometry/geo:asWKT ?wkt.
-            }
-        }`);
-    let propResults = {};
-    for (let row of propertyQuery) {
-        let place = (typeof row.place === 'undefined') ? '' : row.place.value;
-        let place_name = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value;
-        let place_wkt = (typeof row.placeWkt === 'undefined') ? '' : row.placeWkt.value;
-        let start_date = (typeof row.time === 'undefined') ? '' : row.time.value;
-        let start_date_name = (typeof row.startTimeLabel === 'undefined') ? '' : row.startTimeLabel.value;
-        let end_date = (typeof row.time === 'undefined') ? '' : row.time.value;
-        let end_date_name = (typeof row.endTimeLabel === 'undefined') ? '' : row.endTimeLabel.value;
-        let wkt = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
-        propResults[row.entity.value] = {
-            'place': place,
-            'place_name': place_name,
-            'place_wkt':place_wkt,
-            'start_date': start_date,
-            'start_date_name': start_date_name,
-            'end_date': end_date,
-            'end_date_name': end_date_name,
-            'wkt': wkt
-        }
-    }
-
-    for (let i = 0; i < formattedResults.length; i++) {
-        formattedResults[i]['place'] = propResults[formattedResults[i]['hazard']]['place'];
-        formattedResults[i]['place_name'] = propResults[formattedResults[i]['hazard']]['place_name'];
-        formattedResults[i]['start_date'] = propResults[formattedResults[i]['hazard']]['start_date'];
-        formattedResults[i]['start_date_name'] = propResults[formattedResults[i]['hazard']]['start_date_name'];
-        formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
-        formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
-        formattedResults[i]['wkt'] = (propResults[formattedResults[i]['hazard']]['wkt'] == '') ? propResults[formattedResults[i]['hazard']]['place_wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '') : propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', ''); 
-    }
-
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
+
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
 function hazardTypeFacets(parameters) {
-    let typedHazardQuery = '';
+    let typedHazardQuery = ``;
 
     if (parameters["hazardFacetMagnitudeMin"] != "" || parameters["hazardFacetMagnitudeMax"] != "") {
         let facetArr = [];
@@ -822,7 +785,7 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?magnitudeObj.
-            ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
+            ?magnitudeObj sosa:observedProperty kwgr:EarthquakeObservableProperty.mag.
             ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -834,7 +797,7 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?quakeDepthObj.
-            ?quakeDepthObj sosa:observedProperty kwgr:earthquakeObservableProperty.depth.
+            ?quakeDepthObj sosa:observedProperty kwgr:EarthquakeObservableProperty.depth.
             ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
     }
 
