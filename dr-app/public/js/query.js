@@ -607,9 +607,25 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Filters out the types of hazards
     let typeQuery = ``;
+    let hazardTypes = [];
+    let fireSubclasses = ['MTBSFire','NIFCFire','MTBSComplexFire','NIFCIncidentComplexFire','MTBSOutOfAreaResponseArea','MTBSPrescribedFire','NIFCPrescribedFire','MTBSWildlandFireUse'];
+    for (let i = 0; i < parameters["hazardTypes"].length; i++)
+    {
+        if (parameters["hazardTypes"][i] == 'Fire')
+        {
+            for (let j = 0; j < fireSubclasses.length;j++)
+            {
+                hazardTypes.push(fireSubclasses[j]);
+            }
+        }
+        else
+        {
+            hazardTypes.push(parameters["hazardTypes"][i]);
+        }
+    }
     if (parameters["hazardTypes"].length > 0)
     {
-        typeQuery += `filter (?type in (kwg-ont:` + parameters["hazardTypes"].join(', kwg-ont:') + `))`;
+        typeQuery += `filter (?type in (kwg-ont:` + hazardTypes.join(', kwg-ont:') + `))`;
     }
 
     //These filters handle search by place type (regions, gnis, zipcode, fips, nwz, uscd)
