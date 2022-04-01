@@ -173,7 +173,7 @@
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
                         </li> -->
                     </ul>
-                    <section ng-show="earthquakeFacets">
+                    <section class="conditional-facets" ng-show="earthquakeFacets">
                         <div>Earthquake: Magnitude (min)</div>
                         <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
                         <div>Earthquake: Magnitude (max)</div>
@@ -183,7 +183,7 @@
                         <div>Earthquake: Depth (max)</div>
                         <input type="number" class="form-control" id="hazardQuakeDepthMax" ng-model="hazardQuakeDepthMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum depth...">
                     </section>
-                    <section ng-show="fireFacets">
+                    <section class="conditional-facets" ng-show="fireFacets">
                         <!-- Fire Cause -->
                         <div>Fire: Number of Acres Burned (min)</div>
                         <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum acres...">
@@ -198,7 +198,7 @@
                         <div>Fire: Standard Deviation of Mean dNBR (max)</div>
                         <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
                     </section>
-                    <section ng-show="hurricaneFacets">
+                    <section class="conditional-facets" ng-show="hurricaneFacets">
                         <div>Hurricane: Number of Deaths (min)</div>
                         <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum deaths...">
                         <div>Hurricane: Number of Deaths (max)</div>
