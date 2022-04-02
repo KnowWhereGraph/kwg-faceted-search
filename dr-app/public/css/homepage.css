@@ -434,19 +434,6 @@ section.center {
     text-align: center;
 }
 
-section.home-map {
-    padding: 90px 0 120px;
-    background-color: #D9D9DE;
-}
-
-section.home-map #home-map {
-    height: 500px;
-    width: 50%;
-    border-radius: 5px;
-    margin: 0 auto;
-    box-shadow: 0 5px 15px 0 rgb(0 0 0 / 20%);
-}
-
 .button {
     height: 50px;
     display: inline-block;
