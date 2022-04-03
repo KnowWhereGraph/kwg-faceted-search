@@ -884,29 +884,18 @@ function hazardTypeFacets(parameters) {
 
     return typedHazardQuery;
 }
-
+/**
+* Gets all of the hazards and their respective subclasses.
+* top_hazard is the topmost hazard class (ie 'Fire')
+* middle_hazard are subclasses of the top_hazard
+* lower_hazard are subclasses of the middle_hazard
+* 
+* @returns
+*/
 async function getHazardClasses() {
-    let formattedResults = [];
 
-    let hazardQuery = `
-    select distinct ?type where {
-        ?type rdfs:subClassOf kwg-ont:Hazard.
-    }`;
-
-    let queryResults = await query(hazardQuery);
-    for (let row of queryResults) {
-        if (row.type.value.includes("http") == false) // this if statement is add to bypass empty nodes that are retrieved
-        {
-            continue;
-        }
-        let hazardLabelArray = row.type.value.split("/");
-        formattedResults.push({
-            'hazard_type': row.type.value,
-            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
-        });
-    }
-
-    return { 'hazards': formattedResults};
+  let data = await fetch("/cache/hazards.json");
+  return data.json();
 }
 
 //New search function for expert in stko-kwg

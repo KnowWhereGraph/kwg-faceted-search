@@ -135,12 +135,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
-    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
+    }
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
-    getHazardClasses().then(function(data) {
-        $scope.hazardUrls = data;
+    }
+
+      getHazardClasses().then(function(data) {
+        $scope.hazards = data;
         $scope.$apply();
     }).then(function() {
         if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
@@ -315,7 +318,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showSubList = function($event) {
         let dropdownImg = $event.target;
         let subListDiv = $event.target.parentNode.nextElementSibling;
-
         if (subListDiv.style["display"] == "") {
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
