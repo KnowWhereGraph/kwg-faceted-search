@@ -149,6 +149,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     //Populate hazard class types and set values
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
     }
@@ -160,12 +161,23 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.hazards = data;
 =======
     if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+=======
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
+>>>>>>> e6b677b7 (Add hazard dropdowns)
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
-    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
+    }
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
+<<<<<<< HEAD
     getHazardClasses().then(function(data) {
         $scope.hazardUrls = data;
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+    }
+
+      getHazardClasses().then(function(data) {
+        $scope.hazards = data;
+>>>>>>> e6b677b7 (Add hazard dropdowns)
         $scope.$apply();
     }).then(function() {
         if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
@@ -430,9 +442,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         let dropdownImg = $event.target;
         let subListDiv = $event.target.parentNode.nextElementSibling;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> e6b677b7 (Add hazard dropdowns)
         if (subListDiv.style["display"] == "") {
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";

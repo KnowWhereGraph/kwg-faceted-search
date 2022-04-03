@@ -1681,10 +1681,17 @@ async function getHazardClasses() {
 
     return typedHazardQuery;
 }
-
+/**
+* Gets all of the hazards and their respective subclasses.
+* top_hazard is the topmost hazard class (ie 'Fire')
+* middle_hazard are subclasses of the top_hazard
+* lower_hazard are subclasses of the middle_hazard
+* 
+* @returns
+*/
 async function getHazardClasses() {
-    let formattedResults = [];
 
+<<<<<<< HEAD
     let hazardQuery = `
     select distinct ?type where {
         ?entity rdf:type ?type.
@@ -1745,6 +1752,10 @@ async function getHazardClasses() {
 =======
     return { 'hazards': formattedResults};
 >>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
+=======
+  let data = await fetch("/cache/hazards.json");
+  return data.json();
+>>>>>>> e6b677b7 (Add hazard dropdowns)
 }
 
 //New search function for expert in stko-kwg
