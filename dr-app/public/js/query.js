@@ -610,8 +610,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     }
     placeQuery += `}`;
 
-    console.log(placeQuery);
-
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -885,8 +883,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?numAcresBurnedObj.
-            ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
-            FILTER(contains(?numAcresBurnedObjLabel, 'Observation of Number Of Acres Burned')).
+            #?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel.
+            ?numAcresBurnedObj sosa:observedProperty kwgr:mtbsFireObservableProperty.NumberOfAcresBurned.
             ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -898,8 +896,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?meanValObj.
-            ?meanValObj rdfs:label ?meanValObjLabel
-            FILTER(contains(?meanValObjLabel, 'Observation of Mean dNBR Value')).
+            #?meanValObj rdfs:label ?meanValObjLabel.
+            ?meanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.MeandNBRValue.
             ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -911,8 +909,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?stanDevMeanValObj.
-            ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
-            FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
+            #?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel.
+            ?stanDevMeanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.StandardDeviationOfMeandNBRValue.
             ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -924,8 +922,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberDeathsMax"] + ` > ?deathDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?deathDirectValObj.
-            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel.
-            ?deathDirectValObj sosa:observedProperty kwgr:deathDirect.
+            #?deathDirectValObj rdfs:label ?deathDirectValObjLabel.
+            ?deathDirectValObj sosa:observedProperty kwgr:impactObservableProperty.deathDirect.
             ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -937,8 +935,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberInjuredMax"] + ` > ?injuryDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?injuryDirectValObj.
-            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
-            ?injuryDirectValObj sosa:observedProperty kwgr:injuryDirect.
+            #?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
+            ?injuryDirectValObj sosa:observedProperty kwgr:impactObservableProperty.injuryDirect.
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
