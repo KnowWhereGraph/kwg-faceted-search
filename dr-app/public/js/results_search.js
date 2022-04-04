@@ -325,6 +325,38 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     };
 
+    // select hazard sublist 
+    $scope.selectHazardSubList = function($event, functionName) {
+        console.log("hey u selected one hazard type: ", $event.target.value, "; checked: ", $event.target.checked);
+        var hazardType = $event.target.value;
+
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListUl = $event.target.nextElementSibling.nextElementSibling;
+        let childListItems = subListUl.children;
+
+        if ($event.target.checked) {
+            console.log("checked");
+            // get subclasses based on the selected hazard type  ---- replace!!
+            $scope.hazardSubTypes = ['Subclass1', 'Subclass2', 'Subclass3', 'Subclass4', 'Subclass5', 'Subclass6'];
+            $scope.$apply();
+
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
+                console.log("children: ", childListItems[i].children[0]);
+            }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListUl.style["display"] = "";
+        } else {
+            console.log("canceled checkd");
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+            dropdownImg.style["transform"] = "";
+            subListUl.style["display"] = "none";
+        }
+        $scope.selectHazard($event);
+    }
+
     //Select tab based on url value
     var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
     $timeout(function() {
@@ -600,6 +632,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
+
+
+
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -687,11 +722,9 @@ kwgApp.directive('fipsDirective', function() {
             getFIPS().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsFIPS')[0] | element[0] == angular.element('#regionFacetsFIPS')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['fips']), function(item){
-                                if (item.indexOf(request.term) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['fips']), function(item) {
+                                if (item.indexOf(request.term) === 0) {
                                     return item;
                                 }
                             });
@@ -752,7 +785,7 @@ kwgApp.directive('nwzDirective', function() {
                                 }
                             });
                             response(matches);
-                        },                        
+                        },
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -1061,19 +1094,19 @@ var getSelectors = function(activeTabName) {
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
     var selectors = getSelectors(activeTabName);
-/*     
-    // If we're showing the 'People' tab, adjust the table with to make up for an absent map
-    if (activeTabName == "People") {
-        angular.element(".results").css('width', 'calc(100% - 300px)')
-        angular.element("#results-search-map").width(0);
-    } else {
-        // If we're not showing people, add the map back to the page
-        if (angular.element("#results-search-map").width() == 0) {
-            angular.element(".results").css('width', 'calc(60% - 150px)')
-            angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+    /*     
+        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+        if (activeTabName == "People") {
+            angular.element(".results").css('width', 'calc(100% - 300px)')
+            angular.element("#results-search-map").width(0);
+        } else {
+            // If we're not showing people, add the map back to the page
+            if (angular.element("#results-search-map").width() == 0) {
+                angular.element(".results").css('width', 'calc(60% - 150px)')
+                angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+            }
         }
-    }
- */
+     */
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1117,9 +1150,9 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
-/*     if (activeTabName != "People") {
-        showMap(recordResults);
-    } */
+    /*     if (activeTabName != "People") {
+            showMap(recordResults);
+        } */
 
     showMap(recordResults);
 
