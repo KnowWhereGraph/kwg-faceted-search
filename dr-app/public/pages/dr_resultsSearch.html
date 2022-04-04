@@ -161,22 +161,26 @@
                     <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-enter="hazardFacetChanged()">
                     <div>Hazard Type(s)</div>
 
-
+                    <!-- Checkboxes for the hazards. This goes three subclasses deep.
+                    topLevel: The top level class (Fire, Earthquake, etc)
+                    midLevel: The class immediately under the top
+                    lowerLevel: The most deep subclass
+                    -->
                     <ul class="list-group checkbox-list">
                       <section ng-repeat="topLevel in hazards">
                           <li class="ng-binding ng-scope">
-                              <input type="checkbox" class="form-check-input me-1">{{topLevel.name}}
+                              <input type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{topLevel.name}}>{{topLevel.name}}
                               <img ng-if="topLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                           </li>
                           <ul class="list-group list-group-indented" style="display: none">
                               <section ng-repeat="midLevel in topLevel.sub">
                                 <li>
-                                  <input type="checkbox" class="form-check-input me-1"> {{midLevel.name}}
+                                  <input type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midlevel.name}}> {{midLevel.name}}
                                   <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                                 </li>
                                 <ul class="list-group list-group-indented" style="display: none">
-                                  <li ng-repeat="lowerLevel in midLevel.sub">
-                                    <input type="checkbox" class="form-check-input me-1"> {{lowerLevel.name}}
+                                  <li ng-repeat="lowerLevel in midLevel.sub" >
+                                    <input type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{lowerlevel.name}}> {{lowerLevel.name}}
                                   </li>
                               </ul>
                               </section>
