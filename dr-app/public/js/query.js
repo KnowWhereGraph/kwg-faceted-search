@@ -610,6 +610,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     }
     placeQuery += `}`;
 
+    console.log(placeQuery);
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -625,6 +627,10 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
+    if (entityRawValues.length == 0)
+    {
+        return { 'count': 0, 'record': {} };
+    }
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
     infer = 'false';
@@ -816,6 +822,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
     
+    console.log(hazardQuery);
+
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     infer = 'false';
