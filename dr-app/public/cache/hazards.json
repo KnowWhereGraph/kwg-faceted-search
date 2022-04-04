@@ -1,12 +1,69 @@
 [
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "name": "Earthquake",
     "official": "Earthquake",
+=======
+    "name": "Biological",
+    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Biological",
+    "sub": [
+      {
+        "name": "AnimalIncident",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/AnimalIncident",
+        "sub": []
+      },
+      {
+        "name": "Disease",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Disease",
+        "sub": []
+      },
+      {
+        "name": "InsectInfestation",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/InsectInfestation",
+        "sub": []
+      }
+    ]
+  },
+  {
+    "name": "Climatological",
+    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Climatological",
+    "sub": [
+      {
+        "name": "Drought",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Drought",
+        "sub": []
+      },
+      {
+        "name": "GlacialLakeOutburst",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/GlacialLakeOutburst",
+        "sub": []
+      },
+      {
+        "name": "Wildfire",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Wildfire",
+        "sub": []
+      }
+    ]
+  },
+  {
+    "name": "Disaster",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Disaster",
+    "sub": []
+  },
+  {
+    "name": "DroughtZone",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/DroughtZone",
+    "sub": []
+  },
+  {
+    "name": "Earthquake",
+>>>>>>> a68ad422 (Add hazard data to the HTML)
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Earthquake",
     "sub": []
   },
   {
+<<<<<<< HEAD
     "name": "Fire",
     "official": "Fire",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Fire",
@@ -20,6 +77,24 @@
             "name": "NIFC Incident Complex Fire",
             "official": "NIFCIncidentComplexFire",
 =======
+=======
+    "name": "Extraterrestrial",
+    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Extraterrestrial",
+    "sub": [
+      {
+        "name": "Impact",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Impact",
+        "sub": []
+      },
+      {
+        "name": "SpaceWeather",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/SpaceWeather",
+        "sub": []
+      }
+    ]
+  },
+  {
+>>>>>>> a68ad422 (Add hazard data to the HTML)
     "name": "Fire",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Fire",
     "sub": [
@@ -234,6 +309,7 @@
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "name": "NOAA Hazard",
     "official": "NOAAHazard",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHazard",
@@ -245,16 +321,48 @@
     "name": "Disaster",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Disaster",
     "sub": []
+=======
+    "name": "Geophysical",
+    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Geophysical",
+    "sub": [
+      {
+        "name": "Earthquake",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Earthquake",
+        "sub": []
+      },
+      {
+        "name": "MassMovement",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/MassMovement",
+        "sub": []
+      },
+      {
+        "name": "VolcanicActivity",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/VolcanicActivity",
+        "sub": []
+      }
+    ]
+>>>>>>> a68ad422 (Add hazard data to the HTML)
   },
   {
-    "name": "DroughtZone",
-    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/DroughtZone",
-    "sub": []
-  },
-  {
-    "name": "Earthquake",
-    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Earthquake",
-    "sub": []
+    "name": "Hydrological",
+    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Hydrological",
+    "sub": [
+      {
+        "name": "Flood",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Flood",
+        "sub": []
+      },
+      {
+        "name": "Landslide",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Landslide",
+        "sub": []
+      },
+      {
+        "name": "WaveAction",
+        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/WaveAction",
+        "sub": []
+      }
+    ]
   },
   {
     "name": "NOAAHazard",
@@ -760,48 +868,6 @@
     "sub": []
   },
   {
-    "name": "Biological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Biological",
-    "sub": [
-      {
-        "name": "AnimalIncident",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/AnimalIncident",
-        "sub": []
-      },
-      {
-        "name": "Disease",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Disease",
-        "sub": []
-      },
-      {
-        "name": "InsectInfestation",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/InsectInfestation",
-        "sub": []
-      }
-    ]
-  },
-  {
-    "name": "Climatological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Climatological",
-    "sub": [
-      {
-        "name": "Drought",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Drought",
-        "sub": []
-      },
-      {
-        "name": "GlacialLakeOutburst",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/GlacialLakeOutburst",
-        "sub": []
-      },
-      {
-        "name": "Wildfire",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Wildfire",
-        "sub": []
-      }
-    ]
-  },
-  {
     "name": "Metereological",
     "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Metereological",
     "sub": [
@@ -831,6 +897,7 @@
         "sub": []
       }
     ]
+<<<<<<< HEAD
   },
   {
     "name": "Geophysical",
@@ -890,5 +957,7 @@
       }
     ]
 >>>>>>> e6b677b7 (Add hazard dropdowns)
+=======
+>>>>>>> a68ad422 (Add hazard data to the HTML)
   }
 ]
