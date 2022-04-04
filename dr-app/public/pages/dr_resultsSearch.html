@@ -39,8 +39,6 @@
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
-                    <div>Administrative Region</div>
-                    <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
@@ -73,6 +71,8 @@
                             </li>
                         </ul>
                     </ul>
+                    <div>Administrative Region</div>
+                    <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="placeFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Find a Zip Code...">
                     <div>FIPS Code</div>
@@ -88,28 +88,6 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
-                    <ul class="list-group checkbox-list" id="region-list">
-                        <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
-                            <li class="ng-binding ng-scope">
-                                {{a1obj['label']}}
-                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                            </li>
-                            <ul class="list-group list-group-indented" style="display: none">
-                                <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
-                                    <li>
-                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
-                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                                    </li>
-                                    <ul class="list-group list-group-indented" style="display: none">
-                                        <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
-                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region"> {{a3obj['label']}}
-                                        </li>
-                                    </ul>
-                                </section>
-                            </ul>
-                        </section>
-                    </ul>
-                    <br/>
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
@@ -141,6 +119,28 @@
                                 <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                             </li>
                         </ul>
+                    </ul>
+                    <br/>
+                    <ul class="list-group checkbox-list" id="region-list">
+                        <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                {{a1obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region"> {{a3obj['label']}}
+                                        </li>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
                     </ul>
                     <br/>
                     <div>Zip Code</div>
