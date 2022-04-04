@@ -1100,6 +1100,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 =======
     placeQuery += `}`;
 
+    console.log(placeQuery);
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -1118,10 +1120,14 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2f77a12b (Correct errors when no GNIS features are found within the selected areas)
     if (entityRawValues.length == 0)
     {
         return { 'count': 0, 'record': {} };
     }
+<<<<<<< HEAD
 
     let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
 
@@ -1135,6 +1141,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
 =======
+=======
+>>>>>>> 2f77a12b (Correct errors when no GNIS features are found within the selected areas)
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
     infer = 'false';
@@ -1489,6 +1497,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
     
+    console.log(hazardQuery);
+
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 <<<<<<< HEAD
