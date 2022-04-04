@@ -1,47 +1,5 @@
 [
   {
-    "name": "Biological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Biological",
-    "sub": [
-      {
-        "name": "AnimalIncident",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/AnimalIncident",
-        "sub": []
-      },
-      {
-        "name": "Disease",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Disease",
-        "sub": []
-      },
-      {
-        "name": "InsectInfestation",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/InsectInfestation",
-        "sub": []
-      }
-    ]
-  },
-  {
-    "name": "Climatological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Climatological",
-    "sub": [
-      {
-        "name": "Drought",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Drought",
-        "sub": []
-      },
-      {
-        "name": "GlacialLakeOutburst",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/GlacialLakeOutburst",
-        "sub": []
-      },
-      {
-        "name": "Wildfire",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Wildfire",
-        "sub": []
-      }
-    ]
-  },
-  {
     "name": "Disaster",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Disaster",
     "sub": []
@@ -55,22 +13,6 @@
     "name": "Earthquake",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Earthquake",
     "sub": []
-  },
-  {
-    "name": "Extraterrestrial",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Extraterrestrial",
-    "sub": [
-      {
-        "name": "Impact",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Impact",
-        "sub": []
-      },
-      {
-        "name": "SpaceWeather",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/SpaceWeather",
-        "sub": []
-      }
-    ]
   },
   {
     "name": "Fire",
@@ -186,48 +128,6 @@
             "sub": []
           }
         ]
-      }
-    ]
-  },
-  {
-    "name": "Geophysical",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Geophysical",
-    "sub": [
-      {
-        "name": "Earthquake",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Earthquake",
-        "sub": []
-      },
-      {
-        "name": "MassMovement",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/MassMovement",
-        "sub": []
-      },
-      {
-        "name": "VolcanicActivity",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/VolcanicActivity",
-        "sub": []
-      }
-    ]
-  },
-  {
-    "name": "Hydrological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Hydrological",
-    "sub": [
-      {
-        "name": "Flood",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Flood",
-        "sub": []
-      },
-      {
-        "name": "Landslide",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Landslide",
-        "sub": []
-      },
-      {
-        "name": "WaveAction",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/WaveAction",
-        "sub": []
       }
     ]
   },
@@ -486,36 +386,5 @@
     "name": "SmokePlumeSnapshot",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/SmokePlumeSnapshot",
     "sub": []
-  },
-  {
-    "name": "Metereological",
-    "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Metereological",
-    "sub": [
-      {
-        "name": "ConvectiveStorm",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/ConvectiveStorm",
-        "sub": []
-      },
-      {
-        "name": "ExtratropicalStorm",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/ExtratropicalStorm",
-        "sub": []
-      },
-      {
-        "name": "ExtremeTemperature",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/ExtremeTemperature",
-        "sub": []
-      },
-      {
-        "name": "Fog",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/Fog",
-        "sub": []
-      },
-      {
-        "name": "TropicalCyclone",
-        "uri": "http://www.knowwheregraph.org/ontologies/hazard/IRDR/TropicalCyclone",
-        "sub": []
-      }
-    ]
   }
 ]
