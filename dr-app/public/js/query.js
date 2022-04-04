@@ -763,7 +763,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
     
-    console.log(hazardQuery);
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     infer = 'false';
@@ -947,7 +946,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
-    console.log(expertQuery);
+
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
         formattedResults.push({
