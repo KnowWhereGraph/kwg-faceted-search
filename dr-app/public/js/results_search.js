@@ -442,6 +442,38 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     };
 
+    // select hazard sublist 
+    $scope.selectHazardSubList = function($event, functionName) {
+        console.log("hey u selected one hazard type: ", $event.target.value, "; checked: ", $event.target.checked);
+        var hazardType = $event.target.value;
+
+        let dropdownImg = $event.target.nextElementSibling;
+        let subListUl = $event.target.nextElementSibling.nextElementSibling;
+        let childListItems = subListUl.children;
+
+        if ($event.target.checked) {
+            console.log("checked");
+            // get subclasses based on the selected hazard type  ---- replace!!
+            $scope.hazardSubTypes = ['Subclass1', 'Subclass2', 'Subclass3', 'Subclass4', 'Subclass5', 'Subclass6'];
+            $scope.$apply();
+
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = true;
+                console.log("children: ", childListItems[i].children[0]);
+            }
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListUl.style["display"] = "";
+        } else {
+            console.log("canceled checkd");
+            for (let i = 0; i < childListItems.length; i++) {
+                childListItems[i].children[0].checked = false;
+            }
+            dropdownImg.style["transform"] = "";
+            subListUl.style["display"] = "none";
+        }
+        $scope.selectHazard($event);
+    }
+
     //Select tab based on url value
     var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
     $timeout(function() {
@@ -904,7 +936,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
+<<<<<<< HEAD
 >>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
+=======
+
+
+
+>>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -1071,6 +1109,37 @@ kwgApp.directive('fipsDirective', function() {
     }
 });
 
+<<<<<<< HEAD
+=======
+// Directive that's responsible for autofilling the fips field
+kwgApp.directive('fipsDirective', function() {
+    return {
+        restrict: 'C',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            getFIPS().then(function(data) {
+                if (element[0] == angular.element('#placeFacetsFIPS')[0] | element[0] == angular.element('#regionFacetsFIPS')[0]) {
+                    element.autocomplete({
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['fips']), function(item) {
+                                if (item.indexOf(request.term) === 0) {
+                                    return item;
+                                }
+                            });
+                            response(matches);
+                        },
+                        select: function(event, ui) {
+                            ngModelCtrl.$setViewValue(ui.item);
+                            scope.$apply();
+                        }
+                    });
+                }
+            });
+        }
+    }
+});
+
+>>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
 // Directive that's responsible for autofilling the us climate division field
 <<<<<<< HEAD
 =======
@@ -1151,11 +1220,17 @@ kwgApp.directive('nwzDirective', function() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> fbf3a2a0 (Add autocomplete search for GNIS features)
+=======
+>>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
                         },
 =======
                         },                        
+=======
+                        },
+>>>>>>> 6ee21ab5 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -1620,6 +1695,7 @@ var prepareNewTable = function(activeTabName) {
         // If we're showing the 'People' tab, adjust the table with to make up for an absent map
 =======
     var selectors = getSelectors(activeTabName);
+<<<<<<< HEAD
 /*     
     // If we're showing the 'People' tab, adjust the table with to make up for an absent map
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
@@ -1635,6 +1711,21 @@ var prepareNewTable = function(activeTabName) {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
     }
  */
+=======
+    /*     
+        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
+        if (activeTabName == "People") {
+            angular.element(".results").css('width', 'calc(100% - 300px)')
+            angular.element("#results-search-map").width(0);
+        } else {
+            // If we're not showing people, add the map back to the page
+            if (angular.element("#results-search-map").width() == 0) {
+                angular.element(".results").css('width', 'calc(60% - 150px)')
+                angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
+            }
+        }
+     */
+>>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1682,6 +1773,7 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     /*     if (activeTabName != "People") {
@@ -1740,6 +1832,8 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
 =======
 =======
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
+=======
+>>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
     if (activeTabName != "People") {
         showMap(recordResults, activeTabName);
     }
@@ -1747,6 +1841,11 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
 /*     if (activeTabName != "People") {
         showMap(recordResults);
     } */
+=======
+    /*     if (activeTabName != "People") {
+            showMap(recordResults);
+        } */
+>>>>>>> 6ee21ab5 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
 
     showMap(recordResults);
 >>>>>>> 2a8b3b08 (Start transitioning from KWG-V3 to KWG-Staging)
