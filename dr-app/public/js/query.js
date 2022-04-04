@@ -686,7 +686,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
     }
-    if (parameters["facetGNIS"].length > 0) {
+/*     if (parameters["facetGNIS"].length > 0) {
         let gnisTypeArray = parameters["facetGNIS"];
         for (i = 0; i < gnisTypeArray.length; i++)
         {
@@ -708,7 +708,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             entityArray = row.gnisEntity.value.split("/"); 
             placeEntities.push('usgs:'+entityArray[entityArray.length - 1]);
         }
-    }
+    } */
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
@@ -737,7 +737,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         let placesLocatedIn = [];
         for (let i = 0 ; i < placeEntities.length; i++)
         {
-            if (placeEntities[i].startsWith('usgs') || placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
             {
                 placesConnectedToS2.push(placeEntities[i]);
             }
@@ -749,10 +749,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         if (placesConnectedToS2.length > 0)
         {
             placeSearchQuery += `
-            ?entity ?es ?s2Cell .
+            ?entity kwg-ont:sfWithin ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
             values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
-            ?s2Cell ?p ?placesConnectedToS2.
+            ?s2Cell kwg-ont:sfWithin ?placesConnectedToS2.
             `;  
         }
         if (placesLocatedIn.length > 0)

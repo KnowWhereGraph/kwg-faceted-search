@@ -813,11 +813,13 @@ var getParameters = function() {
     //Hazard facets
     parameters["hazardFacetDateStart"] = angular.element("#hazardFacetDateStart")[0].value;
     parameters["hazardFacetDateEnd"] = angular.element("#hazardFacetDateEnd")[0].value;
+
     let hazardTypes = [];
     angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+    
     parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
     parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
     parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
