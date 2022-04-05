@@ -1,0 +1,390 @@
+[
+  {
+    "name": "Disaster",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Disaster",
+    "sub": []
+  },
+  {
+    "name": "DroughtZone",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/DroughtZone",
+    "sub": []
+  },
+  {
+    "name": "Earthquake",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Earthquake",
+    "sub": []
+  },
+  {
+    "name": "Fire",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Fire",
+    "sub": [
+      {
+        "name": "ComplexFire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/ComplexFire",
+        "sub": [
+          {
+            "name": "NIFCIncidentComplexFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCIncidentComplexFire",
+            "sub": []
+          },
+          {
+            "name": "MTBSComplexFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSComplexFire",
+            "sub": []
+          }
+        ]
+      },
+      {
+        "name": "MTBSFire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSFire",
+        "sub": [
+          {
+            "name": "MTBSWildfire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSWildfire",
+            "sub": []
+          },
+          {
+            "name": "MTBSWildlandFireUse",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSWildlandFireUse",
+            "sub": []
+          },
+          {
+            "name": "MTBSPrescribedFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSPrescribedFire",
+            "sub": []
+          },
+          {
+            "name": "MTBSUnknownFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSUnknownFire",
+            "sub": []
+          },
+          {
+            "name": "MTBSComplexFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSComplexFire",
+            "sub": []
+          },
+          {
+            "name": "MTBSOutOfAreaResponseFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSOutOfAreaResponseFire",
+            "sub": []
+          }
+        ]
+      },
+      {
+        "name": "OutOfAreaResponseFire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/OutOfAreaResponseFire",
+        "sub": [
+          {
+            "name": "MTBSOutOfAreaResponseFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSOutOfAreaResponseFire",
+            "sub": []
+          }
+        ]
+      },
+      {
+        "name": "PrescribedFire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/PrescribedFire",
+        "sub": [
+          {
+            "name": "MTBSPrescribedFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSPrescribedFire",
+            "sub": []
+          },
+          {
+            "name": "NIFCPrescribedFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCPrescribedFire",
+            "sub": []
+          }
+        ]
+      },
+      {
+        "name": "WildlandFireUse",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/WildlandFireUse",
+        "sub": [
+          {
+            "name": "MTBSWildlandFireUse",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/MTBSWildlandFireUse",
+            "sub": []
+          }
+        ]
+      },
+      {
+        "name": "NIFCFire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCFire",
+        "sub": [
+          {
+            "name": "NIFCWildfire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCWildfire",
+            "sub": []
+          },
+          {
+            "name": "NIFCPrescribedFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCPrescribedFire",
+            "sub": []
+          },
+          {
+            "name": "NIFCIncidentComplexFire",
+            "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NIFCIncidentComplexFire",
+            "sub": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "NOAAHazard",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHazard",
+    "sub": [
+      {
+        "name": "NOAATornado",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAATornado",
+        "sub": []
+      },
+      {
+        "name": "NOAAHail",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHail",
+        "sub": []
+      },
+      {
+        "name": "NOAAThunderstormWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAThunderstormWind",
+        "sub": []
+      },
+      {
+        "name": "NOAAHighWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHighWind",
+        "sub": []
+      },
+      {
+        "name": "NOAADenseFog",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADenseFog",
+        "sub": []
+      },
+      {
+        "name": "NOAAFlashFlood",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAFlashFlood",
+        "sub": []
+      },
+      {
+        "name": "NOAAColdWindChill",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAColdWindChill",
+        "sub": []
+      },
+      {
+        "name": "NOAAHeavySnow",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHeavySnow",
+        "sub": []
+      },
+      {
+        "name": "NOAAWinterStorm",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAWinterStorm",
+        "sub": []
+      },
+      {
+        "name": "NOAAFlood",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAFlood",
+        "sub": []
+      },
+      {
+        "name": "NOAAWaterspout",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAWaterspout",
+        "sub": []
+      },
+      {
+        "name": "NOAAIceStorm",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAIceStorm",
+        "sub": []
+      },
+      {
+        "name": "NOAAWinterWeather",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAWinterWeather",
+        "sub": []
+      },
+      {
+        "name": "NOAAFunnelCloud",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAFunnelCloud",
+        "sub": []
+      },
+      {
+        "name": "NOAALightning",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAALightning",
+        "sub": []
+      },
+      {
+        "name": "NOAABlizzard",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAABlizzard",
+        "sub": []
+      },
+      {
+        "name": "NOAAWildfire",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAWildfire",
+        "sub": []
+      },
+      {
+        "name": "NOAAHeat",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHeat",
+        "sub": []
+      },
+      {
+        "name": "NOAAStrongWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAStrongWind",
+        "sub": []
+      },
+      {
+        "name": "NOAAAvalanche",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAAvalanche",
+        "sub": []
+      },
+      {
+        "name": "NOAAHeavyRain",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHeavyRain",
+        "sub": []
+      },
+      {
+        "name": "NOAARipCurrent",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAARipCurrent",
+        "sub": []
+      },
+      {
+        "name": "NOAADrought",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADrought",
+        "sub": []
+      },
+      {
+        "name": "NOAADebrisFlow",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADebrisFlow",
+        "sub": []
+      },
+      {
+        "name": "NOAAHurricane",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHurricane",
+        "sub": []
+      },
+      {
+        "name": "NOAAStormSurgeTide",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAStormSurgeTide",
+        "sub": []
+      },
+      {
+        "name": "NOAACoastalFlood",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAACoastalFlood",
+        "sub": []
+      },
+      {
+        "name": "NOAATropicalStorm",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAATropicalStorm",
+        "sub": []
+      },
+      {
+        "name": "NOAAHighSurf",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAHighSurf",
+        "sub": []
+      },
+      {
+        "name": "NOAADustDevil",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADustDevil",
+        "sub": []
+      },
+      {
+        "name": "NOAAFrostFreeze",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAFrostFreeze",
+        "sub": []
+      },
+      {
+        "name": "NOAADustStorm",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADustStorm",
+        "sub": []
+      },
+      {
+        "name": "NOAAFreezingFog",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAFreezingFog",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineHighWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineHighWind",
+        "sub": []
+      },
+      {
+        "name": "NOAASleet",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAASleet",
+        "sub": []
+      },
+      {
+        "name": "NOAAAstronomicalLowTide",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAAstronomicalLowTide",
+        "sub": []
+      },
+      {
+        "name": "NOAAExtremeColdWindChill",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAExtremeColdWindChill",
+        "sub": []
+      },
+      {
+        "name": "NOAALake-EffectSnow",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAALake-EffectSnow",
+        "sub": []
+      },
+      {
+        "name": "NOAAExcessiveHeat",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAExcessiveHeat",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineThunderstormWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineThunderstormWind",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineHail",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineHail",
+        "sub": []
+      },
+      {
+        "name": "NOAADenseSmoke",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAADenseSmoke",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineStrongWind",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineStrongWind",
+        "sub": []
+      },
+      {
+        "name": "NOAATropicalDepression",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAATropicalDepression",
+        "sub": []
+      },
+      {
+        "name": "NOAALakeshoreFlood",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAALakeshoreFlood",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineHurricaneTyphoon",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineHurricaneTyphoon",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineTropicalStorm",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineTropicalStorm",
+        "sub": []
+      },
+      {
+        "name": "NOAASneakerwave",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAASneakerwave",
+        "sub": []
+      },
+      {
+        "name": "NOAAMarineTropicalDepression",
+        "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/NOAAMarineTropicalDepression",
+        "sub": []
+      }
+    ]
+  },
+  {
+    "name": "SmokePlumeSnapshot",
+    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/SmokePlumeSnapshot",
+    "sub": []
+  }
+]

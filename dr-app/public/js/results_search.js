@@ -135,12 +135,15 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.placeFacetsNWZ = (urlVariables['nwz'] != null && urlVariables['nwz'] != '') ? urlVariables['nwz'] : '';
 
     //Populate hazard class types and set values
-    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '')
+    if (urlVariables['date-start'] != null && urlVariables['date-start'] != '') {
         $scope.hazardFacetDateStart = new Date(urlVariables['date-start']);
-    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '')
+    }
+    if (urlVariables['date-end'] != null && urlVariables['date-end'] != '') {
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
-    getHazardClasses().then(function(data) {
-        $scope.hazardUrls = data;
+    }
+
+      getHazardClasses().then(function(data) {
+        $scope.hazards = data;
         $scope.$apply();
     }).then(function() {
         if ((urlVariables['hazard'] != null && urlVariables['hazard'] != '')) {
@@ -276,7 +279,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         queryIdentifier = uuidv4();
         currentQuery = queryIdentifier;
-        console.log("Setting currentQuery to... " + currentQuery);
         var response = sendQueries(newActiveTabName, page, pp, parameters);
 
         prepareNewTable(newActiveTabName);
@@ -290,23 +292,53 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
-    $scope.selectSubList = function($event, functionName) {
+    /**
+     * Selects all of the checkboxes under another checkbox.
+     *
+     * @param {*} $event The event sent from the UI
+     * @param {*} functionName The function that should be called once this function completes. Typically
+     * for handling query logic.
+     * @param {boolean} top Flag whether the user clicked on a top/root level element
+     */
+    $scope.selectSubList = function($event, functionName, top=false) {
         let dropdownImg = $event.target.nextElementSibling;
         let subListDiv = $event.target.parentNode.nextElementSibling;
         let childListItems = subListDiv.children;
-
         if ($event.target.checked) {
+          if (top) {
+            // Loop over each sub-section
+            childListItems.forEach((child) => {
+              childChildren = child.children;
+              childChildren[0].children[0].checked = true;
+              childChildren[1].children.forEach((child) => {
+                child.children[0].checked = true;
+              })
+            })
+          } else {
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = true;
             }
+          }
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
         } else {
+          if (top) {
+            // Loop over each sub-section
+            childListItems.forEach((child) => {
+              childChildren = child.children;
+              childChildren[0].children[0].checked = false;
+              // Loop over each li element in the section
+              childChildren[1].children.forEach((child) => {
+                child.children[0].checked = false;
+              })
+            })
+          } else {
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
+          }
         }
 
         $scope[functionName]($event);
@@ -315,7 +347,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     $scope.showSubList = function($event) {
         let dropdownImg = $event.target;
         let subListDiv = $event.target.parentNode.nextElementSibling;
-
         if (subListDiv.style["display"] == "") {
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
@@ -811,11 +842,13 @@ var getParameters = function() {
     //Hazard facets
     parameters["hazardFacetDateStart"] = angular.element("#hazardFacetDateStart")[0].value;
     parameters["hazardFacetDateEnd"] = angular.element("#hazardFacetDateEnd")[0].value;
+
     let hazardTypes = [];
     angular.element("input:checkbox[name='hazard']:checked").each((index, hazard) => {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
+    
     parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
     parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
     parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
@@ -1123,50 +1156,53 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
 
     showMap(recordResults);
 
-    recordResults.forEach(e => {
-        var rowBodyHtml = "";
-        if (selectors["thead"] == "#expertTableTitle") {
-            attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
-            tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
-        } else if (selectors["thead"] == "#placeTableTitle") {
-            attributeLinks = [e["place"], e["place_type"]];
-            tableBodyAttributes = [e["place_name"], e["place_type_name"]];
-        } else if (selectors["thead"] == "#hazardTableTitle") {
-            attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
-            tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
-        };
-
-        var numAttributes = attributeLinks.length;
-        for (var index = 0; index < numAttributes; index++) {
-            var link = attributeLinks[index];
-            var attr = tableBodyAttributes[index];
-            var cellHtml = '';
-
-            if (Array.isArray(attr)) {
-                let linkArray = [];
-                for (let i = 0; i < attr.length; i++) {
-                    linkArray.push('<a href="' + link[i] + '" target="_blank">' + attr[i] + "</a>")
+    if (Object.keys(recordResults).length > 0)
+    {
+        recordResults.forEach(e => {
+            var rowBodyHtml = "";
+            if (selectors["thead"] == "#expertTableTitle") {
+                attributeLinks = [e["expert"], e["affiliation"], e["expertise"], e["place"]];
+                tableBodyAttributes = [e["expert_name"], e["affiliation_name"], e["expertise_name"], e["place_name"]];
+            } else if (selectors["thead"] == "#placeTableTitle") {
+                attributeLinks = [e["place"], e["place_type"]];
+                tableBodyAttributes = [e["place_name"], e["place_type_name"]];
+            } else if (selectors["thead"] == "#hazardTableTitle") {
+                attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
+                tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
+            };
+    
+            var numAttributes = attributeLinks.length;
+            for (var index = 0; index < numAttributes; index++) {
+                var link = attributeLinks[index];
+                var attr = tableBodyAttributes[index];
+                var cellHtml = '';
+    
+                if (Array.isArray(attr)) {
+                    let linkArray = [];
+                    for (let i = 0; i < attr.length; i++) {
+                        linkArray.push('<a href="' + link[i] + '" target="_blank">' + attr[i] + "</a>")
+                    }
+    
+                    cellHtml = linkArray.join(', ');
+                } else {
+                    cellHtml = '<a href="' + link + '" target="_blank">' + attr + "</a>";
                 }
-
-                cellHtml = linkArray.join(', ');
-            } else {
-                cellHtml = '<a href="' + link + '" target="_blank">' + attr + "</a>";
+    
+                rowBodyHtml += "<td>" + cellHtml + "</td>";
             }
-
-            rowBodyHtml += "<td>" + cellHtml + "</td>";
-        }
-
-        /*
-        DEVNOTE: We'll want to re-enable this when the data supports it
-        if (activeTabName == "Place") {
-            var hazardCellHtml = addHazardsAttrToPlaceTab();
-            rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
-        }
-        */
-
-        var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
-        tableBody.append(rowHtml);
-    });
+    
+            /*
+            DEVNOTE: We'll want to re-enable this when the data supports it
+            if (activeTabName == "Place") {
+                var hazardCellHtml = addHazardsAttrToPlaceTab();
+                rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
+            }
+            */
+    
+            var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
+            tableBody.append(rowHtml);
+        });
+    }
     return selectors;
 };
 
@@ -1399,148 +1435,153 @@ function showMap(recordResults, activeTabName) {
 
 
     var markerIndex = 0;
-    recordResults.forEach(e => {
-        if (e["wkt"]) {
-            var wicket = new Wkt.Wkt();
-            var center_lat = 0;
-            var center_lon = 0;
-            var count = 0;
-
-            var coords = [];
-            var wktString = "";
-            var wktType = "";
-            if (e["wkt"].includes("MULTIPOLYGON")) {
-                wktType = "MULTIPOLYGON";
-            } else if (e["wkt"].includes("POINT")) {
-                wktType = "POINT";
-            } else if (e["wkt"].includes("POLYGON")) {
-                wktType = "POLYGON";
-            }
-            if (wktType) {
-                wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
-                switch (wktType) {
-                    case "POINT":
-                        coords = [wicket.read(e["wkt"]).toJson().coordinates];
-                        break
-                    case "POLYGON":
-                        coords = wicket.read(e["wkt"]).toJson().coordinates[0];
-                        break
-                    case "MULTIPOLYGON":
-                        coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
-                        break
+    console.log(Object.keys(recordResults).length);
+    if (Object.keys(recordResults).length > 0)
+    {
+        recordResults.forEach(e => {
+            if (e["wkt"]) {
+                var wicket = new Wkt.Wkt();
+                var center_lat = 0;
+                var center_lon = 0;
+                var count = 0;
+    
+                var coords = [];
+                var wktString = "";
+                var wktType = "";
+                if (e["wkt"].includes("MULTIPOLYGON")) {
+                    wktType = "MULTIPOLYGON";
+                } else if (e["wkt"].includes("POINT")) {
+                    wktType = "POINT";
+                } else if (e["wkt"].includes("POLYGON")) {
+                    wktType = "POLYGON";
                 }
-            }
-
-            coords.forEach(coord => {
-                count += 1;
-                center_lat += coord[1];
-                center_lon += coord[0];
-            });
-
-            if (count) {
-                center_lat = center_lat / count;
-                center_lon = center_lon / count;
-                // L.circle([center_lat, center_lon], {
-                //     color: "red",
-                //     radius: 10000
-                // }).addTo(resultsSearchMap);
-
-                var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
-                var vals = keys.map(key => {
-                    val = e[key];
-                    key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
-                    return dd("span: " + key.replaceAll("_", " ") + ": " + val);
-                });
-                var concatDDs = function(rslt, e) {
-                    if (rslt.length) {
-                        return rslt.concat(dd("br"), e);
-                    } else {
-                        return [rslt, dd("br"), e];
+                if (wktType) {
+                    wktString = e["wkt"].substring(e["wkt"].indexOf(wktType), e["wkt"].length);
+                    switch (wktType) {
+                        case "POINT":
+                            coords = [wicket.read(e["wkt"]).toJson().coordinates];
+                            break
+                        case "POLYGON":
+                            coords = wicket.read(e["wkt"]).toJson().coordinates[0];
+                            break
+                        case "MULTIPOLYGON":
+                            coords = wicket.read(e["wkt"]).toJson().coordinates[0][0];
+                            break
                     }
-                };
-                // add range slider
-                markerIndex += 1;
-                var dds = vals.reduce(concatDDs);
-                dds.push(dd("br"));
-                // dds.push(dd("b: Please choose the value of the radius (km): "));
-                // dds.push(dd("span.radius_value" + ":200"));
-                // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
-                // dds.push(dd("br"));
-                // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
-
-                var placeIcon = L.icon({
-                    iconUrl: '../images/people-earthquake-icon.svg',
-                    iconSize: [38, 95],
-                    iconAnchor: [22, 94],
-                    popupAnchor: [12, -90]
-                });
-                // activeTabName != "People
-
-                var hazardIcon = L.icon({
-                    iconUrl: '../images/people-people-icon.svg',
-                    iconSize: [38, 95],
-                    iconAnchor: [22, 94],
-                    popupAnchor: [12, -90]
-                });
-
-                var icon = placeIcon;
-                if (activeTabName == "Place") {
-                    icon = placeIcon;
-                } else if (activeTabName == "Hazard") {
-                    icon = hazardIcon;
                 }
-
-
-                let place_marker = new L.marker([center_lat, center_lon], { icon: icon }).bindPopup(dd('.popup', dds));
-
-                // add marker event listener
-                // place_marker.on("click", function(ev) {
-                //     if (!Object.keys(clickedMarker).length) {
-                //         var index = markers.indexOf(ev.sourceTarget);
-                //         clickedMarker["index"] = index;
-                //         clickedMarker["marker"] = ev.sourceTarget;
-
-                //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                //         clickedMarker["table-element"] = domElement;
-                //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
-                //         domElement.style.backgroundColor = "pink";
-                //     } else {
-                //         if (clickedMarker["marker"] != ev.sourceTarget) {
-                //             // reset the color on the table
-                //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
-
-                //             var index = markers.indexOf(ev.sourceTarget);
-                //             clickedMarker["index"] = index;
-                //             clickedMarker["marker"] = ev.sourceTarget;
-                //             var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
-                //             clickedMarker["table-element"] = domElement;
-                //             domElement.style.backgroundColor = "pink";
-                //         }
-                //     }
-
-                //     // at this time, then find the slider in this marker.
-                //     addSliderChangeListener(ev.sourceTarget.getLatLng());
-                //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
-                // });
-                // add marker popup remove listener
-                place_marker.getPopup().on("remove", function() {
-                    if (Object.keys(clickedMarker).length) {
-                        clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
-                        clickedMarker = {};
+    
+                coords.forEach(coord => {
+                    count += 1;
+                    center_lat += coord[1];
+                    center_lon += coord[0];
+                });
+    
+                if (count) {
+                    center_lat = center_lat / count;
+                    center_lon = center_lon / count;
+                    // L.circle([center_lat, center_lon], {
+                    //     color: "red",
+                    //     radius: 10000
+                    // }).addTo(resultsSearchMap);
+    
+                    var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
+                    var vals = keys.map(key => {
+                        val = e[key];
+                        key = key.slice(0, 1).toUpperCase() + key.slice(1).toLowerCase();
+                        return dd("span: " + key.replaceAll("_", " ") + ": " + val);
+                    });
+                    var concatDDs = function(rslt, e) {
+                        if (rslt.length) {
+                            return rslt.concat(dd("br"), e);
+                        } else {
+                            return [rslt, dd("br"), e];
+                        }
                     };
-
-                    // also remove the circle on the layer
-                    if (resultsSearchMap.hasLayer(circles)) {
-                        resultsSearchMap.removeLayer(circles);
+                    // add range slider
+                    markerIndex += 1;
+                    var dds = vals.reduce(concatDDs);
+                    dds.push(dd("br"));
+                    // dds.push(dd("b: Please choose the value of the radius (km): "));
+                    // dds.push(dd("span.radius_value" + ":200"));
+                    // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
+                    // dds.push(dd("br"));
+                    // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
+    
+                    var placeIcon = L.icon({
+                        iconUrl: '../images/people-earthquake-icon.svg',
+                        iconSize: [38, 95],
+                        iconAnchor: [22, 94],
+                        popupAnchor: [12, -90]
+                    });
+                    // activeTabName != "People
+    
+                    var hazardIcon = L.icon({
+                        iconUrl: '../images/people-people-icon.svg',
+                        iconSize: [38, 95],
+                        iconAnchor: [22, 94],
+                        popupAnchor: [12, -90]
+                    });
+    
+                    var icon = placeIcon;
+                    if (activeTabName == "Place") {
+                        icon = placeIcon;
+                    } else if (activeTabName == "Hazard") {
+                        icon = hazardIcon;
                     }
-                });
-                markers.push(place_marker);
-                place_markers.addLayer(place_marker);
-                resultsSearchMap.addLayer(place_markers);
+    
+    
+                    let place_marker = new L.marker([center_lat, center_lon], { icon: icon }).bindPopup(dd('.popup', dds));
+    
+                    // add marker event listener
+                    // place_marker.on("click", function(ev) {
+                    //     if (!Object.keys(clickedMarker).length) {
+                    //         var index = markers.indexOf(ev.sourceTarget);
+                    //         clickedMarker["index"] = index;
+                    //         clickedMarker["marker"] = ev.sourceTarget;
+    
+                    //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                    //         clickedMarker["table-element"] = domElement;
+                    //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
+                    //         domElement.style.backgroundColor = "pink";
+                    //     } else {
+                    //         if (clickedMarker["marker"] != ev.sourceTarget) {
+                    //             // reset the color on the table
+                    //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+    
+                    //             var index = markers.indexOf(ev.sourceTarget);
+                    //             clickedMarker["index"] = index;
+                    //             clickedMarker["marker"] = ev.sourceTarget;
+                    //             var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
+                    //             clickedMarker["table-element"] = domElement;
+                    //             domElement.style.backgroundColor = "pink";
+                    //         }
+                    //     }
+    
+                    //     // at this time, then find the slider in this marker.
+                    //     addSliderChangeListener(ev.sourceTarget.getLatLng());
+                    //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
+                    // });
+                    // add marker popup remove listener
+                    place_marker.getPopup().on("remove", function() {
+                        if (Object.keys(clickedMarker).length) {
+                            clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
+                            clickedMarker = {};
+                        };
+    
+                        // also remove the circle on the layer
+                        if (resultsSearchMap.hasLayer(circles)) {
+                            resultsSearchMap.removeLayer(circles);
+                        }
+                    });
+                    markers.push(place_marker);
+                    place_markers.addLayer(place_marker);
+                    resultsSearchMap.addLayer(place_markers);
+                }
+                coords = [];
             }
-            coords = [];
-        }
-    });
+        });
+    }
+
     // zoom to fit all the markers in the map
     // if (markers.length > 0) {
     //     resultsSearchMap.fitBounds(new L.featureGroup(markers).getBounds());
