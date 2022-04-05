@@ -844,7 +844,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
     console.log(`select (count(*) as ?count) { ` + hazardQuery + `}`)
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, true);
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, false);
 
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
