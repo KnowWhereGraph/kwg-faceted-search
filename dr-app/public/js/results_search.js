@@ -383,10 +383,23 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 childListItems[i].children[0].checked = true;
             }
           }
+<<<<<<< HEAD
           if (childListItems.length)
           {
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
+=======
+<<<<<<< HEAD
+          if (childListItems.length) {
+              dropdownImg.style["transform"] = "scaleY(-1)";
+              subListDiv.style["display"] = "";
+=======
+          if (childListItems.length > 0)
+          {
+            dropdownImg.style["transform"] = "scaleY(-1)";
+            subListDiv.style["display"] = "";
+>>>>>>> 92347b85 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
+>>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
           }
         } else {
           if (top) {

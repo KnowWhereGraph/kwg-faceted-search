@@ -1462,13 +1462,23 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
                 rdfs:label ?label;
+<<<<<<< HEAD
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
+=======
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+                geo:hasGeometry/geo:asWKT ?wkt.
+        ?type rdfs:subClassOf kwg-ont:Hazard;
+              rdfs:label ?typeLabel.
+>>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
         optional
         {
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
+<<<<<<< HEAD
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
+=======
+>>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 =======
@@ -1492,12 +1502,18 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }`;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
     
     console.log(hazardQuery);
+=======
+    console.log(hazardQuery);
+
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
+>>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
 
     infer = 'true'; // the parameter infer is temporarily set to be true.
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -1779,6 +1795,7 @@ function hazardTypeFacets(parameters) {
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
         `;
     }
+<<<<<<< HEAD
     return typedHazardQuery;
 }
 /**
@@ -1799,6 +1816,8 @@ async function getHazardClasses() {
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
+=======
+>>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
     return typedHazardQuery;
 }
 /**
