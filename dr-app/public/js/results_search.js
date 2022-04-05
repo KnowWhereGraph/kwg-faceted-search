@@ -339,8 +339,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
-            dropdownImg.style["transform"] = "";
-            subListDiv.style["display"] = "none";
+            if (childListItems.length) {
+              dropdownImg.style["transform"] = "";
+              subListDiv.style["display"] = "none";
+            }
           }
         }
 
