@@ -160,12 +160,6 @@ async function getRandomExpert() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092' },
-            'expert_label': { 'value': 'Chenyang Cao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -178,20 +172,13 @@ async function getRandomWildfire() {
     let randomWildfireQuery = `
     select distinct ?wildfire ?wildfire_label
     {
-        ?wildfire rdf:type kwg-ont:Wildfire;
+        ?wildfire rdf:type kwg-ont:MTBSWildfire;
                 rdfs:label ?wildfire_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomWildfireQuery);
 
     let row = queryResults[0];
-
-    if (typeof(row) == "undefined") {
-        row = {
-            'wildfire': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/hazard.162134.978925' },
-            'wildfire_label': { 'value': 'Wildfire Occurred in POWDER RIVER from 2021-08-08-1330 to 2021-08-21-0700, MST' }
-        };
-    }
 
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
@@ -223,19 +210,13 @@ async function getRandomExpertInjuryStorm() {
     select distinct ?expert ?expert_label
     {
         ?expert rdf:type iospress:Contributor;
-                kwg-ont:hasExpertise kwgr:hazardtopic.storm.aspecttopic.injury;
+                kwg-ont:hasExpertise kwgr:topic.covid19;
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165' },
-            'expert_label': { 'value': 'Zhonghua Mao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -672,56 +653,20 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Filters out the types of hazards
     let typeQuery = ``;
-    let hazardTypes = [];
-    let fireSubclasses = ['MTBSFire','NIFCFire','MTBSComplexFire','NIFCIncidentComplexFire','MTBSOutOfAreaResponseArea','MTBSPrescribedFire','NIFCPrescribedFire','MTBSWildlandFireUse'];
-    for (let i = 0; i < parameters["hazardTypes"].length; i++)
-    {
-        if (parameters["hazardTypes"][i] == 'Fire')
-        {
-            for (let j = 0; j < fireSubclasses.length;j++)
-            {
-                hazardTypes.push(fireSubclasses[j]);
-            }
-        }
-        else
-        {
-            hazardTypes.push(parameters["hazardTypes"][i]);
-        }
-    }
+    let hazardTypes = parameters["hazardTypes"];
+
     if (parameters["hazardTypes"].length > 0)
     {
+        let setHazardTypes = new Set(hazardTypes);
         shouldUseInference = true;
-        typeQuery += `filter (?type in (kwg-ont:` + hazardTypes.join(', kwg-ont:') + `))`;
+        typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
 
-    //These filters handle search by place type (regions, gnis, zipcode, fips, nwz, uscd)
+    //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
     let placeEntities = [];
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
     }
-/*     if (parameters["facetGNIS"].length > 0) {
-        let gnisTypeArray = parameters["facetGNIS"];
-        for (i = 0; i < gnisTypeArray.length; i++)
-        {
-            gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
-        }
-        let gnisFilter = ``;
-        if (parameters["keyword"] != "") {
-            gnisFilter = `filter not exists {filter contains(?gnisEntity_label,"${parameters["keyword"]}")}`;
-        }
-        let gnisEntities = await query(`
-            select distinct ?gnisEntity ?gnisType
-            {
-                ?gnisEntity rdf:type ?gnisType.
-                values ?gnisType {usgs:` + gnisTypeArray.join(' usgs:') + `}
-                ${gnisFilter}
-            }
-        `);
-        for (let row of gnisEntities) {
-            entityArray = row.gnisEntity.value.split("/"); 
-            placeEntities.push('usgs:'+entityArray[entityArray.length - 1]);
-        }
-    } */
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
@@ -744,7 +689,62 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
     let placeSearchQuery = ``;
-    if (placeEntities.length > 0)
+    if (parameters["facetGNIS"].length > 0)
+    {
+        let gnisTypeArray = parameters["facetGNIS"];
+        for (i = 0; i < gnisTypeArray.length; i++)
+        {
+            gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
+        }
+
+        let gnisFilter = ``;
+        if (parameters["keyword"] != "") {
+            gnisFilter = `filter not exists {filter contains(?gnisEntity_label,"${parameters["keyword"]}")}`;
+        }
+
+        placeSearchQuery += `
+            ?entity kwg-ont:sfWithin ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13;
+                    kwg-ont:sfWithin|kwg-ont:sfCrosses|kwg-ont:sfOverlaps|kwg-ont:sfContains ?gnisEntity.
+            ?gnisEntity kwg-ont:sfWithin ?s2cellGNIS;
+                        rdf:type ?gnisPlaceType;
+                        rdfs:label ?gnisEntity_label.
+            values ?gnisPlaceType {usgs:` + gnisTypeArray.join(' usgs:') + `}
+                    ${gnisFilter}
+        `;
+        if (placeEntities.length > 0)
+        {
+            let placesConnectedToS2 = [];
+            let placesLocatedIn = [];
+            for (let i = 0 ; i < placeEntities.length; i++)
+            {
+                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+                {
+                    placesConnectedToS2.push(placeEntities[i]);
+                }
+                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+                {
+                    placesLocatedIn.push(placeEntities[i]);
+                }
+            }
+            if (placesConnectedToS2.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                    values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                    ?s2cellGNIS kwg-ont:sfWithin|kwg-ont:sfCrosses|kwg-ont:sfOverlaps|kwg-ont:sfContains ?placesConnectedToS2.
+                `;  
+            }
+            if (placesLocatedIn.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS kwg-ont:sfWithin|kwg-ont:sfCrosses|kwg-ont:sfOverlaps|kwg-ont:sfContains ?placesNonConnectedToS2.
+                    values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+                `;
+            }
+        }
+    }
+    else if (placeEntities.length > 0)
     {
         let placesConnectedToS2 = [];
         let placesLocatedIn = [];
@@ -762,17 +762,16 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         if (placesConnectedToS2.length > 0)
         {
             placeSearchQuery += `
-            ?entity kwg-ont:sfWithin ?s2Cell .
-            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
-            values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
-            ?s2Cell kwg-ont:sfWithin ?placesConnectedToS2.
+                ?entity kwg-ont:sfWithin ?s2Cell .
+                ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+                values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                ?s2Cell kwg-ont:sfWithin|kwg-ont:sfCrosses|kwg-ont:sfOverlaps|kwg-ont:sfContains ?placesConnectedToS2.
             `;  
         }
         if (placesLocatedIn.length > 0)
         {
             placeSearchQuery += `
-            ?entity kwg-ont:sfWithin ?places.
-            values ?places {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+                values ?places {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
             `;
         }
     }
@@ -809,7 +808,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime|time:hasBeginning ?time;
                 geo:hasGeometry/geo:asWKT ?wkt.
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
@@ -844,13 +843,20 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'start_date_name':row.startTimeLabel.value,
             'end_date':row.time.value,
             'end_date_name':row.endTimeLabel.value,      
-            'wkt':row.wkt.value
+            'wkt':row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
     }
-    console.log(`select (count(*) as ?count) { ` + hazardQuery + `}`)
+
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, shouldUseInference);
 
-    return { 'count': countResults[0].count.value, 'record': formattedResults };
+    if (formattedResults.length > 0 && countResults[0].count.value == 0)
+    {
+        return { 'count': '20+', 'record': formattedResults };
+    }
+    else
+    {
+        return { 'count': countResults[0].count.value, 'record': formattedResults };
+    }
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)

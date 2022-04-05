@@ -120,8 +120,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     //facet hazards
     $scope.earthquakeFacets = false;
-    $scope.fireFacets = false;
-    $scope.hurricaneFacets = false;
+    $scope.mtbsFireFacets = false;
+    $scope.noaaFacets = false;
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
@@ -513,8 +513,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         var parameters = getParameters();
 
         if (parameters['hazardTypes'].length > 0) {
-            // $scope.earthquakeFacets = false;
-            // $scope.fireFacets = false;
 
             for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
@@ -522,18 +520,18 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (hazType.includes('Earthquake'))
                     $scope.earthquakeFacets = true;
 
-                if (hazType.includes('Fire'))
-                    $scope.fireFacets = true;
+                if (hazType.includes('Fire') && hazType.includes('MTBS'))
+                    $scope.mtbsFireFacets = true;
 
                 if (hazType.includes('Hurricane'))
-                    $scope.hurricaneFacets = true;
+                    $scope.noaaFacets = true;
             }
 
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         } else {
             $scope.earthquakeFacets = false;
-            $scope.fireFacets = false;
-            $scope.hurricaneFacets = false;
+            $scope.mtbsFireFacets = false;
+            $scope.noaaFacets = false;
             $scope.removeValue('hazard');
         }
 
