@@ -293,23 +293,53 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
-    $scope.selectSubList = function($event, functionName) {
+    /**
+     * Selects all of the checkboxes under another checkbox.
+     *
+     * @param {*} $event The event sent from the UI
+     * @param {*} functionName The function that should be called once this function completes. Typically
+     * for handling query logic.
+     * @param {boolean} top Flag whether the user clicked on a top/root level element
+     */
+    $scope.selectSubList = function($event, functionName, top=false) {
         let dropdownImg = $event.target.nextElementSibling;
         let subListDiv = $event.target.parentNode.nextElementSibling;
         let childListItems = subListDiv.children;
-
         if ($event.target.checked) {
+          if (top) {
+            // Loop over each sub-section
+            childListItems.forEach((child) => {
+              childChildren = child.children;
+              childChildren[0].children[0].checked = true;
+              childChildren[1].children.forEach((child) => {
+                child.children[0].checked = true;
+              })
+            })
+          } else {
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = true;
             }
+          }
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
         } else {
+          if (top) {
+            // Loop over each sub-section
+            childListItems.forEach((child) => {
+              childChildren = child.children;
+              childChildren[0].children[0].checked = false;
+              // Loop over each li element in the section
+              childChildren[1].children.forEach((child) => {
+                child.children[0].checked = false;
+              })
+            })
+          } else {
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
             dropdownImg.style["transform"] = "";
             subListDiv.style["display"] = "none";
+          }
         }
 
         $scope[functionName]($event);

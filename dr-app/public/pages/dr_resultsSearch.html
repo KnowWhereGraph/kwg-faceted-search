@@ -169,7 +169,7 @@
                     <ul class="list-group checkbox-list" id="hazard-list">
                       <section ng-repeat="topLevel in hazards">
                           <li class="ng-binding ng-scope">
-                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{topLevel.name}}>{{topLevel.name}}
+                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard" value={{topLevel.name}}>{{topLevel.name}}
                               <img ng-if="topLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                           </li>
                           <ul class="list-group list-group-indented" style="display: none">
