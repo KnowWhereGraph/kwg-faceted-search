@@ -160,12 +160,6 @@ async function getRandomExpert() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092' },
-            'expert_label': { 'value': 'Chenyang Cao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -178,20 +172,13 @@ async function getRandomWildfire() {
     let randomWildfireQuery = `
     select distinct ?wildfire ?wildfire_label
     {
-        ?wildfire rdf:type kwg-ont:Wildfire;
+        ?wildfire rdf:type kwg-ont:MTBSWildfire;
                 rdfs:label ?wildfire_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomWildfireQuery);
 
     let row = queryResults[0];
-
-    if (typeof(row) == "undefined") {
-        row = {
-            'wildfire': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/hazard.162134.978925' },
-            'wildfire_label': { 'value': 'Wildfire Occurred in POWDER RIVER from 2021-08-08-1330 to 2021-08-21-0700, MST' }
-        };
-    }
 
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
@@ -223,19 +210,13 @@ async function getRandomExpertInjuryStorm() {
     select distinct ?expert ?expert_label
     {
         ?expert rdf:type iospress:Contributor;
-                kwg-ont:hasExpertise kwgr:hazardtopic.storm.aspecttopic.injury;
+                kwg-ont:hasExpertise kwgr:topic.covid19;
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165' },
-            'expert_label': { 'value': 'Zhonghua Mao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -672,26 +653,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Filters out the types of hazards
     let typeQuery = ``;
-    let hazardTypes = [];
-    let fireSubclasses = ['MTBSFire','NIFCFire','MTBSComplexFire','NIFCIncidentComplexFire','MTBSOutOfAreaResponseArea','MTBSPrescribedFire','NIFCPrescribedFire','MTBSWildlandFireUse'];
-    for (let i = 0; i < parameters["hazardTypes"].length; i++)
-    {
-        if (parameters["hazardTypes"][i] == 'Fire')
-        {
-            for (let j = 0; j < fireSubclasses.length;j++)
-            {
-                hazardTypes.push(fireSubclasses[j]);
-            }
-        }
-        else
-        {
-            hazardTypes.push(parameters["hazardTypes"][i]);
-        }
-    }
+    let hazardTypes = parameters["hazardTypes"];
+
     if (parameters["hazardTypes"].length > 0)
     {
+        let setHazardTypes = new Set(hazardTypes);
         shouldUseInference = true;
-        typeQuery += `filter (?type in (kwg-ont:` + hazardTypes.join(', kwg-ont:') + `))`;
+        typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
 
     //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
@@ -840,7 +808,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime|time:hasBeginning ?time;
                 geo:hasGeometry/geo:asWKT ?wkt.
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
