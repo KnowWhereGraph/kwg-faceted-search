@@ -319,8 +319,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 childListItems[i].children[0].checked = true;
             }
           }
-            dropdownImg.style["transform"] = "scaleY(-1)";
-            subListDiv.style["display"] = "";
+          if (childListItems.length) {
+              dropdownImg.style["transform"] = "scaleY(-1)";
+              subListDiv.style["display"] = "";
+          }
         } else {
           if (top) {
             // Loop over each sub-section
@@ -336,8 +338,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
-            dropdownImg.style["transform"] = "";
-            subListDiv.style["display"] = "none";
+            if (childListItems.length) {
+              dropdownImg.style["transform"] = "";
+              subListDiv.style["display"] = "none";
+            }
           }
         }
 
