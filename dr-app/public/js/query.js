@@ -29,12 +29,19 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 // SPARQL endpoint
 const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG-Staging';
 
-var infer = 'false';
-// query
-async function query(srq_query) {
+/**
+ * Performs a SPARQL query
+ * 
+ * @param {string} srq_query The query that is being performed
+ * @param {boolean} infer Set to true when inference should be enabled
+ * @returns 
+ */
+async function query(srq_query, infer=false) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
-    d_form.append('infer', infer); // disable inference
+    if(!infer) {
+      d_form.append('infer', infer);
+    }
     let d_res = await fetch(P_ENDPOINT, {
         method: 'POST',
         mode: 'cors',
@@ -629,9 +636,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     {
         return { 'count': 0, 'record': {} };
     }
-    infer = 'true'; // the parameter infer is temporarily set to be true.
-    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
-    infer = 'false';
+
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`, true);
 
     let wktResults = {};
     for (let row of wktQuery) {
@@ -642,7 +648,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`, true);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -819,12 +825,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
     }`;
-    
-    console.log(hazardQuery);
 
-    infer = 'true'; // the parameter infer is temporarily set to be true.
-    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
-    infer = 'false';
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
 
     for (let row of queryResults) {
         formattedResults.push({
@@ -841,8 +843,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'wkt':row.wkt.value
         });
     }
-
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
+    console.log(`select (count(*) as ?count) { ` + hazardQuery + `}`)
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, true);
 
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
@@ -1021,7 +1023,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`, true);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
