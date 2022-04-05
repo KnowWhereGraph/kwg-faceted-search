@@ -279,7 +279,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         queryIdentifier = uuidv4();
         currentQuery = queryIdentifier;
-        console.log("Setting currentQuery to... " + currentQuery);
         var response = sendQueries(newActiveTabName, page, pp, parameters);
 
         prepareNewTable(newActiveTabName);
