@@ -319,7 +319,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 childListItems[i].children[0].checked = true;
             }
           }
-          if (childListItems.length > 0)
+          if (childListItems.length)
           {
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
@@ -339,10 +339,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
-            if (childListItems.length) {
-              dropdownImg.style["transform"] = "";
-              subListDiv.style["display"] = "none";
-            }
+          }
+          if (childListItems.length) {
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
           }
         }
 
