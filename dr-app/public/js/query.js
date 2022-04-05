@@ -483,7 +483,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 placeQuery +=  `
                     ?entity kwg-ont:sfWithin ?s2cell.
                     ?s2cell rdf:type kwg-ont:KWGCellLevel13;
-                            kwg-ont:sfWithin ?placesConnectedToS2.
+                            kwg-ont:sfWithin|kwg-ont:sfCrosses|kwg-ont:sfOverlaps|kwg-ont:sfContains ?placesConnectedToS2.
                 `;
                 let placesConnectedToS2 = [];
         
@@ -616,7 +616,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         `;
     }
     placeQuery += `}`;
-
+    
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
