@@ -227,6 +227,7 @@ async function getRandomExpert() {
 
     let row = queryResults[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     if (typeof(row) == "undefined") {
         row = {
@@ -235,6 +236,8 @@ async function getRandomExpert() {
         };
     }
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -248,10 +251,14 @@ async function getRandomWildfire() {
     select distinct ?wildfire ?wildfire_label
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         ?wildfire rdf:type kwg-ont:MTBSWildfire;
 =======
         ?wildfire rdf:type kwg-ont:Wildfire;
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+        ?wildfire rdf:type kwg-ont:MTBSWildfire;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
                 rdfs:label ?wildfire_label.
     } ORDER BY RAND() LIMIT 1`;
 
@@ -265,6 +272,7 @@ async function getRandomWildfire() {
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
 =======
 
+<<<<<<< HEAD
     if (typeof(row) == "undefined") {
         row = {
             'wildfire': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/hazard.162134.978925' },
@@ -273,6 +281,8 @@ async function getRandomWildfire() {
     }
 
 >>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
+=======
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
     return { 'randomWildfire': formattedResults };
@@ -312,16 +322,21 @@ async function getRandomExpertInjuryStorm() {
     {
         ?expert rdf:type iospress:Contributor;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 kwg-ont:hasExpertise kwgr:topic.covid19;
 =======
                 kwg-ont:hasExpertise kwgr:hazardtopic.storm.aspecttopic.injury;
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+                kwg-ont:hasExpertise kwgr:topic.covid19;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     if (typeof(row) == "undefined") {
@@ -331,6 +346,8 @@ async function getRandomExpertInjuryStorm() {
         };
     }
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -1204,6 +1221,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["hazardTypes"].length > 0)
     {
         let setHazardTypes = new Set(hazardTypes);
+<<<<<<< HEAD
+=======
+        shouldUseInference = true;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
         typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
 
@@ -1463,9 +1484,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
                 rdfs:label ?label;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
 =======
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+=======
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime|time:hasBeginning ?time;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
                 geo:hasGeometry/geo:asWKT ?wkt.
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.

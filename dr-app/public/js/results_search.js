@@ -122,12 +122,17 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //facet hazards
     $scope.earthquakeFacets = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
     $scope.mtbsFireFacets = false;
     $scope.noaaFacets = false;
 =======
     $scope.fireFacets = false;
     $scope.hurricaneFacets = false;
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+    $scope.mtbsFireFacets = false;
+    $scope.noaaFacets = false;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
 
     //Set the keyword value
     $scope.inputQuery = (urlVariables['keyword'] != null && urlVariables['keyword'] != '') ? urlVariables['keyword'] : '';
@@ -769,10 +774,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
         if (parameters['hazardTypes'].length > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             // $scope.earthquakeFacets = false;
             // $scope.fireFacets = false;
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
 
             for (let i = 0; i < parameters['hazardTypes'].length; i++) {
                 let hazType = parameters['hazardTypes'][i];
@@ -780,6 +788,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (hazType.includes('Earthquake'))
                     $scope.earthquakeFacets = true;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 if (hazType.includes('Fire') && hazType.includes('MTBS'))
@@ -797,11 +806,19 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 if (hazType.includes('Hurricane'))
                     $scope.hurricaneFacets = true;
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                if (hazType.includes('Fire') && hazType.includes('MTBS'))
+                    $scope.mtbsFireFacets = true;
+
+                if (hazType.includes('Hurricane'))
+                    $scope.noaaFacets = true;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
             }
 
             $scope.updateURLParameters('hazard', parameters['hazardTypes'].join(','));
         } else {
             $scope.earthquakeFacets = false;
+<<<<<<< HEAD
 <<<<<<< HEAD
             $scope.mtbsFireFacets = false;
             $scope.noaaFacets = false;
@@ -809,6 +826,10 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.fireFacets = false;
             $scope.hurricaneFacets = false;
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            $scope.mtbsFireFacets = false;
+            $scope.noaaFacets = false;
+>>>>>>> b5fdca12 ((1) Fix issues with random records in the Explore tab (2) Update facet selection for MTBS fires and NOAA hazards)
             $scope.removeValue('hazard');
         }
 
