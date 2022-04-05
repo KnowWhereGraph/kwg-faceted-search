@@ -1528,6 +1528,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
@@ -1537,6 +1538,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     console.log(hazardQuery);
 
+=======
+>>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
 >>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
 

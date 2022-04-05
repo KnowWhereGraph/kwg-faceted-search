@@ -389,17 +389,23 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             }
           }
 <<<<<<< HEAD
+<<<<<<< HEAD
           if (childListItems.length)
           {
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
 =======
+=======
+>>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)
 <<<<<<< HEAD
           if (childListItems.length) {
               dropdownImg.style["transform"] = "scaleY(-1)";
               subListDiv.style["display"] = "";
 =======
           if (childListItems.length > 0)
+=======
+          if (childListItems.length)
+>>>>>>> a8e3b0d8 (Fix bug where nested checkboxes weren't closing after being selected again)
           {
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
@@ -421,6 +427,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             for (let i = 0; i < childListItems.length; i++) {
                 childListItems[i].children[0].checked = false;
             }
+<<<<<<< HEAD
+=======
+          }
+          if (childListItems.length) {
+            dropdownImg.style["transform"] = "";
+            subListDiv.style["display"] = "none";
+>>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)
           }
           if (childListItems.length) {
             dropdownImg.style["transform"] = "";
