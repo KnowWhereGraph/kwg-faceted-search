@@ -654,6 +654,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
+    // When there are particular classes used in the query, use inference
+    let shouldUseInference = false;
     let formattedResults = [];
 
     let hazardQuery = `select distinct * where {`;
@@ -688,6 +690,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
     if (parameters["hazardTypes"].length > 0)
     {
+        shouldUseInference = true;
         typeQuery += `filter (?type in (kwg-ont:` + hazardTypes.join(', kwg-ont:') + `))`;
     }
 
@@ -844,7 +847,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
     console.log(`select (count(*) as ?count) { ` + hazardQuery + `}`)
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, false);
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, shouldUseInference);
 
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
