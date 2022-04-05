@@ -809,7 +809,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                sosa:isFeatureOfInterestOf ?observationCollection;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
                 geo:hasGeometry/geo:asWKT ?wkt.
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
@@ -819,7 +819,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?place rdfs:label ?placeLabel.
             filter not exists {filter contains(?placeLabel,"S2 Cell") }
         }
-        ?observationCollection sosa:phenomenonTime ?time.
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                 time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
         ${typeQuery}
@@ -828,6 +827,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
     }`;
+
+    console.log(hazardQuery);
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
 
@@ -945,6 +946,12 @@ function hazardTypeFacets(parameters) {
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
+    if (typedHazardQuery != ``)
+    {
+        typedHazardQuery += `
+            ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+        `;
+    }
     return typedHazardQuery;
 }
 /**

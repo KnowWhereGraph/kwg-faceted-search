@@ -319,8 +319,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 childListItems[i].children[0].checked = true;
             }
           }
+          if (childListItems.length > 0)
+          {
             dropdownImg.style["transform"] = "scaleY(-1)";
             subListDiv.style["display"] = "";
+          }
         } else {
           if (top) {
             // Loop over each sub-section
