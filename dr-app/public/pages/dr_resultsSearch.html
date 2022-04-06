@@ -9,6 +9,21 @@
     </div>
 </header>
 
+<div class="modal fade" id="timeoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Query Timeout</h5>
+      </div>
+      <div class="modal-body">
+        Your query timed out. Selecting more specific facets to narrow the selection can provide more timely results.
+      </div>
+      <div class="modal-footer">
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main class="spatial-search" ng-controller="spatialSearchController">
     <div class="left-filters" ng-controller="filters-controller">
@@ -274,7 +289,6 @@
                 </ul>
             </div>
             <div class="results-table">
-
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
                     <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">

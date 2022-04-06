@@ -43,20 +43,24 @@ async function query(srq_query, infer=false) {
       d_form.append('infer', infer);
     }
     let d_res = await fetch(P_ENDPOINT, {
-        method: 'POST',
-        mode: 'cors',
-        //credentials: 'include',
-        headers: {
-            Accept: 'application/sparql-results+json',
-            //'Content-Type': 'application/x-www-form-urlencoded',
-            //'Authorization': 'Basic ' + btoa(username + ":" + password),
-        },
-        body: new URLSearchParams([
-            ...(d_form),
-        ]),
-    });
-
-
+          method: 'POST',
+          mode: 'cors',
+          //credentials: 'include',
+          headers: {
+              Accept: 'application/sparql-results+json',
+              //'Content-Type': 'application/x-www-form-urlencoded',
+              //'Authorization': 'Basic ' + btoa(username + ":" + password),
+          },
+          body: new URLSearchParams([
+              ...(d_form),
+          ]),
+      }).catch((error) => {
+        console.log("There was an error while running a query: ", error);
+        $('#timeoutModal').modal('show');
+        angular.element("#hazardTable-body #loading").remove();
+        angular.element("#expertTable-body #loading").remove();
+        angular.element("#placeTable-body #loading").remove();
+      });
     return (await d_res.json()).results.bindings;
 }
 
