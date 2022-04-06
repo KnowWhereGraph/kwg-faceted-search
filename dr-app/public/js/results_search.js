@@ -36,6 +36,8 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //prep for URL variable tracking
     urlVariables = $location.search();
 
+    console.log("urlVariables: ", urlVariables);
+
     /*
       Returns a debounced function that is called after 'wait' ms.
       Adapted from https://davidwalsh.name/javascript-debounce-function
@@ -142,7 +144,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         $scope.hazardFacetDateEnd = new Date(urlVariables['date-end']);
     }
 
-      getHazardClasses().then(function(data) {
+    getHazardClasses().then(function(data) {
         $scope.hazards = data;
         $scope.$apply();
     }).then(function() {
@@ -300,50 +302,49 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
      * for handling query logic.
      * @param {boolean} top Flag whether the user clicked on a top/root level element
      */
-    $scope.selectSubList = function($event, functionName, top=false) {
+    $scope.selectSubList = function($event, functionName, top = false) {
         let dropdownImg = $event.target.nextElementSibling;
         let subListDiv = $event.target.parentNode.nextElementSibling;
         let childListItems = subListDiv.children;
         if ($event.target.checked) {
-          if (top) {
-            // Loop over each sub-section
-            childListItems.forEach((child) => {
-              childChildren = child.children;
-              childChildren[0].children[0].checked = true;
-              childChildren[1].children.forEach((child) => {
-                child.children[0].checked = true;
-              })
-            })
-          } else {
-            for (let i = 0; i < childListItems.length; i++) {
-                childListItems[i].children[0].checked = true;
+            if (top) {
+                // Loop over each sub-section
+                childListItems.forEach((child) => {
+                    childChildren = child.children;
+                    childChildren[0].children[0].checked = true;
+                    childChildren[1].children.forEach((child) => {
+                        child.children[0].checked = true;
+                    })
+                })
+            } else {
+                for (let i = 0; i < childListItems.length; i++) {
+                    childListItems[i].children[0].checked = true;
+                }
             }
-          }
-          if (childListItems.length)
-          {
-            dropdownImg.style["transform"] = "scaleY(-1)";
-            subListDiv.style["display"] = "";
-          }
+            if (childListItems.length) {
+                dropdownImg.style["transform"] = "scaleY(-1)";
+                subListDiv.style["display"] = "";
+            }
         } else {
-          if (top) {
-            // Loop over each sub-section
-            childListItems.forEach((child) => {
-              childChildren = child.children;
-              childChildren[0].children[0].checked = false;
-              // Loop over each li element in the section
-              childChildren[1].children.forEach((child) => {
-                child.children[0].checked = false;
-              })
-            })
-          } else {
-            for (let i = 0; i < childListItems.length; i++) {
-                childListItems[i].children[0].checked = false;
+            if (top) {
+                // Loop over each sub-section
+                childListItems.forEach((child) => {
+                    childChildren = child.children;
+                    childChildren[0].children[0].checked = false;
+                    // Loop over each li element in the section
+                    childChildren[1].children.forEach((child) => {
+                        child.children[0].checked = false;
+                    })
+                })
+            } else {
+                for (let i = 0; i < childListItems.length; i++) {
+                    childListItems[i].children[0].checked = false;
+                }
             }
-          }
-          if (childListItems.length) {
-            dropdownImg.style["transform"] = "";
-            subListDiv.style["display"] = "none";
-          }
+            if (childListItems.length) {
+                dropdownImg.style["transform"] = "";
+                subListDiv.style["display"] = "none";
+            }
         }
 
         $scope[functionName]($event);
@@ -843,8 +844,10 @@ var init = function() {
             attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
             crossOrigin: true
         }).addTo(resultsSearchMap);
-        addCheckboxesForDisplayMap();
-        addDrawCircle();
+        // hide the checkboxex for now
+        // addCheckboxesForDisplayMap();
+        // cancel drawing circle now for 1st version release
+        // addDrawCircle();
     }, 200);
 }
 
@@ -884,7 +887,7 @@ var getParameters = function() {
         hazardTypes.push(hazard.value);
     });
     parameters["hazardTypes"] = hazardTypes;
-    
+
     parameters["hazardFacetMagnitudeMin"] = angular.element("#hazardFacetMagnitudeMin")[0].value;
     parameters["hazardFacetMagnitudeMax"] = angular.element("#hazardFacetMagnitudeMax")[0].value;
     parameters["hazardQuakeDepthMin"] = angular.element("#hazardQuakeDepthMin")[0].value;
@@ -974,7 +977,27 @@ var displayBreadCrumbs = function() {
             }
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 placeUrl = bcURL + '&gnis=' + urlVariables['gnis'];
-                bcHTML += '<li><a href="' + placeUrl + '">GNIS Feature Type: ' + urlVariables['gnis'] + '</a></li>';
+                // bcHTML += '<li><a href="' + placeUrl + '">GNIS Feature Type: ' + urlVariables['gnis'] + '</a></li>';
+
+                let checkedGnisTypes = angular.element("#gnis-list li input[name='gnis-type']:checked");
+                if (checkedGnisTypes.length > 1) {
+                    bcHTML += '<li><a href="' + placeUrl + '">GNIS Feature Type' + '</a></li>';
+                } else {
+                    let gnisId = checkedGnisTypes[0].id;
+                    switch (gnisId) {
+                        case "buildupArea":
+                            bcHTML += '<li><a href="' + placeUrl + '">Build Up Area' + '</a></li>';
+                            break;
+                        case "surfacewater":
+                            bcHTML += '<li><a href="' + placeUrl + '">Surface Water' + '</a></li>';
+                            break;
+                        case "terrian":
+                            bcHTML += '<li><a href="' + placeUrl + '">Terrain' + '</a></li>';
+                            break;
+                    }
+                }
+
+
             }
             if (urlVariables['zip'] != null && urlVariables['zip'] != '') {
                 placeUrl = bcURL + '&zip=' + urlVariables['zip'];
@@ -1004,10 +1027,22 @@ var displayBreadCrumbs = function() {
             }
             if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
                 var hazards = urlVariables['hazard'].split(',');
+
+                hazardUrl = bcURL + '&hazard=';
                 for (var j = 0; j < hazards.length; j++) {
-                    hazardUrl = bcURL + '&hazard=' + hazards[j];
-                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    // hazardUrl = bcURL + '&hazard=' + hazards[j];
+                    // bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    hazardUrl += "," + hazards[j];
                 }
+                let checkedHazardTypes = angular.element("#hazard-list li input[name='hazard_toplevel']:checked");
+
+                if (checkedHazardTypes.length > 1) {
+                    bcHTML += '<li><a href="' + hazardUrl + '">Hazard Types' + '</a></li>';
+                } else {
+                    let hazardTypeId = checkedHazardTypes[0].id;
+                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazardTypeId + '</a></li>';
+                }
+
             }
             if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
                 placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
@@ -1058,19 +1093,51 @@ var displayBreadCrumbs = function() {
             }
             if (urlVariables['gnis'] != null && urlVariables['gnis'] != '') {
                 var facetGNIS = urlVariables['gnis'].split(',');
-                for (var j = 0; j < facetGNIS.length; j++) {
-                    expertUrl = bcURL + '&gnis=' + facetGNIS[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
+                console.log("facet GNIS: ", facetGNIS);
+                // for (var j = 0; j < facetGNIS.length; j++) {
+                //     expertUrl = bcURL + '&gnis=' + facetGNIS[j];
+                //     bcHTML += '<li><a href="' + expertUrl + '">' + facetGNIS[j] + '</a></li>';
+                // }
+
+                expertUrl = bcURL + '&gnis=' + urlVariables['gnis'];
+                let checkedGnisTypes = angular.element("#gnis-list li input[name='gnis-type']:checked");
+                if (checkedGnisTypes.length > 1) {
+                    bcHTML += '<li><a href="' + expertUrl + '">GNIS Feature Type' + '</a></li>';
+                } else {
+                    let gnisId = checkedGnisTypes[0].id;
+                    switch (gnisId) {
+                        case "buildupArea":
+                            bcHTML += '<li><a href="' + expertUrl + '">Build Up Area' + '</a></li>';
+                            break;
+                        case "surfacewater":
+                            bcHTML += '<li><a href="' + expertUrl + '">Surface Water' + '</a></li>';
+                            break;
+                        case "terrian":
+                            bcHTML += '<li><a href="' + expertUrl + '">Terrain' + '</a></li>';
+                            break;
+                    }
                 }
             }
             break;
         case "people":
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
                 var experts = urlVariables['expert'].split(',');
+                expertUrl = bcURL + '&expert=';
                 for (var j = 0; j < experts.length; j++) {
-                    expertUrl = bcURL + '&expert=' + experts[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    // expertUrl = bcURL + '&expert=' + experts[j];
+                    // bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    expertUrl += "," + experts[j];
                 }
+                let checkedExpertTopics = angular.element("#expert-list li input[name='expert-topic']:checked");
+
+                if (checkedExpertTopics.length > 1) {
+                    bcHTML += '<li><a href="' + expertUrl + '">Expert Topics' + '</a></li>';
+                } else {
+                    let ExpertTopicId = checkedExpertTopics[0].id;
+                    bcHTML += '<li><a href="' + expertUrl + '">' + ExpertTopicId.split(".")[1].charAt(0).toUpperCase() + ExpertTopicId.split(".")[1].substring(1) + '</a></li>';
+                }
+
+
             }
             if (urlVariables['region'] != null && urlVariables['region'] != '') {
                 var facetRegions = urlVariables['region'].split(',');
@@ -1192,8 +1259,7 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
 
     showMap(recordResults);
 
-    if (Object.keys(recordResults).length > 0)
-    {
+    if (Object.keys(recordResults).length > 0) {
         recordResults.forEach(e => {
             var rowBodyHtml = "";
             if (selectors["thead"] == "#expertTableTitle") {
@@ -1206,27 +1272,27 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
                 attributeLinks = [e["hazard"], e["hazard_type"], e["place"], e["start_date"], e["end_date"]];
                 tableBodyAttributes = [e["hazard_name"], e["hazard_type_name"], e["place_name"], dateFormat(e["start_date_name"]), dateFormat(e["end_date_name"])];
             };
-    
+
             var numAttributes = attributeLinks.length;
             for (var index = 0; index < numAttributes; index++) {
                 var link = attributeLinks[index];
                 var attr = tableBodyAttributes[index];
                 var cellHtml = '';
-    
+
                 if (Array.isArray(attr)) {
                     let linkArray = [];
                     for (let i = 0; i < attr.length; i++) {
                         linkArray.push('<a href="' + link[i] + '" target="_blank">' + attr[i] + "</a>")
                     }
-    
+
                     cellHtml = linkArray.join(', ');
                 } else {
                     cellHtml = '<a href="' + link + '" target="_blank">' + attr + "</a>";
                 }
-    
+
                 rowBodyHtml += "<td>" + cellHtml + "</td>";
             }
-    
+
             /*
             DEVNOTE: We'll want to re-enable this when the data supports it
             if (activeTabName == "Place") {
@@ -1234,7 +1300,7 @@ var displayTableByTabName = function(activeTabName, result, from = "") {
                 rowBodyHtml += "<td class = 'hazardIcons'>" + hazardCellHtml + "</td>";
             }
             */
-    
+
             var rowHtml = "<tr>" + rowBodyHtml + "</tr>";
             tableBody.append(rowHtml);
         });
@@ -1471,15 +1537,14 @@ function showMap(recordResults, activeTabName) {
 
 
     var markerIndex = 0;
-    if (Object.keys(recordResults).length > 0)
-    {
+    if (Object.keys(recordResults).length > 0) {
         recordResults.forEach(e => {
             if (e["wkt"]) {
                 var wicket = new Wkt.Wkt();
                 var center_lat = 0;
                 var center_lon = 0;
                 var count = 0;
-    
+
                 var coords = [];
                 var wktString = "";
                 var wktType = "";
@@ -1504,13 +1569,13 @@ function showMap(recordResults, activeTabName) {
                             break
                     }
                 }
-    
+
                 coords.forEach(coord => {
                     count += 1;
                     center_lat += coord[1];
                     center_lon += coord[0];
                 });
-    
+
                 if (count) {
                     center_lat = center_lat / count;
                     center_lon = center_lon / count;
@@ -1518,7 +1583,7 @@ function showMap(recordResults, activeTabName) {
                     //     color: "red",
                     //     radius: 10000
                     // }).addTo(resultsSearchMap);
-    
+
                     var keys = Object.keys(e).filter(attr => { return attr.indexOf("name") >= 0; });
                     var vals = keys.map(key => {
                         val = e[key];
@@ -1541,7 +1606,7 @@ function showMap(recordResults, activeTabName) {
                     // dds.push(dd("input.radius-range#radius_range_" + markerIndex, { "type": "range", "min": "100", "max": "5000", "value": "200" }));
                     // dds.push(dd("br"));
                     // dds.push(dd("button.btn.btn-primary#popup-query-btn:Query", { "type": "submit" }));
-    
+
                     var placeIcon = L.icon({
                         iconUrl: '../images/people-earthquake-icon.svg',
                         iconSize: [38, 95],
@@ -1549,31 +1614,31 @@ function showMap(recordResults, activeTabName) {
                         popupAnchor: [12, -90]
                     });
                     // activeTabName != "People
-    
+
                     var hazardIcon = L.icon({
                         iconUrl: '../images/people-people-icon.svg',
                         iconSize: [38, 95],
                         iconAnchor: [22, 94],
                         popupAnchor: [12, -90]
                     });
-    
+
                     var icon = placeIcon;
                     if (activeTabName == "Place") {
                         icon = placeIcon;
                     } else if (activeTabName == "Hazard") {
                         icon = hazardIcon;
                     }
-    
-    
+
+
                     let place_marker = new L.marker([center_lat, center_lon], { icon: icon }).bindPopup(dd('.popup', dds));
-    
+
                     // add marker event listener
                     // place_marker.on("click", function(ev) {
                     //     if (!Object.keys(clickedMarker).length) {
                     //         var index = markers.indexOf(ev.sourceTarget);
                     //         clickedMarker["index"] = index;
                     //         clickedMarker["marker"] = ev.sourceTarget;
-    
+
                     //         var domElement = angular.element(".results-table div.active .table-body-container table tbody tr")[index];
                     //         clickedMarker["table-element"] = domElement;
                     //         clickedMarker["pre-color"] = domElement.style.backgroundColor;
@@ -1582,7 +1647,7 @@ function showMap(recordResults, activeTabName) {
                     //         if (clickedMarker["marker"] != ev.sourceTarget) {
                     //             // reset the color on the table
                     //             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
-    
+
                     //             var index = markers.indexOf(ev.sourceTarget);
                     //             clickedMarker["index"] = index;
                     //             clickedMarker["marker"] = ev.sourceTarget;
@@ -1591,7 +1656,7 @@ function showMap(recordResults, activeTabName) {
                     //             domElement.style.backgroundColor = "pink";
                     //         }
                     //     }
-    
+
                     //     // at this time, then find the slider in this marker.
                     //     addSliderChangeListener(ev.sourceTarget.getLatLng());
                     //     addPopupQueryButtonClickListener(ev.sourceTarget.getLatLng());
@@ -1602,7 +1667,7 @@ function showMap(recordResults, activeTabName) {
                             clickedMarker["table-element"].style.backgroundColor = clickedMarker["pre-color"];
                             clickedMarker = {};
                         };
-    
+
                         // also remove the circle on the layer
                         if (resultsSearchMap.hasLayer(circles)) {
                             resultsSearchMap.removeLayer(circles);
