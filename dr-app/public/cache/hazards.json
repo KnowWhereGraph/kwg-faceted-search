@@ -1,17 +1,5 @@
 [
   {
-    "name": "Disaster",
-    "official": "Disaster",
-    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Disaster",
-    "sub": []
-  },
-  {
-    "name": "Drought Zone",
-    "official": "DroughtZone",
-    "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/DroughtZone",
-    "sub": []
-  },
-  {
     "name": "Earthquake",
     "official": "Earthquake",
     "uri": "http://stko-kwg.geog.ucsb.edu/lod/ontology/Earthquake",
