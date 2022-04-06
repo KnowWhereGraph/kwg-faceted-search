@@ -442,7 +442,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if (parameters["keyword"] != "") {
         placeQuery += `
-        ?search a elastic-index:kwg_staging_es_index;
+        ?search a elastic-index:kwg_staging_es_index-copy;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -472,7 +472,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     entityAll = await query(`
                     select ?entity
                     {
-                        ?search a elastic-index:kwg_staging_es_index;
+                        ?search a elastic-index:kwg_staging_es_index-copy;
                         elastic:query "${parameters["placeFacetsRegion"]}";
                         elastic:entities ?entity.
                         
@@ -544,7 +544,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             if (parameters["placeFacetsRegion"] != "") {
                 typeQueries.push(`
                 {
-                    ?search a elastic-index:kwg_staging_es_index;
+                    ?search a elastic-index:kwg_staging_es_index-copy;
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
@@ -700,7 +700,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index;
+        ?search a elastic-index:kwg_staging_es_index-copy;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -916,7 +916,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
-    console.log(hazardQuery);
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
 
     for (let row of queryResults) {
@@ -1079,7 +1078,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index;
+        ?search a elastic-index:kwg_staging_es_index-copy;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
