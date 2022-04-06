@@ -674,7 +674,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if (parameters["keyword"] != "") {
         placeQuery += `
+<<<<<<< HEAD
         ?search a elastic-index:kwg_fs_index;
+=======
+        ?search a elastic-index:kwg_staging_es_index-copy;
+>>>>>>> 7265245e (Update ES index)
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         ?entity elastic:score ?score.
@@ -967,7 +971,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     entityAll = await query(`
                     select ?entity
                     {
-                        ?search a elastic-index:kwg_staging_es_index;
+                        ?search a elastic-index:kwg_staging_es_index-copy;
                         elastic:query "${parameters["placeFacetsRegion"]}";
                         elastic:entities ?entity.
                         
@@ -1040,7 +1044,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             if (parameters["placeFacetsRegion"] != "") {
                 typeQueries.push(`
                 {
-                    ?search a elastic-index:kwg_staging_es_index;
+                    ?search a elastic-index:kwg_staging_es_index-copy;
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
@@ -1259,7 +1263,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index;
+        ?search a elastic-index:kwg_staging_es_index-copy;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
@@ -1618,6 +1622,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
@@ -1628,8 +1633,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     console.log(hazardQuery);
 =======
 =======
+>>>>>>> 7265245e (Update ES index)
+=======
     console.log(hazardQuery);
 >>>>>>> 418e0172 (Fix query issues if users type a place instance/type that does not exist in the graph)
+=======
+>>>>>>> 00eefe06 (Update ES index)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
 >>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
 
@@ -2047,7 +2056,11 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             `
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         ?search a elastic-index:kwg_fs_index;
+=======
+        ?search a elastic-index:kwg_staging_es_index-copy;
+>>>>>>> 7265245e (Update ES index)
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         ?entity elastic:score ?score.
