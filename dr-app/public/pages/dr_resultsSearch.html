@@ -88,28 +88,6 @@
             <li id="hazard" ng-show="showHazardList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
-                    <ul class="list-group checkbox-list" id="region-list">
-                        <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
-                            <li class="ng-binding ng-scope">
-                                {{a1obj['label']}}
-                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                            </li>
-                            <ul class="list-group list-group-indented" style="display: none">
-                                <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
-                                    <li>
-                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
-                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                                    </li>
-                                    <ul class="list-group list-group-indented" style="display: none">
-                                        <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
-                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region"> {{a3obj['label']}}
-                                        </li>
-                                    </ul>
-                                </section>
-                            </ul>
-                        </section>
-                    </ul>
-                    <br/>
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
@@ -143,6 +121,28 @@
                         </ul>
                     </ul>
                     <br/>
+                    <ul class="list-group checkbox-list" id="region-list">
+                        <section ng-repeat="(a1, a1obj) in administrativeRegions['regions']">
+                            <li class="ng-binding ng-scope">
+                                {{a1obj['label']}}
+                                <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                            </li>
+                            <ul class="list-group list-group-indented" style="display: none">
+                                <section ng-repeat="(a2, a2obj) in a1obj['sub_admin_regions']">
+                                    <li>
+                                        <input id="{{a2}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectRegion')" value="{{a2}}" name="region"> {{a2obj['label']}}
+                                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                                    </li>
+                                    <ul class="list-group list-group-indented" style="display: none">
+                                        <li ng-repeat="(a3, a3obj) in a2obj['sub_admin_regions']">
+                                            <input id="{{a3}}" type="checkbox" class="form-check-input me-1" ng-click="selectRegion()" value="{{a3}}" name="region"> {{a3obj['label']}}
+                                        </li>
+                                    </ul>
+                                </section>
+                            </ul>
+                        </section>
+                    </ul>
+                    <br/>
                     <div>Zip Code</div>
                     <input autocomplete="true" type="text" class="form-control zip-directive" id="regionFacetsZip" ng-model="placeFacetsZip" ng-enter="placeFacetChanged()" placeholder="Search by Zip Code...">
                     <div>FIPS Code</div>
@@ -160,7 +160,14 @@
                     <div>Date End</div>
                     <input type="date" class="form-control" id="hazardFacetDateEnd" ng-model="hazardFacetDateEnd" ng-enter="hazardFacetChanged()">
                     <div>Hazard Type(s)</div>
+
+                    <!-- Checkboxes for the hazards. This goes three subclasses deep.
+                    topLevel: The top level class (Fire, Earthquake, etc)
+                    midLevel: The class immediately under the top
+                    lowerLevel: The most deep subclass
+                    -->
                     <ul class="list-group checkbox-list" id="hazard-list">
+<<<<<<< HEAD
                         <li ng-repeat="hazardUrl in hazardUrls['hazards']">
                             <!-- <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}} -->
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazardSubList($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
@@ -184,6 +191,29 @@
                             <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
                         </li> -->
                     </ul>
+=======
+                      <section ng-repeat="topLevel in hazards">
+                          <li class="ng-binding ng-scope">
+                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard" value={{topLevel.official}}>{{topLevel.name}}
+                              <img ng-if="topLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
+                          </li>
+                          <ul class="list-group list-group-indented" style="display: none">
+                              <section ng-repeat="midLevel in topLevel.sub">
+                                <li>
+                                  <input id="{{midLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midLevel.official}}> {{midLevel.name}}
+                                  <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
+                                </li>
+                                <ul class="list-group list-group-indented" style="display: none">
+                                  <li ng-repeat="lowerLevel in midLevel.sub" >
+                                    <input id="{{lowerLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" name="hazard" value={{lowerLevel.official}}> {{lowerLevel.name}}
+                                  </li>
+                              </ul>
+                              </section>
+                          </ul>
+                      </section>
+                      </ul>
+
+>>>>>>> origin/stko-kwg
                     <section class="conditional-facets" ng-show="earthquakeFacets">
                         <div>Earthquake: Magnitude (min)</div>
                         <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
@@ -194,30 +224,30 @@
                         <div>Earthquake: Depth (max)</div>
                         <input type="number" class="form-control" id="hazardQuakeDepthMax" ng-model="hazardQuakeDepthMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum depth...">
                     </section>
-                    <section class="conditional-facets" ng-show="fireFacets">
+                    <section class="conditional-facets" ng-show="mtbsFireFacets">
                         <!-- Fire Cause -->
-                        <div>Fire: Number of Acres Burned (min)</div>
-                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum acres...">
-                        <div>Fire: Number of Acres Burned (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum acres...">
-                        <div>Fire: Mean dNBR (min)</div>
-                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMin" ng-model="hazardFacetMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum mean Dnbr...">
-                        <div>Fire: Mean dNBR (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum mean Dnbr...">
-                        <div>Fire: Standard Deviation of Mean dNBR (min)</div>
-                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation...">
-                        <div>Fire: Standard Deviation of Mean dNBR (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation...">
+                        <div>MTBS Fire: Number of Acres Burned (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum acres burned ...">
+                        <div>MTBS Fire: Number of Acres Burned (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum acres burned...">
+                        <div>MTBS Fire: Mean dNBR (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMin" ng-model="hazardFacetMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum mean dNBR...">
+                        <div>MTBS Fire: Mean dNBR (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum mean dNBR...">
+                        <div>MTBS Fire: Standard Deviation of Mean dNBR (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR...">
+                        <div>MTBS Fire: Standard Deviation of Mean dNBR (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation of mean dNBR...">
                     </section>
-                    <section class="conditional-facets" ng-show="hurricaneFacets">
-                        <div>Hurricane: Number of Deaths (min)</div>
-                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum deaths...">
-                        <div>Hurricane: Number of Deaths (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMax" ng-model="hazardFacetNumberDeathsMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum deaths...">
-                        <div>Hurricane: Number of Injured Cases (min)</div>
-                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum injured number...">
-                        <div>Hurricane: Number of Injured Cases (max)</div>
-                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum injured number...">
+                    <section class="conditional-facets" ng-show="noaaFacets">
+                        <div>NOAA Hazard: Number of Direct Deaths (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum direct deaths...">
+                        <div>NOAA Hazard: Number of Deaths Direct (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberDeathsMax" ng-model="hazardFacetNumberDeathsMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum direct deaths...">
+                        <div>NOAA Hazard: Number of Direct Injured Cases (min)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum direct injured number...">
+                        <div>NOAA Hazard: Number of Direct Injured Cases (max)</div>
+                        <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum direct injured number...">
                     </section>
                 </div>
             </li>
