@@ -981,27 +981,51 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 }
                 if (parameters["placeFacetsZip"] != "") {
                     entityAll = await getZipCodeArea();
-                    entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-                    entity = entityArray[entityArray.length - 1];
-                    placesConnectedToS2.push(`kwgr:` + entity);
+                    if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
                 }
                 if (parameters["placeFacetsFIPS"] != "") {
                     entityAll = await getFIPS();
-                    entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
-                    entity = entityArray[entityArray.length - 1];
-                    placesConnectedToS2.push(`kwgr:` + entity);
+                    if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
                 }
                 if (parameters["placeFacetsUSCD"] != "") {
                     entityAll = await getUSClimateDivision();
-                    entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-                    entity = entityArray[entityArray.length - 1];
-                    placesConnectedToS2.push(`kwgr:` + entity);
+                    if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
                 }
                 if (parameters["placeFacetsNWZ"] != "") {
                     entityAll = await getNWZone();
-                    entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-                    entity = entityArray[entityArray.length - 1];
-                    placesConnectedToS2.push(`kwgr:` + entity);
+                    if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
                 }
                 placeQuery += `values ?placesConnectedToS2 {${placesConnectedToS2.join(' ')}}`;
             }
@@ -1027,8 +1051,16 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             if (parameters["placeFacetsZip"] != "") {
                 entityAll = await getZipCodeArea();
-                entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-                entity = entityArray[entityArray.length - 1];
+                entity = ``;
+                if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
                 typeQueries.push(`
                 {
                     ?entity rdf:type ?type; rdfs:label ?label.
@@ -1039,8 +1071,16 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             if (parameters["placeFacetsFIPS"] != "") {
                 entityAll = await getFIPS();
-                entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
-                entity = entityArray[entityArray.length - 1];
+                entity = ``;
+                if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
                 typeQueries.push(`
                 {
                     ?entity rdf:type ?type; kwg-ont:hasFIPS|kwg-ont:climateDivisionFIPS ?label.
@@ -1051,8 +1091,16 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             if (parameters["placeFacetsUSCD"] != "") {
                 entityAll = await getUSClimateDivision();
-                entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-                entity = entityArray[entityArray.length - 1];
+                entity = ``;
+                if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
                 typeQueries.push(`
                 {
                     ?entity rdf:type ?type; rdfs:label ?label.
@@ -1063,8 +1111,15 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             if (parameters["placeFacetsNWZ"] != "") {
                 entityAll = await getNWZone();
-                entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-                entity = entityArray[entityArray.length - 1];
+                if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
                 typeQueries.push(`
                 {
                     ?entity rdf:type ?type; rdfs:label ?label.
@@ -1282,6 +1337,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
         if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
         {
             placeEntities.push(``);
@@ -1291,6 +1349,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
             placeEntities.push(entityArray[entityArray.length - 1]);
         }
+<<<<<<< HEAD
     }
     if (parameters["placeFacetsFIPS"] != "") {
         entityAll = await getFIPS();
@@ -1373,21 +1432,50 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
         entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
         placeEntities.push(entityArray[entityArray.length - 1]);
+=======
+>>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
     }
     if (parameters["placeFacetsFIPS"] != "") {
         entityAll = await getFIPS();
-        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
+        if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
     }
     if (parameters["placeFacetsUSCD"] != "") {
         entityAll = await getUSClimateDivision();
-        entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
+        if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
     }
     if (parameters["placeFacetsNWZ"] != "") {
         entityAll = await getNWZone();
-        entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
+        if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
+    }
+
+    // return 0 result if no places satisfy the inputs
+    if (Array.from(new Set(placeEntities))[0] == `` && Array.from(new Set(placeEntities)).length == 1)
+    {
+        return { 'count': 0, 'record': {} };
     }
 
     let placeSearchQuery = ``;
@@ -1529,6 +1617,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
@@ -1537,6 +1626,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     console.log(hazardQuery);
 =======
     console.log(hazardQuery);
+=======
+=======
+    console.log(hazardQuery);
+>>>>>>> 418e0172 (Fix query issues if users type a place instance/type that does not exist in the graph)
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
+>>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
 
 =======
 >>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)

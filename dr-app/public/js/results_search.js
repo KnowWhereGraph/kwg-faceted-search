@@ -2268,9 +2268,12 @@ function showMap(recordResults, activeTabName) {
 
     var markerIndex = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     console.log(Object.keys(recordResults).length);
 >>>>>>> 2f77a12b (Correct errors when no GNIS features are found within the selected areas)
+=======
+>>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
     if (Object.keys(recordResults).length > 0)
     {
         recordResults.forEach(e => {
