@@ -1438,7 +1438,6 @@ function showMap(recordResults, activeTabName) {
 
 
     var markerIndex = 0;
-    console.log(Object.keys(recordResults).length);
     if (Object.keys(recordResults).length > 0)
     {
         recordResults.forEach(e => {
