@@ -296,10 +296,14 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
 =======
             var selectors = displayTableByTabName(activeTabName, result, "keywordSubmit");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
@@ -355,6 +359,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
             var selectors = displayTableByTabName(newActiveTabName, result);
             var countResults = result["count"];
             displayPagination(newActiveTabName, selectors, countResults, parameters);
@@ -671,6 +678,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
@@ -679,6 +687,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "placeFacetChanged");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
     }, debounceTimeout);
 
@@ -764,6 +777,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
@@ -772,6 +786,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "hazardFacetChanged");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
     }, debounceTimeout);
 
@@ -859,6 +878,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
@@ -867,6 +887,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, from = "selectHazard");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
     }, debounceTimeout);
 
@@ -892,6 +917,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
                 return;
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
@@ -900,6 +926,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters, "selectTopic");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+            var countResults = result["count"];
+            displayPagination(activeTabName, selectors, countResults, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
     }, debounceTimeout);
 
@@ -924,6 +955,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
             var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
@@ -963,8 +995,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
 =======
             var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
+=======
+            var selectors = displayTableByTabName(activeTabName, result);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 <<<<<<< HEAD
@@ -992,9 +1027,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "selectGNIS");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "selectGNIS");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -1749,6 +1784,7 @@ var prepareNewTable = function(activeTabName) {
 <<<<<<< HEAD
 <<<<<<< HEAD
     var selectors = getSelectors(activeTabName);
+<<<<<<< HEAD
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1774,6 +1810,9 @@ var prepareNewTable = function(activeTabName) {
     }
  */
 =======
+=======
+<<<<<<< HEAD
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     /*     
         // If we're showing the 'People' tab, adjust the table with to make up for an absent map
         if (activeTabName == "People") {
@@ -1787,7 +1826,13 @@ var prepareNewTable = function(activeTabName) {
             }
         }
      */
+<<<<<<< HEAD
 >>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
+=======
+=======
+
+>>>>>>> 4fb6f0fd (Only count the table length * 10)
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1818,10 +1863,14 @@ var prepareNewTable = function(activeTabName) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 var displayTableByTabName = function(activeTabName, result) {
 =======
 var displayTableByTabName = function(activeTabName, result, from = "") {
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+var displayTableByTabName = function(activeTabName, result) {
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     var selectors = getSelectors(activeTabName);
     var countResults = null;
     var recordResults = null;
@@ -1991,6 +2040,7 @@ var dateFormat = function(dateStr) {
     var s = date.getSeconds();
     return Y + M + D;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
@@ -2006,6 +2056,13 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
 var displayPagination = function(activeTabName, selectors, countResults, parameters, from = "") {
     angular.element("#ttl-results").html(countResults + ' Records');
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+}
+
+var displayPagination = function(activeTabName, selectors, countResults, parameters) {
+     countResults = countResults
+    angular.element("#ttl-results").html('At least ' + countResults + ' results');
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
 
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
@@ -2051,16 +2108,25 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             delete urlVariables['page'];
         }
 
+<<<<<<< HEAD
+=======
+        // **********************************************
+
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         var response = sendQueries(activeTabName, 1, recordsPerPage, parameters);
         response.then(function(result) {
            tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], result['count'], pp, parameters);
             displayTableByTabName(activeTabName, result);
+<<<<<<< HEAD
             if (result['count'] == 0) {
               angular.element("#ttl-results").html(result['count'] + ' Results');
             } else {
               angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
             }
             
+=======
+            angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
 =======
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
@@ -2085,9 +2151,12 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         var $table = angular.element(this);
         $table.on('repaginate', function() {});
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
         var numPages = Math.ceil(totalRecords / numPerPage);
 
         if (angular.element(paginationSelector + 　" div.pager")) {
@@ -2114,12 +2183,17 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                         var selectors = displayTableByTabName(activeTabName, result);
                         displayPagination(activeTabName, selectors, totalRecords, parameters);
 =======
                         var selectors = displayTableByTabName(activeTabName, result, "displayTableByTabName");
                         displayPagination(activeTabName, selectors, totalRecords, parameters, "displayTableByTabName");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                        var selectors = displayTableByTabName(activeTabName, result);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
                     })
 
                 }).appendTo($pager).addClass("clickable");
@@ -2145,12 +2219,17 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                             var selectors = displayTableByTabName(activeTabName, result);
                             displayPagination(activeTabName, selectors, totalRecords, parameters);
 =======
                             var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
                             displayPagination(activeTabName, selectors, totalRecords, parameters, "tablePagination");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                            var selectors = displayTableByTabName(activeTabName, result);
+                            displayPagination(activeTabName, selectors, totalRecords, parameters);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
                         })
 
                     }).appendTo($pager).addClass("clickable");
@@ -2169,10 +2248,14 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                             var selectors = displayTableByTabName(activeTabName, result);
 =======
                             var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                            var selectors = displayTableByTabName(activeTabName, result);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
                             displayPagination(activeTabName, selectors, totalRecords, parameters);
                         })
 
@@ -2201,10 +2284,14 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     var selectors = displayTableByTabName(activeTabName, result);
 =======
                     var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                    var selectors = displayTableByTabName(activeTabName, result);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable next");
@@ -2237,10 +2324,14 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     var selectors = displayTableByTabName(activeTabName, result);
 =======
                     var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+                    var selectors = displayTableByTabName(activeTabName, result);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable prev");
@@ -4607,9 +4698,9 @@ var addDrawCircle = function() {
                 currentQuery = queryIdentifier;
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                    var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                    var selectors = displayTableByTabName(activeTabName, result);
                     var countResults = result["count"];
-                    displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
+                    displayPagination(activeTabName, selectors, countResults, parameters);
                 });
                 // $scope.updateURLParameters('polygon', 'circle');
                 // $scope.updateURLParameters('lon', coordinates.lng.toString());

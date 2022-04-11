@@ -45,7 +45,11 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
  * @param {string} srq_query The query that is being performed
  * @returns 
  */
+<<<<<<< HEAD
 async function query(srq_query) {
+=======
+async function query(srq_query, infer=true) {
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
     d_form.append('infer', true);
@@ -1234,16 +1238,21 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
 =======
     let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
+<<<<<<< HEAD
 <<<<<<< HEAD
     
     let hazardQuery = `select distinct ?entity ?label ?wkt {`;
@@ -1258,6 +1267,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
 
     let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+=======
+    
+    let hazardQuery = `select distinct * where {`;
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -1623,6 +1636,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
@@ -1635,12 +1649,20 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
 >>>>>>> 7265245e (Update ES index)
 =======
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
+=======
     console.log(hazardQuery);
 >>>>>>> 418e0172 (Fix query issues if users type a place instance/type that does not exist in the graph)
 =======
 >>>>>>> 00eefe06 (Update ES index)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
+<<<<<<< HEAD
 >>>>>>> b67720d0 (Fix query issues if users type a place instance/type that does not exist in the graph)
+=======
+=======
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+>>>>>>> 4fb6f0fd (Only count the table length * 10)
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
 
 =======
 >>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)
@@ -1732,6 +1754,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
+<<<<<<< HEAD
     let propertyQuery = await query(`
         select ?entity ?place ?placeLabel ?placeWkt ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
             values ?entity {${entityRawValues.join(' ')}} 
@@ -1793,6 +1816,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
+      return { 'count': countResults[0].count.value, 'record': formattedResults };
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
@@ -2172,6 +2199,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
 =======
 =======
@@ -2179,6 +2207,9 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
     let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+>>>>>>> 2e81c0a0 (Only count the table length * 10)
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
