@@ -1209,8 +1209,11 @@ var dateFormat = function(dateStr) {
 }
 
 var displayPagination = function(activeTabName, selectors, countResults, parameters) {
-     countResults = countResults
-    angular.element("#ttl-results").html('At least ' + countResults + ' results');
+     if (countResults == 0) {
+      angular.element("#ttl-results").html(countResults + ' Results');
+    } else {
+      angular.element("#ttl-results").html('At least ' + countResults + ' results');
+    }
 
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
@@ -1261,7 +1264,12 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
         response.then(function(result) {
            tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], result['count'], pp, parameters);
             displayTableByTabName(activeTabName, result);
-            angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
+            if (result['count'] == 0) {
+              angular.element("#ttl-results").html(result['count'] + ' Results');
+            } else {
+              angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
+            }
+            
         });
 
         // ******************

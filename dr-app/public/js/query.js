@@ -33,15 +33,12 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
  * Performs a SPARQL query
  * 
  * @param {string} srq_query The query that is being performed
- * @param {boolean} infer Set to true when inference should be enabled
  * @returns 
  */
-async function query(srq_query, infer=true) {
+async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
-    if(!infer) {
-      d_form.append('infer', infer);
-    }
+    d_form.append('infer', true);
     let d_res = await fetch(P_ENDPOINT, {
           method: 'POST',
           mode: 'cors',
@@ -688,7 +685,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -715,7 +712,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["hazardTypes"].length > 0)
     {
         let setHazardTypes = new Set(hazardTypes);
-        shouldUseInference = true;
         typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
 
