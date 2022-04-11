@@ -36,7 +36,7 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
  * @param {boolean} infer Set to true when inference should be enabled
  * @returns 
  */
-async function query(srq_query, infer=false) {
+async function query(srq_query, infer=true) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
     if(!infer) {
@@ -677,7 +677,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         return { 'count': 0, 'record': {} };
     }
 
-    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`, true);
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
 
     let wktResults = {};
     for (let row of wktQuery) {
@@ -688,16 +688,14 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`, true);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
-    // When there are particular classes used in the query, use inference
-    let shouldUseInference = false;
     let formattedResults = [];
-
+    
     let hazardQuery = `select distinct * where {`;
 
     //Keyword search
@@ -920,7 +918,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
-    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     for (let row of queryResults) {
         formattedResults.push({
@@ -938,16 +936,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, shouldUseInference);
-
-    if (formattedResults.length > 0 && countResults[0].count.value == 0)
-    {
-        return { 'count': '20+', 'record': formattedResults };
-    }
-    else
-    {
-        return { 'count': countResults[0].count.value, 'record': formattedResults };
-    }
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
+      return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
@@ -1130,7 +1120,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`, true);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
