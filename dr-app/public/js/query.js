@@ -443,7 +443,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if (parameters["keyword"] != "") {
         placeQuery += `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.`;
     }
@@ -473,7 +473,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     entityAll = await query(`
                     select ?entity
                     {
-                        ?search a elastic-index:kwg_staging_es_index-copy;
+                        ?search a elastic-index:kwg_fs_index;
                         elastic:query "${parameters["placeFacetsRegion"]}";
                         elastic:entities ?entity.
                         
@@ -545,7 +545,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             if (parameters["placeFacetsRegion"] != "") {
                 typeQueries.push(`
                 {
-                    ?search a elastic-index:kwg_staging_es_index-copy;
+                    ?search a elastic-index:kwg_fs_index;
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
@@ -699,7 +699,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
@@ -1068,7 +1068,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         `;
