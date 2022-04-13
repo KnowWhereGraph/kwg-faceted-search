@@ -693,7 +693,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
     
-    let hazardQuery = `select distinct * where {`;
+    let hazardQuery = `select distinct ?entity ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -912,7 +912,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
-    }`;
+    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt`;
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
@@ -920,10 +920,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults.push({
             'hazard': row.entity.value,
             'hazard_name': row.label.value,
-            'hazard_type': row.type.value,
-            'hazard_type_name': row.typeLabel.value,
-            'place':(typeof row.place === 'undefined') ? '' : row.place.value,
-            'place_name':(typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value,
+            'hazard_type': row.type.value.split('||'),
+            'hazard_type_name': row.typeLabel.value.split('||'),
+            'place':(typeof row.place === 'undefined') ? '' : row.place.value.split('||'),
+            'place_name':(typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||'),
             'start_date':row.time.value,
             'start_date_name':row.startTimeLabel.value,
             'end_date':row.time.value,
