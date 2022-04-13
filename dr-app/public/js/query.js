@@ -1278,8 +1278,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
 =======
     
+<<<<<<< HEAD
     let hazardQuery = `select distinct * where {`;
 >>>>>>> 2e81c0a0 (Only count the table length * 10)
+=======
+    let hazardQuery = `select distinct ?entity ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
+>>>>>>> 1f5efe0f (Use group_concat on hazard type (label) and place type (label) in hazard search queries)
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -1642,7 +1646,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
-    }`;
+    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt`;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1701,6 +1705,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults.push({
             'hazard': row.entity.value,
             'hazard_name': row.label.value,
+<<<<<<< HEAD
             'hazard_type': '',
             'hazard_type_name': '',
             'place': '',
@@ -1710,6 +1715,17 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'end_date': '',
             'end_date_name': '',    
             'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+=======
+            'hazard_type': row.type.value.split('||'),
+            'hazard_type_name': row.typeLabel.value.split('||'),
+            'place':(typeof row.place === 'undefined') ? '' : row.place.value.split('||'),
+            'place_name':(typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||'),
+            'start_date':row.time.value,
+            'start_date_name':row.startTimeLabel.value,
+            'end_date':row.time.value,
+            'end_date_name':row.endTimeLabel.value,      
+            'wkt':row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+>>>>>>> 1f5efe0f (Use group_concat on hazard type (label) and place type (label) in hazard search queries)
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
