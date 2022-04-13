@@ -62,6 +62,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <div class="feature-type">Feature Type</div>
                   <ul class="list-group checkbox-list" id="gnis-list">
                     <li>
@@ -80,12 +81,28 @@
 =======
 =======
 >>>>>>> f3e47053 ((1) Reorder the place facets in the front-end (2) Correct GNIS logic in place search)
+=======
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
                             <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+<<<<<<< HEAD
 >>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
+=======
+=======
+                  <div class="feature-type">Feature Type</div>
+                  <ul class="list-group checkbox-list" id="gnis-list">
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="buildupArea" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="buildupAreaSubList" style="display: none">
+                        <li ng-repeat="element in buildupAreaList" >
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+>>>>>>> b186a53c (Unselect and collapse GNIS facets on tab change)
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
                         </li>
                         <ul id="buildupAreaSubList" style="display: none">
                             <li ng-repeat="element in buildupAreaList">
@@ -93,6 +110,7 @@
                             </li>
                         </ul>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <li>
 <<<<<<< HEAD
@@ -110,6 +128,20 @@
                             <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
 >>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
+=======
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+=======
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="surfacewater" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="SurfaceWaterSubList" style="display: none">
+                        <li ng-repeat="element in SurfaceWaterSubList">
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+>>>>>>> b186a53c (Unselect and collapse GNIS facets on tab change)
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
                         </li>
                         <ul id="SurfaceWaterSubList" style="display: none">
                             <li ng-repeat="element in SurfaceWaterSubList">
@@ -117,6 +149,7 @@
                             </li>
                         </ul>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <li>
 <<<<<<< HEAD
@@ -134,6 +167,20 @@
                             <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
 >>>>>>> f156dff2 (1. add hazard subclass facets (hard-coded facets); 2. add dropdown arrow for displaying subclasses)
+=======
+                        <li>
+                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+=======
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="terrian" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="TerrainSubList" style="display: none">
+                        <li ng-repeat="element in TerrainSubList">
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
+>>>>>>> b186a53c (Unselect and collapse GNIS facets on tab change)
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
                         </li>
                         <ul id="TerrainSubList" style="display: none">
                             <li ng-repeat="element in TerrainSubList">
@@ -365,7 +412,7 @@
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="buildupAreaSubList" style="display: none">
@@ -375,7 +422,7 @@
                         </ul>
 
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="SurfaceWaterSubList" style="display: none">
@@ -385,7 +432,7 @@
                         </ul>
 
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+                            <input type="checkbox" class="form-check-input me-1" id="terrian" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="TerrainSubList" style="display: none">

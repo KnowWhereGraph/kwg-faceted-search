@@ -632,6 +632,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.removeValue('region');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (parameters['placeFacetsGNIS'] != '') {
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
         } else {
@@ -641,10 +642,17 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
 =======
         if (parameters['placeFacetsGNIS'] != '')
+=======
+        if (parameters['placeFacetsGNIS'] != '') {
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
-        else
+        } else {
             $scope.removeValue('gnis');
+<<<<<<< HEAD
 >>>>>>> 5a9d4f2e (Enable url parameter update, place/hazard query execution, and link GNIS facets with facet query results when selecting GNIS facets)
+=======
+        }
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
         if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
@@ -1414,9 +1422,13 @@ var getScope = function() {
 // prepare the parameters
 var getParameters = function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
     var parameters = { "keyword": getScope().inputQuery };
     var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
@@ -1504,7 +1516,10 @@ var getParameters = function() {
     //Place sub facets
     let facetGNIS = [];
     angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
-        facetGNIS.push(subFacetGNIS.value);
+        // Filter out the top level GNIS facets
+        if (subFacetGNIS.value != 'on') {
+          facetGNIS.push(subFacetGNIS.value);
+        }
     });
     parameters["facetGNIS"] = facetGNIS;
 <<<<<<< HEAD
@@ -1772,10 +1787,14 @@ var getSelectors = function(activeTabName) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Prepares a new table. This is called before tables are updated. It ensures that
 =======
 // Prepares a new table. This is called before tables are mutated. It ensures that
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+// Prepares a new table. This is called before tables are updated. It ensures that
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
 // 1. The content is cleared
 // 2. The loading icon shows
 // 3. The map is shown or hidden
@@ -2109,10 +2128,13 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         // **********************************************
 
 >>>>>>> 2e81c0a0 (Only count the table length * 10)
+=======
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
         var response = sendQueries(activeTabName, 1, recordsPerPage, parameters);
         response.then(function(result) {
            tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], result['count'], pp, parameters);
@@ -2128,6 +2150,7 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
 >>>>>>> 2e81c0a0 (Only count the table length * 10)
         });
+<<<<<<< HEAD
 =======
     angular.element(selectors["pagination"] + " .per-page select").on("change", function() {
         var recordsPerpage = angular.element(this).val();
@@ -2141,6 +2164,8 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             displayTableByTabName(activeTabName, result, "displayPagination")
         })
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
     });
 }
 
@@ -2810,6 +2835,9 @@ var cleanHazardOC = function(hazard, $scope) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
 // clean up all the facets when changing the tab
 var cleanupFacets = function($scope) {
     // clean up all place facets
@@ -2834,9 +2862,14 @@ var cleanupFacets = function($scope) {
         }
     });
 
+    // Uncheck all of the GNIS facets
     angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
-        gnis.value = "";
         gnis.checked = false;
+        // Check to see if it has a carrot dropdown that needs to be closed
+        if (gnis.nextElementSibling) {
+          gnis.nextElementSibling.style["transform"] = "";
+          gnis.parentNode.nextElementSibling.style["display"] = "none";
+        }
     });
 
     $scope.removeValue("region");
@@ -2915,6 +2948,7 @@ var cleanupFacets = function($scope) {
     $scope.removeValue('page');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     // dropdownImg.style["transform"] = "";
     // subListDiv.style["display"] = "none";
@@ -2922,6 +2956,8 @@ var cleanupFacets = function($scope) {
     // angular.element("#expert-list section li img")[0].style["transform"] = "";
     // angular.element("#expert-list section ul")[0].style["display"] = "none";
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 559e7534 (Unselect and collapse GNIS facets on tab change)
     angular.element("#expert-list section li img").each((index, dropdownImg) => {
         dropdownImg.style["transform"] = "";
     });
