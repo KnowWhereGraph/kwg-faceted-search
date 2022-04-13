@@ -674,7 +674,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
+=======
+    let placeQuery = `select distinct ?entity ?score ?label ?type ?typeLabel where {`;
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -979,12 +983,17 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         ?search a elastic-index:kwg_staging_es_index-copy;
                         elastic:query "${parameters["placeFacetsRegion"]}";
                         elastic:entities ?entity.
+                        ?entity elastic:score ?score.
                         
                         ?entity a ?type; rdfs:label ?label.
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
+<<<<<<< HEAD
                     } ORDER BY desc(?score)`);
                     console.log(entityAll)
+=======
+                    } order by desc(?score)`);
+>>>>>>> 52eb999f (Add the usage of elasticsearch scores in all related queries)
                     entityArray = entityAll[0].entity.value.split("/");
                     entity = entityArray[entityArray.length - 1];
                     placesConnectedToS2.push(`kwgr:` + entity);
@@ -1163,8 +1172,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 18576c62 (Sort the keyword search results)
+=======
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
 
     // Close the main query
     placeQuery += `}`;
@@ -1173,6 +1185,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
       placeQuery += ` order by desc(?score)`;
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -1189,6 +1202,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     console.log(placeQuery);
 
 =======
+=======
+=======
+    placeQuery += `} order by desc(?score)`;
+>>>>>>> 52eb999f (Add the usage of elasticsearch scores in all related queries)
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
     
 >>>>>>> 18576c62 (Sort the keyword search results)
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -1264,6 +1282,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
     
+<<<<<<< HEAD
     let hazardQuery = `select distinct ?entity ?label ?wkt {`;
 
     //Keyword search
@@ -1284,6 +1303,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     let hazardQuery = `select distinct ?entity ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
 >>>>>>> 1f5efe0f (Use group_concat on hazard type (label) and place type (label) in hazard search queries)
+=======
+    let hazardQuery = `select distinct ?entity ?score ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -1646,7 +1668,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
-    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt`;
+    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt order by desc(?score)`;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2106,6 +2128,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
 =======
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
@@ -2113,6 +2136,9 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 =======
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
+=======
+    let expertQuery = `select distinct ?label ?score ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -2174,7 +2200,11 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
       OPTIONAL { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
         filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
+<<<<<<< HEAD
     } GROUP BY ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
+=======
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt order by desc(?score)`;
+>>>>>>> de706bd7 (Add the usage of elasticsearch scores in all related queries)
 
     // If the user searched for an expert by name, give the most relevant first
     if (parameters["keyword"] != "") {
