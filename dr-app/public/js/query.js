@@ -439,7 +439,7 @@ async function getGNISFeature() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select distinct ?entity ?score ?label ?type ?typeLabel where {`;
+    let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -655,7 +655,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
-    placeQuery += `} order by desc(?score)`;
+    placeQuery += `}`;
+
+    if (parameters["keyword"] != "") {
+        placeQuery += ` order by desc(?score)`;
+    }
     
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
@@ -696,7 +700,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
     
-    let hazardQuery = `select distinct ?entity ?score ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
+    let hazardQuery = `select distinct ?entity ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -916,7 +920,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
-    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt order by desc(?score)`;
+    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt`;
+
+    if (parameters["keyword"] != "") {
+        hazardQuery += ` order by desc(?score)`;
+    }
 
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
@@ -1064,7 +1072,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         topicQuery = `values ?expert {kwgr:` + parameters["expertTopics"].join(' kwgr:') + `}`;
     }
 
-    let expertQuery = `select distinct ?label ?score ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -1103,8 +1111,11 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
         filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt order by desc(?score)`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
+    if (parameters["keyword"] != "") {
+        expertQuery += ` ?score order by desc(?score)`;
+    }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
