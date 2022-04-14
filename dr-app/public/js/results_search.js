@@ -379,10 +379,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
         else
             $scope.removeValue('region');
-        if (parameters['placeFacetsGNIS'] != '')
+        if (parameters['placeFacetsGNIS'] != '') {
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
-        else
+        } else {
             $scope.removeValue('gnis');
+        }
         if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
@@ -823,6 +824,7 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
+
     var parameters = { "keyword": getScope().inputQuery };
     var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
@@ -884,7 +886,10 @@ var getParameters = function() {
     //Place sub facets
     let facetGNIS = [];
     angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
-        facetGNIS.push(subFacetGNIS.value);
+        // Filter out the top level GNIS facets
+        if (subFacetGNIS.value != 'on') {
+          facetGNIS.push(subFacetGNIS.value);
+        }
     });
     parameters["facetGNIS"] = facetGNIS;
     return parameters;
@@ -1090,7 +1095,7 @@ var getSelectors = function(activeTabName) {
     return selectors;
 }
 
-// Prepares a new table. This is called before tables are mutated. It ensures that
+// Prepares a new table. This is called before tables are updated. It ensures that
 // 1. The content is cleared
 // 2. The loading icon shows
 // 3. The map is shown or hidden
@@ -1258,8 +1263,6 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             delete urlVariables['page'];
         }
 
-        // **********************************************
-
         var response = sendQueries(activeTabName, 1, recordsPerPage, parameters);
         response.then(function(result) {
            tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], result['count'], pp, parameters);
@@ -1271,9 +1274,6 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             }
             
         });
-
-        // ******************
-
     });
 }
 
@@ -1702,7 +1702,7 @@ var cleanHazardOC = function(hazard, $scope) {
 
 }
 
-// clean up all the facetes when changing the tab
+// clean up all the facets when changing the tab
 var cleanupFacets = function($scope) {
     // clean up all place facets
     angular.element("#placeFacetsRegion")[0].value = "";
@@ -1715,9 +1715,14 @@ var cleanupFacets = function($scope) {
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
 
+    // Uncheck all of the GNIS facets
     angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
-        gnis.value = "";
         gnis.checked = false;
+        // Check to see if it has a carrot dropdown that needs to be closed
+        if (gnis.nextElementSibling) {
+          gnis.nextElementSibling.style["transform"] = "";
+          gnis.parentNode.nextElementSibling.style["display"] = "none";
+        }
     });
 
     $scope.removeValue("region");
@@ -1771,11 +1776,6 @@ var cleanupFacets = function($scope) {
     $scope.removeValue('expert');
     $scope.removeValue('page');
 
-    // dropdownImg.style["transform"] = "";
-    // subListDiv.style["display"] = "none";
-    // collapse sublist
-    // angular.element("#expert-list section li img")[0].style["transform"] = "";
-    // angular.element("#expert-list section ul")[0].style["display"] = "none";
     angular.element("#expert-list section li img").each((index, dropdownImg) => {
         dropdownImg.style["transform"] = "";
     });

@@ -688,7 +688,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -1121,7 +1121,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
