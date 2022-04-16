@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Knowledge Explorer
 
 The Knowledge Explorer is an AngularJS webapp designed to give an overview of the information stored in the backing graph database.
@@ -24,6 +25,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 =======
 =======
 >>>>>>> 230b87cf (update my repo)
+=======
+>>>>>>> 92c43531 (Add Apache 2 license)
 # Faceted Search
 
 The search interface for KnowWhereGraph.
@@ -210,8 +213,11 @@ Before creating pull requests, lint the project with
 =======
 =======
 # KWG-Faceted-Search
+=======
+# Knowledge Explorer
+>>>>>>> 310a3110 (Add Apache 2 license)
 
-The web application dr-app is an ongoing faceted search project of KnowWhereGraph.
+The Knowledge Explorer is an AngularJS webapp designed to give an overview of the information stored in the backing graph database.
 
 ## Deploying
 
@@ -220,6 +226,17 @@ To deploy dr-app run the following from `dr-app/`,
 ```
 npm install
 npm start
+<<<<<<< HEAD
 ```
 >>>>>>> 0bf31404 (update my repo)
+<<<<<<< HEAD
 >>>>>>> 230b87cf (update my repo)
+=======
+=======
+```
+
+## Contributing
+
+The Knowledge Explorer is licensed under Apache 2. Code contributions are welcome; contributors should create branches under `stko-kwg` and create pull requests to merge into it.
+>>>>>>> 310a3110 (Add Apache 2 license)
+>>>>>>> 92c43531 (Add Apache 2 license)
