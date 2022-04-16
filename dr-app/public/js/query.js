@@ -445,7 +445,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         placeQuery += `
         ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
-        elastic:entities ?entity.`;
+        elastic:entities ?entity.
+        ?entity elastic:score ?score.
+        `;
     }
 
     if (parameters["facetGNIS"].length > 0)
@@ -470,8 +472,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
+                  console.log(placeFacetsRegion)
                     entityAll = await query(`
-                    select ?entity
+                    select ?entity ?score
                     {
                         ?search a elastic-index:kwg_fs_index;
                         elastic:query "${parameters["placeFacetsRegion"]}";
@@ -480,7 +483,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         ?entity a ?type; rdfs:label ?label.
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
-                    }`);
+                    } ORDER BY desc(?score)`);
+                    console.log(entityAll)
                     entityArray = entityAll[0].entity.value.split("/");
                     entity = entityArray[entityArray.length - 1];
                     placesConnectedToS2.push(`kwgr:` + entity);
@@ -652,7 +656,14 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
+
+    // Close the main query
     placeQuery += `}`;
+
+    // If the user included a keyword search, sort them by the most relevant string results from ES
+    if (parameters["keyword"] != "") {
+      placeQuery += ` order by desc(?score)`;
+    }
     
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
@@ -702,6 +713,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
@@ -914,6 +926,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
+    // If the user is searching for a hazard by keyword, sort them by the most relevant first
+    if (parameters["keyword"] != "") {
+      hazardQuery += ` ORDER BY desc(?score)`;
+  }
+
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     for (let row of queryResults) {
@@ -1071,6 +1088,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
@@ -1100,6 +1118,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
+    // If the user searched for an expert by name, give the most relevant first
+    if (parameters["keyword"] != "") {
+      expertQuery += ` ?score ORDER BY desc(?score)`;
+    }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
