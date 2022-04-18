@@ -1005,8 +1005,11 @@ var displayBreadCrumbs = function() {
             if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
                 var hazards = urlVariables['hazard'].split(',');
                 for (var j = 0; j < hazards.length; j++) {
-                    hazardUrl = bcURL + '&hazard=' + hazards[j];
-                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    // hazardUrl = bcURL + '&hazard=' + hazards[j];
+                    // bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    // hazardUrl += "," + hazards[j];
+
+                    (j == 0) ? (hazardUrl += hazards[j]) : (hazardUrl += "," + hazards[j]);
                 }
             }
             if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
@@ -1068,8 +1071,10 @@ var displayBreadCrumbs = function() {
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
                 var experts = urlVariables['expert'].split(',');
                 for (var j = 0; j < experts.length; j++) {
-                    expertUrl = bcURL + '&expert=' + experts[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    // expertUrl = bcURL + '&expert=' + experts[j];
+                    // bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    (j == 0) ? (expertUrl += experts[j]) : (expertUrl += "," + experts[j]);
+
                 }
             }
             if (urlVariables['region'] != null && urlVariables['region'] != '') {
