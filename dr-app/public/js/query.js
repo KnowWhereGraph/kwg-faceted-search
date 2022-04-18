@@ -472,6 +472,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
+                  console.log(placeFacetsRegion)
                     entityAll = await query(`
                     select ?entity ?score
                     {
@@ -655,10 +656,13 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
+
+    // Close the main query
     placeQuery += `}`;
 
+    // If the user included a keyword search, sort them by the most relevant string results from ES
     if (parameters["keyword"] != "") {
-        placeQuery += ` order by desc(?score)`;
+      placeQuery += ` order by desc(?score)`;
     }
     
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -926,6 +930,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` order by desc(?score)`;
     }
 
+    // If the user is searching for a hazard by keyword, sort them by the most relevant first
+    if (parameters["keyword"] != "") {
+      hazardQuery += ` ORDER BY desc(?score)`;
+  }
+
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     for (let row of queryResults) {
@@ -1113,8 +1122,9 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
+    // If the user searched for an expert by name, give the most relevant first
     if (parameters["keyword"] != "") {
-        expertQuery += ` ?score order by desc(?score)`;
+      expertQuery += ` ?score ORDER BY desc(?score)`;
     }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);

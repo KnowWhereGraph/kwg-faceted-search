@@ -67,37 +67,6 @@ header .container.home {
     max-width: 500px;
 }
 
-.search-bar-home {
-    position: relative;
-    z-index: 2;
-    max-width: 800px;
-    margin: auto;
-    margin-bottom: -30px;
-}
-
-.search-bar-home input {
-    height: 60px;
-    box-shadow: 0 15px 25px 0 rgba(0, 0, 0, 0.10);
-    padding-left: 25px;
-    transition: all .2s ease;
-}
-
-.search-bar-home input:hover {
-    transform: scale(1.005);
-}
-
-.search-bar-home button {
-    background-color: #2BA9BD !important;
-    margin: 3px;
-    transition: all .2s ease;
-}
-
-.search-bar-home button:hover {
-    transform: scale(1.05);
-    color: #fff;
-}
-
-
 /* nav */
 
 nav {
@@ -406,7 +375,7 @@ section.alt {
 }
 
 section.about {
-    padding-top: 90px;
+    padding-top: 5rem;
     padding-bottom: 70px;
 }
 
