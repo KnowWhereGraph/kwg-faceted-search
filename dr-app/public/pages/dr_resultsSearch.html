@@ -9,6 +9,21 @@
     </div>
 </header>
 
+<div class="modal fade" id="timeoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Query Timeout</h5>
+      </div>
+      <div class="modal-body">
+        Your query timed out. Selecting more specific facets to narrow the results can provide more timely results.
+      </div>
+      <div class="modal-footer">
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main class="spatial-search" ng-controller="spatialSearchController">
     <div class="left-filters" ng-controller="filters-controller">
@@ -39,37 +54,36 @@
             <li id="place" ng-show="showPlaceList">
                 <p class="filter-title">PLACE</p>
                 <div class="filter">
-                    <div class="feature-type">Feature Type</div>
-                    <ul class="list-group checkbox-list" id="gnis-list">
-                        <li>
-                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
-                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                  <div class="feature-type">Feature Type</div>
+                  <ul class="list-group checkbox-list" id="gnis-list">
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="buildupArea" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="buildupAreaSubList" style="display: none">
+                        <li ng-repeat="element in buildupAreaList" >
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                         </li>
-                        <ul id="buildupAreaSubList" style="display: none">
-                            <li ng-repeat="element in buildupAreaList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
-                            </li>
-                        </ul>
+                    </ul>
 
-                        <li>
-                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
-                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="surfacewater" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="SurfaceWaterSubList" style="display: none">
+                        <li ng-repeat="element in SurfaceWaterSubList">
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                         </li>
-                        <ul id="SurfaceWaterSubList" style="display: none">
-                            <li ng-repeat="element in SurfaceWaterSubList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
-                            </li>
-                        </ul>
+                    </ul>
 
-                        <li>
-                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
-                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    <li>
+                        <input type="checkbox" class="form-check-input me-1" id="terrian" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+                        <img src="images/dropdown.svg" ng-click="showSubList($event)" />
+                    </li>
+                    <ul id="TerrainSubList" style="display: none">
+                        <li ng-repeat="element in TerrainSubList">
+                            <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                         </li>
-                        <ul id="TerrainSubList" style="display: none">
-                            <li ng-repeat="element in TerrainSubList">
-                                <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
-                            </li>
-                        </ul>
                     </ul>
                     <div>Administrative Region</div>
                     <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
@@ -91,7 +105,7 @@
                     <div class="feature-type">Feature Type</div>
                     <ul class="list-group checkbox-list" id="gnis-list">
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
+                            <input type="checkbox" class="form-check-input me-1" id="buildupArea" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Built Up Area
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="buildupAreaSubList" style="display: none">
@@ -101,7 +115,7 @@
                         </ul>
 
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
+                            <input type="checkbox" class="form-check-input me-1" id="surfacewater" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Surface Water
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="SurfaceWaterSubList" style="display: none">
@@ -111,7 +125,7 @@
                         </ul>
 
                         <li>
-                            <input type="checkbox" class="form-check-input me-1" id="terrian" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
+                            <input type="checkbox" class="form-check-input me-1" id="terrian" name="gnis" ng-click="selectSubList($event, 'selectGNISType')"> Terrain
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
                         <ul id="TerrainSubList" style="display: none">
@@ -167,53 +181,26 @@
                     lowerLevel: The most deep subclass
                     -->
                     <ul class="list-group checkbox-list" id="hazard-list">
-<<<<<<< HEAD
-                        <li ng-repeat="hazardUrl in hazardUrls['hazards']">
-                            <!-- <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}} -->
-                            <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazardSubList($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
-                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                            <ul style="display: none">
-                                <li ng-repeat="hazardSubType in hazardSubTypes">
-                                    <input type="checkbox"> {{hazardSubType}}
-                                </li>
-                            </ul>
-                        </li>
-                        <!--                         <li class="ng-binding ng-scope">
-                            <input id="Fire" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" value="FireEvent"> Fire
-                            <img src="images/dropdown.svg" ng-click="showSubList($event)" />
-                        </li> -->
-                        <!--                         <ul class="list-group list-group-indented" style="display: none">
-                            <li ng-repeat="hazardUrlFire in hazardUrls['fires']">
-                                <input id="{{hazardUrlFire['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrlFire['hazard_type_name']}}" name="hazard"> {{hazardUrlFire['hazard_type_name']}}
-                            </li>
-                        </ul>
-                        <li ng-repeat="hazardUrl in hazardUrls['hurricanes']">
-                            <input id="{{hazardUrl['hazard_type_name']}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" value="{{hazardUrl['hazard_type_name']}}" name="hazard"> {{hazardUrl['hazard_type_name']}}
-                        </li> -->
-                    </ul>
-=======
                       <section ng-repeat="topLevel in hazards">
                           <li class="ng-binding ng-scope">
-                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard" value={{topLevel.official}}>{{topLevel.name}}
+                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard_toplevel" value={{topLevel.official}}>{{topLevel.name}}
                               <img ng-if="topLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                           </li>
                           <ul class="list-group list-group-indented" style="display: none">
                               <section ng-repeat="midLevel in topLevel.sub">
-                                <li>
-                                  <input id="{{midLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midLevel.official}}> {{midLevel.name}}
-                                  <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
-                                </li>
-                                <ul class="list-group list-group-indented" style="display: none">
-                                  <li ng-repeat="lowerLevel in midLevel.sub" >
-                                    <input id="{{lowerLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" name="hazard" value={{lowerLevel.official}}> {{lowerLevel.name}}
+                                  <li>
+                                      <input id="{{midLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midLevel.official}}> {{midLevel.name}}
+                                      <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                                   </li>
-                              </ul>
+                                  <ul class="list-group list-group-indented" style="display: none">
+                                      <li ng-repeat="lowerLevel in midLevel.sub">
+                                          <input id="{{lowerLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" name="hazard" value={{lowerLevel.official}}> {{lowerLevel.name}}
+                                      </li>
+                                  </ul>
                               </section>
                           </ul>
                       </section>
-                      </ul>
-
->>>>>>> origin/stko-kwg
+                  </ul>
                     <section class="conditional-facets" ng-show="earthquakeFacets">
                         <div>Earthquake: Magnitude (min)</div>
                         <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
@@ -300,7 +287,6 @@
                 </ul>
             </div>
             <div class="results-table">
-
                 <div class="tab-content table-container table-responsive" id="pills-tabContent">
                     <!-- People table -->
                     <div class="tab-pane fade" id="pills-people" role="tabpanel" aria-labelledby="pills-people-tab">

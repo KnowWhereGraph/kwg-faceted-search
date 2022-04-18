@@ -33,30 +33,31 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
  * Performs a SPARQL query
  * 
  * @param {string} srq_query The query that is being performed
- * @param {boolean} infer Set to true when inference should be enabled
  * @returns 
  */
-async function query(srq_query, infer=false) {
+async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
-    if(!infer) {
-      d_form.append('infer', infer);
-    }
+    d_form.append('infer', true);
     let d_res = await fetch(P_ENDPOINT, {
-        method: 'POST',
-        mode: 'cors',
-        //credentials: 'include',
-        headers: {
-            Accept: 'application/sparql-results+json',
-            //'Content-Type': 'application/x-www-form-urlencoded',
-            //'Authorization': 'Basic ' + btoa(username + ":" + password),
-        },
-        body: new URLSearchParams([
-            ...(d_form),
-        ]),
-    });
-
-
+          method: 'POST',
+          mode: 'cors',
+          //credentials: 'include',
+          headers: {
+              Accept: 'application/sparql-results+json',
+              //'Content-Type': 'application/x-www-form-urlencoded',
+              //'Authorization': 'Basic ' + btoa(username + ":" + password),
+          },
+          body: new URLSearchParams([
+              ...(d_form),
+          ]),
+      }).catch((error) => {
+        console.log("There was an error while running a query: ", error);
+        $('#timeoutModal').modal('show');
+        angular.element("#hazardTable-body #loading").remove();
+        angular.element("#expertTable-body #loading").remove();
+        angular.element("#placeTable-body #loading").remove();
+      });
     return (await d_res.json()).results.bindings;
 }
 
@@ -442,9 +443,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     if (parameters["keyword"] != "") {
         placeQuery += `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
-        elastic:entities ?entity.`;
+        elastic:entities ?entity.
+        ?entity elastic:score ?score.
+        `;
     }
 
     if (parameters["facetGNIS"].length > 0)
@@ -469,17 +472,19 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
+                  console.log(placeFacetsRegion)
                     entityAll = await query(`
-                    select ?entity
+                    select ?entity ?score
                     {
-                        ?search a elastic-index:kwg_staging_es_index-copy;
+                        ?search a elastic-index:kwg_fs_index;
                         elastic:query "${parameters["placeFacetsRegion"]}";
                         elastic:entities ?entity.
                         
                         ?entity a ?type; rdfs:label ?label.
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
-                    }`);
+                    } ORDER BY desc(?score)`);
+                    console.log(entityAll)
                     entityArray = entityAll[0].entity.value.split("/");
                     entity = entityArray[entityArray.length - 1];
                     placesConnectedToS2.push(`kwgr:` + entity);
@@ -544,7 +549,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             if (parameters["placeFacetsRegion"] != "") {
                 typeQueries.push(`
                 {
-                    ?search a elastic-index:kwg_staging_es_index-copy;
+                    ?search a elastic-index:kwg_fs_index;
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
@@ -651,7 +656,14 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
+
+    // Close the main query
     placeQuery += `}`;
+
+    // If the user included a keyword search, sort them by the most relevant string results from ES
+    if (parameters["keyword"] != "") {
+      placeQuery += ` order by desc(?score)`;
+    }
     
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
@@ -673,7 +685,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         return { 'count': 0, 'record': {} };
     }
 
-    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`, true);
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
 
     let wktResults = {};
     for (let row of wktQuery) {
@@ -684,25 +696,24 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`, true);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
-    // When there are particular classes used in the query, use inference
-    let shouldUseInference = false;
     let formattedResults = [];
-
+    
     let hazardQuery = `select distinct * where {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
         hazardQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
@@ -713,7 +724,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["hazardTypes"].length > 0)
     {
         let setHazardTypes = new Set(hazardTypes);
-        shouldUseInference = true;
         typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
 
@@ -916,7 +926,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
-    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
+    // If the user is searching for a hazard by keyword, sort them by the most relevant first
+    if (parameters["keyword"] != "") {
+      hazardQuery += ` ORDER BY desc(?score)`;
+  }
+
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     for (let row of queryResults) {
         formattedResults.push({
@@ -934,16 +949,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`, shouldUseInference);
-
-    if (formattedResults.length > 0 && countResults[0].count.value == 0)
-    {
-        return { 'count': '20+', 'record': formattedResults };
-    }
-    else
-    {
-        return { 'count': countResults[0].count.value, 'record': formattedResults };
-    }
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
+      return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
@@ -1078,9 +1085,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_staging_es_index-copy;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
@@ -1110,6 +1118,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
+    // If the user searched for an expert by name, give the most relevant first
+    if (parameters["keyword"] != "") {
+      expertQuery += ` ?score ORDER BY desc(?score)`;
+    }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
@@ -1126,7 +1138,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`, true);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
