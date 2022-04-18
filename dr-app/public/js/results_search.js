@@ -1032,7 +1032,9 @@ var displayBreadCrumbs = function() {
                 for (var j = 0; j < hazards.length; j++) {
                     // hazardUrl = bcURL + '&hazard=' + hazards[j];
                     // bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
-                    hazardUrl += "," + hazards[j];
+                    // hazardUrl += "," + hazards[j];
+
+                    (j == 0) ? (hazardUrl += hazards[j]) : (hazardUrl += "," + hazards[j]);
                 }
                 let checkedHazardTypes = angular.element("#hazard-list li input[name='hazard_toplevel']:checked");
 
@@ -1126,7 +1128,8 @@ var displayBreadCrumbs = function() {
                 for (var j = 0; j < experts.length; j++) {
                     // expertUrl = bcURL + '&expert=' + experts[j];
                     // bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
-                    expertUrl += "," + experts[j];
+                    (j == 0) ? (expertUrl += experts[j]) : (expertUrl += "," + experts[j]);
+
                 }
                 let checkedExpertTopics = angular.element("#expert-list li input[name='expert-topic']:checked");
 
