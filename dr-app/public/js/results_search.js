@@ -361,38 +361,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         }
     };
 
-    // select hazard sublist 
-    $scope.selectHazardSubList = function($event, functionName) {
-        console.log("hey u selected one hazard type: ", $event.target.value, "; checked: ", $event.target.checked);
-        var hazardType = $event.target.value;
-
-        let dropdownImg = $event.target.nextElementSibling;
-        let subListUl = $event.target.nextElementSibling.nextElementSibling;
-        let childListItems = subListUl.children;
-
-        if ($event.target.checked) {
-            console.log("checked");
-            // get subclasses based on the selected hazard type  ---- replace!!
-            $scope.hazardSubTypes = ['Subclass1', 'Subclass2', 'Subclass3', 'Subclass4', 'Subclass5', 'Subclass6'];
-            $scope.$apply();
-
-            for (let i = 0; i < childListItems.length; i++) {
-                childListItems[i].children[0].checked = true;
-                console.log("children: ", childListItems[i].children[0]);
-            }
-            dropdownImg.style["transform"] = "scaleY(-1)";
-            subListUl.style["display"] = "";
-        } else {
-            console.log("canceled checkd");
-            for (let i = 0; i < childListItems.length; i++) {
-                childListItems[i].children[0].checked = false;
-            }
-            dropdownImg.style["transform"] = "";
-            subListUl.style["display"] = "none";
-        }
-        $scope.selectHazard($event);
-    }
-
     //Select tab based on url value
     var activeTab = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
     $timeout(function() {
