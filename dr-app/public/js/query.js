@@ -716,6 +716,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     ?s2cell rdf:type kwg-ont:KWGCellLevel13;
                             kwg-ont:spatialRelation ?placesConnectedToS2.
                     ?placesConnectedToS2 kwg-ont:sfWithin ?superPlacesConnectedToS2.
+<<<<<<< HEAD
                 `;
                 let placesConnectedToS2 = [];
         
@@ -976,6 +977,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     ?entity kwg-ont:sfWithin ?s2cell.
                     ?s2cell rdf:type kwg-ont:KWGCellLevel13;
                             kwg-ont:sfWithin ?placesConnectedToS2.
+=======
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
                 `;
                 let placesConnectedToS2 = [];
         
@@ -1050,7 +1053,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
                     }
                 }
-                placeQuery += `values ?placesConnectedToS2 {${placesConnectedToS2.join(' ')}}`;
+                placeQuery += `filter (?placesConnectedToS2 in (${placesConnectedToS2.join(', ')}) || ?superPlacesConnectedToS2 in (${placesConnectedToS2.join(', ')}))`;
             }
 >>>>>>> f3e47053 ((1) Reorder the place facets in the front-end (2) Correct GNIS logic in place search)
     }
@@ -1230,8 +1233,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     let entityRawValues = [];
     for (let row of queryResults) {
-        //let entityArray = row.entity.value.split("/");
-        //entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
         entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
@@ -1301,6 +1302,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let hazardQuery = `select distinct ?entity ?label ?wkt {`;
 
     //Keyword search
@@ -1327,6 +1329,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     let hazardQuery = `select distinct ?entity ?label (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) ?time ?startTimeLabel ?endTimeLabel ?wkt where {`;
 >>>>>>> 18c1d9dd (Correct the usage of elasticsearch scores)
+=======
+    let hazardQuery = `select distinct ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt {`;
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -1490,11 +1495,42 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         `;
         if (placeEntities.length > 0)
         {
+<<<<<<< HEAD
             placeSearchQuery += `
                 ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
                 values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
                 ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
             `;  
+=======
+            let placesConnectedToS2 = [];
+            let placesLocatedIn = [];
+            for (let i = 0 ; i < placeEntities.length; i++)
+            {
+                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+                {
+                    placesConnectedToS2.push(placeEntities[i]);
+                }
+                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+                {
+                    placesLocatedIn.push(placeEntities[i]);
+                }
+            }
+            if (placesConnectedToS2.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                    values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                    ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
+                `;  
+            }
+            if (placesLocatedIn.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS kwg-ont:spatialRelation ?placesNonConnectedToS2.
+                    values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+                `;
+            }
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
         }
     }
     else if (placeEntities.length > 0)
@@ -1574,17 +1610,28 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         if (placesConnectedToS2.length > 0)
         {
             placeSearchQuery += `
+<<<<<<< HEAD
             ?entity ?es ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
             values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
             ?s2Cell ?p ?placesConnectedToS2.
+=======
+                ?entity kwg-ont:sfWithin ?s2Cell .
+                ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+                values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
             `;  
         }
         if (placesLocatedIn.length > 0)
         {
             placeSearchQuery += `
+<<<<<<< HEAD
             ?entity kwg-ont:sfWithin ?places.
             values ?places {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+=======
+                values ?place {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
             `;
         }
     }
@@ -1650,6 +1697,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                 rdfs:label ?label;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
 =======
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
@@ -1684,12 +1732,20 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
 >>>>>>> 9e822ac3 ((1) Enable the use of GNIS in hazard search (2) Refactor the hazard-related queries (3) Update predicate usage and filter/values statements in hazard search (4) Fix other minor issues)
+=======
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+                geo:hasGeometry/geo:asWKT ?wkt.
+        ?type rdfs:subClassOf kwg-ont:Hazard.
+        ?entity kwg-ont:sfWithin ?place.
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
         ${hazardTypeFacets(parameters)}
         ${spatialSearchQuery}
-    } GROUP BY ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt`;
+    }`;
 
     if (parameters["keyword"] != "") {
         hazardQuery += ` order by desc(?score)`;
@@ -1738,6 +1794,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 >>>>>>> 4fb6f0fd (Only count the table length * 10)
 >>>>>>> 2e81c0a0 (Only count the table length * 10)
 
+<<<<<<< HEAD
 =======
 >>>>>>> 9a0e1ccd (Fix bug where nested checkboxes weren't closing after being selected again)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, true);
@@ -1747,16 +1804,22 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 <<<<<<< HEAD
 
+=======
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
     let hazardEntites = [];
     for (let row of queryResults) {
         formattedResults.push({
             'hazard': row.entity.value,
             'hazard_name': row.label.value,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
             'hazard_type': '',
             'hazard_type_name': '',
             'place': '',
             'place_name': '',
+<<<<<<< HEAD
             'start_date': '',
             'start_date_name': '',
             'end_date': '',
@@ -1775,6 +1838,41 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 >>>>>>> 1f5efe0f (Use group_concat on hazard type (label) and place type (label) in hazard search queries)
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
+=======
+            'start_date': row.time.value,
+            'start_date_name': row.startTimeLabel.value,
+            'end_date':row.time.value,
+            'end_date_name':row.endTimeLabel.value,    
+            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+        });
+        hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
+    }
+
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel)
+    {
+        ?entity rdf:type ?type.
+                
+        ?type rdfs:label ?typeLabel.
+
+        optional 
+        {
+            ?entity kwg-ont:sfWithin ?place.
+            ?place rdf:type kwg-ont:AdministrativeRegion;
+                   rdfs:label ?placeLabel.
+        }
+        values ?entity {${hazardEntites.join(' ')}}
+    } group by ?entity`;
+
+    queryResults = await query(hazardAttributesQuery);
+
+    let counterRow = -1;
+    for (let row of queryResults) {
+        counterRow += 1;
+        formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
+        formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
+        formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+        formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+>>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
     }
 
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
