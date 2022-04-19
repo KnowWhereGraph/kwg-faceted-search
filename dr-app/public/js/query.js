@@ -1303,6 +1303,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let hazardQuery = `select distinct ?entity ?label ?wkt {`;
 
     //Keyword search
@@ -1332,6 +1333,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     let hazardQuery = `select distinct ?entity ?label ?time ?startTimeLabel ?endTimeLabel ?wkt {`;
 >>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
+=======
+    let hazardQuery = `select distinct ?entity ?label ?time ?wkt {`;
+>>>>>>> 50995392 (Remove duplicated results caused by hazard entities having both date and datetime information)
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -1747,6 +1751,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
+<<<<<<< HEAD
     if (parameters["keyword"] != "") {
         hazardQuery += ` order by desc(?score)`;
     }
@@ -1784,10 +1789,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
 =======
 =======
+=======
+>>>>>>> 63b97770 (Remove duplicated results caused by hazard entities having both date and datetime information)
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
     if (parameters["keyword"] != "") {
-      hazardQuery += ` ORDER BY desc(?score)`;
-  }
+        hazardQuery += ` ORDER BY desc(?score)`;
+    }
 
 >>>>>>> a5604982 (Sort the keyword search results)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -1840,17 +1847,18 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
 =======
             'start_date': row.time.value,
-            'start_date_name': row.startTimeLabel.value,
+            'start_date_name': '',
             'end_date':row.time.value,
-            'end_date_name':row.endTimeLabel.value,    
+            'end_date_name': '',    
             'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel)
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
     {
-        ?entity rdf:type ?type.
+        ?entity rdf:type ?type;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
                 
         ?type rdfs:label ?typeLabel.
 
@@ -1860,6 +1868,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             ?place rdf:type kwg-ont:AdministrativeRegion;
                    rdfs:label ?placeLabel.
         }
+
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+
         values ?entity {${hazardEntites.join(' ')}}
     } group by ?entity`;
 
@@ -1872,7 +1884,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
         formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+<<<<<<< HEAD
 >>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
+=======
+        formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
+        formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
+>>>>>>> 50995392 (Remove duplicated results caused by hazard entities having both date and datetime information)
     }
 
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
