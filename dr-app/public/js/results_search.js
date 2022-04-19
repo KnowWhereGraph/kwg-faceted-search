@@ -635,6 +635,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
         });
     }, debounceTimeout);
 
+
+
+
 }).directive('ngEnter', function() {
     return function(scope, elem, attrs) {
         elem.bind("keydown keypress", function(event) {
@@ -722,11 +725,9 @@ kwgApp.directive('fipsDirective', function() {
             getFIPS().then(function(data) {
                 if (element[0] == angular.element('#placeFacetsFIPS')[0] | element[0] == angular.element('#regionFacetsFIPS')[0]) {
                     element.autocomplete({
-                        source: function(request, response)
-                        {
-                            var matches = $.map(Object.keys(data['fips']), function(item){
-                                if (item.indexOf(request.term) === 0)
-                                {
+                        source: function(request, response) {
+                            var matches = $.map(Object.keys(data['fips']), function(item) {
+                                if (item.indexOf(request.term) === 0) {
                                     return item;
                                 }
                             });
@@ -787,7 +788,7 @@ kwgApp.directive('nwzDirective', function() {
                                 }
                             });
                             response(matches);
-                        },                        
+                        },
                         select: function(event, ui) {
                             ngModelCtrl.$setViewValue(ui.item);
                             scope.$apply();
@@ -977,8 +978,11 @@ var displayBreadCrumbs = function() {
             if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
                 var hazards = urlVariables['hazard'].split(',');
                 for (var j = 0; j < hazards.length; j++) {
-                    hazardUrl = bcURL + '&hazard=' + hazards[j];
-                    bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    // hazardUrl = bcURL + '&hazard=' + hazards[j];
+                    // bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
+                    // hazardUrl += "," + hazards[j];
+
+                    (j == 0) ? (hazardUrl += hazards[j]) : (hazardUrl += "," + hazards[j]);
                 }
             }
             if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
@@ -1040,8 +1044,10 @@ var displayBreadCrumbs = function() {
             if (urlVariables['expert'] != null && urlVariables['expert'] != '') {
                 var experts = urlVariables['expert'].split(',');
                 for (var j = 0; j < experts.length; j++) {
-                    expertUrl = bcURL + '&expert=' + experts[j];
-                    bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    // expertUrl = bcURL + '&expert=' + experts[j];
+                    // bcHTML += '<li><a href="' + expertUrl + '">' + experts[j] + '</a></li>';
+                    (j == 0) ? (expertUrl += experts[j]) : (expertUrl += "," + experts[j]);
+
                 }
             }
             if (urlVariables['region'] != null && urlVariables['region'] != '') {
@@ -1102,7 +1108,6 @@ var getSelectors = function(activeTabName) {
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
     var selectors = getSelectors(activeTabName);
-
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1146,9 +1151,9 @@ var displayTableByTabName = function(activeTabName, result) {
     var attributeLinks = [];
     var tableBodyAttributes = [];
 
-/*     if (activeTabName != "People") {
-        showMap(recordResults);
-    } */
+    /*     if (activeTabName != "People") {
+            showMap(recordResults);
+        } */
 
     showMap(recordResults);
 

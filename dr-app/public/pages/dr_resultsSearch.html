@@ -85,7 +85,6 @@
                             <input id="{{element}}" type="checkbox" class="form-check-input me-1" ng-click="selectGNISType()" value="{{element}}" name="gnis"> {{element}}
                         </li>
                     </ul>
-                </ul>
                     <div>Administrative Region</div>
                     <input autocomplete="true" type="text" class="form-control region-directive" id="placeFacetsRegion" ng-model="placeFacetsRegion" ng-enter="placeFacetChanged()" placeholder="Find an Administrative Region...">
                     <div>Zip Code</div>
@@ -184,25 +183,24 @@
                     <ul class="list-group checkbox-list" id="hazard-list">
                       <section ng-repeat="topLevel in hazards">
                           <li class="ng-binding ng-scope">
-                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard" value={{topLevel.official}}>{{topLevel.name}}
+                              <input id="{{topLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard', 'true')" name="hazard_toplevel" value={{topLevel.official}}>{{topLevel.name}}
                               <img ng-if="topLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                           </li>
                           <ul class="list-group list-group-indented" style="display: none">
                               <section ng-repeat="midLevel in topLevel.sub">
-                                <li>
-                                  <input id="{{midLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midLevel.official}}> {{midLevel.name}}
-                                  <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
-                                </li>
-                                <ul class="list-group list-group-indented" style="display: none">
-                                  <li ng-repeat="lowerLevel in midLevel.sub" >
-                                    <input id="{{lowerLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" name="hazard" value={{lowerLevel.official}}> {{lowerLevel.name}}
+                                  <li>
+                                      <input id="{{midLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectHazard')" name="hazard" value={{midLevel.official}}> {{midLevel.name}}
+                                      <img ng-if="midLevel.sub" src="images/dropdown.svg" ng-click="showSubList($event)" />
                                   </li>
-                              </ul>
+                                  <ul class="list-group list-group-indented" style="display: none">
+                                      <li ng-repeat="lowerLevel in midLevel.sub">
+                                          <input id="{{lowerLevel.name}}" type="checkbox" class="form-check-input me-1" ng-click="selectHazard($event)" name="hazard" value={{lowerLevel.official}}> {{lowerLevel.name}}
+                                      </li>
+                                  </ul>
                               </section>
                           </ul>
                       </section>
-                      </ul>
-
+                  </ul>
                     <section class="conditional-facets" ng-show="earthquakeFacets">
                         <div>Earthquake: Magnitude (min)</div>
                         <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
