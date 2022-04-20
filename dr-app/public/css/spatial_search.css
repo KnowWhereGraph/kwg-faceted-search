@@ -831,3 +831,7 @@ ul#place-hazard-count li:hover .tooltiptext {
 * html .ui-autocomplete {
     height: 100px;
 }
+
+#timeoutModal {
+  top: 25%;
+}

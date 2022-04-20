@@ -237,7 +237,7 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "keywordSubmit");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
             displayPagination(activeTabName, selectors, countResults, parameters);
         });
@@ -288,9 +288,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(newActiveTabName, result, "clickTab");
+            var selectors = displayTableByTabName(newActiveTabName, result);
             var countResults = result["count"];
-            displayPagination(newActiveTabName, selectors, countResults, parameters, "clickTab");
+            displayPagination(newActiveTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -412,10 +412,11 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             $scope.updateURLParameters('region', parameters['placeFacetsRegion']);
         else
             $scope.removeValue('region');
-        if (parameters['placeFacetsGNIS'] != '')
+        if (parameters['placeFacetsGNIS'] != '') {
             $scope.updateURLParameters('gnis', parameters['placeFacetsGNIS']);
-        else
+        } else {
             $scope.removeValue('gnis');
+        }
         if (parameters['placeFacetsZip'] != '')
             $scope.updateURLParameters('zip', parameters['placeFacetsZip']);
         else
@@ -445,9 +446,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "placeFacetChanged");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "placeFacetChanged");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -532,9 +533,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "hazardFacetChanged");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "hazardFacetChanged");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -580,9 +581,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "selectHazard");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, from = "selectHazard");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -607,9 +608,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "selectTopic");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -634,9 +635,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "selectRegion");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "selectRegion");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -661,9 +662,9 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
             if (currentQuery != queryIdentifier) {
                 return;
             }
-            var selectors = displayTableByTabName(activeTabName, result, "selectGNIS");
+            var selectors = displayTableByTabName(activeTabName, result);
             var countResults = result["count"];
-            displayPagination(activeTabName, selectors, countResults, parameters, "selectGNIS");
+            displayPagination(activeTabName, selectors, countResults, parameters);
         });
     }, debounceTimeout);
 
@@ -859,6 +860,7 @@ var getScope = function() {
 
 // prepare the parameters
 var getParameters = function() {
+
     var parameters = { "keyword": getScope().inputQuery };
     var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
 
@@ -920,7 +922,10 @@ var getParameters = function() {
     //Place sub facets
     let facetGNIS = [];
     angular.element("input:checkbox[name='gnis']:checked").each((index, subFacetGNIS) => {
-        facetGNIS.push(subFacetGNIS.value);
+        // Filter out the top level GNIS facets
+        if (subFacetGNIS.value != 'on') {
+            facetGNIS.push(subFacetGNIS.value);
+        }
     });
     parameters["facetGNIS"] = facetGNIS;
     return parameters;
@@ -1193,26 +1198,13 @@ var getSelectors = function(activeTabName) {
     return selectors;
 }
 
-// Prepares a new table. This is called before tables are mutated. It ensures that
+// Prepares a new table. This is called before tables are updated. It ensures that
 // 1. The content is cleared
 // 2. The loading icon shows
 // 3. The map is shown or hidden
 var prepareNewTable = function(activeTabName) {
     var titlesDisplayed = [];
     var selectors = getSelectors(activeTabName);
-    /*     
-        // If we're showing the 'People' tab, adjust the table with to make up for an absent map
-        if (activeTabName == "People") {
-            angular.element(".results").css('width', 'calc(100% - 300px)')
-            angular.element("#results-search-map").width(0);
-        } else {
-            // If we're not showing people, add the map back to the page
-            if (angular.element("#results-search-map").width() == 0) {
-                angular.element(".results").css('width', 'calc(60% - 150px)')
-                angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
-            }
-        }
-     */
     if (angular.element("#results-search-map").width() == 0) {
         angular.element(".results").css('width', 'calc(60% - 150px)')
         angular.element("#results-search-map").css('width', 'calc(40% - 150px)');
@@ -1242,7 +1234,7 @@ var prepareNewTable = function(activeTabName) {
     paginationSection.empty();
 }
 
-var displayTableByTabName = function(activeTabName, result, from = "") {
+var displayTableByTabName = function(activeTabName, result) {
     var selectors = getSelectors(activeTabName);
     var countResults = null;
     var recordResults = null;
@@ -1320,11 +1312,14 @@ var dateFormat = function(dateStr) {
     var m = date.getMinutes(0) + ":";
     var s = date.getSeconds();
     return Y + M + D;
-
 }
 
-var displayPagination = function(activeTabName, selectors, countResults, parameters, from = "") {
-    angular.element("#ttl-results").html(countResults + ' Records');
+var displayPagination = function(activeTabName, selectors, countResults, parameters) {
+    if (countResults == 0) {
+        angular.element("#ttl-results").html(countResults + ' Results');
+    } else {
+        angular.element("#ttl-results").html('At least ' + countResults + ' results');
+    }
 
     angular.element(selectors["pagination"]).empty();
     var pp = (urlVariables['pp'] != null && urlVariables['pp'] != '') ? parseInt(urlVariables['pp']) : 20;
@@ -1348,13 +1343,11 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
         var tabName = (urlVariables['tab'] != null && urlVariables['tab'] != '') ? urlVariables['tab'] : 'place';
         var activeTabName = tabName.charAt(0).toUpperCase() + tab.slice(1);
         var selectors = getSelectors(activeTabName);
-
         prepareNewTable(activeTabName);
-        var recordsPerpage = angular.element(this).val();
-        console.log("here you changed the page to : ", recordsPerpage);
-
+        let recordsPerPage = angular.element(this).val();
         angular.element(selectors["pagination"]).empty();
-        var pp = (urlVariables['pp'] != null && urlVariables['pp'] != recordsPerpage) ? recordsPerpage : parseInt(urlVariables['pp']);
+        let pp = (urlVariables['pp'] != null && urlVariables['pp'] != recordsPerPage) ? recordsPerPage : parseInt(urlVariables['pp']);
+        getScope().updateURLParameters("pp", pp.toString());
 
         perPageHTML = '<div class="dropdown per-page"><select class="dropdown-menu" [ng-model]="perpage" (ngModelChange)="onChange($event)">';
         perPageHTML += (pp == 20) ? '<option value="20" selected="selected">20 Per Page</option>' : '<option value="20">20 Per Page</option>';
@@ -1362,10 +1355,8 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
         perPageHTML += (pp == 100) ? '<option value="100" selected="selected">100 Per Page</option>' : '<option value="100">100 Per Page</option>';
         perPageHTML += '</select></div>';
         var perPage = angular.element(perPageHTML);
-        console.log("per page: ", perPage);
         perPage.appendTo(selectors["pagination"]);
-        getScope().updateURLParameters("pp", pp.toString());
-        tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], countResults, pp, parameters);
+
         // **********************************************
 
         // clear the page of the current perpage, make sure each perpage change starts with the 1st page
@@ -1373,16 +1364,17 @@ var displayPagination = function(activeTabName, selectors, countResults, paramet
             delete urlVariables['page'];
         }
 
-        // **********************************************
-
-        var response = sendQueries(activeTabName, 1, recordsPerpage, parameters);
+        var response = sendQueries(activeTabName, 1, recordsPerPage, parameters);
         response.then(function(result) {
-            displayTableByTabName(activeTabName, result, "displayPagination");
-            angular.element("#ttl-results").html(result['count'] + ' Records');
+            tablePagination(activeTabName, selectors["tbody"], selectors["pagination"], result['count'], pp, parameters);
+            displayTableByTabName(activeTabName, result);
+            if (result['count'] == 0) {
+                angular.element("#ttl-results").html(result['count'] + ' Results');
+            } else {
+                angular.element("#ttl-results").html('At least ' + result['count'] + ' results');
+            }
+
         });
-
-        // ******************
-
     });
 }
 
@@ -1392,7 +1384,6 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
         var currentPage = 0;
         var $table = angular.element(this);
         $table.on('repaginate', function() {});
-
         var numPages = Math.ceil(totalRecords / numPerPage);
 
         if (angular.element(paginationSelector + 　" div.pager")) {
@@ -1418,8 +1409,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                     var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                     prepareNewTable(activeTabName);
                     response.then(function(result) {
-                        var selectors = displayTableByTabName(activeTabName, result, "displayTableByTabName");
-                        displayPagination(activeTabName, selectors, totalRecords, parameters, "displayTableByTabName");
+                        var selectors = displayTableByTabName(activeTabName, result);
+                        displayPagination(activeTabName, selectors, totalRecords, parameters);
                     })
 
                 }).appendTo($pager).addClass("clickable");
@@ -1444,8 +1435,8 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, typedPage, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
-                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
-                            displayPagination(activeTabName, selectors, totalRecords, parameters, "tablePagination");
+                            var selectors = displayTableByTabName(activeTabName, result);
+                            displayPagination(activeTabName, selectors, totalRecords, parameters);
                         })
 
                     }).appendTo($pager).addClass("clickable");
@@ -1463,7 +1454,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                         var response = sendQueries(activeTabName, currentPage + 1, numPerPage, parameters);
                         prepareNewTable(activeTabName);
                         response.then(function(result) {
-                            var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                            var selectors = displayTableByTabName(activeTabName, result);
                             displayPagination(activeTabName, selectors, totalRecords, parameters);
                         })
 
@@ -1491,7 +1482,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                    var selectors = displayTableByTabName(activeTabName, result);
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable next");
@@ -1523,7 +1514,7 @@ var tablePagination = function(activeTabName, selector, paginationSelector, tota
                 var response = sendQueries(activeTabName, currentPage, numPerPage, parameters);
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                    var selectors = displayTableByTabName(activeTabName, result, "tablePagination");
+                    var selectors = displayTableByTabName(activeTabName, result);
                     displayPagination(activeTabName, selectors, totalRecords, parameters);
                 })
             }).appendTo(paginationSelector).addClass("clickable prev");
@@ -1811,7 +1802,7 @@ var cleanHazardOC = function(hazard, $scope) {
 
 }
 
-// clean up all the facetes when changing the tab
+// clean up all the facets when changing the tab
 var cleanupFacets = function($scope) {
     // clean up all place facets
     angular.element("#placeFacetsRegion")[0].value = "";
@@ -1824,9 +1815,14 @@ var cleanupFacets = function($scope) {
     angular.element("#regionFacetsUSCD")[0].value = "";
     angular.element("#regionFacetsNWZ")[0].value = "";
 
+    // Uncheck all of the GNIS facets
     angular.element("input:checkbox[name='gnis']:checked").each((index, gnis) => {
-        gnis.value = "";
         gnis.checked = false;
+        // Check to see if it has a carrot dropdown that needs to be closed
+        if (gnis.nextElementSibling) {
+            gnis.nextElementSibling.style["transform"] = "";
+            gnis.parentNode.nextElementSibling.style["display"] = "none";
+        }
     });
 
     $scope.removeValue("region");
@@ -1880,11 +1876,6 @@ var cleanupFacets = function($scope) {
     $scope.removeValue('expert');
     $scope.removeValue('page');
 
-    // dropdownImg.style["transform"] = "";
-    // subListDiv.style["display"] = "none";
-    // collapse sublist
-    // angular.element("#expert-list section li img")[0].style["transform"] = "";
-    // angular.element("#expert-list section ul")[0].style["display"] = "none";
     angular.element("#expert-list section li img").each((index, dropdownImg) => {
         dropdownImg.style["transform"] = "";
     });
@@ -1961,9 +1952,9 @@ var addDrawCircle = function() {
                 currentQuery = queryIdentifier;
                 prepareNewTable(activeTabName);
                 response.then(function(result) {
-                    var selectors = displayTableByTabName(activeTabName, result, "resultsSearchMap");
+                    var selectors = displayTableByTabName(activeTabName, result);
                     var countResults = result["count"];
-                    displayPagination(activeTabName, selectors, countResults, parameters, "spatialSearchDraw");
+                    displayPagination(activeTabName, selectors, countResults, parameters);
                 });
                 // $scope.updateURLParameters('polygon', 'circle');
                 // $scope.updateURLParameters('lon', coordinates.lng.toString());
