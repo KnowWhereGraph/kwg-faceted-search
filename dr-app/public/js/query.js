@@ -16,6 +16,7 @@ const H_PREFIXES = {
     ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
+    usgs:'http://gnis-ld.org/lod/usgs/ontology/',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
     'iospress': 'http://ld.iospress.nl/rdf/ontology/',
 };
@@ -26,27 +27,37 @@ for (let [si_prefix, p_prefix_iri] of Object.entries(H_PREFIXES)) {
 }
 
 // SPARQL endpoint
-const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/sparql';
+const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
 
-// query
+/**
+ * Performs a SPARQL query
+ * 
+ * @param {string} srq_query The query that is being performed
+ * @returns 
+ */
 async function query(srq_query) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
-
+    d_form.append('infer', true);
     let d_res = await fetch(P_ENDPOINT, {
-        method: 'POST',
-        mode: 'cors',
-        //credentials: 'include',
-        headers: {
-            Accept: 'application/sparql-results+json',
-            //'Content-Type': 'application/x-www-form-urlencoded',
-            //'Authorization': 'Basic ' + btoa(username + ":" + password),
-        },
-        body: new URLSearchParams([
-            ...(d_form),
-        ]),
-    });
-
+          method: 'POST',
+          mode: 'cors',
+          //credentials: 'include',
+          headers: {
+              Accept: 'application/sparql-results+json',
+              //'Content-Type': 'application/x-www-form-urlencoded',
+              //'Authorization': 'Basic ' + btoa(username + ":" + password),
+          },
+          body: new URLSearchParams([
+              ...(d_form),
+          ]),
+      }).catch((error) => {
+        console.log("There was an error while running a query: ", error);
+        $('#timeoutModal').modal('show');
+        angular.element("#hazardTable-body #loading").remove();
+        angular.element("#expertTable-body #loading").remove();
+        angular.element("#placeTable-body #loading").remove();
+      });
     return (await d_res.json()).results.bindings;
 }
 
@@ -69,7 +80,7 @@ async function getRandomPlace() {
             select distinct ?place ?place_label
             {
                 ?place rdf:type kwg-ont:ZipCodeArea;
-                    kwg-ont:hasZipCode ?place_label.
+                    rdfs:label ?place_label.
             } ORDER BY RAND() LIMIT 1
         }
         UNION
@@ -107,7 +118,7 @@ async function getRandomHazard() {
         {
             select distinct ?hazard ?hazard_label
             {
-                ?hazard rdf:type kwg-ont:EarthquakeEvent;
+                ?hazard rdf:type kwg-ont:Earthquake;
                         rdfs:label ?hazard_label.
             } ORDER BY RAND() LIMIT 1
         }
@@ -123,7 +134,7 @@ async function getRandomHazard() {
         {
             select distinct ?hazard ?hazard_label
             {
-                ?hazard rdf:type kwg-ont:Hurricane;
+                ?hazard rdf:type kwg-ont:NOAAHurricane;
                         rdfs:label ?hazard_label.
             } ORDER BY RAND() LIMIT 1
         }
@@ -150,12 +161,6 @@ async function getRandomExpert() {
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.1750909092' },
-            'expert_label': { 'value': 'Chenyang Cao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -168,13 +173,14 @@ async function getRandomWildfire() {
     let randomWildfireQuery = `
     select distinct ?wildfire ?wildfire_label
     {
-        ?wildfire rdf:type kwg-ont:Wildfire;
+        ?wildfire rdf:type kwg-ont:MTBSWildfire;
                 rdfs:label ?wildfire_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomWildfireQuery);
 
     let row = queryResults[0];
+
     formattedResults[row.wildfire_label.value] = row.wildfire.value;
 
     return { 'randomWildfire': formattedResults };
@@ -186,7 +192,7 @@ async function getRandomEarthquake() {
     let randomEarthquakeQuery = `
     select distinct ?earthquake ?earthquake_label
     {
-        ?earthquake rdf:type kwg-ont:EarthquakeEvent;
+        ?earthquake rdf:type kwg-ont:Earthquake;
                     rdfs:label ?earthquake_label.
     } ORDER BY RAND() LIMIT 1`;
 
@@ -205,19 +211,13 @@ async function getRandomExpertInjuryStorm() {
     select distinct ?expert ?expert_label
     {
         ?expert rdf:type iospress:Contributor;
-                kwg-ont:hasExpertise kwgr:hazardtopic.storm.aspecttopic.injury;
+                kwg-ont:hasExpertise kwgr:topic.covid19;
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
     let queryResults = await query(randomExpertQuery);
 
     let row = queryResults[0];
-    if (typeof(row) == "undefined") {
-        row = {
-            'expert': { 'value': 'http://stko-kwg.geog.ucsb.edu/lod/resource/expert.14838165' },
-            'expert_label': { 'value': 'Zhonghua Mao' }
-        };
-    }
 
     formattedResults[row.expert_label.value] = row.expert.value;
 
@@ -230,8 +230,8 @@ async function getAdministrativeRegion() {
     let regionQuery = `
     select ?a3 ?a3Label ?a2 ?a2Label ?a1 ?a1Label where {
         ?a3 rdf:type kwg-ont:AdministrativeRegion_3 .
-        ?a3 kwg-ont:locatedIn ?a2 .
-        ?a2 kwg-ont:locatedIn ?a1.
+        ?a3 kwg-ont:sfWithin ?a2 .
+        ?a2 kwg-ont:sfWithin ?a1.
         values ?a1 {kwgr:Earth.North_America.United_States.USA}
         ?a3 rdfs:label ?a3Label .
         ?a2 rdfs:label ?a2Label .
@@ -269,13 +269,48 @@ async function getAdministrativeRegion() {
     return { 'regions': formattedResults };
 }
 
+async function getNonHierarchicalAdministrativeRegion() {
+    let formattedResults = [];
+
+    let adminQuery = `
+    select distinct ?admin ?admin_label
+    {
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_2;
+                   rdfs:label ?admin_label;
+                   kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA.
+        }
+        UNION
+        {
+            ?admin rdf:type kwg-ont:AdministrativeRegion_3;
+                   rdfs:label ?admin_label;
+                   kwg-ont:sfWithin ?admin_upper_level.
+            ?admin_upper_level kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA.
+        }
+    } ORDER BY ASC(?admin)`;
+
+    // use cached data for now
+    // let queryResults = await query(adminQuery);
+    us_admin_regions_nonhierarchical_json = await fetch("/cache/us_admin_regions_nonhierarchical.json");
+    us_admin_regions_nonhierarchical_cached = await us_admin_regions_nonhierarchical_json.json();
+    let queryResults = us_admin_regions_nonhierarchical_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let admin = row.admin.value;
+        let admin_label = row.admin_label.value;
+        formattedResults[admin_label] = admin;
+    }
+
+    return { 'regions': formattedResults };
+}
+
 async function getZipCodeArea() {
     let formattedResults = [];
 
     let zipcodeQuery = `
     select distinct ?zipcode ?zipcodeArea where {
         ?zipcodeArea rdf:type kwg-ont:ZipCodeArea;
-                     kwg-ont:hasZipCode ?zipcode.
+                     rdfs:label ?zipcode.
     } ORDER BY ASC(?zipcode)`;
 
     // use cached data for now
@@ -286,11 +321,42 @@ async function getZipCodeArea() {
 
     for (let row of queryResults) {
         let zipcode = row.zipcode.value;
+        zipcode = zipcode.substring(9);
         let zipcodeArea = row.zipcodeArea.value;
         formattedResults[zipcode] = zipcodeArea;
     }
 
     return { 'zipcodes': formattedResults };
+}
+
+async function getFIPS(){
+    let formattedResults = [];
+
+    let zipcodeQuery = `
+    select distinct ?fips ?region
+    {
+        {
+            ?region kwg-ont:hasFIPS ?fips.
+        }
+        UNION
+        {
+            ?region kwg-ont:climateDivisionFIPS ?fips.
+        }
+    } ORDER BY ?fips`;
+
+    // use cached data for now
+    // let queryResults = await query(zipcodeQuery);
+    fips_json = await fetch("/cache/fips.json");
+    fips_cached = await fips_json.json();
+    let queryResults = fips_cached.results.bindings;
+
+    for (let row of queryResults) {
+        let fips = row.fips.value;
+        let region = row.region.value;
+        formattedResults[fips] = region;
+    }
+
+    return { 'fips': formattedResults };
 }
 
 async function getUSClimateDivision() {
@@ -341,90 +407,270 @@ async function getNWZone() {
     return { 'nwzones': formattedResults };
 }
 
+async function getGNISFeature() {
+    let formattedResults = [];
+
+    let gnisQuery = `
+    select distinct ?gnisFeatureType ?gnisFeatureType_label ?gnisFeatureSuperType ?gnisFeatureSuperType_label
+    {
+        ?gnisFeatureType rdfs:subClassOf ?gnisFeatureSuperType;
+                         rdfs:label ?gnisFeatureType_label.
+        ?gnisFeatureSuperType rdfs:label ?gnisFeatureSuperType_label.
+        values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
+    } ORDER BY ASC(?gnisFeature)`;
+
+    let queryResults = await query(gnisQuery);
+
+    formattedResults["Built Up Area"] = {};
+    formattedResults["Surface Water"] = {};
+    formattedResults["Terrain"] = {};
+
+    for (let row of queryResults) {
+        let gnisFeatureType = row.gnisFeatureType.value;
+        let gnisFeatureType_label = row.gnisFeatureType_label.value;
+        let gnisFeatureSuperType_label = row.gnisFeatureSuperType_label.value;
+        formattedResults[gnisFeatureSuperType_label][gnisFeatureType_label] = gnisFeatureType;
+    }
+
+    return { 'gnisFeatureTypes': formattedResults };
+}
+
 //New search function for place in stko-kwg
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select ?label ?type ?typeLabel ?entity where {`;
+    let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
 
     if (parameters["keyword"] != "") {
         placeQuery += `
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
-        elastic:entities ?entity.`;
+        elastic:entities ?entity.
+        ?entity elastic:score ?score.
+        `;
     }
 
-    if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "") {
-        let typeQueries = [];
-
-        if (parameters["placeFacetsRegion"] != "") {
-            typeQueries.push(`
+    if (parameters["facetGNIS"].length > 0)
+    {
+            let gnisTypeArray = parameters["facetGNIS"];
+            for (i = 0; i < gnisTypeArray.length; i++)
             {
-                ?search a elastic-index:kwg_es_index;
-                elastic:query "${parameters["placeFacetsRegion"]}";
-                elastic:entities ?entity.
-                
-                ?entity a ?type; rdfs:label ?label; geo:hasGeometry ?geo.
-                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-                ?type rdfs:label ?typeLabel
-            }`);
-        }
-        if (parameters["placeFacetsZip"] != "") {
-            entityAll = await getZipCodeArea();
-            entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-            entity = entityArray[entityArray.length - 1];
-            typeQueries.push(`
+                gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
+            }
+            placeQuery += `             
+                ?entity a ?type; rdfs:label ?label.
+                ?type rdfs:label ?typeLabel.
+                values ?type {usgs:` + gnisTypeArray.join(' usgs:') + `}
+            `;
+            if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
             {
-                ?entity rdf:type ?type; kwg-ont:hasZipCode ?label; geo:hasGeometry ?geo.
-                values ?entity {kwgr:` + entity + `}
-                ?type rdfs:label ?typeLabel
-            }`);
-        }
-        if (parameters["placeFacetsUSCD"] != "") {
-            entityAll = await getUSClimateDivision();
-            entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-            entity = entityArray[entityArray.length - 1];
-            typeQueries.push(`
-            {
-                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry ?geo.
-                values ?entity {kwgr:` + entity + `}
-                values ?type {kwg-ont:USClimateDivision}
-                ?type rdfs:label ?typeLabel
-            }`);
-        }
-        if (parameters["placeFacetsNWZ"] != "") {
-            entityAll = await getNWZone();
-            entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-            entity = entityArray[entityArray.length - 1];
-            typeQueries.push(`
-            {
-                ?entity rdf:type ?type; rdfs:label ?label; geo:hasGeometry ?geo.
-                values ?entity {kwgr:` + entity + `}
-                values ?type {kwg-ont:NWZone}
-            }`);
-        }
-        placeQuery += typeQueries.join(' union ');
-    } else {
-        placeQuery += `
+                placeQuery +=  `
+                    ?entity kwg-ont:sfWithin ?s2cell.
+                    ?s2cell rdf:type kwg-ont:KWGCellLevel13;
+                            kwg-ont:spatialRelation ?placesConnectedToS2.
+                    ?placesConnectedToS2 kwg-ont:sfWithin ?superPlacesConnectedToS2.
+                `;
+                let placesConnectedToS2 = [];
+        
+                if (parameters["placeFacetsRegion"] != "") {
+                  console.log(placeFacetsRegion)
+                    entityAll = await query(`
+                    select ?entity ?score
+                    {
+                        ?search a elastic-index:kwg_fs_index;
+                        elastic:query "${parameters["placeFacetsRegion"]}";
+                        elastic:entities ?entity.
+                        ?entity elastic:score ?score.
+                        
+                        ?entity a ?type; rdfs:label ?label.
+                        values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+                        ?type rdfs:label ?typeLabel
+                    } order by desc(?score)`);
+                    entityArray = entityAll[0].entity.value.split("/");
+                    entity = entityArray[entityArray.length - 1];
+                    placesConnectedToS2.push(`kwgr:` + entity);
+                }
+                if (parameters["placeFacetsZip"] != "") {
+                    entityAll = await getZipCodeArea();
+                    if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
+                }
+                if (parameters["placeFacetsFIPS"] != "") {
+                    entityAll = await getFIPS();
+                    if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
+                }
+                if (parameters["placeFacetsUSCD"] != "") {
+                    entityAll = await getUSClimateDivision();
+                    if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
+                }
+                if (parameters["placeFacetsNWZ"] != "") {
+                    entityAll = await getNWZone();
+                    if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
+                    {
+                        placesConnectedToS2.push(``);
+                    }
+                    else
+                    {
+                        entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                    }
+                }
+                placeQuery += `filter (?placesConnectedToS2 in (${placesConnectedToS2.join(', ')}) || ?superPlacesConnectedToS2 in (${placesConnectedToS2.join(', ')}))`;
+            }
+    }
+    else
+    {
+        if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
         {
-            ?entity a ?type; rdfs:label|kwg-ont:hasZipCode ?label; geo:hasGeometry ?geo.
-            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
-            ?type rdfs:label ?typeLabel
-        }`;
+            let typeQueries = [];
+    
+            if (parameters["placeFacetsRegion"] != "") {
+                typeQueries.push(`
+                {
+                    ?search a elastic-index:kwg_fs_index;
+                    elastic:query "${parameters["placeFacetsRegion"]}";
+                    elastic:entities ?entity.
+                    
+                    ?entity a ?type; rdfs:label ?label.
+                    values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+                    ?type rdfs:label ?typeLabel
+                }`);
+            }
+            if (parameters["placeFacetsZip"] != "") {
+                entityAll = await getZipCodeArea();
+                entity = ``;
+                if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
+                typeQueries.push(`
+                {
+                    ?entity rdf:type ?type; rdfs:label ?label.
+                    values ?entity {kwgr:` + entity + `}
+                    ?type rdfs:label ?typeLabel.
+                    values ?type {kwg-ont:ZipCodeArea}
+                }`);
+            }
+            if (parameters["placeFacetsFIPS"] != "") {
+                entityAll = await getFIPS();
+                entity = ``;
+                if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
+                typeQueries.push(`
+                {
+                    ?entity rdf:type ?type; kwg-ont:hasFIPS|kwg-ont:climateDivisionFIPS ?label.
+                    values ?entity {kwgr:` + entity + `}
+                    ?type rdfs:label ?typeLabel.
+                    values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:USClimateDivision}
+                }`);
+            }
+            if (parameters["placeFacetsUSCD"] != "") {
+                entityAll = await getUSClimateDivision();
+                entity = ``;
+                if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
+                typeQueries.push(`
+                {
+                    ?entity rdf:type ?type; rdfs:label ?label.
+                    values ?entity {kwgr:` + entity + `}
+                    values ?type {kwg-ont:USClimateDivision}
+                    ?type rdfs:label ?typeLabel
+                }`);
+            }
+            if (parameters["placeFacetsNWZ"] != "") {
+                entityAll = await getNWZone();
+                if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
+                {
+                    entity = ``;
+                }
+                else
+                {
+                    entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+                    entity = entityArray[entityArray.length - 1];
+                }
+                typeQueries.push(`
+                {
+                    ?entity rdf:type ?type; rdfs:label ?label.
+                    values ?entity {kwgr:` + entity + `}
+                    ?type rdfs:label ?typeLabel.
+                    values ?type {kwg-ont:NWZone}
+                }`);
+            }
+            placeQuery += typeQueries.join(' union ');
+        }
+        else
+        {
+            placeQuery += `
+            {
+                ?entity rdf:type ?type; rdfs:label ?label.
+                values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
+                ?type rdfs:label ?typeLabel
+            }`;
+        }
     }
+
 
     if (typeof parameters["spatialSearchWkt"] != 'undefined') {
         placeQuery += `
             ?entity geo:sfWithin '${parameters["spatialSearchWkt"]}'^^geo:wktLiteral.
         `;
     }
+
+    // Close the main query
     placeQuery += `}`;
 
+    // If the user included a keyword search, sort them by the most relevant string results from ES
+    if (parameters["keyword"] != "") {
+      placeQuery += ` order by desc(?score)`;
+    }
+    
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+
     let entityRawValues = [];
     for (let row of queryResults) {
-        let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
+        entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
             'place_name': row.label.value,
@@ -433,89 +679,211 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {${entityRawValues.join(' ')}} }`);
+    if (entityRawValues.length == 0)
+    {
+        return { 'count': 0, 'record': {} };
+    }
+
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
+
     let wktResults = {};
     for (let row of wktQuery) {
-        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
+        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','');
     }
 
     for (let i = 0; i < formattedResults.length; i++) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
-
-    let hazardQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+    
+    let hazardQuery = `select distinct ?entity ?label ?time ?wkt {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
         hazardQuery +=
             `
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
     //Filters out the types of hazards
-    let typeQuery = 'values ?type {kwg-ont:EarthquakeEvent kwg-ont:Hurricane kwg-ont:Wildfire kwg-ont:WildlandFireUse kwg-ont:PrescribedFire kwg-ont:UnknownFire} #Temporary limiter';
-    if (parameters["hazardTypes"].length > 0)
-        typeQuery = `values ?type {kwg-ont:` + parameters["hazardTypes"].join(' kwg-ont:') + `}`;
+    let typeQuery = ``;
+    let hazardTypes = parameters["hazardTypes"];
 
-    //These filters handle search by place type (regions, zipcode, nwz, uscd)
+    if (parameters["hazardTypes"].length > 0)
+    {
+        let setHazardTypes = new Set(hazardTypes);
+        typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
+    }
+
+    //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
     let placeEntities = [];
     if (parameters["facetRegions"].length > 0) {
         placeEntities = parameters["facetRegions"];
     }
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
-        entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
+        if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
+    }
+    if (parameters["placeFacetsFIPS"] != "") {
+        entityAll = await getFIPS();
+        if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
     }
     if (parameters["placeFacetsUSCD"] != "") {
         entityAll = await getUSClimateDivision();
-        entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
+        if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
+        {
+            placeEntities.push(``);
+        }
+        else
+        {
+            entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
     }
     if (parameters["placeFacetsNWZ"] != "") {
         entityAll = await getNWZone();
-        entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-        placeEntities.push(entityArray[entityArray.length - 1]);
-    }
-    let placeSearchQuery = (placeEntities.length > 0) ? `
-        optional
+        if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
         {
-            ?entity ?es ?s2Cell .
-            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            placeEntities.push(``);
         }
-        
-        ?entity kwg-ont:locatedIn ?places.
-        values ?places {kwgr:` + placeEntities.join(' kwgr:') + `}
-        ` :
-        '';
+        else
+        {
+            entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+            placeEntities.push(entityArray[entityArray.length - 1]);
+        }
+    }
+
+    // return 0 result if no places satisfy the inputs
+    if (Array.from(new Set(placeEntities))[0] == `` && Array.from(new Set(placeEntities)).length == 1)
+    {
+        return { 'count': 0, 'record': {} };
+    }
+
+    let placeSearchQuery = ``;
+    if (parameters["facetGNIS"].length > 0)
+    {
+        let gnisTypeArray = parameters["facetGNIS"];
+        for (i = 0; i < gnisTypeArray.length; i++)
+        {
+            gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
+        }
+
+        placeSearchQuery += `
+            ?entity kwg-ont:sfWithin ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13;
+                    kwg-ont:spatialRelation ?gnisEntity.
+            ?gnisEntity kwg-ont:sfWithin ?s2cellGNIS;
+                        rdf:type ?gnisPlaceType.
+            values ?gnisPlaceType {usgs:` + gnisTypeArray.join(' usgs:') + `}
+        `;
+        if (placeEntities.length > 0)
+        {
+            let placesConnectedToS2 = [];
+            let placesLocatedIn = [];
+            for (let i = 0 ; i < placeEntities.length; i++)
+            {
+                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+                {
+                    placesConnectedToS2.push(placeEntities[i]);
+                }
+                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+                {
+                    placesLocatedIn.push(placeEntities[i]);
+                }
+            }
+            if (placesConnectedToS2.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                    values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                    ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
+                `;  
+            }
+            if (placesLocatedIn.length > 0)
+            {
+                placeSearchQuery += `
+                    ?s2cellGNIS kwg-ont:spatialRelation ?placesNonConnectedToS2.
+                    values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+                `;
+            }
+        }
+    }
+    else if (placeEntities.length > 0)
+    {
+        let placesConnectedToS2 = [];
+        let placesLocatedIn = [];
+        for (let i = 0 ; i < placeEntities.length; i++)
+        {
+            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+            {
+                placesConnectedToS2.push(placeEntities[i]);
+            }
+            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
+            {
+                placesLocatedIn.push(placeEntities[i]);
+            }
+        }
+        if (placesConnectedToS2.length > 0)
+        {
+            placeSearchQuery += `
+                ?entity kwg-ont:sfWithin ?s2Cell .
+                ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+                values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
+                ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
+            `;  
+        }
+        if (placesLocatedIn.length > 0)
+        {
+            placeSearchQuery += `
+                values ?place {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
+            `;
+        }
+    }
+
 
     //Filter by the date hazard occurred
     let dateQuery = '';
     if (parameters["hazardFacetDateStart"] != "" || parameters["hazardFacetDateEnd"] != "") {
         let dateArr = [];
         if (parameters["hazardFacetDateStart"] != "") {
-            dateArr.push(`?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
-            dateArr.push(`?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime`);
+            dateArr.push(`(?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?startTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
+            dateArr.push(`(?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
         }
         if (parameters["hazardFacetDateEnd"] != "") {
-            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel`);
-            dateArr.push(`"` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?startTimeLabel)`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?endTimeLabel)`);
         }
         dateQuery = `
             ?observationCollection sosa:phenomenonTime ?time.
-            ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-                time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+            ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                  time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
             FILTER (` + dateArr.join(' && ') + `)`;
     }
 
@@ -530,11 +898,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     //Build the full query
     hazardQuery += `
         ?entity rdf:type ?type; 
-            rdfs:label ?label;
-            kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
-        ?type rdfs:subClassOf ?superClass;
-            rdfs:label ?typeLabel.
-        values ?superClass {kwg-ont:Hazard kwg-ont:Fire} #Temporary limiter
+                rdfs:label ?label;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
+                geo:hasGeometry/geo:asWKT ?wkt.
+        ?type rdfs:subClassOf kwg-ont:Hazard.
+        ?entity kwg-ont:sfWithin ?place.
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
@@ -542,79 +912,71 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ${spatialSearchQuery}
     }`;
 
+    // If the user is searching for a hazard by keyword, sort them by the most relevant first
+    if (parameters["keyword"] != "") {
+        hazardQuery += ` ORDER BY desc(?score)`;
+    }
+
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
-    let entityRawValues = [];
+
+    let hazardEntites = [];
     for (let row of queryResults) {
-        let entityArray = row.entity.value.split("/");
-        entityRawValues.push('kwgr:' + entityArray[entityArray.length - 1]);
         formattedResults.push({
             'hazard': row.entity.value,
             'hazard_name': row.label.value,
-            'hazard_type': row.type.value,
-            'hazard_type_name': row.typeLabel.value
+            'hazard_type': '',
+            'hazard_type_name': '',
+            'place': '',
+            'place_name': '',
+            'start_date': row.time.value,
+            'start_date_name': '',
+            'end_date':row.time.value,
+            'end_date_name': '',    
+            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
+        hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let propertyQuery = await query(`
-        select ?entity ?place ?placeLabel ?placeWkt ?time ?startTimeLabel ?endTimeLabel ?wkt where { 
-            values ?entity {${entityRawValues.join(' ')}} 
-            optional
-            {
-                ?entity kwg-ont:locatedIn ?place.
-                ?place rdfs:label ?placeLabel;
-                       geo:hasGeometry/geo:asWKT ?placeWkt.
-            }
-            optional
-            {
-                ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
-                ?observationCollection sosa:phenomenonTime ?time.
-                ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-                      time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
-            }
-            optional
-            {
-                ?entity geo:hasGeometry/geo:asWKT ?wkt.
-            }
-        }`);
-    let propResults = {};
-    for (let row of propertyQuery) {
-        let place = (typeof row.place === 'undefined') ? '' : row.place.value;
-        let place_name = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value;
-        let place_wkt = (typeof row.placeWkt === 'undefined') ? '' : row.placeWkt.value;
-        let start_date = (typeof row.time === 'undefined') ? '' : row.time.value;
-        let start_date_name = (typeof row.startTimeLabel === 'undefined') ? '' : row.startTimeLabel.value;
-        let end_date = (typeof row.time === 'undefined') ? '' : row.time.value;
-        let end_date_name = (typeof row.endTimeLabel === 'undefined') ? '' : row.endTimeLabel.value;
-        let wkt = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
-        propResults[row.entity.value] = {
-            'place': place,
-            'place_name': place_name,
-            'place_wkt':place_wkt,
-            'start_date': start_date,
-            'start_date_name': start_date_name,
-            'end_date': end_date,
-            'end_date_name': end_date_name,
-            'wkt': wkt
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    {
+        ?entity rdf:type ?type;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
+                
+        ?type rdfs:label ?typeLabel.
+
+        optional 
+        {
+            ?entity kwg-ont:sfWithin ?place.
+            ?place rdf:type kwg-ont:AdministrativeRegion;
+                   rdfs:label ?placeLabel.
         }
+
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+
+        values ?entity {${hazardEntites.join(' ')}}
+    } group by ?entity`;
+
+    queryResults = await query(hazardAttributesQuery);
+
+    let counterRow = -1;
+    for (let row of queryResults) {
+        counterRow += 1;
+        formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
+        formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
+        formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+        formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+        formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
+        formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
     }
 
-    for (let i = 0; i < formattedResults.length; i++) {
-        formattedResults[i]['place'] = propResults[formattedResults[i]['hazard']]['place'];
-        formattedResults[i]['place_name'] = propResults[formattedResults[i]['hazard']]['place_name'];
-        formattedResults[i]['start_date'] = propResults[formattedResults[i]['hazard']]['start_date'];
-        formattedResults[i]['start_date_name'] = propResults[formattedResults[i]['hazard']]['start_date_name'];
-        formattedResults[i]['end_date'] = propResults[formattedResults[i]['hazard']]['end_date'];
-        formattedResults[i]['end_date_name'] = propResults[formattedResults[i]['hazard']]['end_date_name'];
-        formattedResults[i]['wkt'] = (propResults[formattedResults[i]['hazard']]['wkt'] == '') ? propResults[formattedResults[i]['hazard']]['place_wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '') : propResults[formattedResults[i]['hazard']]['wkt'].replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', ''); 
-    }
-
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + `}`);
-    return { 'count': countResults[0].count.value, 'record': formattedResults };
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
+      return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
 function hazardTypeFacets(parameters) {
-    let typedHazardQuery = '';
+    let typedHazardQuery = ``;
 
     if (parameters["hazardFacetMagnitudeMin"] != "" || parameters["hazardFacetMagnitudeMax"] != "") {
         let facetArr = [];
@@ -624,7 +986,7 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetMagnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?magnitudeObj.
-            ?magnitudeObj sosa:observedProperty kwgr:earthquakeObservableProperty.mag.
+            ?magnitudeObj sosa:observedProperty kwgr:EarthquakeObservableProperty.mag.
             ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -636,7 +998,7 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardQuakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?quakeDepthObj.
-            ?quakeDepthObj sosa:observedProperty kwgr:earthquakeObservableProperty.depth.
+            ?quakeDepthObj sosa:observedProperty kwgr:EarthquakeObservableProperty.depth.
             ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -648,8 +1010,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetAcresBurnedMax"] + ` > ?numAcresBurned`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?numAcresBurnedObj.
-            ?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel
-            FILTER(contains(?numAcresBurnedObjLabel, 'Observation of Number Of Acres Burned')).
+            #?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel.
+            ?numAcresBurnedObj sosa:observedProperty kwgr:mtbsFireObservableProperty.NumberOfAcresBurned.
             ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -661,8 +1023,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetMeanDnbrMax"] + ` > ?meanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?meanValObj.
-            ?meanValObj rdfs:label ?meanValObjLabel
-            FILTER(contains(?meanValObjLabel, 'Observation of Mean dNBR Value')).
+            #?meanValObj rdfs:label ?meanValObjLabel.
+            ?meanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.MeandNBRValue.
             ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -674,8 +1036,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetSDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?stanDevMeanValObj.
-            ?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel
-            FILTER(contains(?stanDevMeanValObjLabel, 'Observation of Standard Deviation of Mean dNBR Value')).
+            #?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel.
+            ?stanDevMeanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.StandardDeviationOfMeandNBRValue.
             ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -687,8 +1049,8 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberDeathsMax"] + ` > ?deathDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?deathDirectValObj.
-            ?deathDirectValObj rdfs:label ?deathDirectValObjLabel.
-            ?deathDirectValObj sosa:observedProperty kwgr:deathDirect.
+            #?deathDirectValObj rdfs:label ?deathDirectValObjLabel.
+            ?deathDirectValObj sosa:observedProperty kwgr:impactObservableProperty.deathDirect.
             ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
@@ -700,67 +1062,31 @@ function hazardTypeFacets(parameters) {
             facetArr.push(parameters["hazardFacetNumberInjuredMax"] + ` > ?injuryDirectVal`);
         typedHazardQuery += `
             ?observationCollection sosa:hasMember ?injuryDirectValObj.
-            ?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
-            ?injuryDirectValObj sosa:observedProperty kwgr:injuryDirect.
+            #?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
+            ?injuryDirectValObj sosa:observedProperty kwgr:impactObservableProperty.injuryDirect.
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
+    if (typedHazardQuery != ``)
+    {
+        typedHazardQuery += `
+            ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+        `;
+    }
     return typedHazardQuery;
 }
-
+/**
+* Gets all of the hazards and their respective subclasses.
+* top_hazard is the topmost hazard class (ie 'Fire')
+* middle_hazard are subclasses of the top_hazard
+* lower_hazard are subclasses of the middle_hazard
+* 
+* @returns
+*/
 async function getHazardClasses() {
-    let formattedResults = [];
-    let fireResults = [];
-    let hurricaneResults = [];
 
-    let hazardQuery = `
-    select distinct ?type where {
-        ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:HazardEvent.
-    }`;
-
-    //Special case for fires
-    let fireQuery = `
-    select distinct ?type where {
-        ?entity rdf:type ?type.
-        ?type rdfs:subClassOf kwg-ont:Fire
-        FILTER(?type != kwg-ont:Fire).
-    }`;
-
-    let hurricaneQuery = `
-    select distinct ?type where {
-        ?entity rdf:type ?type.
-        FILTER(?type = kwg-ont:Hurricane).
-    }`;
-
-    let queryResults = await query(hazardQuery);
-    for (let row of queryResults) {
-        let hazardLabelArray = row.type.value.split("/");
-        formattedResults.push({
-            'hazard_type': row.type.value,
-            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
-        });
-    }
-
-    let queryResultsFire = await query(fireQuery);
-    for (let row of queryResultsFire) {
-        let hazardLabelArray = row.type.value.split("/");
-        fireResults.push({
-            'hazard_type': row.type.value,
-            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
-        });
-    }
-
-    let queryResultsHurricane = await query(hurricaneQuery);
-    for (let row of queryResultsHurricane) {
-        let hazardLabelArray = row.type.value.split("/");
-        hurricaneResults.push({
-            'hazard_type': row.type.value,
-            'hazard_type_name': hazardLabelArray[hazardLabelArray.length - 1]
-        });
-    }
-
-    return { 'hazards': formattedResults, 'fires': fireResults, 'hurricanes': hurricaneResults };
+  let data = await fetch("/cache/hazards.json");
+  return data.json();
 }
 
 //New search function for expert in stko-kwg
@@ -772,7 +1098,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         topicQuery = `values ?expert {kwgr:` + parameters["expertTopics"].join(' kwgr:') + `}`;
     }
 
-    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -780,9 +1106,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         expertQuery +=
             `
-        ?search a elastic-index:kwg_es_index;
+        ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
+        ?entity elastic:score ?score.
         `;
     }
 
@@ -801,14 +1128,21 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         ?entity kwg-ont:hasExpertise ?expert.
         ${topicQuery}
         ?expert rdfs:label ?expertLabel.
-        optional
-        {
-            ?entity iospress:contributorAffiliation ?affiliation.
-            ?affiliation rdfs:label ?affiliationLabel.
-            ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
-        }
+        ?entity iospress:contributorAffiliation ?affiliation.
+        ?affiliation rdfs:label ?affiliationLabel;
+                     kwg-ont:sfWithin ?affiliationLoc;
+        			 geo:hasGeometry/geo:asWKT ?wkt.
+    	?affiliationLoc rdf:type ?affiliationLoc_type;
+                     	rdfs:label ?affiliationLoc_label.
+    	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
+        filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
+
+    // If the user searched for an expert by name, give the most relevant first
+    if (parameters["keyword"] != "") {
+      expertQuery += ` ?score ORDER BY desc(?score)`;
+    }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
@@ -816,38 +1150,38 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expert': row.entity.value,
             'expert_name': row.label.value,
             'affiliation': (typeof row.affiliation === 'undefined') ? " " : row.affiliation.value,
-            'affiliation_name': (typeof row.affiliation_name === 'undefined') ? " " : row.affiliation_name.value,
-            'expertise': row.expertise.value.split('||'),
-            'expertise_name': row.expertiseLabel.value.split('||'),
-            'place': " ",
-            'place_name': " ",
+            'affiliation_name': (typeof row.affiliationLabel === 'undefined') ? " " : row.affiliationLabel.value,
+            'expertise': row.expertise.value.split('||').slice(0,10),
+            'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
+            'place': row.affiliationLoc.value,
+            'place_name': row.affiliationLoc_label.value,
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 async function getExpertTopics() {
     let formattedResults = [];
 
-    let hazardQuery = `
+    let topicQuery = `
     select distinct ?topic ?label ?subtopic ?sublabel where {
-        ?topic rdfs:subClassOf kwg-ont:ExpertiseTopic.
-        ?topic rdfs:label ?label.
-        ?subtopic rdf:type ?topic.
+        ?topic rdf:type kwg-ont:ExpertiseTopic;
+               kwg-ont:hasSubTopic ?subtopic;
+        	   rdfs:label ?label.
         ?subtopic rdfs:label ?sublabel.
     } ORDER BY ASC(?label)`;
 
-    let queryResults = await query(hazardQuery);
+    let queryResults = await query(topicQuery);
     for (let row of queryResults) {
         let topicShortArray = row.topic.value.split("/");
         let topicShort = topicShortArray[topicShortArray.length - 1];
         let subTopicShortArray = row.subtopic.value.split("/");
         let subTopicShort = subTopicShortArray[subTopicShortArray.length - 1];
         if (topicShort in formattedResults) {
-            //We already have this user, which means we need to grab their expertise
+            //We already have this expertise topic, which means we need to grab their subtopics
             formattedResults[topicShort]['expert_subtopic'].push(subTopicShort);
             formattedResults[topicShort]['expert_sublabel'].push(row.sublabel.value);
         } else {

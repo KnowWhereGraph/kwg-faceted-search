@@ -1,7 +1,8 @@
 {
-  "name": "dr-app-express",
-  "version": "0.0.0",
+  "name": "Knowledge-Explorer",
+  "version": "1.0.0",
   "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "start": "node ./bin/www"
   },
