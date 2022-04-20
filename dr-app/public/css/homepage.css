@@ -80,6 +80,11 @@ nav .container {
     max-width: 960px !important;
 }
 
+.nav-item .item:hover {
+  color: #2FB9CF;
+  padding-bottom: 7.5px;
+  border-bottom: solid 2px;
+}
 
 /* 0. Integrate the repetative codes */
 
