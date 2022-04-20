@@ -975,16 +975,6 @@ var displayBreadCrumbs = function() {
                 placeUrl = bcURL + '&date-end=' + urlVariables['date-end'];
                 bcHTML += '<li><a href="' + placeUrl + '">Date End: ' + urlVariables['date-end'] + '</a></li>';
             }
-            if (urlVariables['hazard'] != null && urlVariables['hazard'] != '') {
-                var hazards = urlVariables['hazard'].split(',');
-                for (var j = 0; j < hazards.length; j++) {
-                    // hazardUrl = bcURL + '&hazard=' + hazards[j];
-                    // bcHTML += '<li><a href="' + hazardUrl + '">' + hazards[j] + '</a></li>';
-                    // hazardUrl += "," + hazards[j];
-
-                    (j == 0) ? (hazardUrl += hazards[j]) : (hazardUrl += "," + hazards[j]);
-                }
-            }
             if (urlVariables['mag-min'] != null && urlVariables['mag-min'] != '') {
                 placeUrl = bcURL + '&mag-min=' + urlVariables['mag-min'];
                 bcHTML += '<li><a href="' + placeUrl + '">Magnitude (min): ' + urlVariables['mag-min'] + '</a></li>';
