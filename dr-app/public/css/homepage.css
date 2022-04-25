@@ -67,6 +67,7 @@ header .container.home {
     max-width: 500px;
 }
 
+
 /* nav */
 
 nav {
@@ -81,10 +82,11 @@ nav .container {
 }
 
 .nav-item .item:hover {
-  color: #2FB9CF;
-  padding-bottom: 7.5px;
-  border-bottom: solid 2px;
+    color: #2FB9CF;
+    padding-bottom: 7.5px;
+    border-bottom: solid 2px;
 }
+
 
 /* 0. Integrate the repetative codes */
 

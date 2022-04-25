@@ -23,7 +23,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout) {
     $scope.showPlaceTab = true;
     $scope.showHazardTab = true;
 
-
     var selectedElement = null; // accept the element clicked
 
     $scope.selectExpertise = function($event) {

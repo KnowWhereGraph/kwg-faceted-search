@@ -9,15 +9,17 @@ var place_markers = new L.MarkerClusterGroup();
 var markers = [];
 $(document).ready(function() {
 
-     /**
+    /**
      * Search a spatial query click event
      */
-      $("a#navbarDropdown").click(function(){
+    $("a#navbarDropdown").click(function() {
         // $("div.search-dropdown-input").toggle();
         $("div#search-dropdown").toggle();
-    }); 
-    
- 
+    });
+
+
+
+
     setTimeout(() => {
         // -77.036667, lng: 38.895
         // [40, -109.03]
