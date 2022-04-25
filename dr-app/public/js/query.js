@@ -16,7 +16,7 @@ const H_PREFIXES = {
     ago: 'http://awesemantic-geo.link/ontology/',
     sosa: 'http://www.w3.org/ns/sosa/',
     elastic: 'http://www.ontotext.com/connectors/elasticsearch#',
-    usgs:'http://gnis-ld.org/lod/usgs/ontology/',
+    usgs: 'http://gnis-ld.org/lod/usgs/ontology/',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
     'iospress': 'http://ld.iospress.nl/rdf/ontology/',
 };
@@ -40,24 +40,24 @@ async function query(srq_query) {
     d_form.append('query', S_PREFIXES + srq_query);
     d_form.append('infer', true);
     let d_res = await fetch(P_ENDPOINT, {
-          method: 'POST',
-          mode: 'cors',
-          //credentials: 'include',
-          headers: {
-              Accept: 'application/sparql-results+json',
-              //'Content-Type': 'application/x-www-form-urlencoded',
-              //'Authorization': 'Basic ' + btoa(username + ":" + password),
-          },
-          body: new URLSearchParams([
-              ...(d_form),
-          ]),
-      }).catch((error) => {
+        method: 'POST',
+        mode: 'cors',
+        //credentials: 'include',
+        headers: {
+            Accept: 'application/sparql-results+json',
+            //'Content-Type': 'application/x-www-form-urlencoded',
+            //'Authorization': 'Basic ' + btoa(username + ":" + password),
+        },
+        body: new URLSearchParams([
+            ...(d_form),
+        ]),
+    }).catch((error) => {
         console.log("There was an error while running a query: ", error);
         $('#timeoutModal').modal('show');
         angular.element("#hazardTable-body #loading").remove();
         angular.element("#expertTable-body #loading").remove();
         angular.element("#placeTable-body #loading").remove();
-      });
+    });
     return (await d_res.json()).results.bindings;
 }
 
@@ -329,7 +329,7 @@ async function getZipCodeArea() {
     return { 'zipcodes': formattedResults };
 }
 
-async function getFIPS(){
+async function getFIPS() {
     let formattedResults = [];
 
     let zipcodeQuery = `
@@ -397,7 +397,7 @@ async function getNWZone() {
     nwzones_json = await fetch("/cache/nwzones.json");
     nwzones_cached = await nwzones_json.json();
     let queryResults = nwzones_cached.results.bindings;
-    
+
     for (let row of queryResults) {
         let nwzone = row.nwzone.value;
         let nwzone_label = row.nwzone_label.value;
@@ -450,31 +450,29 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         `;
     }
 
-    if (parameters["facetGNIS"].length > 0)
-    {
-            let gnisTypeArray = parameters["facetGNIS"];
-            for (i = 0; i < gnisTypeArray.length; i++)
-            {
-                gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
-            }
-            placeQuery += `             
+    if (parameters["facetGNIS"].length > 0) {
+        let gnisTypeArray = parameters["facetGNIS"];
+        for (i = 0; i < gnisTypeArray.length; i++) {
+            gnisTypeArray[i] = gnisTypeArray[i].replace(' ', '');
+        }
+        placeQuery += `             
                 ?entity a ?type; rdfs:label ?label.
                 ?type rdfs:label ?typeLabel.
+                ?entity kwg-ont:quantifiedName ?quantName .
                 values ?type {usgs:` + gnisTypeArray.join(' usgs:') + `}
             `;
-            if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
-            {
-                placeQuery +=  `
+        if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "") {
+            placeQuery += `
                     ?entity kwg-ont:sfWithin ?s2cell.
                     ?s2cell rdf:type kwg-ont:KWGCellLevel13;
                             kwg-ont:spatialRelation ?placesConnectedToS2.
                     ?placesConnectedToS2 kwg-ont:sfWithin ?superPlacesConnectedToS2.
                 `;
-                let placesConnectedToS2 = [];
-        
-                if (parameters["placeFacetsRegion"] != "") {
-                  console.log(placeFacetsRegion)
-                    entityAll = await query(`
+            let placesConnectedToS2 = [];
+
+            if (parameters["placeFacetsRegion"] != "") {
+                console.log(placeFacetsRegion)
+                entityAll = await query(`
                     select ?entity ?score
                     {
                         ?search a elastic-index:kwg_fs_index;
@@ -486,67 +484,52 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
-                    entityArray = entityAll[0].entity.value.split("/");
-                    entity = entityArray[entityArray.length - 1];
-                    placesConnectedToS2.push(`kwgr:` + entity);
-                }
-                if (parameters["placeFacetsZip"] != "") {
-                    entityAll = await getZipCodeArea();
-                    if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
-                    {
-                        placesConnectedToS2.push(``);
-                    }
-                    else
-                    {
-                        entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
-                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
-                    }
-                }
-                if (parameters["placeFacetsFIPS"] != "") {
-                    entityAll = await getFIPS();
-                    if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
-                    {
-                        placesConnectedToS2.push(``);
-                    }
-                    else
-                    {
-                        entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
-                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
-                    }
-                }
-                if (parameters["placeFacetsUSCD"] != "") {
-                    entityAll = await getUSClimateDivision();
-                    if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
-                    {
-                        placesConnectedToS2.push(``);
-                    }
-                    else
-                    {
-                        entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
-                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
-                    }
-                }
-                if (parameters["placeFacetsNWZ"] != "") {
-                    entityAll = await getNWZone();
-                    if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
-                    {
-                        placesConnectedToS2.push(``);
-                    }
-                    else
-                    {
-                        entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
-                        placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
-                    }
-                }
-                placeQuery += `filter (?placesConnectedToS2 in (${placesConnectedToS2.join(', ')}) || ?superPlacesConnectedToS2 in (${placesConnectedToS2.join(', ')}))`;
+                entityArray = entityAll[0].entity.value.split("/");
+                entity = entityArray[entityArray.length - 1];
+                placesConnectedToS2.push(`kwgr:` + entity);
             }
-    }
-    else
-    {
-        if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "")
-        {
+            if (parameters["placeFacetsZip"] != "") {
+                entityAll = await getZipCodeArea();
+                if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined') {
+                    placesConnectedToS2.push(``);
+                } else {
+                    entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
+                    placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                }
+            }
+            if (parameters["placeFacetsFIPS"] != "") {
+                entityAll = await getFIPS();
+                if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined') {
+                    placesConnectedToS2.push(``);
+                } else {
+                    entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
+                    placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                }
+            }
+            if (parameters["placeFacetsUSCD"] != "") {
+                entityAll = await getUSClimateDivision();
+                if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined') {
+                    placesConnectedToS2.push(``);
+                } else {
+                    entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
+                    placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                }
+            }
+            if (parameters["placeFacetsNWZ"] != "") {
+                entityAll = await getNWZone();
+                if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined') {
+                    placesConnectedToS2.push(``);
+                } else {
+                    entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
+                    placesConnectedToS2.push(`kwgr:` + entityArray[entityArray.length - 1]);
+                }
+            }
+            placeQuery += `filter (?placesConnectedToS2 in (${placesConnectedToS2.join(', ')}) || ?superPlacesConnectedToS2 in (${placesConnectedToS2.join(', ')}))`;
+        }
+    } else {
+        if (parameters["placeFacetsRegion"] != "" | parameters["placeFacetsUSCD"] != "" | parameters["placeFacetsNWZ"] != "" | parameters["placeFacetsZip"] != "") {
             let typeQueries = [];
-    
+
             if (parameters["placeFacetsRegion"] != "") {
                 typeQueries.push(`
                 {
@@ -555,19 +538,18 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:entities ?entity.
                     
                     ?entity a ?type; rdfs:label ?label.
+                   
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
-                    ?type rdfs:label ?typeLabel
+                    ?type rdfs:label ?typeLabel.
+                    ?entity kwg-ont:quantifiedName ?quantName .
                 }`);
             }
             if (parameters["placeFacetsZip"] != "") {
                 entityAll = await getZipCodeArea();
                 entity = ``;
-                if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
-                {
+                if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined') {
                     entity = ``;
-                }
-                else
-                {
+                } else {
                     entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
                     entity = entityArray[entityArray.length - 1];
                 }
@@ -576,18 +558,17 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     ?entity rdf:type ?type; rdfs:label ?label.
                     values ?entity {kwgr:` + entity + `}
                     ?type rdfs:label ?typeLabel.
+                    ?entity kwg-ont:quantifiedName ?quantName .
                     values ?type {kwg-ont:ZipCodeArea}
+                    
                 }`);
             }
             if (parameters["placeFacetsFIPS"] != "") {
                 entityAll = await getFIPS();
                 entity = ``;
-                if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
-                {
+                if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined') {
                     entity = ``;
-                }
-                else
-                {
+                } else {
                     entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
                     entity = entityArray[entityArray.length - 1];
                 }
@@ -596,18 +577,17 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     ?entity rdf:type ?type; kwg-ont:hasFIPS|kwg-ont:climateDivisionFIPS ?label.
                     values ?entity {kwgr:` + entity + `}
                     ?type rdfs:label ?typeLabel.
+                    ?entity kwg-ont:quantifiedName ?quantName .
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:USClimateDivision}
+                    
                 }`);
             }
             if (parameters["placeFacetsUSCD"] != "") {
                 entityAll = await getUSClimateDivision();
                 entity = ``;
-                if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
-                {
+                if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined') {
                     entity = ``;
-                }
-                else
-                {
+                } else {
                     entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
                     entity = entityArray[entityArray.length - 1];
                 }
@@ -621,12 +601,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             }
             if (parameters["placeFacetsNWZ"] != "") {
                 entityAll = await getNWZone();
-                if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
-                {
+                if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined') {
                     entity = ``;
-                }
-                else
-                {
+                } else {
                     entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
                     entity = entityArray[entityArray.length - 1];
                 }
@@ -635,13 +612,13 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     ?entity rdf:type ?type; rdfs:label ?label.
                     values ?entity {kwgr:` + entity + `}
                     ?type rdfs:label ?typeLabel.
+                    ?entity kwg-ont:quantifiedName ?quantName .
                     values ?type {kwg-ont:NWZone}
+                    
                 }`);
             }
             placeQuery += typeQueries.join(' union ');
-        }
-        else
-        {
+        } else {
             placeQuery += `
             {
                 ?entity rdf:type ?type; rdfs:label ?label.
@@ -663,9 +640,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     // If the user included a keyword search, sort them by the most relevant string results from ES
     if (parameters["keyword"] != "") {
-      placeQuery += ` order by desc(?score)`;
+        placeQuery += ` order by desc(?score)`;
     }
-    
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -679,8 +656,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    if (entityRawValues.length == 0)
-    {
+    if (entityRawValues.length == 0) {
         return { 'count': 0, 'record': {} };
     }
 
@@ -688,21 +664,21 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 
     let wktResults = {};
     for (let row of wktQuery) {
-        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','');
+        wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '');
     }
 
     for (let i = 0; i < formattedResults.length; i++) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum * 10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //New search function for hazard in stko-kwg
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
-    
+
     let hazardQuery = `select distinct ?entity ?label ?time ?wkt {`;
 
     //Keyword search
@@ -720,8 +696,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let typeQuery = ``;
     let hazardTypes = parameters["hazardTypes"];
 
-    if (parameters["hazardTypes"].length > 0)
-    {
+    if (parameters["hazardTypes"].length > 0) {
         let setHazardTypes = new Set(hazardTypes);
         typeQuery += `filter (?type in (kwg-ont:` + Array.from(setHazardTypes).join(', kwg-ont:') + `))`;
     }
@@ -733,66 +708,51 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
     if (parameters["placeFacetsZip"] != "") {
         entityAll = await getZipCodeArea();
-        if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined')
-        {
+        if (typeof entityAll['zipcodes'][parameters["placeFacetsZip"]] === 'undefined') {
             placeEntities.push(``);
-        }
-        else
-        {
+        } else {
             entityArray = entityAll['zipcodes'][parameters["placeFacetsZip"]].split("/");
             placeEntities.push(entityArray[entityArray.length - 1]);
         }
     }
     if (parameters["placeFacetsFIPS"] != "") {
         entityAll = await getFIPS();
-        if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined')
-        {
+        if (typeof entityAll['fips'][parameters["placeFacetsFIPS"]] === 'undefined') {
             placeEntities.push(``);
-        }
-        else
-        {
+        } else {
             entityArray = entityAll['fips'][parameters["placeFacetsFIPS"]].split("/");
             placeEntities.push(entityArray[entityArray.length - 1]);
         }
     }
     if (parameters["placeFacetsUSCD"] != "") {
         entityAll = await getUSClimateDivision();
-        if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined')
-        {
+        if (typeof entityAll['divisions'][parameters["placeFacetsUSCD"]] === 'undefined') {
             placeEntities.push(``);
-        }
-        else
-        {
+        } else {
             entityArray = entityAll['divisions'][parameters["placeFacetsUSCD"]].split("/");
             placeEntities.push(entityArray[entityArray.length - 1]);
         }
     }
     if (parameters["placeFacetsNWZ"] != "") {
         entityAll = await getNWZone();
-        if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined')
-        {
+        if (typeof entityAll['nwzones'][parameters["placeFacetsNWZ"]] === 'undefined') {
             placeEntities.push(``);
-        }
-        else
-        {
+        } else {
             entityArray = entityAll['nwzones'][parameters["placeFacetsNWZ"]].split("/");
             placeEntities.push(entityArray[entityArray.length - 1]);
         }
     }
 
     // return 0 result if no places satisfy the inputs
-    if (Array.from(new Set(placeEntities))[0] == `` && Array.from(new Set(placeEntities)).length == 1)
-    {
+    if (Array.from(new Set(placeEntities))[0] == `` && Array.from(new Set(placeEntities)).length == 1) {
         return { 'count': 0, 'record': {} };
     }
 
     let placeSearchQuery = ``;
-    if (parameters["facetGNIS"].length > 0)
-    {
+    if (parameters["facetGNIS"].length > 0) {
         let gnisTypeArray = parameters["facetGNIS"];
-        for (i = 0; i < gnisTypeArray.length; i++)
-        {
-            gnisTypeArray[i] = gnisTypeArray[i].replace(' ','');
+        for (i = 0; i < gnisTypeArray.length; i++) {
+            gnisTypeArray[i] = gnisTypeArray[i].replace(' ', '');
         }
 
         placeSearchQuery += `
@@ -803,64 +763,51 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                         rdf:type ?gnisPlaceType.
             values ?gnisPlaceType {usgs:` + gnisTypeArray.join(' usgs:') + `}
         `;
-        if (placeEntities.length > 0)
-        {
+        if (placeEntities.length > 0) {
             let placesConnectedToS2 = [];
             let placesLocatedIn = [];
-            for (let i = 0 ; i < placeEntities.length; i++)
-            {
-                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
-                {
+            for (let i = 0; i < placeEntities.length; i++) {
+                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv')) {
                     placesConnectedToS2.push(placeEntities[i]);
                 }
-                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
-                {
+                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone')) {
                     placesLocatedIn.push(placeEntities[i]);
                 }
             }
-            if (placesConnectedToS2.length > 0)
-            {
+            if (placesConnectedToS2.length > 0) {
                 placeSearchQuery += `
                     ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
                     values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
                     ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
-                `;  
+                `;
             }
-            if (placesLocatedIn.length > 0)
-            {
+            if (placesLocatedIn.length > 0) {
                 placeSearchQuery += `
                     ?s2cellGNIS kwg-ont:spatialRelation ?placesNonConnectedToS2.
                     values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
                 `;
             }
         }
-    }
-    else if (placeEntities.length > 0)
-    {
+    } else if (placeEntities.length > 0) {
         let placesConnectedToS2 = [];
         let placesLocatedIn = [];
-        for (let i = 0 ; i < placeEntities.length; i++)
-        {
-            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
-            {
+        for (let i = 0; i < placeEntities.length; i++) {
+            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv')) {
                 placesConnectedToS2.push(placeEntities[i]);
             }
-            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
-            {
+            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone')) {
                 placesLocatedIn.push(placeEntities[i]);
             }
         }
-        if (placesConnectedToS2.length > 0)
-        {
+        if (placesConnectedToS2.length > 0) {
             placeSearchQuery += `
                 ?entity kwg-ont:sfWithin ?s2Cell .
                 ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
                 values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
                 ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
-            `;  
+            `;
         }
-        if (placesLocatedIn.length > 0)
-        {
+        if (placesLocatedIn.length > 0) {
             placeSearchQuery += `
                 values ?place {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
             `;
@@ -877,8 +824,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             dateArr.push(`(?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + parameters["hazardFacetDateStart"] + `"^^xsd:date)`);
         }
         if (parameters["hazardFacetDateEnd"] != "") {
-            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?startTimeLabel)`);
-            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "`+ parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?endTimeLabel)`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "` + parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?startTimeLabel)`);
+            dateArr.push(`("` + parameters["hazardFacetDateEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "` + parameters["hazardFacetDateEnd"] + `"^^xsd:date > ?endTimeLabel)`);
         }
         dateQuery = `
             ?observationCollection sosa:phenomenonTime ?time.
@@ -930,11 +877,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'place_name': '',
             'start_date': row.time.value,
             'start_date_name': '',
-            'end_date':row.time.value,
-            'end_date_name': '',    
-            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+            'end_date': row.time.value,
+            'end_date_name': '',
+            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '')
         });
-        hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
+        hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/', 'kwgr:'));
     }
 
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
@@ -970,8 +917,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
-      return { 'count': countResults[0].count.value, 'record': formattedResults };
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum * 10 + `}`);
+    return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
 //These are facet searches that are unique to a specific hazard type (fire, earthquake, etc)
@@ -1067,8 +1014,7 @@ function hazardTypeFacets(parameters) {
             ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
     }
 
-    if (typedHazardQuery != ``)
-    {
+    if (typedHazardQuery != ``) {
         typedHazardQuery += `
             ?entity sosa:isFeatureOfInterestOf ?observationCollection.
         `;
@@ -1076,17 +1022,17 @@ function hazardTypeFacets(parameters) {
     return typedHazardQuery;
 }
 /**
-* Gets all of the hazards and their respective subclasses.
-* top_hazard is the topmost hazard class (ie 'Fire')
-* middle_hazard are subclasses of the top_hazard
-* lower_hazard are subclasses of the middle_hazard
-* 
-* @returns
-*/
+ * Gets all of the hazards and their respective subclasses.
+ * top_hazard is the topmost hazard class (ie 'Fire')
+ * middle_hazard are subclasses of the top_hazard
+ * lower_hazard are subclasses of the middle_hazard
+ * 
+ * @returns
+ */
 async function getHazardClasses() {
 
-  let data = await fetch("/cache/hazards.json");
-  return data.json();
+    let data = await fetch("/cache/hazards.json");
+    return data.json();
 }
 
 //New search function for expert in stko-kwg
@@ -1141,7 +1087,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     // If the user searched for an expert by name, give the most relevant first
     if (parameters["keyword"] != "") {
-      expertQuery += ` ?score ORDER BY desc(?score)`;
+        expertQuery += ` ?score ORDER BY desc(?score)`;
     }
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
@@ -1151,15 +1097,15 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expert_name': row.label.value,
             'affiliation': (typeof row.affiliation === 'undefined') ? " " : row.affiliation.value,
             'affiliation_name': (typeof row.affiliationLabel === 'undefined') ? " " : row.affiliationLabel.value,
-            'expertise': row.expertise.value.split('||').slice(0,10),
-            'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
+            'expertise': row.expertise.value.split('||').slice(0, 10),
+            'expertise_name': row.expertiseLabel.value.split('||').slice(0, 10),
             'place': row.affiliationLoc.value,
             'place_name': row.affiliationLoc_label.value,
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum * 10 + `}`);
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
