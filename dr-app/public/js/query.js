@@ -1702,6 +1702,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
 =======
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
@@ -1712,10 +1713,14 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         ?type rdfs:subClassOf kwg-ont:Hazard;
               rdfs:label ?typeLabel.
 >>>>>>> 770f07c8 ((1) Correct predicate usage for hazard temporal information and observation collections (2) Fix the problem of not running hazard queries when selecting hazard types with no subclasses)
+=======
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
+>>>>>>> 7cb6a9b4 (Show hazard search results that contain no wkt information)
         optional
         {
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
@@ -1739,6 +1744,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
                 geo:hasGeometry/geo:asWKT ?wkt.
+=======
+>>>>>>> 7cb6a9b4 (Show hazard search results that contain no wkt information)
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
@@ -1796,7 +1803,12 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
 
+<<<<<<< HEAD
 >>>>>>> a5604982 (Sort the keyword search results)
+=======
+    console.log(hazardQuery);
+    
+>>>>>>> da8b9804 (Show hazard search results that contain no wkt information)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 >>>>>>> 4fb6f0fd (Only count the table length * 10)
 >>>>>>> 2e81c0a0 (Only count the table length * 10)
@@ -1850,7 +1862,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'start_date_name': '',
             'end_date':row.time.value,
             'end_date_name': '',    
-            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+            'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
