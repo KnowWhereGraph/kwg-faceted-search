@@ -899,8 +899,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
-                geo:hasGeometry/geo:asWKT ?wkt.
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
+        optional
+        {
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+        }
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
@@ -917,6 +920,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
 
+    console.log(hazardQuery);
+    
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let hazardEntites = [];
@@ -932,7 +937,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'start_date_name': '',
             'end_date':row.time.value,
             'end_date_name': '',    
-            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+            'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
