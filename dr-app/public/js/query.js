@@ -439,7 +439,7 @@ async function getGNISFeature() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+    let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -473,7 +473,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
-                  console.log(placeFacetsRegion)
                     entityAll = await query(`
                     select ?entity ?score
                     {
@@ -482,7 +481,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         elastic:entities ?entity.
                         ?entity elastic:score ?score.
                         
-                        ?entity a ?type; rdfs:label ?label.
+                        ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
@@ -554,7 +553,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label.
+                    ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
@@ -645,6 +644,10 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             placeQuery += `
             {
                 ?entity rdf:type ?type; rdfs:label ?label.
+                optional
+                {
+                    ?entity kwg-ont:quantifiedName ?quantifiedName.
+                }
                 values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
                 ?type rdfs:label ?typeLabel
             }`;
@@ -666,6 +669,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
       placeQuery += ` order by desc(?score)`;
     }
     
+    console.log(placeQuery);
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -673,7 +678,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
-            'place_name': row.label.value,
+            'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
             'place_type': row.type.value,
             'place_type_name': row.typeLabel.value,
         });
