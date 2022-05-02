@@ -676,6 +676,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
 =======
     let placeQuery = `select distinct ?entity ?score ?label ?type ?typeLabel where {`;
@@ -683,6 +684,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 =======
     let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
 >>>>>>> 18c1d9dd (Correct the usage of elasticsearch scores)
+=======
+    let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
+>>>>>>> 7b22ee27 (Retrieve and display quantified place names for administrative regions)
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -983,7 +987,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
-                  console.log(placeFacetsRegion)
                     entityAll = await query(`
                     select ?entity ?score
                     {
@@ -992,7 +995,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         elastic:entities ?entity.
                         ?entity elastic:score ?score.
                         
-                        ?entity a ?type; rdfs:label ?label.
+                        ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
 <<<<<<< HEAD
@@ -1070,7 +1073,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label.
+                    ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
@@ -1161,6 +1164,10 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             placeQuery += `
             {
                 ?entity rdf:type ?type; rdfs:label ?label.
+                optional
+                {
+                    ?entity kwg-ont:quantifiedName ?quantifiedName.
+                }
                 values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
                 ?type rdfs:label ?typeLabel
             }`;
@@ -1228,7 +1235,12 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 >>>>>>> e1a9004a (Correct the usage of elasticsearch scores)
 >>>>>>> 18c1d9dd (Correct the usage of elasticsearch scores)
     
+<<<<<<< HEAD
 >>>>>>> 18576c62 (Sort the keyword search results)
+=======
+    console.log(placeQuery);
+
+>>>>>>> 7b22ee27 (Retrieve and display quantified place names for administrative regions)
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -1236,8 +1248,12 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
+<<<<<<< HEAD
             'place_name': row.label.value,
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+            'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
+>>>>>>> 7b22ee27 (Retrieve and display quantified place names for administrative regions)
             'place_type': row.type.value,
             'place_type_name': row.typeLabel.value,
         });
