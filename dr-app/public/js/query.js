@@ -481,7 +481,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         elastic:entities ?entity.
                         ?entity elastic:score ?score.
                         
-                        ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
+                        ?entity a ?type; rdfs:label ?label;
+                        OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
@@ -553,7 +554,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
+                    ?entity a ?type; rdfs:label ?label;
+                    OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
