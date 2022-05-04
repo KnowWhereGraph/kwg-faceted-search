@@ -668,8 +668,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
       placeQuery += ` order by desc(?score)`;
     }
-    
-    console.log(placeQuery);
 
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
