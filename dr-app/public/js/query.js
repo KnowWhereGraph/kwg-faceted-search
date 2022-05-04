@@ -1835,11 +1835,14 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 >>>>>>> a5604982 (Sort the keyword search results)
 =======
     console.log(hazardQuery);
+=======
+>>>>>>> 02ddc33e (Remove console log statement)
     
 >>>>>>> da8b9804 (Show hazard search results that contain no wkt information)
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
