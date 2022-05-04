@@ -439,7 +439,7 @@ async function getGNISFeature() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+    let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -473,7 +473,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
-                  console.log(placeFacetsRegion)
                     entityAll = await query(`
                     select ?entity ?score
                     {
@@ -482,7 +481,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         elastic:entities ?entity.
                         ?entity elastic:score ?score.
                         
-                        ?entity a ?type; rdfs:label ?label.
+                        ?entity a ?type; rdfs:label ?label;
+                        OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
@@ -554,7 +554,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label.
+                    ?entity a ?type; rdfs:label ?label;
+                    OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
@@ -645,6 +646,10 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             placeQuery += `
             {
                 ?entity rdf:type ?type; rdfs:label ?label.
+                optional
+                {
+                    ?entity kwg-ont:quantifiedName ?quantifiedName.
+                }
                 values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
                 ?type rdfs:label ?typeLabel
             }`;
@@ -665,7 +670,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
       placeQuery += ` order by desc(?score)`;
     }
-    
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -673,7 +678,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
-            'place_name': row.label.value,
+            'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
             'place_type': row.type.value,
             'place_type_name': row.typeLabel.value,
         });
@@ -899,8 +904,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
-                geo:hasGeometry/geo:asWKT ?wkt.
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
+        optional
+        {
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+        }
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
@@ -916,7 +924,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
-
+    
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let hazardEntites = [];
@@ -932,7 +940,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'start_date_name': '',
             'end_date':row.time.value,
             'end_date_name': '',    
-            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+            'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
