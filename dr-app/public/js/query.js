@@ -734,6 +734,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         ?entity elastic:score ?score.
                         
                         ?entity a ?type; rdfs:label ?label;
+<<<<<<< HEAD
                         OPTIONAL { ?entity kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
@@ -996,6 +997,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         ?entity elastic:score ?score.
                         
                         ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
+=======
+                        OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
+>>>>>>> fc3b9acc (Move quantifiedName into optional)
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
 <<<<<<< HEAD
@@ -1073,7 +1077,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label; kwg-ont:quantifiedName ?quantifiedName.
+                    ?entity a ?type; rdfs:label ?label;
+                    OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
