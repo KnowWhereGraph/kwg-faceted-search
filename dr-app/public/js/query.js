@@ -1204,6 +1204,23 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+    placeQuery += `} order by desc(?score)`;
+>>>>>>> 52eb999f (Add the usage of elasticsearch scores in all related queries)
+=======
+    placeQuery += `}`;
+
+    if (parameters["keyword"] != "") {
+        placeQuery += ` order by desc(?score)`;
+    }
+>>>>>>> e1a9004a (Correct the usage of elasticsearch scores)
+    
+    console.log(placeQuery);
+=======
+>>>>>>> 072be665 (Remove console log statement)
+>>>>>>> 683ae4e4 (Remove console log statement)
 
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
