@@ -922,8 +922,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
-
-    console.log(hazardQuery);
     
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
