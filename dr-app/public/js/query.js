@@ -1348,6 +1348,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery += `
         ?search a elastic-index:kwg_fs_index;
+<<<<<<< HEAD
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
         ?entity elastic:score ?score.
@@ -1380,6 +1381,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery +=
             `
         ?search a elastic-index:kwg_staging_es_index-copy;
+=======
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
 <<<<<<< HEAD
@@ -1678,8 +1681,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
     }
 
+<<<<<<< HEAD
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
 
+=======
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
     //Filter by the date hazard occurred
     let dateQuery = '';
     if (parameters["hazardFacetDateStart"] != "" || parameters["hazardFacetDateEnd"] != "") {
@@ -1908,34 +1914,55 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
+<<<<<<< HEAD
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+=======
+<<<<<<< HEAD
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+=======
+    let hazardAttributesQuery = `select distinct ?entity ?placeLabel ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+>>>>>>> 984476b3 (Add quantified names to the hazards and people tab)
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
                 
         ?type rdfs:label ?typeLabel.
 
-        optional 
+        OPTIONAL
         {
             ?entity kwg-ont:sfWithin ?place.
             ?place rdf:type kwg-ont:AdministrativeRegion;
                    rdfs:label ?placeLabel.
+            OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
         }
 
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
-        values ?entity {${hazardEntites.join(' ')}}
-    } group by ?entity`;
+        VALUES ?entity {${hazardEntites.join(' ')}}
+    } GROUP BY ?entity ?placeLabel ?placeQuantName`;
 
     queryResults = await query(hazardAttributesQuery);
 
     let counterRow = -1;
     for (let row of queryResults) {
         counterRow += 1;
+        // If there isn't a quantified name use the regular label
+        if (typeof row.placeQuantName === 'undefined') {
+          // If there isn't a place name, use ''
+          if (typeof row.placeLabel === 'undefined') {
+            formattedResults[counterRow]['place_name'] = '';
+          } else {
+            formattedResults[counterRow]['place_name'] = row.placeLabel.value;
+          }
+        } else {
+          formattedResults[counterRow]['place_name'] = row.placeQuantName.value;
+        }
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+<<<<<<< HEAD
         formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
 <<<<<<< HEAD
 >>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
@@ -1983,6 +2010,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||')[0];
         formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
+=======
+>>>>>>> 984476b3 (Add quantified names to the hazards and people tab)
         formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
         formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
@@ -2323,6 +2352,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
 =======
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
@@ -2336,6 +2366,9 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 =======
     let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
 >>>>>>> 18c1d9dd (Correct the usage of elasticsearch scores)
+=======
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -2394,6 +2427,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
                      	rdfs:label ?affiliationLoc_label.
     	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
 <<<<<<< HEAD
+<<<<<<< HEAD
       OPTIONAL { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
         filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
@@ -2406,6 +2440,12 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 =======
     } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 >>>>>>> 18c1d9dd (Correct the usage of elasticsearch scores)
+=======
+      OPTIONAL { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
+        filter not exists {filter contains(?expertLabel,":")}
+        ${spatialSearchQuery}
+    } GROUP BY ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
 
 <<<<<<< HEAD
     // If the user searched for an expert by name, give the most relevant first
@@ -2430,6 +2470,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
       } else {
         place_label = row.affiliationQuantName.value;
       }
+<<<<<<< HEAD
 =======
         optional
         {
@@ -2446,6 +2487,8 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
 >>>>>>> a587a8cb (Distinguish between places connected to S2 cells and places associated with hazards through kwg-ont:locatedIn relations when exploring by hazards)
+=======
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
         formattedResults.push({
             'expert': row.entity.value,
             'expert_name': row.label.value,
@@ -2457,6 +2500,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
             'place': row.affiliationLoc.value,
             'place_name': place_label,
+<<<<<<< HEAD
 =======
             'affiliation_name': (typeof row.affiliation_name === 'undefined') ? " " : row.affiliation_name.value,
             'expertise': row.expertise.value.split('||'),
@@ -2471,6 +2515,8 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'place': row.affiliationLoc.value,
             'place_name': row.affiliationLoc_label.value,
 >>>>>>> 8783cf40 (Start transitioning from KWG-V3 to KWG-Staging)
+=======
+>>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
