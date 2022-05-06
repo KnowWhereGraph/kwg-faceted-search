@@ -708,7 +708,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
     
-    let hazardQuery = `select distinct ?entity ?label ?time ?wkt {`;
+    let hazardQuery = `select distinct ?entity ?label ?wkt {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
@@ -934,16 +934,16 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'hazard_type_name': '',
             'place': '',
             'place_name': '',
-            'start_date': row.time.value,
+            'start_date': '',
             'start_date_name': '',
-            'end_date':row.time.value,
+            'end_date': '',
             'end_date_name': '',    
             'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let hazardAttributesQuery = `select distinct ?entity ?placeLabel ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
@@ -983,7 +983,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+        formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
+        formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
     }
 
