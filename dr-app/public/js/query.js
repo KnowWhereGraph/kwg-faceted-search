@@ -439,7 +439,7 @@ async function getGNISFeature() {
 async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
 
-    let placeQuery = `select distinct ?entity ?label ?type ?typeLabel where {`;
+    let placeQuery = `select distinct ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
 
     if (parameters["keyword"] != "") {
         placeQuery += `
@@ -473,7 +473,6 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                 let placesConnectedToS2 = [];
         
                 if (parameters["placeFacetsRegion"] != "") {
-                  console.log(placeFacetsRegion)
                     entityAll = await query(`
                     select ?entity ?score
                     {
@@ -482,7 +481,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         elastic:entities ?entity.
                         ?entity elastic:score ?score.
                         
-                        ?entity a ?type; rdfs:label ?label.
+                        ?entity a ?type; rdfs:label ?label;
+                        OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
@@ -554,7 +554,8 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:query "${parameters["placeFacetsRegion"]}";
                     elastic:entities ?entity.
                     
-                    ?entity a ?type; rdfs:label ?label.
+                    ?entity a ?type; rdfs:label ?label;
+                    OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
@@ -645,6 +646,10 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
             placeQuery += `
             {
                 ?entity rdf:type ?type; rdfs:label ?label.
+                optional
+                {
+                    ?entity kwg-ont:quantifiedName ?quantifiedName.
+                }
                 values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
                 ?type rdfs:label ?typeLabel
             }`;
@@ -665,7 +670,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
       placeQuery += ` order by desc(?score)`;
     }
-    
+
     let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let entityRawValues = [];
@@ -673,7 +678,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         entityRawValues.push(row.entity.value);
         formattedResults.push({
             'place': row.entity.value,
-            'place_name': row.label.value,
+            'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
             'place_type': row.type.value,
             'place_type_name': row.typeLabel.value,
         });
@@ -703,12 +708,11 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 async function getHazardSearchResults(pageNum, recordNum, parameters) {
     let formattedResults = [];
     
-    let hazardQuery = `select distinct ?entity ?label ?time ?wkt {`;
+    let hazardQuery = `select distinct ?entity ?label ?wkt {`;
 
     //Keyword search
     if (parameters["keyword"] != "") {
-        hazardQuery +=
-            `
+        hazardQuery += `
         ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
@@ -867,7 +871,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
     }
 
-
     //Filter by the date hazard occurred
     let dateQuery = '';
     if (parameters["hazardFacetDateStart"] != "" || parameters["hazardFacetDateEnd"] != "") {
@@ -899,8 +902,11 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     hazardQuery += `
         ?entity rdf:type ?type; 
                 rdfs:label ?label;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time;
-                geo:hasGeometry/geo:asWKT ?wkt.
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.                
+        optional
+        {
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+        }
         ?type rdfs:subClassOf kwg-ont:Hazard.
         ?entity kwg-ont:sfWithin ?place.
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
@@ -916,7 +922,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     if (parameters["keyword"] != "") {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
-
+    
     let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
 
     let hazardEntites = [];
@@ -928,45 +934,58 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
             'hazard_type_name': '',
             'place': '',
             'place_name': '',
-            'start_date': row.time.value,
+            'start_date': '',
             'start_date_name': '',
-            'end_date':row.time.value,
+            'end_date': '',
             'end_date_name': '',    
-            'wkt': row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
+            'wkt': (typeof row.wkt === 'undefined') ? '' :  row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>','')
         });
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
                 
         ?type rdfs:label ?typeLabel.
 
-        optional 
+        OPTIONAL
         {
             ?entity kwg-ont:sfWithin ?place.
             ?place rdf:type kwg-ont:AdministrativeRegion;
                    rdfs:label ?placeLabel.
+            OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
         }
 
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
-        values ?entity {${hazardEntites.join(' ')}}
-    } group by ?entity`;
+        VALUES ?entity {${hazardEntites.join(' ')}}
+    } GROUP BY ?entity ?placeLabel ?placeQuantName`;
 
     queryResults = await query(hazardAttributesQuery);
 
     let counterRow = -1;
     for (let row of queryResults) {
         counterRow += 1;
+        // If there isn't a quantified name use the regular label
+        if (typeof row.placeQuantName === 'undefined') {
+          // If there isn't a place name, use ''
+          if (typeof row.placeLabel === 'undefined') {
+            formattedResults[counterRow]['place_name'] = '';
+          } else {
+            formattedResults[counterRow]['place_name'] = row.placeLabel.value;
+          }
+        } else {
+          formattedResults[counterRow]['place_name'] = row.placeQuantName.value;
+        }
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
-        formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+        formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
+        formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
     }
 
@@ -1098,7 +1117,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         topicQuery = `values ?expert {kwgr:` + parameters["expertTopics"].join(' kwgr:') + `}`;
     }
 
-    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -1135,9 +1154,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     	?affiliationLoc rdf:type ?affiliationLoc_type;
                      	rdfs:label ?affiliationLoc_label.
     	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
+      OPTIONAL { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
         filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
     // If the user searched for an expert by name, give the most relevant first
     if (parameters["keyword"] != "") {
@@ -1146,6 +1166,17 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
+      let place_label = '';
+      if (typeof row.affiliationQuantName === 'undefined') {
+        // If there isn't a place name, use ''
+        if (typeof row.affiliationLoc === 'undefined') {
+          place_label = '';
+        } else {
+          place_label = row.affiliationLoc.value;
+        }
+      } else {
+        place_label = row.affiliationQuantName.value;
+      }
         formattedResults.push({
             'expert': row.entity.value,
             'expert_name': row.label.value,
@@ -1154,7 +1185,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expertise': row.expertise.value.split('||').slice(0,10),
             'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
             'place': row.affiliationLoc.value,
-            'place_name': row.affiliationLoc_label.value,
+            'place_name': place_label,
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }
