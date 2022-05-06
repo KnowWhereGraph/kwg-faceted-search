@@ -712,8 +712,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 
     //Keyword search
     if (parameters["keyword"] != "") {
-        hazardQuery +=
-            `
+        hazardQuery += `
         ?search a elastic-index:kwg_fs_index;
         elastic:query "${parameters["keyword"]}";
         elastic:entities ?entity.
@@ -872,7 +871,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         }
     }
 
-
     //Filter by the date hazard occurred
     let dateQuery = '';
     if (parameters["hazardFacetDateStart"] != "" || parameters["hazardFacetDateEnd"] != "") {
@@ -952,24 +950,36 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                 
         ?type rdfs:label ?typeLabel.
 
-        optional 
+        OPTIONAL
         {
             ?entity kwg-ont:sfWithin ?place.
             ?place rdf:type kwg-ont:AdministrativeRegion;
                    rdfs:label ?placeLabel.
+            OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
         }
 
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
-        values ?entity {${hazardEntites.join(' ')}}
-    } group by ?entity`;
+        VALUES ?entity {${hazardEntites.join(' ')}}
+    } GROUP BY ?entity ?placeLabel ?placeQuantName`;
 
     queryResults = await query(hazardAttributesQuery);
 
     let counterRow = -1;
     for (let row of queryResults) {
         counterRow += 1;
+        // If there isn't a quantified name use the regular label
+        if (typeof row.placeQuantName === 'undefined') {
+          // If there isn't a place name, use ''
+          if (typeof row.placeLabel === 'undefined') {
+            formattedResults[counterRow]['place_name'] = '';
+          } else {
+            formattedResults[counterRow]['place_name'] = row.placeLabel.value;
+          }
+        } else {
+          formattedResults[counterRow]['place_name'] = row.placeQuantName.value;
+        }
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
@@ -1108,7 +1118,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         topicQuery = `values ?expert {kwgr:` + parameters["expertTopics"].join(' kwgr:') + `}`;
     }
 
-    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt
+    let expertQuery = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expert; separator = "||") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = "||") as ?expertiseLabel)
     where {`;
@@ -1145,9 +1155,10 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
     	?affiliationLoc rdf:type ?affiliationLoc_type;
                      	rdfs:label ?affiliationLoc_label.
     	values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
+      OPTIONAL { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
         filter not exists {filter contains(?expertLabel,":")}
         ${spatialSearchQuery}
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
+    } GROUP BY ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`;
 
     // If the user searched for an expert by name, give the most relevant first
     if (parameters["keyword"] != "") {
@@ -1156,6 +1167,17 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
 
     let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
     for (let row of queryResults) {
+      let place_label = '';
+      if (typeof row.affiliationQuantName === 'undefined') {
+        // If there isn't a place name, use ''
+        if (typeof row.affiliationLoc === 'undefined') {
+          place_label = '';
+        } else {
+          place_label = row.affiliationLoc.value;
+        }
+      } else {
+        place_label = row.affiliationQuantName.value;
+      }
         formattedResults.push({
             'expert': row.entity.value,
             'expert_name': row.label.value,
@@ -1164,7 +1186,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
             'expertise': row.expertise.value.split('||').slice(0,10),
             'expertise_name': row.expertiseLabel.value.split('||').slice(0,10),
             'place': row.affiliationLoc.value,
-            'place_name': row.affiliationLoc_label.value,
+            'place_name': place_label,
             'wkt': (typeof row.wkt === 'undefined') ? "" : row.wkt.value,
         });
     }

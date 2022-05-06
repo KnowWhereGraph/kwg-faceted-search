@@ -5,7 +5,7 @@
             "endpoint":"http://stko-roy.geog.ucsb.edu/graphdb/repositories/KnowWhereGraph-V1"
         },
         {
-            "endpoint":"http://stko-kwg.geog.ucsb.edu/sparql",
+            "endpoint":"https://stko-kwg.geog.ucsb.edu/sparql",
             "info":[
                 {
                     "class":"Fire",
