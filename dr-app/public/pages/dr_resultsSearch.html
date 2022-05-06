@@ -198,55 +198,19 @@
                             </section>
                         </ul>
                     </section>
-                </ul>
-                <section class="conditional-facets" ng-show="earthquakeFacets">
-                    <div>Earthquake: Magnitude (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetMagnitudeMin" ng-model="hazardFacetMagnitudeMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum magnitude...">
-                    <div>Earthquake: Magnitude (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetMagnitudeMax" ng-model="hazardFacetMagnitudeMax" ng-enter="hazardFacetChanged()" max="8" placeholder="Enter maximum magnitude...">
-                    <div>Earthquake: Depth (min)</div>
-                    <input type="number" class="form-control" id="hazardQuakeDepthMin" ng-model="hazardQuakeDepthMin" ng-enter="hazardFacetChanged()" placeholder="Enter minimum depth...">
-                    <div>Earthquake: Depth (max)</div>
-                    <input type="number" class="form-control" id="hazardQuakeDepthMax" ng-model="hazardQuakeDepthMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum depth...">
-                </section>
-                <section class="conditional-facets" ng-show="mtbsFireFacets">
-                    <!-- Fire Cause -->
-                    <div>MTBS Fire: Number of Acres Burned (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetAcresBurnedMin" ng-model="hazardFacetAcresBurnedMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum acres burned ...">
-                    <div>MTBS Fire: Number of Acres Burned (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetAcresBurnedMax" ng-model="hazardFacetAcresBurnedMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum acres burned...">
-                    <div>MTBS Fire: Mean dNBR (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetMeanDnbrMin" ng-model="hazardFacetMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum mean dNBR...">
-                    <div>MTBS Fire: Mean dNBR (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetMeanDnbrMax" ng-model="hazardFacetMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum mean dNBR...">
-                    <div>MTBS Fire: Standard Deviation of Mean dNBR (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMin" ng-model="hazardFacetSDMeanDnbrMin" ng-enter="hazardFacetChanged()" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR...">
-                    <div>MTBS Fire: Standard Deviation of Mean dNBR (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetSDMeanDnbrMax" ng-model="hazardFacetSDMeanDnbrMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum standard deviation of mean dNBR...">
-                </section>
-                <section class="conditional-facets" ng-show="noaaFacets">
-                    <div>NOAA Hazard: Number of Direct Deaths (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetNumberDeathsMin" ng-model="hazardFacetNumberDeathsMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum direct deaths...">
-                    <div>NOAA Hazard: Number of Deaths Direct (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetNumberDeathsMax" ng-model="hazardFacetNumberDeathsMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum direct deaths...">
-                    <div>NOAA Hazard: Number of Direct Injured Cases (min)</div>
-                    <input type="number" class="form-control" id="hazardFacetNumberInjuredMin" ng-model="hazardFacetNumberInjuredMin" ng-enter="hazardFacetChanged()" min="0" placeholder="Enter minimum direct injured number...">
-                    <div>NOAA Hazard: Number of Direct Injured Cases (max)</div>
-                    <input type="number" class="form-control" id="hazardFacetNumberInjuredMax" ng-model="hazardFacetNumberInjuredMax" ng-enter="hazardFacetChanged()" placeholder="Enter maximum direct injured number...">
-                </section>
             </div>
         </li>
         <li id="expertise" ng-show="showExpertiseList">
             <p class="filter-title">EXPERTISE</p>
             <div class="filter">
                 <div>Expert Topic(s)</div>
-                <ul class="list-group checkbox-list" id="expert-list">
+                <ul class="list-group" id="expert-list">
                     <section ng-repeat="expertTopic in expertTopics['topics']">
                         <li class="ng-binding ng-scope">
-                            <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" name="expert-topic" ng-click="selectSubList($event, 'selectTopic')"> {{expertTopic['expert_label']}}
+                            <input id="{{expertTopic['expert_topic']}}" type="checkbox" class="form-check-input me-1" ng-click="selectSubList($event, 'selectTopic')"> {{expertTopic['expert_label']}}
                             <img src="images/dropdown.svg" ng-click="showSubList($event)" />
                         </li>
-                        <ul class="list-group list-group-indented" style="display: none">
+                        <ul class="list-group checkbox-list list-group-indented" style="display: none">
                             <li ng-repeat="expertSubTopic in expertTopic['expert_subtopic'] track by $index">
                                 <input id="{{expertSubTopic}}" type="checkbox" class="form-check-input me-1" ng-click="selectTopic()" value="{{expertSubTopic}}" name="expert"> {{expertTopic['expert_sublabel'][$index]}}
                             </li>
