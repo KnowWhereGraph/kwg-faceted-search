@@ -735,6 +735,9 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         
                         ?entity a ?type; rdfs:label ?label;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 09601e22 (Fix the quantified name query)
                         OPTIONAL { ?entity kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
