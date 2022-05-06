@@ -1915,14 +1915,23 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 =======
+=======
+>>>>>>> 50f179d7 (Fix merge to include upstream changes)
 <<<<<<< HEAD
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 =======
     let hazardAttributesQuery = `select distinct ?entity ?placeLabel ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 >>>>>>> 984476b3 (Add quantified names to the hazards and people tab)
+<<<<<<< HEAD
 >>>>>>> 92bf9434 (Add quantified names to the hazards and people tab)
+=======
+=======
+    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+>>>>>>> 8bb854fe (Fix merge to include upstream changes)
+>>>>>>> 50f179d7 (Fix merge to include upstream changes)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
@@ -1963,7 +1972,9 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
 <<<<<<< HEAD
+<<<<<<< HEAD
         formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 991a925b (A major improvement in the efficiency of place and hazard queries)
 =======
@@ -2009,6 +2020,10 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||')[0];
+=======
+=======
+>>>>>>> 8bb854fe (Fix merge to include upstream changes)
+>>>>>>> 50f179d7 (Fix merge to include upstream changes)
         formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
 =======
 >>>>>>> 984476b3 (Add quantified names to the hazards and people tab)
