@@ -943,7 +943,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
@@ -962,32 +962,30 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
         VALUES ?entity {${hazardEntites.join(' ')}}
-    } GROUP BY ?entity ?placeLabel ?placeQuantName`;
+    } GROUP BY ?entity` ;
 
     queryResults = await query(hazardAttributesQuery);
-
-    let counterRow = -1;
-    for (let row of queryResults) {
-        counterRow += 1;
+    queryResults.forEach(function(row, counterRow) {
         // If there isn't a quantified name use the regular label
         if (typeof row.placeQuantName === 'undefined') {
           // If there isn't a place name, use ''
           if (typeof row.placeLabel === 'undefined') {
             formattedResults[counterRow]['place_name'] = '';
           } else {
-            formattedResults[counterRow]['place_name'] = row.placeLabel.value;
+            formattedResults[counterRow]['place_name'] = row.placeLabel.value.split('||')[0];
           }
         } else {
-          formattedResults[counterRow]['place_name'] = row.placeQuantName.value;
+          formattedResults[counterRow]['place_name'] = row.placeQuantName.value.split('||')[0];
         }
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
-        formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+        formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||')[0];
         formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
         formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
-    }
+    })
+    console.log(formattedResults)
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
       return { 'count': countResults[0].count.value, 'record': formattedResults };
