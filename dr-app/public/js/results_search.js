@@ -804,10 +804,13 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
 
     $scope.selectHazard = debounce(function($event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         console.log("select the hazard, ", $event.target.value);
 
 >>>>>>> 86205b9a (Fix autocomplete search by matching the typed first letters)
+=======
+>>>>>>> 4aea120e (Handle multiple places for quantified names while searching for hazards)
         cleanHazardOC($event.target, $scope);
 
         var parameters = getParameters();
