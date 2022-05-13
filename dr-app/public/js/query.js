@@ -373,13 +373,11 @@ async function getUSClimateDivision() {
     us_climate_divisions_json = await fetch("/cache/us_climate_divisions.json");
     us_climate_divisions_cached = await us_climate_divisions_json.json();
     let queryResults = us_climate_divisions_cached.results.bindings;
-
     for (let row of queryResults) {
         let division = row.division.value;
         let division_label = row.division_label.value;
         formattedResults[division_label] = division;
     }
-
     return { 'divisions': formattedResults };
 }
 
@@ -555,7 +553,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                     elastic:entities ?entity.
                     
                     ?entity a ?type; rdfs:label ?label;
-                    OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
+                    OPTIONAL { ?entity kwg-ont:quantifiedName ?quantifiedName. }
                     values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                     ?type rdfs:label ?typeLabel
                 }`);
