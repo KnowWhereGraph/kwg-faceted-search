@@ -32,10 +32,11 @@ const P_ENDPOINT = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
 /**
  * Performs a SPARQL query
  * 
- * @param {string} srq_query The query that is being performed
+ * @param {string} srq_query The query that is being sent
+ * @param {string} query_id The query's identifier
  * @returns 
  */
-async function query(srq_query) {
+async function query(srq_query, query_id) {
     let d_form = new FormData();
     d_form.append('query', S_PREFIXES + srq_query);
     d_form.append('infer', true);
@@ -45,8 +46,7 @@ async function query(srq_query) {
           //credentials: 'include',
           headers: {
               Accept: 'application/sparql-results+json',
-              //'Content-Type': 'application/x-www-form-urlencoded',
-              //'Authorization': 'Basic ' + btoa(username + ":" + password),
+              'X-Request-Id': query_id
           },
           body: new URLSearchParams([
               ...(d_form),
@@ -101,7 +101,7 @@ async function getRandomPlace() {
         }
     } ORDER BY RAND() LIMIT 1 `;
 
-    let queryResults = await query(randomPlaceQuery);
+    let queryResults = await query(randomPlaceQuery, 'KE-1');
 
     let row = queryResults[0];
     formattedResults[row.place_label.value] = row.place.value;
@@ -140,7 +140,7 @@ async function getRandomHazard() {
         }
     } ORDER BY RAND() LIMIT 1 `;
 
-    let queryResults = await query(randomHazardQuery);
+    let queryResults = await query(randomHazardQuery, 'KE-2');
 
     let row = queryResults[0];
     formattedResults[row.hazard_label.value] = row.hazard.value;
@@ -158,7 +158,7 @@ async function getRandomExpert() {
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
-    let queryResults = await query(randomExpertQuery);
+    let queryResults = await query(randomExpertQuery, 'KE-3');
 
     let row = queryResults[0];
 
@@ -177,7 +177,7 @@ async function getRandomWildfire() {
                 rdfs:label ?wildfire_label.
     } ORDER BY RAND() LIMIT 1`;
 
-    let queryResults = await query(randomWildfireQuery);
+    let queryResults = await query(randomWildfireQuery, 'KE-4');
 
     let row = queryResults[0];
 
@@ -196,7 +196,7 @@ async function getRandomEarthquake() {
                     rdfs:label ?earthquake_label.
     } ORDER BY RAND() LIMIT 1`;
 
-    let queryResults = await query(randomEarthquakeQuery);
+    let queryResults = await query(randomEarthquakeQuery, 'KE-5');
 
     let row = queryResults[0];
     formattedResults[row.earthquake_label.value] = row.earthquake.value;
@@ -215,7 +215,7 @@ async function getRandomExpertInjuryStorm() {
                 rdfs:label ?expert_label.
     } ORDER BY RAND() LIMIT 1`;
 
-    let queryResults = await query(randomExpertQuery);
+    let queryResults = await query(randomExpertQuery, 'KE-6');
 
     let row = queryResults[0];
 
@@ -417,7 +417,7 @@ async function getGNISFeature() {
         values ?gnisFeatureSuperType {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
     } ORDER BY ASC(?gnisFeature)`;
 
-    let queryResults = await query(gnisQuery);
+    let queryResults = await query(gnisQuery, 'KE-7');
 
     formattedResults["Built Up Area"] = {};
     formattedResults["Surface Water"] = {};
@@ -483,7 +483,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
                         OPTIONAL { ?entity kwg-ont:quantifiedName ?quantifiedName. }
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
-                    } order by desc(?score)`);
+                    } order by desc(?score)`, 'KE-8');
                     entityArray = entityAll[0].entity.value.split("/");
                     entity = entityArray[entityArray.length - 1];
                     placesConnectedToS2.push(`kwgr:` + entity);
@@ -669,7 +669,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
       placeQuery += ` order by desc(?score)`;
     }
 
-    let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    let queryResults = await query(placeQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, 'KE-9');
 
     let entityRawValues = [];
     for (let row of queryResults) {
@@ -687,7 +687,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         return { 'count': 0, 'record': {} };
     }
 
-    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
+    let wktQuery = await query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`, "KE-10");
 
     let wktResults = {};
     for (let row of wktQuery) {
@@ -698,7 +698,7 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
         formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + recordNum*10 + `}`, "KE-11");
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -921,7 +921,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardQuery += ` ORDER BY desc(?score)`;
     }
     
-    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    let queryResults = await query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, "KE-12");
 
     let hazardEntites = [];
     for (let row of queryResults) {
@@ -962,7 +962,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         VALUES ?entity {${hazardEntites.join(' ')}}
     } GROUP BY ?entity` ;
 
-    queryResults = await query(hazardAttributesQuery);
+    queryResults = await query(hazardAttributesQuery, "KE-13");
     queryResults.forEach(function(row, counterRow) {
         // If there isn't a quantified name use the regular label
         if (typeof row.placeQuantName === 'undefined') {
@@ -985,7 +985,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
     })
     console.log(formattedResults)
 
-    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`,"KE-14");
       return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -1160,7 +1160,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
       expertQuery += ` ?score ORDER BY desc(?score)`;
     }
 
-    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    let queryResults = await query(expertQuery + ` LIMIT` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum, "KE-15");
     for (let row of queryResults) {
       let place_label = '';
       if (typeof row.affiliationQuantName === 'undefined') {
@@ -1186,7 +1186,7 @@ async function getExpertSearchResults(pageNum, recordNum, parameters) {
         });
     }
 
-    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`);
+    let countResults = await query(`select (count(*) as ?count) { ` + expertQuery + ` LIMIT ` + recordNum*10 + `}`, "KE-16");
     return { 'count': countResults[0].count.value, 'record': formattedResults };
 }
 
@@ -1201,7 +1201,7 @@ async function getExpertTopics() {
         ?subtopic rdfs:label ?sublabel.
     } ORDER BY ASC(?label)`;
 
-    let queryResults = await query(topicQuery);
+    let queryResults = await query(topicQuery, "KE-17");
     for (let row of queryResults) {
         let topicShortArray = row.topic.value.split("/");
         let topicShort = topicShortArray[topicShortArray.length - 1];
