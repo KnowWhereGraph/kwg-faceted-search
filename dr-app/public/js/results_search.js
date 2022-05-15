@@ -516,8 +516,6 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     }, debounceTimeout);
 
     $scope.selectHazard = debounce(function($event) {
-        console.log("select the hazard, ", $event.target.value);
-
         cleanHazardOC($event.target, $scope);
 
         var parameters = getParameters();
