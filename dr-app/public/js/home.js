@@ -3,8 +3,6 @@ console.log(window.location.href);
 kwgApp.controller("mainController", function($scope, $window) {
     $scope.inputQuery = "";
 
-
-
     $scope.onKeywordChange = function() {
         $scope.inputQuery = this.inputQuery;
     }

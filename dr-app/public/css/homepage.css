@@ -551,6 +551,9 @@ div.form-group button:hover {
 
 footer div.footer {
     height: 256px;
+    /* position: fixed; */
+    position: relative;
+    bottom: 0px;
     background-color: #00021F;
     padding-top: 74px;
 }
