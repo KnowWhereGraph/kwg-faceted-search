@@ -737,12 +737,16 @@ async function getPlaceSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 09601e22 (Fix the quantified name query)
                         OPTIONAL { ?entity kwg-ont:quantifiedName ?quantifiedName. }
 =======
                         OPTIONAL { kwg-ont:quantifiedName ?quantifiedName. }
 >>>>>>> c3cbe2d4 (Include upstream changes)
+=======
+                        OPTIONAL {?entity kwg-ont:quantifiedName ?quantifiedName. }
+>>>>>>> 12757356 (Fix optional statements in place search)
                         values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
                         ?type rdfs:label ?typeLabel
                     } order by desc(?score)`);
