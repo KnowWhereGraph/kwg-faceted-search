@@ -1929,6 +1929,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 =======
 =======
@@ -1937,6 +1938,8 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 >>>>>>> 4aea120e (Handle multiple places for quantified names while searching for hazards)
 =======
 >>>>>>> c3cbe2d4 (Include upstream changes)
+=======
+>>>>>>> 846cee48 (Fix placeQuantName retrieval issue in hazard search)
 <<<<<<< HEAD
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 =======
@@ -1960,7 +1963,13 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
     let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
 >>>>>>> b9437243 (Include upstream changes)
+<<<<<<< HEAD
 >>>>>>> c3cbe2d4 (Include upstream changes)
+=======
+=======
+    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+>>>>>>> df82b7d5 (Fix placeQuantName retrieval issue in hazard search)
+>>>>>>> 846cee48 (Fix placeQuantName retrieval issue in hazard search)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
@@ -1979,7 +1988,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
         VALUES ?entity {${hazardEntites.join(' ')}}
-    } GROUP BY ?entity ?placeLabel ?placeQuantName`;
+    } GROUP BY ?entity ?placeQuantName`;
 
     queryResults = await query(hazardAttributesQuery);
 
@@ -2065,9 +2074,16 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
 =======
 =======
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
+<<<<<<< HEAD
         formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
 >>>>>>> b9437243 (Include upstream changes)
+<<<<<<< HEAD
 >>>>>>> c3cbe2d4 (Include upstream changes)
+=======
+=======
+        //formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+>>>>>>> df82b7d5 (Fix placeQuantName retrieval issue in hazard search)
+>>>>>>> 846cee48 (Fix placeQuantName retrieval issue in hazard search)
         formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
 =======
 >>>>>>> 984476b3 (Add quantified names to the hazards and people tab)
