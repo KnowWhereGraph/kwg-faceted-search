@@ -941,7 +941,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         hazardEntites.push(row.entity.value.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/','kwgr:'));
     }
 
-    let hazardAttributesQuery = `select distinct ?entity ?placeQuantName (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
     {
         ?entity rdf:type ?type;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
@@ -960,7 +960,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
 
         VALUES ?entity {${hazardEntites.join(' ')}}
-    } GROUP BY ?entity ?placeQuantName`;
+    } GROUP BY ?entity`;
 
     queryResults = await query(hazardAttributesQuery);
 
@@ -981,7 +981,7 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
         formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
         formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||');
-        //formattedResults[counterRow]['place_name'] = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value.split('||');
+        formattedResults[counterRow]['place_name'] = formattedResults[counterRow]['place_name'].split('||');
         formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
         formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
