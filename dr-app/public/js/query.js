@@ -808,17 +808,18 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         if (placeEntities.length > 0)
         {
             let placesConnectedToS2 = [];
-            let placesLocatedIn = [];
+            // let placesLocatedIn = [];
             for (let i = 0 ; i < placeEntities.length; i++)
             {
-                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+/*                 if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
                 {
                     placesConnectedToS2.push(placeEntities[i]);
                 }
                 if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
                 {
                     placesLocatedIn.push(placeEntities[i]);
-                }
+                } */
+                placesConnectedToS2.push(placeEntities[i]);
             }
             if (placesConnectedToS2.length > 0)
             {
@@ -828,45 +829,46 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
                     ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
                 `;  
             }
-            if (placesLocatedIn.length > 0)
+/*             if (placesLocatedIn.length > 0)
             {
                 placeSearchQuery += `
                     ?s2cellGNIS kwg-ont:spatialRelation ?placesNonConnectedToS2.
                     values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
                 `;
-            }
+            } */
         }
     }
     else if (placeEntities.length > 0)
     {
         let placesConnectedToS2 = [];
-        let placesLocatedIn = [];
+        //let placesLocatedIn = [];
         for (let i = 0 ; i < placeEntities.length; i++)
         {
-            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
+/*             if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
             {
                 placesConnectedToS2.push(placeEntities[i]);
             }
             if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
             {
                 placesLocatedIn.push(placeEntities[i]);
-            }
+            } */
+            placesConnectedToS2.push(placeEntities[i]);
         }
         if (placesConnectedToS2.length > 0)
         {
             placeSearchQuery += `
-                ?entity kwg-ont:sfWithin ?s2Cell .
+                ?entity kwg-ont:spatialRelation ?s2Cell .
                 ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
                 values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
                 ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
             `;  
         }
-        if (placesLocatedIn.length > 0)
+/*         if (placesLocatedIn.length > 0)
         {
             placeSearchQuery += `
                 values ?place {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
             `;
-        }
+        } */
     }
 
     //Filter by the date hazard occurred
