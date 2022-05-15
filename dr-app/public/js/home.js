@@ -1,5 +1,5 @@
-console.log("url....");
-console.log(window.location.href);
+// console.log("url....");
+// console.log(window.location.href);
 kwgApp.controller("mainController", function($scope, $window) {
     $scope.inputQuery = "";
 

@@ -36,12 +36,12 @@ kwgApp.controller("spatialSearchController", function($scope, $timeout, $locatio
     //prep for URL variable tracking
     urlVariables = $location.search();
 
-    console.log("urlVariables: ", urlVariables);
-    console.log(window.location.href);
+    // console.log("urlVariables: ", urlVariables);
+    // console.log(window.location.href);
     var current_url = window.location.href;
     if (current_url.includes("result_search")) {
         angular.element("header .container")[0].style.padding = "140px 30px 15px 30px";
-        console.log("modified");
+        // console.log("modified");
     } else {
         angular.element("header .container")[0].style.padding = "160px 30px 50px 30px";
     }
