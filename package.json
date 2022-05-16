@@ -1,5 +1,8 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 178354f6 (indent problem)
   "name": "faceted-search",
   "version": "0.0.0",
   "scripts": {
@@ -22,11 +25,17 @@
     "@angular/platform-browser-dynamic": "~13.2.0",
     "@angular/router": "~13.2.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "bootstrap": "^5.1.3",
     "jquery": "^3.6.0",
 =======
     "leaflet": "^1.7.1",
 >>>>>>> 3949f561 (Add a leaflet map to the search page)
+=======
+    "@geoman-io/leaflet-geoman-free": "^2.11.4",
+    "leaflet": "^1.7.1",
+    "leaflet.pm": "^2.2.0",
+>>>>>>> 178354f6 (indent problem)
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -46,6 +55,7 @@
     "karma-jasmine-html-reporter": "~1.7.0",
     "typescript": "~4.5.2"
   }
+<<<<<<< HEAD
 =======
     "name": "faceted-search",
     "version": "0.0.0",
@@ -96,3 +106,6 @@
 =======
 }
 >>>>>>> dcc97335 (remove jquery and bootstrap")
+=======
+}
+>>>>>>> 178354f6 (indent problem)

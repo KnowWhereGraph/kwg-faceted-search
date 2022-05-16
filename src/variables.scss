@@ -17,4 +17,26 @@ $max-width: 900px;
 $shadow-light: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 $transition-regular: all .2s ease-in-out;
 //Spacing // Margin Padding
-$spacing: ( auto: auto, neg80: -80px !important, neg30: -30px !important, neg20: -20px !important, neg5: -5px !important, 0: 0 !important, 5: 5px !important, 10: 10px !important, 15: 15px !important, 20: 20px !important, 25: 25px !important, 30: 30px !important, 35: 35px !important, 40: 40px !important, 50: 50px !important, 60: 60px !important, 70: 70px !important, 80: 80px !important, 100: 100px !important, 120: 120px !important, 150: 150px !important);
+$spacing: (
+  auto: auto,
+  neg80: -80px !important,
+  neg30: -30px !important,
+  neg20: -20px !important,
+  neg5: -5px !important,
+  0: 0 !important,
+  5: 5px !important,
+  10: 10px !important,
+  15: 15px !important,
+  20: 20px !important,
+  25: 25px !important,
+  30: 30px !important,
+  35: 35px !important,
+  40: 40px !important,
+  50: 50px !important,
+  60: 60px !important,
+  70: 70px !important,
+  80: 80px !important,
+  100: 100px !important,
+  120: 120px !important,
+  150: 150px !important
+);
