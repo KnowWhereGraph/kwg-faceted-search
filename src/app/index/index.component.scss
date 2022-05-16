@@ -1,98 +1,110 @@
 @import "../../variables.scss";
+
 .welcome-kwg {
-    background-color: #D9D9DE;
-    z-index: -1;
-    text-align: center;
-    padding-top: 90px;
-    padding-bottom: 70px;
-    color: #212529;
-    h2 {
-        margin-top: 0;
-        font-size: 2rem;
-        line-height: 1.2;
-        margin-bottom: 8px;
-    }
-    p {
-        margin-bottom: 50px;
-        font-size: 1rem;
-        line-height: 1.5;
-    }
+  background-color: #D9D9DE;
+  z-index: -1;
+  text-align: center;
+  padding-top: 90px;
+  padding-bottom: 70px;
+  color: #212529;
+
+  h2 {
+    margin-top: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 50px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
 }
 
 .explore {
-    background-color: #CFCFD5;
-    padding: 70px 0 90px;
+  background-color: #CFCFD5;
+  padding: 70px 0 90px;
+  text-align: center;
+
+  div.container {
     text-align: center;
-    div.container {
-        text-align: center;
-        margin-bottom: 50px;
-    }
-    .columns-3>* {
-        width: 31%;
-    }
-    .card-group-home {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-top: 40px;
-    }
-    a {
-        text-decoration: none;
-        display: inline-block;
-    }
-    .card-explore {
-        background: #FFFFFF;
-        box-shadow: 0 10px 64px 0 rgb(0, 0, 0, 0.20);
-        border-radius: 5px;
-        transition: all .2s ease;
-        text-align: center;
-    }
-    .card-body {
-        padding: 20px;
-    }
-    .card-title {
-        color: #00021f;
-        font-weight: bold;
-        margin-bottom: 0;
-    }
-    .card-title p {
-        font-size: 1rem;
-    }
+    margin-bottom: 50px;
+  }
+
+  .columns-3>* {
+    width: 31%;
+  }
+
+  .card-group-home {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .card-explore {
+    background: #FFFFFF;
+    box-shadow: 0 10px 64px 0 rgb(0, 0, 0, 0.20);
+    border-radius: 5px;
+    transition: all .2s ease;
+    text-align: center;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-title {
+    color: #00021f;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+
+  .card-title p {
+    font-size: 1rem;
+  }
 }
 
 // buttons for learn more
 .button.secondary {
-    background-color: #252648;
+  background-color: #252648;
 }
 
 .button {
-    height: 50px;
-    display: inline-block;
-    padding: 12px 30px;
-    color: #fff;
-    text-decoration: none;
-    box-shadow: 0 5px 15px 0 rgb(0, 0, 0, 0.20);
-    border-radius: 5px;
-    transition: all .2s ease;
+  height: 50px;
+  display: inline-block;
+  padding: 12px 30px;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 5px 15px 0 rgb(0, 0, 0, 0.20);
+  border-radius: 5px;
+  transition: all .2s ease;
 }
 
 .button:hover {
-    transform: scale(1.05);
-    color: #fff;
+  transform: scale(1.05);
+  color: #fff;
 }
 
 .home-map {
-    background-color: #D9D9DE;
-    text-align: center;
-    position: relative;
-    padding: 90px 0 120px;
-    #home-map-container {
-        height: 500px;
-        width: 50%;
-        border-radius: 5px;
-        margin: 0 auto;
-        background-color: pink;
-        padding: 0px;
-    }
+  background-color: #D9D9DE;
+  text-align: center;
+  position: relative;
+  padding: 90px 0 120px;
+
+  #home-map-container {
+    height: 500px;
+    width: 50%;
+    border-radius: 5px;
+    margin: 0 auto;
+    background-color: pink;
+    padding: 0px;
+  }
 }
