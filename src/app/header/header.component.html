@@ -1,1 +1,16 @@
-<p>header works!</p>
+<header [ngStyle]="{'height': router.url == '/' ? 'auto' : '200px'}">
+    <div class="home">
+        <div class="container" *ngIf="router.url == '/' ">
+            <h1>Faceted Search: Discovery begins here.</h1>
+        </div>
+
+        <div class="search-bar-home" *ngIf="router.url == '/' ">
+            <form>
+                <div class="form-group">
+                    <input class="form-control" placeholder="Search Places, Hazards, and Experts" />
+                    <button class="btn" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</header>

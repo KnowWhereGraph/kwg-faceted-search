@@ -30,22 +30,30 @@
   display: none !important;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .table-container {
   height: 100%;
 }
 
-.mat-row:nth-child(even){
+.mat-row:nth-child(even) {
   background-color: $grey-light;
 }
-.mat-row:nth-child(even):hover{
+
+.mat-row:nth-child(even):hover {
   background-color: #c4c4cc;
 }
 
-.mat-row:nth-child(odd):hover{
-background-color: #ececec;
+.mat-row:nth-child(odd):hover {
+  background-color: #ececec;
 }
 
 .mat-header-cell {
@@ -54,7 +62,7 @@ background-color: #ececec;
   box-shadow: solid black;
 }
 
-:host ::ng-deep .mat-tab-body-wrapper  {
+:host ::ng-deep .mat-tab-body-wrapper {
   display: flex;
   flex-direction: column;
 }
@@ -73,6 +81,15 @@ background-color: #ececec;
 }
 
 .results-table {
-  height:80%;
-  table-layout:fixed;
+  height: 80%;
+  table-layout: fixed;
+}
+
+// adding more scss sheets for global setting
+.container {
+  max-width: 960px !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }

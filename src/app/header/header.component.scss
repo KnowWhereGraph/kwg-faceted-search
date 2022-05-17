@@ -1,0 +1,59 @@
+@import "../../variables.scss";
+
+header {
+  width: 100%;
+  height: auto;
+  // overflow: hidden;
+  top: 0;
+  background-image: url("../../assets/images/background-landing.png");
+  z-index: -1;
+
+  .container {
+    text-align: center;
+    padding: 160px 30px 50px 30px;
+  }
+
+  h1 {
+    color: #fff;
+    font-size: 2.5rem;
+  }
+
+  .search-bar-home {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: -30px;
+
+    input {
+      height: 60px;
+      box-shadow: 0 15px 25px 0 rgba(0, 0, 0, 0.10);
+      padding-left: 25px;
+      transition: all .2s ease;
+    }
+
+    input:hover {
+      transform: scale(1.005);
+    }
+
+    button {
+      width: 114px;
+      height: 40px;
+      color: #FFFFFF;
+      border-radius: 3px;
+      background-color: #2BA9BD !important;
+      box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.05);
+      padding: 0px;
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      margin: 3px;
+      transition: all .2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      color: #fff;
+    }
+  }
+}

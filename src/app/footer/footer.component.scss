@@ -1,6 +1,6 @@
 @import "../../variables.scss";
 
-.footer {
+footer {
   background: $base-dark;
   display: flex;
   justify-content: center;
@@ -10,7 +10,7 @@
     max-width: $max-width;
 
     img {
-      width: 100rem;
+      width: 13rem;
     }
   }
 }

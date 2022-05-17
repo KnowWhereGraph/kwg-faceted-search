@@ -1,28 +1,21 @@
 // Variables used across all scss sheets
 $base-dark: #00021F;
-$base-dark-transparent-50: rgba(0,2,31,0.5);
-$base-dark-transparent-20: rgba(0,2,31,0.2);
+$base-dark-transparent-50: rgba(0, 2, 31, 0.5);
+$base-dark-transparent-20: rgba(0, 2, 31, 0.2);
 $base-dark-alt: #252648;
-
 $grey-darker: #A4A4AF;
 $grey-dark: #CFCFD5;
 $grey: #D8D8DD;
 $grey-light: #F2F2F4;
-
 $light: #FFF;
-
 $accent: #42D6ED;
 $accent-text: #2BA9BD;
 $accent-text-hover: #2FB9CF;
 $accent-text-transparent-20: #D9EDF1;
 $accent-text-dark: #117F91;
-
 $max-width: 900px;
-
 $shadow-light: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
-
 $transition-regular: all .2s ease-in-out;
-
 //Spacing // Margin Padding
 $spacing: (
   auto: auto,

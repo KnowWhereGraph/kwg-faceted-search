@@ -8,9 +8,9 @@ describe('FacetsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FacetsComponent ]
+      declarations: [FacetsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
