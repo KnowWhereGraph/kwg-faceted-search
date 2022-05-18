@@ -23,6 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { PeopleTableComponent } from './people-table/people-table.component';
 import { MapComponent } from './map/map.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { FormsModule } from '@angular/forms';
+import { TreeModule } from '@circlon/angular-tree-component';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
+    FormsModule,
+    TreeModule,
     RouterModule.forRoot([
     {path: '', component: IndexComponent},
     {path: 'about', component: AboutComponent},

@@ -70,7 +70,7 @@ export class HazardsTableComponent implements OnInit {
     this.queryService.getAllHazards(this.pageSize, offset).subscribe({
       next: response => {
       // Once the hazards have been retrieved, attempt to get the associated properties
-      let results = this.queryService.getResults(response)
+      let results = this.queryService.getResults(response);
       let hazardUris: Array<string> = [];
 
       // Once the initial list of hazards is retrieved, create a list of URIs and get additional information about them

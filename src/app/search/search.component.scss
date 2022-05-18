@@ -3,7 +3,16 @@
 // Styling for the container that holds the facets, table, and map
 .search-body {
   display: flex;
+  height: 100%;
   background-color: #CFCFD5;
+}
+
+.facets {
+  padding-right: 2rem;
+  padding-left: 2rem;
+  background: #D8D8DD;
+  height: 100%;
+  min-width: 15%;
 }
 
 // Styling for the container that holds the results count, table, and paginator
@@ -17,16 +26,15 @@
 }
 
 .tab-group {
-  //overflow: scroll;
-  height: 100%;
+  overflow: auto;
 }
 
 .results-count {
   display: flex;
   flex: 1;
   font-size: 2rem;
-  margin-bottom: 0.5em;
-  height: 3rem;
+  margin-top: 0;
+  height: 10%;
 }
 
 .table-container {
@@ -59,6 +67,11 @@
 // The images on the table head
 .table-head-img {
   padding-right: 0.2rem;
+}
+
+// The pagination bar
+:host ::ng-deep.mat-paginator .mat-paginator-container {
+  justify-content: normal !important;
 }
 
 .map-container {

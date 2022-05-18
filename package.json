@@ -33,6 +33,7 @@
 >>>>>>> 3949f561 (Add a leaflet map to the search page)
 =======
     "@geoman-io/leaflet-geoman-free": "^2.11.4",
+    "@circlon/angular-tree-component": "^11.0.4",
     "leaflet": "^1.7.1",
     "leaflet.pm": "^2.2.0",
 >>>>>>> 178354f6 (indent problem)

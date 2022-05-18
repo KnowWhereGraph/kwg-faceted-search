@@ -39,10 +39,11 @@ export class QueryService {
   }
 
   // Takes a query string without the prefixes and returns the fully crafted query
-  getRequestBody(query: string) {
+  getRequestBody(query: string, reason: boolean=true) {
     let fullQuery = this.prefixesCombined+query;
     let httpParams = new URLSearchParams();
     httpParams.set('query', fullQuery);
+    httpParams.set('infer', String(reason));
     return httpParams;
   }
 
@@ -213,5 +214,86 @@ export class QueryService {
     // Given a sparql query response, return an array of values
     getResults(response: any) {
       return response['results']['bindings'];
+    }
+
+    /**
+     * Returns all of the administrative regions in the United States
+     */
+     getAdministrativeRegions() {
+      return this.http.get('../assets/data/us_admin_regions.json');
+    }
+
+    /**
+     * Gets the highest level administrative region, the United States
+     */
+    getTopLevelAdministrativeRegions() {
+      let query = `select ?country ?country_label where {
+        values ?country {kwgr:Earth.North_America.United_States.USA}
+        ?country rdfs:label ?country_label .
+      }`
+      let headers = this.getRequestHeaders();
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
+     * Gets the highest level administrative region,
+     */
+     getStateAdministrativeRegions() {
+      let query = `SELECT DISTINCT ?state ?state_label where {
+        ?state kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA .
+    	?state a kwg-ont:AdministrativeRegion_2 .
+        ?state rdfs:label ?state_label .
+    } ORDER BY ?state_label`
+      let headers = this.getRequestHeaders();
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
+     * Gets the counties in an administrative region
+     * @param {String} stateURI The URI of the state whose counties are being queried
+     */
+     getCountyAdministrativeRegions(stateURI) {
+      let query = `SELECT DISTINCT ?county_label where {
+        ?county kwg-ont:sfWithin <`+stateURI+`> .
+    	  ?county a kwg-ont:AdministrativeRegion_3 .
+        ?county rdfs:label ?county_label .
+        } ORDER BY ?state_label`
+      let headers = this.getRequestHeaders();
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
+     * Returns all of the climate divisions in the United States
+     */
+    getClimateDivisions() {
+      return this.http.get('../assets/data/us_climate_divisions.json');
+    }
+
+    /**
+     * Gets the top level hazard classes.
+     */
+    getTopLevelHazards() {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label where {
+        ?hazard rdfs:subClassOf kwg-ont:Hazard .
+        ?hazard rdfs:label ?hazard_label .
+        } ORDER BY ?hazard_label`
+      let headers = this.getRequestHeaders();
+      // Disable reasoning so that we only get the top level hazards
+      let body = this.getRequestBody(query, false);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    getHazardChildren(hazardURI) {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?hazard) as ?count) where {
+        ?hazard rdfs:subClassOf <`+hazardURI+`> .
+        ?hazard rdfs:label ?hazard_label .
+        } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
+      let headers = this.getRequestHeaders();
+      // Disable reasoning so that we only get the top level hazards
+      let body = this.getRequestBody(query, false);
+      return this.http.post(this.endpoint, body, headers);
     }
 }
