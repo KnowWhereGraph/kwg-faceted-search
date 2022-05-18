@@ -1,10 +1,3 @@
-.facets {
-  padding-right: 2rem;
-  padding-left: 2rem;
-  background: #D8D8DD;
-  height: 100%;
-}
-
 .search-form {
   display: flex;
   flex-wrap: wrap;
@@ -28,16 +21,29 @@
   font-size: 14px;
   height: 2.5rem;
   outline: none;
-  width: 4rem;
 }
 
 .search-submit {
   height: 2.5rem;
-  width: 3rem;
   font-size: 14px;
   background: #00021F;
   border: none;
   border-radius: 0 5px 5px 0;
   color: #FFF;
   cursor: pointer;
+}
+
+.facet {
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollable-facet {
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.hazard-facets {
+  height: 30%;
+  overflow: auto;
 }

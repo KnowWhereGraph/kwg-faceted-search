@@ -1,57 +1,70 @@
-<div class="facets">
-  <div class="search-box">
-    <form class="search-form">
-      <label class="sr-only" for="keyword">Enter Your Query</label>
-      <input class="search-input" type="text" id="keyword" name="keyword" placeholder="Enter your query">
-      <input class="search-submit" type="submit" value="Search">
-    </form>
+<div class="search-box">
+  <form class="search-form">
+    <label class="sr-only" for="keyword">Search by keyword</label>
+    <input class="search-input" type="text" id="keyword" name="keyword" placeholder="Search by keyword">
+    <input class="search-submit" type="submit" value="Search">
+  </form>
+</div>
+
+<!-- Place Facets -->
+<div *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1" class="place-facets">
+  <h3>Place</h3>
+  <!-- Only show the administrative regions on the Place tab-->
+  <div *ngIf="selectedTabIndex === 0">
+    <div class="facet">
+      <span class="search-header">
+        Administrative Regions
+      </span>
+      <input autocomplete="true" type="text" placeholder="Find an Administrative Region..." [(ngModel)]="adminRegion" (keyup.enter)="facetChanged()">
+    </div>
   </div>
 
-  <!-- Place Facets -->
-  <div *ngIf="selectedTabIndex === 0" class="place-facets">
-    <h3>Place</h3>
-    <span class="search-header">
-      Administrative Regions
-    </span>
-    <br>
+    <!-- Only show the US Places nested checkbox facet on the Hazards tab-->
+    <div class="scrollable-facet" *ngIf="selectedTabIndex === 1">
+      <tree-root [nodes]="administrativeRegionsDisplay" (activate)="facetChanged()" [options]="adminRegionOptions"></tree-root>
+    </div>
+
+  <br>
+  <div class="facet">
     <span class="search-header">
       Zip Code
     </span>
-    <br>
+    <input autocomplete="true" type="text" placeholder="Find a Zip Code..." [(ngModel)]="zipCode"  (keyup.enter)="facetChanged()">
+  </div>
+  <br>
+  <div class="facet">
+    <span class="search-header">
+      FIPS Code
+    </span>
+    <input autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode" (keyup.enter)="facetChanged()">
+  </div>
+  <br>
+  <div class="facet">
     <span class="search-header">
       US Climate Division
     </span>
-    <br>
+    <input autocomplete="true" type="text" placeholder="Find a US Climate Division..." [(ngModel)]="climateDivision" (keyup.enter)="facetChanged()">
+  </div>
+  <br>
+  <div class="facet">
     <span class="search-header">
       National Weather Zone
     </span>
+    <input autocomplete="true" type="text" placeholder="Find a National Weather Zone..." [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged()">
   </div>
+</div>
 
-  <!-- Hazard Facets -->
-  <div *ngIf="selectedTabIndex === 1" class="place-facets">
-    <h3>Place</h3>
-    <span class="search-header">
-      Zip Code
-    </span>
-    <br>
-    <span class="search-header">
-      US Climate Division
-    </span>
-    <br>
-    <span class="search-header">
-      National Weather Zone
-    </span>
-    <h3>Hazard</h3>
-    <span class="search-header">
-      Start Date
-    </span>
-    <br>
-    <span class="search-header">
-      End Date
-    </span>
-    <br>
-    <span class="search-header">
-      Hazard Types
-    </span>
-  </div>
+<!-- Hazard Facets -->
+<div *ngIf="selectedTabIndex === 1" class="hazard-facets">
+  <h3>Hazard</h3>
+  <span class="search-header">
+    Start Date
+  </span>
+  <br>
+  <span class="search-header">
+    End Date
+  </span>
+  <br>
+  <span class="search-header">Hazard Type(s)</span>
+  <tree-root class="hazard-types" [nodes]="hazardClassesDisplay" (activate)="facetChanged()" [options]="hazardOptions"></tree-root>
 </div>
