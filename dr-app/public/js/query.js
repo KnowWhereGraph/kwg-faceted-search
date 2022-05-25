@@ -807,66 +807,21 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         `;
         if (placeEntities.length > 0)
         {
-            let placesConnectedToS2 = [];
-            let placesLocatedIn = [];
-            for (let i = 0 ; i < placeEntities.length; i++)
-            {
-                if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
-                {
-                    placesConnectedToS2.push(placeEntities[i]);
-                }
-                if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
-                {
-                    placesLocatedIn.push(placeEntities[i]);
-                }
-            }
-            if (placesConnectedToS2.length > 0)
-            {
-                placeSearchQuery += `
-                    ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
-                    values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
-                    ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
-                `;  
-            }
-            if (placesLocatedIn.length > 0)
-            {
-                placeSearchQuery += `
-                    ?s2cellGNIS kwg-ont:spatialRelation ?placesNonConnectedToS2.
-                    values ?placesNonConnectedToS2 {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
-                `;
-            }
+            placeSearchQuery += `
+                ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+                ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
+            `;  
         }
     }
     else if (placeEntities.length > 0)
     {
-        let placesConnectedToS2 = [];
-        let placesLocatedIn = [];
-        for (let i = 0 ; i < placeEntities.length; i++)
-        {
-            if (placeEntities[i].startsWith('zipcode') || placeEntities[i].startsWith('noaaClimateDiv'))
-            {
-                placesConnectedToS2.push(placeEntities[i]);
-            }
-            if (placeEntities[i].startsWith('Earth') || placeEntities[i].startsWith('NWZone'))
-            {
-                placesLocatedIn.push(placeEntities[i]);
-            }
-        }
-        if (placesConnectedToS2.length > 0)
-        {
-            placeSearchQuery += `
-                ?entity kwg-ont:sfWithin ?s2Cell .
-                ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
-                values ?placesConnectedToS2 {kwgr:` + placesConnectedToS2.join(' kwgr:') + `}
-                ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
-            `;  
-        }
-        if (placesLocatedIn.length > 0)
-        {
-            placeSearchQuery += `
-                values ?place {kwgr:` + placesLocatedIn.join(' kwgr:') + `}
-            `;
-        }
+        placeSearchQuery += `
+            ?entity kwg-ont:spatialRelation ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+            ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
+        `;  
     }
 
     //Filter by the date hazard occurred
@@ -983,7 +938,6 @@ async function getHazardSearchResults(pageNum, recordNum, parameters) {
         formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
         formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
     })
-    console.log(formattedResults)
 
     let countResults = await query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum*10 + `}`);
       return { 'count': countResults[0].count.value, 'record': formattedResults };
