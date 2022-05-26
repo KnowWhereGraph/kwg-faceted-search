@@ -263,6 +263,12 @@
         font-family: sans-serif;
         margin-bottom: 0;
       }
+
+      .nav-item .item:hover{
+        color: #2FB9CF;
+        padding-bottom: 7.5px;
+        border-bottom: solid 2px;
+      }
     }
   }
 }
