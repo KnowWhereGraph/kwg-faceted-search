@@ -78,8 +78,10 @@
 }
 
 .button {
-  height: 50px;
+  height: 26px;
   display: inline-block;
+  // vertical-align: middle;
+  line-height: 26px;
   padding: 12px 30px;
   color: #fff;
   text-decoration: none;
