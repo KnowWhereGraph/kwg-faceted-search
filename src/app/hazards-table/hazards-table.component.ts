@@ -85,7 +85,7 @@ export class HazardsTableComponent implements OnInit {
         // Replace the prefixed URI part so we don't have to escape the slashes in the query
         entityUri = entityUri.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/', 'kwgr:')
         // Make a list of all the hazards that we want properties for
-        hazardUris.push(entityUri)
+        hazardUris.push(entityUri);
       }
       this.queryService.getHazardProperties(hazardUris).subscribe({
         next: response => {
@@ -115,13 +115,12 @@ export class HazardsTableComponent implements OnInit {
           this.searchQueryFinishedEvent.emit(true);
         },
         error: error => {
-          console.log("Error getting the hazard properties", error)
+          console.error("Error getting the hazard properties", error)
         }
       })
       },
       error: error => {
-        console.log("Error")
-        console.log(error)
+        console.error("Error")
       }
     })
   }
