@@ -30,7 +30,7 @@ export class FacetsComponent implements OnInit {
   // Container for all the GNIS classes in the dropdown menu
   gnisClassesDisplay: Array<{ name: string, hasChildren: boolean }> = [];
   // Container for all of the experts in the dropdown facet
-  expertClassesDisplay: Array<{ name: string, hasChildren: boolean }> = [];
+  expertClassesDisplay: Array<{ name: string, hasChildren: boolean, uri: string }> = [];
   // The start date of the search
   startDate: string = "";
   // The end date of the search
@@ -48,6 +48,11 @@ export class FacetsComponent implements OnInit {
 
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
+    useCheckbox: true
+  }
+
+  expertOptions: ITreeOptions = {
+    getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true
   }
 
@@ -164,7 +169,7 @@ export class FacetsComponent implements OnInit {
       }
     });
 
-    // Load the top level administrative regions (country)
+    // Load the top level experts
     this.queryService.getTopLevelExperts().subscribe({
       next: response => {
         let results = this.queryService.getResults(response);
@@ -172,7 +177,8 @@ export class FacetsComponent implements OnInit {
         results.forEach(element => {
           this.expertClassesDisplay.push({
             name: element['name']['value'],
-            hasChildren: true,
+            hasChildren: element['count']['value'] > 0,
+            uri: element['topic']['value'],
           })
         });
       }
@@ -296,6 +302,30 @@ export class FacetsComponent implements OnInit {
           resolve(states);
         }
       });
-    })
+    });
+  }
+
+  /**
+   * Retrieves the children for a particular expert node
+   *
+   * @param parent The tree node whose children are being retrieved
+   */
+  getExpertChildren(node: TreeNode) {
+    return new Promise((resolve, reject) => {
+      this.queryService.getExpertChildren(node['data']['uri']).subscribe({
+        next: response => {
+          let children: any = new Array();
+          let parsedResponse = this.queryService.getResults(response);
+          parsedResponse.forEach(element => {
+            children.push({
+              name: element['name']['value'],
+              hasChildren: element['count']['value'] > 0,
+              uri: element['sub_topic']['value']
+            });
+          })
+          resolve(children);
+        }
+      });
+    });
   }
 }
