@@ -81,7 +81,7 @@
     <input class="facet-input date-facet" type="date" [(ngModel)]="endDate">
   </div>
   <span class="search-header">Hazard Type(s)</span>
-  <div class="tclass">
+  <div class="hazard-types">
     <tree-root class="hazard-types" [nodes]="hazardClassesDisplay" (activate)="facetChanged()"
       [options]="hazardOptions"></tree-root>
   </div>
