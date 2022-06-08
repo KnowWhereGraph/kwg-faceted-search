@@ -287,10 +287,14 @@ export class QueryService {
      * Gets the top level hazard classes.
      */
     getTopLevelHazards() {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label where {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
         ?hazard rdfs:subClassOf kwg-ont:Hazard .
         ?hazard rdfs:label ?hazard_label .
-        } ORDER BY ?hazard_label`
+        OPTIONAL {
+          ?child rdfs:subClassOf ?hazard .
+          FILTER (!isBlank(?child))
+        }
+        } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
       let headers = this.getRequestHeaders();
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
@@ -298,10 +302,13 @@ export class QueryService {
     }
 
     getHazardChildren(hazardURI) {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?hazard) as ?count) where {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?child) as ?count) where {
         ?hazard rdfs:subClassOf <`+hazardURI+`> .
         ?hazard rdfs:label ?hazard_label .
-        } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
+        OPTIONAL {
+          ?child rdfs:subClassOf ?hazard .
+        }
+      } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
       let headers = this.getRequestHeaders();
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);

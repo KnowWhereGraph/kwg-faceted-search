@@ -193,7 +193,6 @@ export class FacetsComponent implements OnInit {
       }
     });
 
-
     // Load the top level hazard classes
     this.queryService.getTopLevelHazards().subscribe({
       next: response => {
@@ -202,7 +201,7 @@ export class FacetsComponent implements OnInit {
         results.forEach(element => {
           this.hazardClassesDisplay.push({
             name: element['hazard_label']['value'],
-            hasChildren: true,
+            hasChildren: element['count']['value'] > 0,
             uri: element['hazard']['value']
           })
         });
@@ -263,10 +262,9 @@ export class FacetsComponent implements OnInit {
           let states: any = new Array();
           let parsedResponse = this.queryService.getResults(response);
           parsedResponse.forEach(element => {
-            let hasChildren = Boolean(element['count']['value'] > 0)
             states.push({
               name: element['hazard_label']['value'],
-              hasChildren: hasChildren,
+              hasChildren: element['count']['value'] > 0,
               uri: element['hazard']['value']
             });
           })
