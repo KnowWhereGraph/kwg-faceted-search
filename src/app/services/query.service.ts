@@ -366,7 +366,7 @@ export class QueryService {
       OPTIONAL {
         ?sub_topic kwg-ont:hasSubTopic ?child .
       }
-  } GROUP BY ?name ?sub_topic`
+  } GROUP BY ?name ?sub_topic ORDER BY ASC(?name)`
     let headers = this.getRequestHeaders();
     // Disable reasoning so that we only get the top level hazards
     let body = this.getRequestBody(query, false);
