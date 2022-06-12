@@ -4,7 +4,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
 import { ITreeOptions, TreeNode } from '@circlon/angular-tree-component'
 
-
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',
@@ -28,6 +27,14 @@ export class FacetsComponent implements OnInit {
   administrativeRegionsDisplay: Array<any> = [];
   // Container for all of the hazard classes that are shown in the dropdown selection
   hazardClassesDisplay: Array<any> = [];
+  // Container for all the GNIS classes in the dropdown menu
+  gnisClassesDisplay: Array<{ name: string, hasChildren: boolean }> = [];
+  // Container for all of the experts in the dropdown facet
+  expertClassesDisplay: Array<{ name: string, hasChildren: boolean, uri: string }> = [];
+  // The start date of the search
+  startDate: string = "";
+  // The end date of the search
+  endDate: string = "";
 
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
@@ -36,6 +43,16 @@ export class FacetsComponent implements OnInit {
 
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
+    useCheckbox: true
+  }
+
+  gnisOptions: ITreeOptions = {
+    getChildren: this.getGNISChildren.bind(this),
+    useCheckbox: true
+  }
+
+  expertOptions: ITreeOptions = {
+    getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true
   }
 
@@ -124,6 +141,21 @@ export class FacetsComponent implements OnInit {
    * facet data and populating the facets with the results.
    */
   populateDynamicFacets() {
+    // Load the initial GNIS classes
+    this.queryService.getGNISClasses().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push({
+            name: element['place_label']['value'],
+            hasChildren: true,
+            uri: element['place']['value']
+          })
+        });
+        this.gnisClassesDisplay = formatted;
+      }
+    });
     // Load the climate divisions for autocompletion
     this.queryService.getClimateDivisions().subscribe({
       next: response => {
@@ -137,7 +169,22 @@ export class FacetsComponent implements OnInit {
       }
     });
 
-    // Load the top level administrative regions (country)
+    // Load the top level experts
+    this.queryService.getTopLevelExperts().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        this.expertClassesDisplay = [];
+        results.forEach(element => {
+          this.expertClassesDisplay.push({
+            name: element['name']['value'],
+            hasChildren: element['count']['value'] > 0,
+            uri: element['topic']['value'],
+          })
+        });
+      }
+    });
+
+    // Load the top level administrative regions (countries)
     this.queryService.getTopLevelAdministrativeRegions().subscribe({
       next: response => {
         let results = this.queryService.getResults(response);
@@ -147,8 +194,8 @@ export class FacetsComponent implements OnInit {
             name: element['country_label']['value'],
             hasChildren: true,
             level: "country"
-          }]
-        });
+          }];
+        })
       }
     });
 
@@ -160,7 +207,7 @@ export class FacetsComponent implements OnInit {
         results.forEach(element => {
           this.hazardClassesDisplay.push({
             name: element['hazard_label']['value'],
-            hasChildren: true,
+            hasChildren: element['count']['value'] > 0,
             uri: element['hazard']['value']
           })
         });
@@ -221,10 +268,9 @@ export class FacetsComponent implements OnInit {
           let states: any = new Array();
           let parsedResponse = this.queryService.getResults(response);
           parsedResponse.forEach(element => {
-            let hasChildren = Boolean(element['count']['value'] >0)
             states.push({
               name: element['hazard_label']['value'],
-              hasChildren: hasChildren,
+              hasChildren: element['count']['value'] > 0,
               uri: element['hazard']['value']
             });
           })
@@ -233,5 +279,53 @@ export class FacetsComponent implements OnInit {
       });
     })
   }
-}
 
+  /**
+   * Retrieves all of the child nodes for a particular GNIS node
+   *
+   * @param node The nod that the user selcted
+   */
+  getGNISChildren(node: TreeNode) {
+    return new Promise((resolve, reject) => {
+      this.queryService.getGNISChildren(node['data']['uri']).subscribe({
+        next: response => {
+          let states: any = new Array();
+          let parsedResponse = this.queryService.getResults(response);
+          parsedResponse.forEach(element => {
+            let hasChildren = Boolean(element['count']['value'] > 0)
+            states.push({
+              name: element['gnis_label']['value'],
+              hasChildren: hasChildren,
+              uri: element['place']['value']
+            });
+          })
+          resolve(states);
+        }
+      });
+    });
+  }
+
+  /**
+   * Retrieves the children for a particular expert node
+   *
+   * @param parent The tree node whose children are being retrieved
+   */
+  getExpertChildren(node: TreeNode) {
+    return new Promise((resolve, reject) => {
+      this.queryService.getExpertChildren(node['data']['uri']).subscribe({
+        next: response => {
+          let children: any = new Array();
+          let parsedResponse = this.queryService.getResults(response);
+          parsedResponse.forEach(element => {
+            children.push({
+              name: element['name']['value'],
+              hasChildren: element['count']['value'] > 0,
+              uri: element['sub_topic']['value']
+            });
+          })
+          resolve(children);
+        }
+      });
+    });
+  }
+}

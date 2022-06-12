@@ -62,14 +62,12 @@ export class PlacesTableComponent implements OnInit {
       next: response => {
         let results = this.queryService.getResults(response)
         this.places = [];
-        console.log(results)
         for (var result of results) {
           this.places.push({
             "name": result["label"]["value"],
             "type": result["typeLabel"]["value"],
           })
         }
-        console.log(this.places)
         this.placesDataSource = new MatTableDataSource(this.places);
         this.searchQueryFinishedEvent.emit(true);
       }

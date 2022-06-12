@@ -26,6 +26,7 @@ export class QueryService {
     'elastic': 'http://www.ontotext.com/connectors/elasticsearch#',
     'elastic-index': 'http://www.ontotext.com/connectors/elasticsearch/instance#',
     'iospress': 'http://ld.iospress.nl/rdf/ontology/',
+    'usgs': 'http://gnis-ld.org/lod/usgs/ontology/'
   };
   // A string representation of the prefixes
   prefixesCombined: string = '';
@@ -252,9 +253,10 @@ export class QueryService {
 
     /**
      * Gets the counties in an administrative region
+     *
      * @param {String} stateURI The URI of the state whose counties are being queried
      */
-     getCountyAdministrativeRegions(stateURI) {
+     getCountyAdministrativeRegions(stateURI: string) {
       let query = `SELECT DISTINCT ?county_label where {
         ?county kwg-ont:sfWithin <`+stateURI+`> .
     	  ?county a kwg-ont:AdministrativeRegion_3 .
@@ -276,24 +278,98 @@ export class QueryService {
      * Gets the top level hazard classes.
      */
     getTopLevelHazards() {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label where {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
         ?hazard rdfs:subClassOf kwg-ont:Hazard .
         ?hazard rdfs:label ?hazard_label .
-        } ORDER BY ?hazard_label`
-      let headers = this.getRequestHeaders();
-      // Disable reasoning so that we only get the top level hazards
-      let body = this.getRequestBody(query, false);
-      return this.http.post(this.endpoint, body, headers);
-    }
-
-    getHazardChildren(hazardURI) {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?hazard) as ?count) where {
-        ?hazard rdfs:subClassOf <`+hazardURI+`> .
-        ?hazard rdfs:label ?hazard_label .
+        OPTIONAL {
+          ?child rdfs:subClassOf ?hazard .
+          FILTER (!isBlank(?child))
+        }
         } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
       let headers = this.getRequestHeaders();
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
       return this.http.post(this.endpoint, body, headers);
     }
+
+    getHazardChildren(hazardURI: string) {
+      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?child) as ?count) where {
+        ?hazard rdfs:subClassOf <`+hazardURI+`> .
+        ?hazard rdfs:label ?hazard_label .
+        OPTIONAL {
+          ?child rdfs:subClassOf ?hazard .
+        }
+      } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
+      let headers = this.getRequestHeaders();
+      // Disable reasoning so that we only get the top level hazards
+      let body = this.getRequestBody(query, false);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    getGNISClasses() {
+      let query = `SELECT DISTINCT ?place ?place_label {
+        ?place rdfs:label ?place_label .
+        values ?place {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
+      } ORDER BY ASC(?place_label)`
+      let headers = this.getRequestHeaders();
+      // Disable reasoning so that we only get the top level hazards
+      let body = this.getRequestBody(query, false);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
+     * Gets all of the subclasses of a GNIS type
+     *
+     * @param gnisURI The URI of the subject whose children are in question
+     */
+    getGNISChildren(gnisURI: string) {
+      let query = `SELECT DISTINCT ?place ?gnis_label (count(distinct ?gnis) as ?count) where {
+        ?place rdfs:subClassOf <`+gnisURI+`> .
+        ?place rdfs:label ?gnis_label .
+        } GROUP BY ?place ?gnis_label ORDER BY ?gnis_label`
+      let headers = this.getRequestHeaders();
+      // Disable reasoning so that we only get the top level hazards
+      let body = this.getRequestBody(query, false);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+  /**
+   * Gets all of the expert topics that aren't the child of any other (top level)
+   *
+   * @returns The SPARQL ResultsSet from the endpoint
+   */
+  getTopLevelExperts() {
+    let query = `SELECT DISTINCT ?topic ?name (COUNT(DISTINCT ?child) as ?count) where {
+      ?topic a kwg-ont:ExpertiseTopic .
+        ?topic rdfs:label ?name .
+        FILTER NOT EXISTS {?supertopic kwg-ont:hasSubTopic ?topic}
+      OPTIONAL {
+          ?topic kwg-ont:hasSubTopic ?child .
+      }
+    } GROUP BY ?topic ?name ORDER BY ASC(?name)`
+    let headers = this.getRequestHeaders();
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
+
+  /**
+   * Retrieves the sub-topics for a particular node
+   *
+   * @param parent The URI of the parent whose children are being obtained
+   * @returns The SPARQL ResultsSet from the endpoint
+   */
+  getExpertChildren(parent: string) {
+    let query = `SELECT DISTINCT ?name ?sub_topic (COUNT(DISTINCT ?child) as ?count) where {
+      <`+parent+`> kwg-ont:hasSubTopic ?sub_topic .
+      ?sub_topic rdfs:label ?name .
+      OPTIONAL {
+        ?sub_topic kwg-ont:hasSubTopic ?child .
+      }
+  } GROUP BY ?name ?sub_topic ORDER BY ASC(?name)`
+    let headers = this.getRequestHeaders();
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
 }

@@ -8,63 +8,91 @@
 
 <!-- Place Facets -->
 <div *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1" class="place-facets">
-  <h3>Place</h3>
+  <h3 class="facet-head">Place</h3>
+  <span class="search-header">Feature Type</span>
+  <tree-root class="feature-types" [nodes]="gnisClassesDisplay" (activate)="facetChanged()" [options]="gnisOptions">
+  </tree-root>
   <!-- Only show the administrative regions on the Place tab-->
   <div *ngIf="selectedTabIndex === 0">
     <div class="facet">
       <span class="search-header">
         Administrative Regions
       </span>
-      <input autocomplete="true" type="text" placeholder="Find an Administrative Region..." [(ngModel)]="adminRegion" (keyup.enter)="facetChanged()">
+      <input class="facet-input" autocomplete="true" type="text" placeholder="Find an Administrative Region..."
+        [(ngModel)]="adminRegion" (keyup.enter)="facetChanged()">
     </div>
   </div>
 
-    <!-- Only show the US Places nested checkbox facet on the Hazards tab-->
-    <div class="scrollable-facet" *ngIf="selectedTabIndex === 1">
-      <tree-root [nodes]="administrativeRegionsDisplay" (activate)="facetChanged()" [options]="adminRegionOptions"></tree-root>
+  <div class="facet" *ngIf="selectedTabIndex === 1">
+    <span class="search-header">
+      Location
+    </span>
+    <!-- Only show the US Places nested checkbox facet on the Hazards tab -->
+    <div class="scrollable-facet">
+      <tree-root [nodes]="administrativeRegionsDisplay" (activate)="facetChanged()" [options]="adminRegionOptions">
+      </tree-root>
     </div>
+  </div>
 
-  <br>
   <div class="facet">
     <span class="search-header">
       Zip Code
     </span>
-    <input autocomplete="true" type="text" placeholder="Find a Zip Code..." [(ngModel)]="zipCode"  (keyup.enter)="facetChanged()">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a Zip Code..." [(ngModel)]="zipCode"
+      (keyup.enter)="facetChanged()">
   </div>
-  <br>
+
   <div class="facet">
     <span class="search-header">
       FIPS Code
     </span>
-    <input autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode" (keyup.enter)="facetChanged()">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode"
+      (keyup.enter)="facetChanged()">
   </div>
-  <br>
+
   <div class="facet">
     <span class="search-header">
       US Climate Division
     </span>
-    <input autocomplete="true" type="text" placeholder="Find a US Climate Division..." [(ngModel)]="climateDivision" (keyup.enter)="facetChanged()">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a US Climate Division..."
+      [(ngModel)]="climateDivision" (keyup.enter)="facetChanged()">
   </div>
-  <br>
+
   <div class="facet">
     <span class="search-header">
       National Weather Zone
     </span>
-    <input autocomplete="true" type="text" placeholder="Find a National Weather Zone..." [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged()">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a National Weather Zone..."
+      [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged()">
   </div>
 </div>
 
 <!-- Hazard Facets -->
-<div *ngIf="selectedTabIndex === 1" class="hazard-facets">
-  <h3>Hazard</h3>
-  <span class="search-header">
-    Start Date
-  </span>
-  <br>
-  <span class="search-header">
-    End Date
-  </span>
-  <br>
+<div *ngIf="selectedTabIndex === 1">
+  <h3 class="facet-head">Hazard</h3>
+  <div class="facet">
+    <span class="search-header">
+      Start Date
+    </span>
+    <input class="facet-input date-facet" type="date" [(ngModel)]="startDate">
+    <span class="search-header">
+      End Date
+    </span>
+    <input class="facet-input date-facet" type="date" [(ngModel)]="endDate">
+  </div>
   <span class="search-header">Hazard Type(s)</span>
-  <tree-root class="hazard-types" [nodes]="hazardClassesDisplay" (activate)="facetChanged()" [options]="hazardOptions"></tree-root>
+  <div class="hazard-types">
+    <tree-root class="hazard-types" [nodes]="hazardClassesDisplay" (activate)="facetChanged()"
+      [options]="hazardOptions"></tree-root>
+  </div>
+</div>
+
+<!-- Expert Facets -->
+<div *ngIf="selectedTabIndex === 2" class="people-facets">
+  <h3 class="facet-head">EXPERTISE</h3>
+  <span class="search-header">Expert Topic(s)</span>
+  <div class="expert-types">
+    <tree-root class="expert-types" [nodes]="expertClassesDisplay" (activate)="facetChanged()"
+      [options]="expertOptions"></tree-root>
+  </div>
 </div>
