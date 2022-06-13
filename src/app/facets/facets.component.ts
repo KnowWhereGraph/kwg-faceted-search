@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
-import { ITreeOptions, TreeNode } from '@circlon/angular-tree-component'
+import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping } from '@circlon/angular-tree-component'
 
 @Component({
   selector: 'app-facets',
@@ -35,6 +35,12 @@ export class FacetsComponent implements OnInit {
   startDate: string = "";
   // The end date of the search
   endDate: string = "";
+  // Flag set when the MTBFire observation collections should be shown
+  showMTBFireOC: boolean = false;
+  // Flag set when the Earthquake observation collections should be shown
+  showEarthquakeOC: boolean = false;
+  // Flag set when the NOAA observation collections should be shown
+  showNOAAOC: boolean = false;
 
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
@@ -67,6 +73,20 @@ export class FacetsComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateDynamicFacets();
+  }
+
+  /**
+   * Called when the hazard class is changed. This method exists separately than the other
+   * facetChanged method because we want to process observation collections here
+   */
+  hazardFacetChanged(event) {
+    if (event.node.data.name == 'MTBS Fire') {
+      this.showMTBFireOC = true;
+    } else if (event.node.data.name == 'Earthquake') {
+      this.showEarthquakeOC = true
+    } else if (event.node.data.name == 'NOAA Hurricane Event') {
+      this.showNOAAOC = true
+    }
   }
 
   /**

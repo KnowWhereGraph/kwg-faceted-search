@@ -3,25 +3,31 @@
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell"> {{row.name}} </span>
+      </mat-cell>
     </ng-container>
 
     <!-- Type Column -->
     <ng-container matColumnDef="type">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell"> {{row.type}} </span>
+      </mat-cell>
     </ng-container>
 
     <!-- Place Column -->
     <ng-container matColumnDef="place">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Place </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.place}} </mat-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell"> {{row.place}} </span>
+      </mat-cell>
     </ng-container>
 
     <!-- Start Date Column -->
-    <ng-container matColumnDef="startDate">
+    <ng-container matColumnDef="startDate" class="date-column">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
-      <mat-cell class="start-column" *matCellDef="let row"> {{row.startDate}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.startDate}} </mat-cell>
     </ng-container>
 
     <!-- End Date Column -->
