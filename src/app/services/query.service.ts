@@ -48,14 +48,17 @@ export class QueryService {
     return httpParams;
   }
 
-  // Returns the request headers for each sparql query
-  getRequestHeaders() {
+  /**
+   *
+   * @param id The query identifier
+   * @returns A set of headers that are used in a SPARQL query
+   */
+  getRequestHeaders(id: string) {
     let headers = new HttpHeaders();
-    headers = headers.set("Content-Type", 'application/x-www-form-urlencoded')
-    headers = headers.set('Accept', 'application/sparql-results+json')
-    return {
-      headers: headers
-    };
+    headers = headers.set("Content-Type", 'application/x-www-form-urlencoded');
+    headers = headers.set('Accept', 'application/sparql-results+json');
+    headers = headers.set('X-Request-Id', id);
+    return { headers: headers };
   }
 
   // Returns the body of the query meant to get all of the relevant (to the facets) hazards.
@@ -80,7 +83,7 @@ export class QueryService {
   getAllHazards(limit: number=20, offset=0) {
     let query = `
     SELECT * WHERE {`+this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-    let headers = this.getRequestHeaders();
+    let headers = this.getRequestHeaders('KE_01');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
   }
@@ -88,7 +91,7 @@ export class QueryService {
   // Gets the total number of hazards, relevant to the selected facets
   getHazardCount() {
     let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getHazardsQueryBody() + `}`;
-    let headers = this.getRequestHeaders();
+    let headers = this.getRequestHeaders('KE_02');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
   }
@@ -119,7 +122,7 @@ export class QueryService {
           ?entity geo:hasGeometry/geo:asWKT ?wkt.
       }
     }`
-  let headers = this.getRequestHeaders();
+  let headers = this.getRequestHeaders('KE_03');
   let body = this.getRequestBody(query);
   return this.http.post(this.endpoint, body, headers);
   }
@@ -147,7 +150,7 @@ export class QueryService {
      getAllPlaces(limit: number=20, offset=0) {
       let query = `
       SELECT * WHERE {`+this.getPlacesQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_04');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -157,7 +160,7 @@ export class QueryService {
      */
     getPlacesCount() {
       let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getPlacesQueryBody() + `}`;
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_05');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -197,7 +200,7 @@ export class QueryService {
    */
        getAllPeople(limit: number=20, offset=0) {
         let query = `SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-        let headers = this.getRequestHeaders();
+        let headers = this.getRequestHeaders('KE_06');
         let body = this.getRequestBody(query);
         return this.http.post(this.endpoint, body, headers);
       }
@@ -207,7 +210,7 @@ export class QueryService {
      */
      getPeopleCount() {
       let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getPeopleQueryBody() + `}`;
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_07');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -232,7 +235,7 @@ export class QueryService {
         values ?country {kwgr:Earth.North_America.United_States.USA}
         ?country rdfs:label ?country_label .
       }`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_08');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -246,7 +249,7 @@ export class QueryService {
     	?state a kwg-ont:AdministrativeRegion_2 .
         ?state rdfs:label ?state_label .
     } ORDER BY ?state_label`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_09');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -262,7 +265,7 @@ export class QueryService {
     	  ?county a kwg-ont:AdministrativeRegion_3 .
         ?county rdfs:label ?county_label .
         } ORDER BY ?state_label`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_10');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -286,7 +289,7 @@ export class QueryService {
           FILTER (!isBlank(?child))
         }
         } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_11');
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
       return this.http.post(this.endpoint, body, headers);
@@ -300,7 +303,7 @@ export class QueryService {
           ?child rdfs:subClassOf ?hazard .
         }
       } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_12');
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
       return this.http.post(this.endpoint, body, headers);
@@ -311,7 +314,7 @@ export class QueryService {
         ?place rdfs:label ?place_label .
         values ?place {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
       } ORDER BY ASC(?place_label)`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_13');
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
       return this.http.post(this.endpoint, body, headers);
@@ -327,7 +330,7 @@ export class QueryService {
         ?place rdfs:subClassOf <`+gnisURI+`> .
         ?place rdfs:label ?gnis_label .
         } GROUP BY ?place ?gnis_label ORDER BY ?gnis_label`
-      let headers = this.getRequestHeaders();
+      let headers = this.getRequestHeaders('KE_14');
       // Disable reasoning so that we only get the top level hazards
       let body = this.getRequestBody(query, false);
       return this.http.post(this.endpoint, body, headers);
@@ -347,7 +350,7 @@ export class QueryService {
           ?topic kwg-ont:hasSubTopic ?child .
       }
     } GROUP BY ?topic ?name ORDER BY ASC(?name)`
-    let headers = this.getRequestHeaders();
+    let headers = this.getRequestHeaders('KE_15');
     // Disable reasoning so that we only get the top level hazards
     let body = this.getRequestBody(query, false);
     return this.http.post(this.endpoint, body, headers);
@@ -367,7 +370,7 @@ export class QueryService {
         ?sub_topic kwg-ont:hasSubTopic ?child .
       }
   } GROUP BY ?name ?sub_topic ORDER BY ASC(?name)`
-    let headers = this.getRequestHeaders();
+    let headers = this.getRequestHeaders('KE_16');
     // Disable reasoning so that we only get the top level hazards
     let body = this.getRequestBody(query, false);
     return this.http.post(this.endpoint, body, headers);
