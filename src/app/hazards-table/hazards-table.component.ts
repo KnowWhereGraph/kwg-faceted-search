@@ -1,7 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, Input } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table';
-import { QueryService } from '../services/query.service'
+import { QueryService } from '../services/query.service';
 
 @Component({
   selector: 'app-hazards-table',
@@ -28,6 +28,9 @@ export class HazardsTableComponent implements OnInit {
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
+  // Event that sends the locations of hazards from a query to the parent component
+  locations: Array<string> = [];
+  @Output() locationEvent = new EventEmitter();
 
   constructor(private queryService: QueryService) {
     this.hazardsDataSource = new MatTableDataSource();
@@ -72,7 +75,7 @@ export class HazardsTableComponent implements OnInit {
       // Once the hazards have been retrieved, attempt to get the associated properties
       let results = this.queryService.getResults(response);
       let hazardUris: Array<string> = [];
-
+      this.locations = [];
       // Once the initial list of hazards is retrieved, create a list of URIs and get additional information about them
       for (var result of results) {
         let entityUri = result['entity']['value'];
@@ -90,7 +93,9 @@ export class HazardsTableComponent implements OnInit {
       this.queryService.getHazardProperties(hazardUris).subscribe({
         next: response => {
           // Once all of the properties have been retrieved, populate the table
-          results = this.queryService.getResults(response)
+          results = this.queryService.getResults(response);
+          console.log("hazard results: ", results);
+
           this.hazards = [];
           for (var row of results) {
             let record = hazardRecords.get(row.entity.value);
@@ -109,10 +114,15 @@ export class HazardsTableComponent implements OnInit {
               place: record.placeName,
               startDate: record.startDateName,
               endDate: record.endDateName,
-            })
+            });
+            if (record.wkt){
+              this.locations.push(record.wkt);
+            }
+
           }
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
           this.searchQueryFinishedEvent.emit(true);
+          this.locationEvent.emit(this.locations);
         },
         error: error => {
           console.error("Error getting the hazard properties", error)

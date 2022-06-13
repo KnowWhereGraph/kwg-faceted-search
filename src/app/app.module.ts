@@ -60,6 +60,7 @@ import { TreeModule } from '@circlon/angular-tree-component';
     {path: 'explore', component: ExploreComponent},
     {path: 'search', component: SearchComponent},
 
+
   ]),
     BrowserAnimationsModule,
   ],
