@@ -30,6 +30,11 @@ export class SearchComponent implements OnInit {
   @ViewChild(MatPaginator) placesPaginator: MatPaginator;
 
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
+
+  // variable to hold the data from the place/hazard/people component.
+  public returnedLocations: any;
+
+  // public testValue: number = 0;
   /**
    * Create a new search component
    *
@@ -39,6 +44,8 @@ export class SearchComponent implements OnInit {
     this.totalSize = 0;
     this.isCounting = true;
     this.isSearching = true;
+
+    // this.testValue = 0;
   }
 
   // An event handler for changes to the number of query results
@@ -75,5 +82,41 @@ export class SearchComponent implements OnInit {
       this.placesTable.populateTable(offset, this.pageSize);
     });
   }
+
+  // getTestEventValue(testNumber: number){
+  //   console.log("print the test value: ", testNumber);
+  //   this.testValue = testNumber;
+  //   console.log("test value is : ", testNumber);
+  // }
+
+  // changeResultsCount(newCount: number) {
+  //   this.totalSize = newCount;
+  //   this.isCounting = false;
+  // }
+
+  getPlaceLocationEvent(values){
+
+    this.returnedLocations = values;
+    console.log("get place locations: ", this.returnedLocations);
+  }
+
+  getHazardLocationEvent(values){
+    this.returnedLocations = values;
+    console.log("get hazard locations: ", this.returnedLocations);
+  }
+
+  getPeopleLocationEvent(values){
+
+    this.returnedLocations = values;
+    console.log("get people locations: ", this.returnedLocations);
+  }
+
+  getLocationsFromComponent(values){
+    console.log("here is the lcoation information: ", values);
+    this.returnedLocations = values;
+  }
+
+
+
 
 }

@@ -19,6 +19,12 @@ export class PlacesTableComponent implements OnInit {
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
+  // Testing....
+  @Output() testEvent = new EventEmitter<number>();
+
+  // Event that sends the locations of results from a query to the parent component
+  locations: Array<string> = [];
+  @Output() locationEvent = new EventEmitter();
 
   constructor(private queryService: QueryService) {
     // Initialize the places data to an empty array
@@ -34,6 +40,7 @@ export class PlacesTableComponent implements OnInit {
         let totalSize: number = results[0]['COUNT']['value'];
         // Update the number of results
         this.resultsCountEvent.emit(totalSize);
+        this.testEvent.emit(500);
       },
       error: response => {
         console.error("There was an error while retrieving the number of results", response)
@@ -57,19 +64,26 @@ export class PlacesTableComponent implements OnInit {
    * @param count The number of results to retrieve
    */
    populateTable(offset:number=0, count: number=20) {
+
     // A map of a place's URI to its properties that are retrieved from the database
     this.queryService.getAllPlaces(count, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
+        console.log("place results: ", results);
         this.places = [];
+        this.locations = [];
         for (var result of results) {
           this.places.push({
             "name": result["label"]["value"],
             "type": result["typeLabel"]["value"],
-          })
+          });
+          if (result['geo']){
+            this.locations.push(result['geo']['value']);
+          }
         }
         this.placesDataSource = new MatTableDataSource(this.places);
         this.searchQueryFinishedEvent.emit(true);
+        this.locationEvent.emit(this.locations);
       }
    });
   }
