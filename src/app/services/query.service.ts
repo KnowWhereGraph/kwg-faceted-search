@@ -82,7 +82,7 @@ export class QueryService {
    */
   getAllHazards(limit: number=20, offset=0) {
     let query = `
-    SELECT * WHERE {`+this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
+    SELECT DISTINCT * WHERE {`+this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString();
     let headers = this.getRequestHeaders('KE_01');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
@@ -102,7 +102,7 @@ export class QueryService {
    * @param entities: An array of entity URI's
    **/
   getHazardProperties(entities: Array<string>) {
-    let query = `SELECT ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {
+    let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {
       values ?entity {${entities.join(' ')}}
       optional
       {
