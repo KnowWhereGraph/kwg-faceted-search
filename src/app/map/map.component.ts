@@ -32,12 +32,14 @@ export class MapComponent implements OnInit {
     this.initMap();
     // console.log("in map, the value is: ", this.msgFromSearchParent);
     console.log("hello here ");
+    this.showClusters();
   }
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [51.505, -0.09],
-      zoom: 13
+      // center: [51.505, -0.09],
+      center: [-37.8208292333, 175.2214374833],
+      zoom: 5
     });
 
     // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
