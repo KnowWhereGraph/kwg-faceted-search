@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatPaginator } from '@angular/material/paginator';
@@ -27,6 +28,7 @@ export class SearchComponent implements OnInit {
   public currentPage: number = 0;
   // The number of results
   public totalSize: number = 0;
+
   @ViewChild(MatPaginator) placesPaginator: MatPaginator;
 
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
@@ -34,11 +36,14 @@ export class SearchComponent implements OnInit {
    * Create a new search component
    *
    * @param cd
+   * @param route: The activated route for this page
+   * @param router: The global router
    */
-  constructor(private cd: ChangeDetectorRef) {
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {
     this.totalSize = 0;
     this.isCounting = true;
     this.isSearching = true;
+
   }
 
   // An event handler for changes to the number of query results
@@ -62,9 +67,23 @@ export class SearchComponent implements OnInit {
     // Update the corresponding state variables to reflect this
     this.isCounting = true;
     this.isSearching = true;
+    const queryParams = { tab: clickedIndex };
+    this.router.navigate(
+      [],
+      {
+        relativeTo: this.route,
+        queryParams: queryParams,
+        queryParamsHandling: 'merge',
+      });
+
   }
 
   ngOnInit(): void {
+    // Check to see if a particular tab should be loaded
+    let tab = this.route.snapshot.queryParamMap.get('tab');
+    if(tab) {
+        this.selectedTabIndex=Number(tab);
+    }
   }
 
   ngAfterViewInit(): void {
