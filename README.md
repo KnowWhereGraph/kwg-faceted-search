@@ -31,12 +31,6 @@ The application has been broken into discrete component objects. Every page has 
 
 Each type of search (Place, Hazard, Person) has its own component. This has resulted in a fair amount of code overlap and isn't DRY. This is mostly due to not seeing the forest through the trees; in the future we may find that we can combine all tables into one.
 
-### about
-The `about` component controls the content that's rendered when users visit the `/about` page.
-
-### explore
-The `explore` component controls the content that's rendered when users visit the `/explore` page.
-
 ### facets
 The `facets` component is responsible for displaying and emitting events about user selections. As of right now (03/02/2022) the event system hasn't been written.
 

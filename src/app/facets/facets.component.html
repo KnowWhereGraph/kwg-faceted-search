@@ -22,7 +22,7 @@
       <span class="search-header">
         Administrative Regions
       </span>
-      <input class="facet-input" autocomplete="true" type="text" placeholder="Find an Administrative Region..."
+      <input class="facet-input" autocomplete="true" type="text" placeholder="Find an Administrative Region..." [ngbTypeahead]="searchAdminRegions"
         [(ngModel)]="adminRegion" (keyup.enter)="facetChanged()">
     </div>
   </div>
@@ -43,23 +43,21 @@
     <span class="search-header">
       Zip Code
     </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a Zip Code..." [(ngModel)]="zipCode"
-      (keyup.enter)="facetChanged()">
+    <input id="typeahead-basic" type="text" class="facet-input"  placeholder="Find a Zip Code..." [(ngModel)]="zipCode" (keyup.enter)="facetChanged()" [ngbTypeahead]="searchZIPCodes">
   </div>
 
   <div class="facet">
     <span class="search-header">
       FIPS Code
     </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode"
-      (keyup.enter)="facetChanged()">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode" (keyup.enter)="facetChanged()"  [ngbTypeahead]="searchFIPSCodes">
   </div>
 
   <div class="facet">
     <span class="search-header">
       US Climate Division
     </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a US Climate Division..."
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a US Climate Division..." [ngbTypeahead]="searchClimateDivision"
       [(ngModel)]="climateDivision" (keyup.enter)="facetChanged()">
   </div>
 
@@ -67,7 +65,7 @@
     <span class="search-header">
       National Weather Zone
     </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a National Weather Zone..."
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a National Weather Zone..." [ngbTypeahead]="searchNWZones"
       [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged()">
   </div>
 </div>
