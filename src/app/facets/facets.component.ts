@@ -3,6 +3,8 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
 import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping } from '@circlon/angular-tree-component'
+import {Observable, OperatorFunction} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-facets',
@@ -10,6 +12,7 @@ import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping } from '@circlon/a
   styleUrls: ['./facets.component.scss']
 })
 export class FacetsComponent implements OnInit {
+
   floatLabelControl = new FormControl('auto');
   // The current tab that the user selected. This is used to decide which facets to show
   @Input() selectedTabIndex = 0;
@@ -41,6 +44,16 @@ export class FacetsComponent implements OnInit {
   showEarthquakeOC: boolean = false;
   // Flag set when the NOAA observation collections should be shown
   showNOAAOC: boolean = false;
+  // Holds all of the zip codes that are used in autocompletion
+  zipCodes: Array<string> = [];
+  // Holds all of the National Weather Zones used in autocompletion
+  nwZones: Array<string> = []
+  // Holds all of the National Weather Zones used in autocompletion
+  fipsCodes: Array<string> = [];
+  // Holds all of the climate divisions used in autocompletion
+  climateDivisions: Array<string> = []
+  // Holds all of the administrative regions used in autocompletion
+  adminRegions: Array<string> = []
 
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
@@ -73,6 +86,91 @@ export class FacetsComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateDynamicFacets();
+    this.fetchTypeaheadData();
+  }
+
+  /**
+   * Searches a list for potential matches. This is used in the typeahead input fields to match
+   * the user's input to an existing zip, fips, etc.
+   *
+   * @param term Searches a container
+   * @param container The array of things being searched.
+   * @returns An array of matching items
+   */
+   searchText(term, container:Array<string>) {
+    console.log(container)
+    let matches:Array<string> = [];
+    container.forEach(elem => {
+      if (elem.indexOf(term) === 0) {
+        matches.push(String(elem));
+      }
+    });
+    return matches.slice(0, 10);;
+  }
+
+  /**
+   * Called when the user inputs text into the ZIP code input box
+   * @param text$ The text in the ZIP code field
+   * @returns
+   */
+  searchZIPCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []: this.searchText(term, this.zipCodes))
+    )
+  }
+
+  /**
+   * Called when the user inputs text into the FIPS code input box
+   * @param text$ The text in the zip code field
+   * @returns
+   */
+  searchFIPSCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []: this.searchText(term, this.fipsCodes))
+    )
+  }
+
+  /**
+   * Called when the user inputs text into the National Weather Zone input box
+   * @param text$ The text in the NWZ field
+   * @returns
+   */
+     searchNWZones: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+      return text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map(term => term.length < 2 ? []: this.searchText(term, this.nwZones))
+      )
+    }
+
+  /**
+   * Called when the user inputs text into the National Weather Zone input box
+   * @param text$ The text in the NWZ field
+   * @returns
+   */
+   searchClimateDivision: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []: this.searchText(term, this.climateDivisions))
+    )
+  }
+
+  /**
+   * Called when the user inputs text into the Administrative Regions input box
+   * @param text$ The text in the NWZ field
+   * @returns
+   */
+   searchAdminRegions: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []: this.searchText(term, this.adminRegions))
+    )
   }
 
   /**
@@ -100,6 +198,67 @@ export class FacetsComponent implements OnInit {
 
   generateArray(obj) {
     return Object.keys(obj).map((key) => { return { key: key, value: obj[key] } });
+  }
+
+  /**
+   * Fetches the data for the typeahead input fields. The data is stored in corresponding
+   * member variables.
+   */
+  fetchTypeaheadData() {
+    this.queryService.getZipCodes().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push(element['zipcode']['value'].replace("zip code ", ""))
+        });
+        this.zipCodes = formatted;
+      }
+    });
+
+    this.queryService.getFIPSCodes().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push(element['fips']['value'])
+        });
+        this.fipsCodes = formatted;
+      }
+    });
+
+    this.queryService.getNWZones().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push(element['nwzone_label']['value'])
+        });
+        this.nwZones = formatted;
+      }
+    });
+
+    this.queryService.getClimateDivisions().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push(element['division_label']['value'].replace("US NOAA Climate Division ", ""))
+        });
+        this.climateDivisions = formatted;
+      }
+    });
+
+    this.queryService.getAdministrativeRegions().subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        let formatted: Array<any> = [];
+        results.forEach((element) => {
+          formatted.push(element['countyLabel']['value']);
+        });
+        this.adminRegions = formatted;
+      }
+    });
   }
 
   /**
@@ -174,18 +333,6 @@ export class FacetsComponent implements OnInit {
           })
         });
         this.gnisClassesDisplay = formatted;
-      }
-    });
-    // Load the climate divisions for autocompletion
-    this.queryService.getClimateDivisions().subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response);
-        let formattedResults: any = [];
-        results.forEach((element) => {
-          let division = element.division.value;
-          let division_label = element.division_label.value;
-          formattedResults[division_label] = division;
-        });
       }
     });
 

@@ -127,6 +127,30 @@ export class QueryService {
   return this.http.post(this.endpoint, body, headers);
   }
 
+  /**
+   * Retrieves all of the zip codes that are in the graph.
+   */
+  getZipCodes() {
+    let zipCodeQuery = `SELECT DISTINCT ?zipcode ?zipcodeArea WHERE {
+      ?zipcodeArea rdf:type kwg-ont:ZipCodeArea;
+        rdfs:label ?zipcode.
+    } ORDER BY ASC(?zipcode)`;
+    return this.http.get('../assets/data/zipcode_areas.json');
+  }
+
+  /**
+   * Retrieves all of the zip codes that are in the graph.
+   */
+   getFIPSCodes() {
+    return this.http.get('../assets/data/fips_areas.json');
+  }
+
+  /**
+   * Retrieves all of the National Weather Zones that are in the graph.
+   */
+    getNWZones() {
+      return this.http.get('../assets/data/nwz_areas.json');
+    }
 
   /**
    * Gets the minimum amount of query for finding places.
