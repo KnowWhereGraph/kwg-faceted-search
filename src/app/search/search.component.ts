@@ -49,10 +49,6 @@ export class SearchComponent implements OnInit {
     this.isCounting = true;
     this.isSearching = true;
 
-<<<<<<< HEAD
-    // this.testValue = 0;
-=======
->>>>>>> origin/angular
   }
 
   // An event handler for changes to the number of query results
