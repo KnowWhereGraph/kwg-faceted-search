@@ -32,6 +32,11 @@ export class SearchComponent implements OnInit {
   @ViewChild(MatPaginator) placesPaginator: MatPaginator;
 
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
+
+  // variable to hold the data from the place/hazard/people component.
+  public returnedLocations: any;
+
+  // public testValue: number = 0;
   /**
    * Create a new search component
    *
@@ -67,7 +72,19 @@ export class SearchComponent implements OnInit {
     // Update the corresponding state variables to reflect this
     this.isCounting = true;
     this.isSearching = true;
-    const queryParams = { tab: clickedIndex };
+
+    let clickedTabName = "place";
+    switch (clickedIndex){
+      case 0:
+        clickedTabName = "place";
+        break
+      case 1:
+        clickedTabName = "hazard";
+        break
+      case 2:
+        clickedTabName = "people";
+    }
+    const queryParams = { tab: clickedTabName };
     this.router.navigate(
       [],
       {
@@ -81,8 +98,19 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab');
-    if(tab) {
-        this.selectedTabIndex=Number(tab);
+    // if(tab) {
+    //     this.selectedTabIndex=Number(tab);
+    // }
+    switch (tab){
+      case "place":
+        this.selectedTabIndex = Number(0);
+        break;
+      case "hazard":
+        this.selectedTabIndex = Number(1);
+        break;
+      case "people":
+        this.selectedTabIndex = Number(2);
+        break;
     }
   }
 
@@ -94,5 +122,41 @@ export class SearchComponent implements OnInit {
       this.placesTable.populateTable(offset, this.pageSize);
     });
   }
+
+  // getTestEventValue(testNumber: number){
+  //   console.log("print the test value: ", testNumber);
+  //   this.testValue = testNumber;
+  //   console.log("test value is : ", testNumber);
+  // }
+
+  // changeResultsCount(newCount: number) {
+  //   this.totalSize = newCount;
+  //   this.isCounting = false;
+  // }
+
+  getPlaceLocationEvent(values){
+
+    this.returnedLocations = values;
+    console.log("get place locations: ", this.returnedLocations);
+  }
+
+  getHazardLocationEvent(values){
+    this.returnedLocations = values;
+    console.log("get hazard locations: ", this.returnedLocations);
+  }
+
+  getPeopleLocationEvent(values){
+
+    this.returnedLocations = values;
+    console.log("get people locations: ", this.returnedLocations);
+  }
+
+  getLocationsFromComponent(values){
+    console.log("here is the lcoation information: ", values);
+    this.returnedLocations = values;
+  }
+
+
+
 
 }

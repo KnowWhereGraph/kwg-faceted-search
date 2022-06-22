@@ -56,6 +56,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     {path: '', component: IndexComponent},
     {path: 'search', component: SearchComponent},
 
+
   ]),
     BrowserAnimationsModule,
     NgbModule,

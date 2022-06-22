@@ -2,7 +2,7 @@
   <mat-table [dataSource]="hazards" class="search-table">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Name </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell"> {{row.name}} </span>
       </mat-cell>
@@ -10,7 +10,7 @@
 
     <!-- Type Column -->
     <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Type </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Type </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell"> {{row.type}} </span>
       </mat-cell>
@@ -18,7 +18,7 @@
 
     <!-- Place Column -->
     <ng-container matColumnDef="place">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Place </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Place </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell"> {{row.place}} </span>
       </mat-cell>
@@ -26,13 +26,13 @@
 
     <!-- Start Date Column -->
     <ng-container matColumnDef="startDate" class="date-column">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Start Date </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.startDate}} </mat-cell>
     </ng-container>
 
     <!-- End Date Column -->
     <ng-container matColumnDef="endDate">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> End Date </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> End Date </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.endDate}} </mat-cell>
     </ng-container>
 
