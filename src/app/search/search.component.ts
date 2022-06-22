@@ -79,7 +79,19 @@ export class SearchComponent implements OnInit {
     // Update the corresponding state variables to reflect this
     this.isCounting = true;
     this.isSearching = true;
-    const queryParams = { tab: clickedIndex };
+
+    let clickedTabName = "place";
+    switch (clickedIndex){
+      case 0:
+        clickedTabName = "place";
+        break
+      case 1:
+        clickedTabName = "hazard";
+        break
+      case 2:
+        clickedTabName = "people";
+    }
+    const queryParams = { tab: clickedTabName };
     this.router.navigate(
       [],
       {
@@ -93,8 +105,19 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab');
-    if(tab) {
-        this.selectedTabIndex=Number(tab);
+    // if(tab) {
+    //     this.selectedTabIndex=Number(tab);
+    // }
+    switch (tab){
+      case "place":
+        this.selectedTabIndex = Number(0);
+        break;
+      case "hazard":
+        this.selectedTabIndex = Number(1);
+        break;
+      case "people":
+        this.selectedTabIndex = Number(2);
+        break;
     }
   }
 
