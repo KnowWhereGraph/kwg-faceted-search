@@ -50,9 +50,12 @@ export class SearchComponent implements OnInit {
     this.isSearching = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // this.testValue = 0;
 =======
 >>>>>>> 38f7329d (Add the current tab to the query parameters and navigate to the correct tab based on them)
+=======
+>>>>>>> c829d74e (merge change)
   }
 
   // An event handler for changes to the number of query results
