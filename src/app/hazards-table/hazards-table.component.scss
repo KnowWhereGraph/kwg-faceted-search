@@ -1,15 +1,27 @@
 .mat-column-name {
   margin-right: 1rem;
-  width: 5rem;
+  width: 9rem;
   font-size: 1rem;
 }
 
 .mat-column-type {
   width: 3rem;
+  justify-content: center;
 }
 
 .mat-column-place {
-  width: 3rem;
+  // width: 2rem;
+  flex: 0 0 10%;
+  justify-content: center;
+}
+
+.mat-column-startDate,
+.mat-column-endDate{
+  justify-content: center;
+}
+
+.hazard-header{
+  justify-content: center;
 }
 
 // Highlight rows on hover

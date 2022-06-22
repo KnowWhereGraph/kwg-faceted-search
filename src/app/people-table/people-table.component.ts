@@ -21,6 +21,11 @@ export class PeopleTableComponent implements OnInit {
   // Pagniator on the table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // The number of results that the user wants to see in the table
+
+  // Event that sends the locations of people from a query to the parent component
+  locations: Array<string> = [];
+  @Output() locationEvent = new EventEmitter();
+
   public pageSize = 20;
   // The current table page that the user is on
   public currentPage = 0;
@@ -64,7 +69,9 @@ export class PeopleTableComponent implements OnInit {
 
     this.queryService.getAllPeople(this.pageSize, offset).subscribe({
       next: response => {
-        let results = this.queryService.getResults(response)
+        let results = this.queryService.getResults(response);
+        console.log("people results: ", results);
+        this.locations = [];
         this.people = [];
         for (var result of results) {
            this.people.push({
@@ -72,10 +79,15 @@ export class PeopleTableComponent implements OnInit {
             "affiliation": "NA",
             "expertise": result["expertiseLabel"]["value"],
             "place": "NA",
-          })
+          });
+          if (result['wkt']){
+            this.locations.push(result['wkt']['value']);
+          }
+
         }
         this.peopleDataSource = new MatTableDataSource(this.people);
         this.searchQueryFinishedEvent.emit(true);
+        this.locationEvent.emit(this.locations);
       }
    });
   }

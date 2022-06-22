@@ -50,11 +50,12 @@
   }
 
   .card-explore {
+
     background: #FFFFFF;
     box-shadow: 0 10px 64px 0 rgb(0, 0, 0, 0.20);
     border-radius: 5px;
     transition: all .2s ease;
-    text-align: center;
+    // text-align: center;
   }
 
   .card-body {
@@ -65,6 +66,7 @@
     color: #00021f;
     font-weight: bold;
     margin-bottom: 0;
+    margin-top: 0;
   }
 
   .card-title p {
@@ -78,8 +80,10 @@
 }
 
 .button {
-  height: 50px;
+  height: 26px;
   display: inline-block;
+  // vertical-align: middle;
+  line-height: 26px;
   padding: 12px 30px;
   color: #fff;
   text-decoration: none;

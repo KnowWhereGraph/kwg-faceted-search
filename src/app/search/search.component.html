@@ -24,7 +24,7 @@
         </ng-template>
         <ng-template matTabContent>
           <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
-          <app-places-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"></app-places-table>
+          <app-places-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPlaceLocationEvent($event)"></app-places-table>
         </ng-template>
       </mat-tab>
 
@@ -34,7 +34,7 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"></app-hazards-table>
+          <app-hazards-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getHazardLocationEvent($event)"></app-hazards-table>
         </ng-template>
       </mat-tab>
 
@@ -44,7 +44,7 @@
           <span>People</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"></app-people-table>
+          <app-people-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPeopleLocationEvent($event)"></app-people-table>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
@@ -52,6 +52,7 @@
 
   <!-- The map -->
   <div class="map-container">
-    <app-map></app-map>
+    <!-- <app-map [msgFromSearchParent] = 'testValue'></app-map> -->
+    <app-map [locations] = 'returnedLocations'></app-map>
   </div>
 </div>
