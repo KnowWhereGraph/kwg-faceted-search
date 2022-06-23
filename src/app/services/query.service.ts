@@ -62,7 +62,7 @@ export class QueryService {
   }
 
   // Returns the body of the query meant to get all of the relevant (to the facets) hazards.
-  // This is used to populate the data table and to count the number of results.
+  // This is used to populate the data table
   getHazardsQueryBody() {
     let query = `?entity rdf:type ?type;
     rdfs:label ?label;
@@ -76,6 +76,7 @@ export class QueryService {
 
   /**
    * Gets all of the hazards in the database.
+   *
    * @param limit The maximum number of results to retrieve
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
@@ -88,9 +89,15 @@ export class QueryService {
     return this.http.post(this.endpoint, body, headers);
   }
 
-  // Gets the total number of hazards, relevant to the selected facets
-  getHazardCount() {
-    let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getHazardsQueryBody() + `}`;
+  /**
+   * Counts the number of results for a hazard query
+   *
+   * @param limit The highest number to count to
+   * @param offset The offset to start counting from
+   * @returns
+   */
+  getHazardCount(limit: number=20, offset=0) {
+    let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
     let headers = this.getRequestHeaders('KE_02');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
@@ -185,9 +192,12 @@ export class QueryService {
 
     /**
      * Gets the total number of places matching a facet selection
-     */
-    getPlacesCount() {
-      let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getPlacesQueryBody() + `}`;
+     *
+     * @param limit The maximum number of results to retrieve
+     * @param offset The number of results to skip
+    */
+    getPlacesCount(limit: number=20, offset=0) {
+      let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getPlacesQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
       let headers = this.getRequestHeaders('KE_05');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
@@ -233,18 +243,21 @@ export class QueryService {
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-       getAllPeople(limit: number=20, offset=0) {
-        let query = `SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-        let headers = this.getRequestHeaders('KE_06');
-        let body = this.getRequestBody(query);
-        return this.http.post(this.endpoint, body, headers);
-      }
+    getAllPeople(limit: number=20, offset=0) {
+      let query = `SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
+      let headers = this.getRequestHeaders('KE_06');
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
 
     /**
      * Gets the total number of people matching a facet selection
+     *
+     * @param limit The maximum number of results to retrieve
+     * @param offset The number of results to skip
      */
-     getPeopleCount() {
-      let query=`SELECT (COUNT(*) as ?COUNT) { ` + this.getPeopleQueryBody() + `}`;
+     getPeopleCount(limit: number=20, offset=0) {
+      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody() + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
       let headers = this.getRequestHeaders('KE_07');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);

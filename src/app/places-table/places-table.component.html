@@ -1,5 +1,13 @@
-<mat-table [dataSource]="placesDataSource" class="results-table">
+<div class="table-container">
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
+  <mat-table [dataSource]="placesDataSource" class="results-table">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name" >
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
 
+<<<<<<< HEAD
   <!-- Name Column -->
   <ng-container matColumnDef="name" >
     <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
@@ -23,3 +31,15 @@
   <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
 </mat-table>
+=======
+    <!-- Type Column -->
+    <ng-container matColumnDef="type" >
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-type-header"> Type </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
+  </mat-table>
+</div>
+>>>>>>> 0b4776c7 (Limit the number of results to 10 * the number of results shown in the table)

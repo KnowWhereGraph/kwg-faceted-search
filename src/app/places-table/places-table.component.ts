@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
@@ -15,13 +15,20 @@ export class PlacesTableComponent implements OnInit {
   // The data source that's responsible for fetching data
   placesDataSource: MatTableDataSource<Place>;
   places: Array<Place> = [];
+  // The number of results that the user wants to see in the table
+  public pageSize = 20;
+  // The current table page that the user is on
+  public currentPage = 0;
+  // The number of results
+  public totalSize = 0;
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
   // Testing....
   @Output() testEvent = new EventEmitter<number>();
-
+  // Paginator for the results
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   // Event that sends the locations of results from a query to the parent component
   locations: Array<string> = [];
   @Output() locationEvent = new EventEmitter();
@@ -34,27 +41,34 @@ export class PlacesTableComponent implements OnInit {
   ngOnInit(): void {
     this.placesDataSource = new MatTableDataSource(this.places);
     this.populateTable();
-    this.queryService.getPlacesCount().subscribe({
+    this.getResultsSize();
+  }
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe((event) => {
+      this.pageSize = event.pageSize;
+      let offset = event.pageIndex*this.pageSize;
+      this.populateTable(offset);
+      this.getResultsSize();
+    });
+  }
+
+  /**
+   * Retrieves the number of results for a query and updates the count in the UI
+  */
+  getResultsSize() {
+    this.queryService.getPlacesCount(this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-        let totalSize: number = results[0]['COUNT']['value'];
+        this.totalSize = results[0]['COUNT']['value'];
         // Update the number of results
-        this.resultsCountEvent.emit(totalSize);
+        this.resultsCountEvent.emit(this.totalSize);
         this.testEvent.emit(500);
       },
       error: response => {
         console.error("There was an error while retrieving the number of results", response)
       }
-    })
-  }
-
-  ngAfterViewInit() {
-    /*
-    this.paginator.page.subscribe((event) => {
-      this.pageSize = event.pageSize;
-      let offset = event.pageIndex*this.pageSize;
-      this.populateTable(offset);
-    });*/
+    });
   }
 
   /**
