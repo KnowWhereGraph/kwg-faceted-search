@@ -21,9 +21,8 @@ export class HazardsTableComponent implements OnInit {
   public pageSize = 20;
   // The current table page that the user is on
   public currentPage = 0;
-  // The number of results
+  // The number of results. This is used by the paginator to create the page numbers
   public totalSize = 0;
-
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
@@ -39,7 +38,23 @@ export class HazardsTableComponent implements OnInit {
   ngOnInit(): void {
     this.hazardsDataSource = new MatTableDataSource(this.hazards);
     this.populateTable();
-    this.queryService.getHazardCount().subscribe({
+    this.getResultsSize();
+  }
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe((event) => {
+      this.pageSize = event.pageSize;
+      let offset = event.pageIndex*this.pageSize;
+      this.populateTable(offset);
+      this.getResultsSize();
+    });
+  }
+
+  /**
+   * Retrieves the number of results for a query and updates the count in the UI
+   */
+  getResultsSize() {
+    this.queryService.getHazardCount(this.pageSize * 10, this.currentPage).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -49,20 +64,13 @@ export class HazardsTableComponent implements OnInit {
       error: response => {
         console.error("There was an error while retrieving the number of results", response)
       }
-    })
-  }
-
-  ngAfterViewInit() {
-    this.paginator.page.subscribe((event) => {
-      this.pageSize = event.pageSize;
-      let offset = event.pageIndex*this.pageSize;
-      this.populateTable(offset);
     });
   }
 
   /**
    * Populates the data table with hazards. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
    * which gets inserted into the subsequent query.
+   *
    * @param offset The query offset
    */
   populateTable(offset:number=0) {
