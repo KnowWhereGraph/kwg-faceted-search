@@ -171,23 +171,30 @@ export class QueryService {
    * @returns A string of SPARQL without the SELECT predicate
    */
    getPeopleQueryBody() {
-    let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
+    let query = `SELECT distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName
     (group_concat(distinct ?expert; separator = ", ") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = ", ") as ?expertiseLabel)
-    where {
+    WHERE {
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
         ?entity kwg-ont:hasExpertise ?expert.
-
         ?expert rdfs:label ?expertLabel.
-        optional
+        OPTIONAL
         {
             ?entity iospress:contributorAffiliation ?affiliation.
             ?affiliation rdfs:label ?affiliationLabel.
-            ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+            OPTIONAL {
+              ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+            }
+            OPTIONAL {
+              ?affiliation kwg-ont:sfWithin ?affiliationLoc .
+              ?affiliationLoc rdf:type kwg-ont:AdministrativeRegion_3 .
+              ?affiliationLoc rdfs:label ?affiliationLoc_label.
+              ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName
+            }
         }
 
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName`
     return query;
   }
 
