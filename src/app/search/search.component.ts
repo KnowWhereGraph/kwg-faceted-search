@@ -137,22 +137,18 @@ export class SearchComponent implements OnInit {
   getPlaceLocationEvent(values){
 
     this.returnedLocations = values;
-    console.log("get place locations: ", this.returnedLocations);
   }
 
   getHazardLocationEvent(values){
     this.returnedLocations = values;
-    console.log("get hazard locations: ", this.returnedLocations);
   }
 
   getPeopleLocationEvent(values){
 
     this.returnedLocations = values;
-    console.log("get people locations: ", this.returnedLocations);
   }
 
   getLocationsFromComponent(values){
-    console.log("here is the lcoation information: ", values);
     this.returnedLocations = values;
   }
 

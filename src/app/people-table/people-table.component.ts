@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import {MatTableDataSource} from '@angular/material/table';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { QueryService } from '../services/query.service'
 
 @Component({
@@ -51,6 +52,7 @@ export class PeopleTableComponent implements OnInit {
       }
     })
   }
+
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
@@ -58,7 +60,6 @@ export class PeopleTableComponent implements OnInit {
       this.populateTable(offset);
     });
   }
-
 
   /**
    * Populates the data table with people. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
@@ -70,20 +71,25 @@ export class PeopleTableComponent implements OnInit {
     this.queryService.getAllPeople(this.pageSize, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response);
-        console.log("people results: ", results);
         this.locations = [];
         this.people = [];
         for (var result of results) {
+          let expertise: Array<[string, string]> =[]
+          expertise =  result["expertise"]["value"].split(', ').map(function (x, i) {
+            return [x, result["expertiseLabel"]["value"].split(', ')[i]]
+          });
            this.people.push({
             "name": result["label"]["value"],
-            "affiliation": "NA",
-            "expertise": result["expertiseLabel"]["value"],
-            "place": "NA",
+            "name_uri": result["entity"]["value"],
+            "affiliation": result["affiliationLabel"]["value"],
+            "affiliation_uri": result["affiliation"]["value"],
+            "expertise": expertise,
+            "place": result["affiliationQuantName"]? result["affiliationQuantName"]["value"]: "",
+            "place_uri": result["affiliationLoc"]? result["affiliationLoc"]["value"]: ""
           });
           if (result['wkt']){
             this.locations.push(result['wkt']['value']);
           }
-
         }
         this.peopleDataSource = new MatTableDataSource(this.people);
         this.searchQueryFinishedEvent.emit(true);
@@ -95,8 +101,11 @@ export class PeopleTableComponent implements OnInit {
 
 // Prototype for Person
 export interface Person {
-  name: string;
+  name: string,
+  name_uri: string,
   affiliation: string,
-  expertise: string,
+  affiliation_uri: string,
+  expertise: Array<[SafeResourceUrl, string]>,
   place: string,
+  place_uri: string,
 }

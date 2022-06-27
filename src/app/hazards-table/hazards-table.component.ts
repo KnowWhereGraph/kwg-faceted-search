@@ -94,7 +94,6 @@ export class HazardsTableComponent implements OnInit {
         next: response => {
           // Once all of the properties have been retrieved, populate the table
           results = this.queryService.getResults(response);
-          console.log("hazard results: ", results);
 
           this.hazards = [];
           for (var row of results) {
