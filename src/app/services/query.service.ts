@@ -102,26 +102,30 @@ export class QueryService {
    * @param entities: An array of entity URI's
    **/
   getHazardProperties(entities: Array<string>) {
-    let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {
+    let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt (group_concat(distinct ?type; separator = ",") as ?type) (group_concat(distinct ?typeLabel; separator = ",") as ?typeLabel) {
       values ?entity {${entities.join(' ')}}
-      optional
+      ?entity a ?type .
+      ?type rdfs:label ?typeLabel .
+      OPTIONAL
       {
-          ?entity kwg-ont:locatedIn ?place.
+          ?entity kwg-ont:sfWithin ?place.
+          ?place rdf:type kwg-ont:AdministrativeRegion .
           ?place rdfs:label ?placeLabel;
                  geo:hasGeometry/geo:asWKT ?placeWkt.
+                 OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
       }
-      optional
+      OPTIONAL
       {
           ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
           ?observationCollection sosa:phenomenonTime ?time.
           ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                 time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
       }
-      optional
+      OPTIONAL
       {
           ?entity geo:hasGeometry/geo:asWKT ?wkt.
       }
-    }`
+    } GROUP BY ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt`
   let headers = this.getRequestHeaders('KE_03');
   let body = this.getRequestBody(query);
   return this.http.post(this.endpoint, body, headers);
