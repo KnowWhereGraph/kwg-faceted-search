@@ -69,7 +69,6 @@ export class PlacesTableComponent implements OnInit {
     this.queryService.getAllPlaces(count, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-        console.log("place results: ", results);
         this.places = [];
         this.locations = [];
         for (var result of results) {
