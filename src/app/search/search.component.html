@@ -12,7 +12,7 @@
     </ng-container>
 
     <ng-container *ngIf="!isCounting && !isSearching">
-      <p class="results-count">{{totalSize}} Results</p>
+      <p class="results-count">At Least {{totalSize}} Results</p>
     </ng-container>
 
     <!-- The 'Place', 'Hazard', 'People' tab groups -->
@@ -23,7 +23,6 @@
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
           <app-places-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPlaceLocationEvent($event)"></app-places-table>
         </ng-template>
       </mat-tab>

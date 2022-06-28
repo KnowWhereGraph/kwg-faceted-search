@@ -21,16 +21,15 @@ export class PeopleTableComponent implements OnInit {
   // Pagniator on the table
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // The number of results that the user wants to see in the table
-
-  // Event that sends the locations of people from a query to the parent component
-  locations: Array<string> = [];
-  @Output() locationEvent = new EventEmitter();
-
   public pageSize = 20;
   // The current table page that the user is on
   public currentPage = 0;
   // The number of results
   public totalSize = 0;
+  locations: Array<string> = [];
+  // Event that sends the locations of people from a query to the parent component
+  @Output() locationEvent = new EventEmitter();
+
 
   constructor(private queryService: QueryService) {
     this.peopleDataSource = new MatTableDataSource();
@@ -39,7 +38,7 @@ export class PeopleTableComponent implements OnInit {
   ngOnInit(): void {
     this.peopleDataSource = new MatTableDataSource(this.people);
     this.populateTable();
-    this.queryService.getPeopleCount().subscribe({
+    this.queryService.getPeopleCount(this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
