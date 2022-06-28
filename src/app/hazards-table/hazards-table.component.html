@@ -4,7 +4,9 @@
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Name </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <span class="overflow-cell"> {{row.name}} </span>
+        <span class="overflow-cell">
+          <a [href]="row.entityUri" target="_blank">{{row.name}}</a>
+        </span>
       </mat-cell>
     </ng-container>
 
@@ -12,7 +14,9 @@
     <ng-container matColumnDef="type">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Type </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <span class="overflow-cell"> {{row.type}} </span>
+        <span class="overflow-cell">
+          <a *ngFor="let typeData of row.type; let isLast=last" [href]="typeData[0]" target="_blank">{{typeData[1]}}{{isLast ? '' : ', '}}</a>
+        </span>
       </mat-cell>
     </ng-container>
 
@@ -20,20 +24,30 @@
     <ng-container matColumnDef="place">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Place </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <span class="overflow-cell"> {{row.place}} </span>
+        <span class="overflow-cell">
+          <a [href]="row.placeUri" target="_blank">{{row.place}}</a>
+        </span>
       </mat-cell>
     </ng-container>
 
     <!-- Start Date Column -->
     <ng-container matColumnDef="startDate" class="date-column">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Start Date </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.startDate}} </mat-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell">
+          <a [href]="row.startDateUri" target="_blank">{{row.startDate}}</a>
+        </span>
+      </mat-cell>
     </ng-container>
 
     <!-- End Date Column -->
     <ng-container matColumnDef="endDate">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> End Date </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.endDate}} </mat-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell">
+          <a [href]="row.endDateUri" target="_blank">{{row.endDate}}</a>
+        </span>
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="hazardColumns"></mat-header-row>
