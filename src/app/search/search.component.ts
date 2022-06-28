@@ -15,7 +15,6 @@ import { PlacesTableComponent } from '../places-table/places-table.component';
  * Based on the tab clicked, it renders the appropriate table component.
  */
 export class SearchComponent implements OnInit {
-
   // Tracks the active tab
   selectedTabIndex: number = 0;
   // Tracks whether the counting query has finished
@@ -28,8 +27,6 @@ export class SearchComponent implements OnInit {
   public currentPage: number = 0;
   // The number of results
   public totalSize: number = 0;
-
-  @ViewChild(MatPaginator) placesPaginator: MatPaginator;
 
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
 
@@ -116,11 +113,6 @@ export class SearchComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.cd.detectChanges();
-    this.placesPaginator.page.subscribe((event) => {
-      this.pageSize = event.pageSize;
-      let offset = event.pageIndex * this.pageSize;
-      this.placesTable.populateTable(offset, this.pageSize);
-    });
   }
 
   // getTestEventValue(testNumber: number){

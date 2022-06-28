@@ -1,4 +1,6 @@
-<mat-table [dataSource]="placesDataSource" class="results-table">
+<div class="table-container">
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
+  <mat-table [dataSource]="placesDataSource" class="results-table">
 
   <!-- Name Column -->
   <ng-container matColumnDef="name" >

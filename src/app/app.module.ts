@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlacesTableComponent } from './places-table/places-table.component'
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FacetsComponent } from './facets/facets.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +23,7 @@ import { MapComponent } from './map/map.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { FormsModule } from '@angular/forms';
 import { TreeModule } from '@circlon/angular-tree-component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -36,11 +38,11 @@ import { TreeModule } from '@circlon/angular-tree-component';
     HazardsTableComponent,
     PeopleTableComponent,
     MapComponent,
-
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    MatAutocompleteModule,
     MatTableModule,
     MatTabsModule,
     MatPaginatorModule,
@@ -56,6 +58,7 @@ import { TreeModule } from '@circlon/angular-tree-component';
 
   ]),
     BrowserAnimationsModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
