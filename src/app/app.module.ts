@@ -38,7 +38,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HazardsTableComponent,
     PeopleTableComponent,
     MapComponent,
-
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,5 @@
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
 @import "variables.scss";
 
 // HTML styles used across all scss sheets
@@ -91,5 +93,12 @@ body {
   margin: 0 auto;
 }
 
-/* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
+.overflow-cell {
+  a {
+    text-decoration: none;
+    color: #00021F;
+  }
+  a:hover {
+    color: orange;
+  }
+}

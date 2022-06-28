@@ -109,26 +109,30 @@ export class QueryService {
    * @param entities: An array of entity URI's
    **/
   getHazardProperties(entities: Array<string>) {
-    let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?time ?startTimeLabel ?endTimeLabel ?wkt where {
+    let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt (group_concat(distinct ?type; separator = ",") as ?type) (group_concat(distinct ?typeLabel; separator = ",") as ?typeLabel) {
       values ?entity {${entities.join(' ')}}
-      optional
+      ?entity a ?type .
+      ?type rdfs:label ?typeLabel .
+      OPTIONAL
       {
-          ?entity kwg-ont:locatedIn ?place.
+          ?entity kwg-ont:sfWithin ?place.
+          ?place rdf:type kwg-ont:AdministrativeRegion .
           ?place rdfs:label ?placeLabel;
                  geo:hasGeometry/geo:asWKT ?placeWkt.
+                 OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
       }
-      optional
+      OPTIONAL
       {
           ?entity kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
           ?observationCollection sosa:phenomenonTime ?time.
           ?time time:hasBeginning/time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
                 time:hasEnd/time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
       }
-      optional
+      OPTIONAL
       {
           ?entity geo:hasGeometry/geo:asWKT ?wkt.
       }
-    }`
+    } GROUP BY ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt`
   let headers = this.getRequestHeaders('KE_03');
   let body = this.getRequestBody(query);
   return this.http.post(this.endpoint, body, headers);
@@ -205,23 +209,30 @@ export class QueryService {
    * @returns A string of SPARQL without the SELECT predicate
    */
    getPeopleQueryBody() {
-    let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt
+    let query = `SELECT distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName
     (group_concat(distinct ?expert; separator = ", ") as ?expertise)
     (group_concat(distinct ?expertLabel; separator = ", ") as ?expertiseLabel)
-    where {
+    WHERE {
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
         ?entity kwg-ont:hasExpertise ?expert.
-
         ?expert rdfs:label ?expertLabel.
-        optional
+        OPTIONAL
         {
             ?entity iospress:contributorAffiliation ?affiliation.
             ?affiliation rdfs:label ?affiliationLabel.
-            ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+            OPTIONAL {
+              ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
+            }
+            OPTIONAL {
+              ?affiliation kwg-ont:sfWithin ?affiliationLoc .
+              ?affiliationLoc rdf:type kwg-ont:AdministrativeRegion_3 .
+              ?affiliationLoc rdfs:label ?affiliationLoc_label.
+              ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName
+            }
         }
 
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt`
+    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName`
     return query;
   }
 

@@ -30,8 +30,6 @@ export class MapComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.initMap();
-    // console.log("in map, the value is: ", this.msgFromSearchParent);
-    console.log("hello here ");
     this.showClusters();
   }
 

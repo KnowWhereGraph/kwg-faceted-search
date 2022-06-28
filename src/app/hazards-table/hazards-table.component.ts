@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table';
 import { QueryService } from '../services/query.service';
@@ -89,7 +89,9 @@ export class HazardsTableComponent implements OnInit {
         let entityUri = result['entity']['value'];
         let entityInfo = {
           "name": result["label"]["value"],
+          "nameUri": result["entity"]["value"],
           "type": result["typeLabel"]["value"],
+          "typeUri": result["type"]["value"],
         }
         // Save the name and type of the hazard for later
         hazardRecords.set(entityUri, entityInfo);
@@ -102,31 +104,37 @@ export class HazardsTableComponent implements OnInit {
         next: response => {
           // Once all of the properties have been retrieved, populate the table
           results = this.queryService.getResults(response);
-          console.log("hazard results: ", results);
-
           this.hazards = [];
           for (var row of results) {
             let record = hazardRecords.get(row.entity.value);
             record.place = (typeof row.place === 'undefined') ? '' : row.place.value;
-            record.placeName = (typeof row.placeLabel === 'undefined') ? '' : row.placeLabel.value;
+            record.placeName = (typeof row.placeQuantName === 'undefined') ? '' : row.placeQuantName.value;
             record.placeWkt = (typeof row.placeWkt === 'undefined') ? '' : row.placeWkt.value;
             record.startDate = (typeof row.time === 'undefined') ? '' : row.time.value;
             record.startDateName = (typeof row.startTimeLabel === 'undefined') ? '' : row.startTimeLabel.value;
             record.endDate = (typeof row.time === 'undefined') ? '' : row.time.value;
             record.endDateName = (typeof row.endTimeLabel === 'undefined') ? '' : row.endTimeLabel.value;
             record.wkt = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
-
+            let resTypes = row["typeLabel"]["value"].split(',').filter(function(resType) { return (resType !== "NIFCWildfire") })
+            let types: Array<[string, string]> = [];
+            types = row.type.value.split(",").map(function (x, i) {
+              return [x, resTypes[i]]
+            });
             this.hazards.push({
               name: record.name,
-              type: record.type,
+              entityUri: record.nameUri,
+              type: types,
               place: record.placeName,
+              placeUri: record.place,
+              startDateUri: record.startDate,
               startDate: record.startDateName,
+              endDateUri: record.endDate,
               endDate: record.endDateName,
+              dateUri: record.time,
             });
             if (record.wkt){
               this.locations.push(record.wkt);
             }
-
           }
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
           this.searchQueryFinishedEvent.emit(true);
@@ -147,8 +155,13 @@ export class HazardsTableComponent implements OnInit {
 // Prototype for Hazard
 export interface Hazard {
   name: string;
-  type: string,
+  entityUri: string,
+  type: Array<[string, string]>,
   place: string,
+  placeUri: string,
+  startDateUri: string,
   startDate: string,
+  endDateUri: string,
   endDate: string,
+  dateUri: string,
 }

@@ -83,13 +83,14 @@ export class PlacesTableComponent implements OnInit {
     this.queryService.getAllPlaces(count, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-        console.log("place results: ", results);
         this.places = [];
         this.locations = [];
         for (var result of results) {
           this.places.push({
             "name": result["label"]["value"],
+            "nameUri": result["entity"]["value"],
             "type": result["typeLabel"]["value"],
+            "typeUri": result["type"]["value"],
           });
           if (result['geo']){
             this.locations.push(result['geo']['value']);
@@ -104,6 +105,8 @@ export class PlacesTableComponent implements OnInit {
 }
 // Prototype for Places
 export interface Place {
-  name: string;
+  name: string,
+  nameUri: string;
   type: string,
+  typeUri: string,
 }
