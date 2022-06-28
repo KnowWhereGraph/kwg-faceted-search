@@ -90,3 +90,13 @@ body {
   right: 0;
   margin: 0 auto;
 }
+
+.overflow-cell {
+  a {
+    text-decoration: none;
+    color: #00021F;
+  }
+  a:hover {
+    color: orange;
+  }
+}

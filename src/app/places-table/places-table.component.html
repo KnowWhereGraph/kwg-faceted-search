@@ -3,13 +3,21 @@
   <!-- Name Column -->
   <ng-container matColumnDef="name" >
     <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
-    <mat-cell *matCellDef="let row"><a [href]="row.nameUri" target="_blank">{{row.name}}</a></mat-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="overflow-cell">
+        <a [href]="row.nameUri" target="_blank">{{row.name}}</a>
+      </span>
+    </mat-cell>
   </ng-container>
 
   <!-- Type Column -->
   <ng-container matColumnDef="type" >
     <mat-header-cell *matHeaderCellDef mat-sort-header class="place-type-header"> Type </mat-header-cell>
-    <mat-cell *matCellDef="let row"><a [href]="row.typeUri" target="_blank">{{row.type}}</a></mat-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="overflow-cell">
+        <a [href]="row.typeUri" target="_blank">{{row.type}}</a>
+      </span>
+    </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
