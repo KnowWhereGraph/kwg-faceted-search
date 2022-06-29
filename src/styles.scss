@@ -102,3 +102,23 @@ body {
     color: orange;
   }
 }
+
+.node-content-wrapper:hover {
+  box-shadow: none;
+  background: none;
+}
+
+.node-content-wrapper-focused {
+  box-shadow: none;
+  background: none;
+}
+
+mat-form-field-flex {
+  /*change color of label*/
+  color: white !important;
+ }
+
+ ::ng-deep .mat-datepicker-content .mat-calendar {
+  width: 229px!important;
+  height: 300px!important;
+}
