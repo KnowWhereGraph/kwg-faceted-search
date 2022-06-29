@@ -12,7 +12,7 @@
   <div class="facet">
     <span class="search-header">Feature Type</span>
     <div class="scrollable-facet">
-      <tree-root class="facet-tree" [nodes]="gnisClassesDisplay" (activate)="facetChanged()" [options]="gnisOptions">
+      <tree-root class="facet-tree" [nodes]="gnisClassesDisplay" (event)="facetChanged($event)" [options]="gnisOptions">
       </tree-root>
     </div>
   </div>
@@ -23,7 +23,7 @@
         Administrative Regions
       </span>
       <input class="facet-input" autocomplete="true" type="text" placeholder="Find an Administrative Region..." [ngbTypeahead]="searchAdminRegions"
-        [(ngModel)]="adminRegion" (keyup.enter)="facetChanged()">
+        [(ngModel)]="adminRegion" (keyup.enter)="facetChanged($event)">
     </div>
   </div>
 
@@ -33,7 +33,7 @@
     </span>
     <!-- Only show the US Places nested checkbox facet on the Hazards tab -->
     <div class="scrollable-facet">
-      <tree-root class="facet-tree tree" [nodes]="administrativeRegionsDisplay" (activate)="facetChanged()"
+      <tree-root class="facet-tree tree" [nodes]="administrativeRegionsDisplay" (event)="facetChanged($event)"
         [options]="adminRegionOptions">
       </tree-root>
     </div>
@@ -43,14 +43,14 @@
     <span class="search-header">
       Zip Code
     </span>
-    <input id="typeahead-basic" type="text" class="facet-input"  placeholder="Find a Zip Code..." [(ngModel)]="zipCode" (keyup.enter)="facetChanged()" [ngbTypeahead]="searchZIPCodes">
+    <input id="typeahead-basic" type="text" class="facet-input"  placeholder="Find a Zip Code..." [(ngModel)]="zipCode" (keyup.enter)="facetChanged($event)" [ngbTypeahead]="searchZIPCodes">
   </div>
 
   <div class="facet">
     <span class="search-header">
       FIPS Code
     </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode" (keyup.enter)="facetChanged()"  [ngbTypeahead]="searchFIPSCodes">
+    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode" (keyup.enter)="facetChanged($event)"  [ngbTypeahead]="searchFIPSCodes">
   </div>
 
   <div class="facet">
@@ -58,7 +58,7 @@
       US Climate Division
     </span>
     <input class="facet-input" autocomplete="true" type="text" placeholder="Find a US Climate Division..." [ngbTypeahead]="searchClimateDivision"
-      [(ngModel)]="climateDivision" (keyup.enter)="facetChanged()">
+      [(ngModel)]="climateDivision" (keyup.enter)="facetChanged($event)">
   </div>
 
   <div class="facet">
@@ -66,7 +66,7 @@
       National Weather Zone
     </span>
     <input class="facet-input" autocomplete="true" type="text" placeholder="Find a National Weather Zone..." [ngbTypeahead]="searchNWZones"
-      [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged()">
+      [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged($event)">
   </div>
 </div>
 
@@ -77,17 +77,29 @@
     <span class="search-header">
       Start Date
     </span>
-    <input class="facet-input date-facet" type="date" [(ngModel)]="startDate">
+    <mat-form-field appearance="fill" class="date-picker-container">
+      <mat-label>Select a date</mat-label>
+      <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (keyup.enter)="facetChanged($event)" (dateChange)="dateChanged('', $event)">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
   </div>
   <div class="facet">
     <span class="search-header">
       End Date
     </span>
-    <input class="facet-input date-facet" type="date" [(ngModel)]="endDate">
+    <mat-form-field appearance="fill" class="date-picker-container">
+      <mat-label>Select a date</mat-label>
+      <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (keyup.enter)="facetChanged($event)" (dateChange)="dateChanged('', $event)">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
   </div>
   <span class="search-header">Hazard Type(s)</span>
   <div class="hazard-types">
-    <tree-root class="facet-tree hazard-tree" [nodes]="hazardClassesDisplay" (focus)="hazardFacetChanged($event)" [options]="hazardOptions"> </tree-root>
+    <tree-root class="facet-tree hazard-tree" [nodes]="hazardClassesDisplay" (event)="hazardFacetChanged($event)" [options]="hazardOptions"> </tree-root>
   </div>
   <!--(click)="onEvent($event)"-->
   <div class="facet observation-collection">
@@ -95,65 +107,65 @@
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (min)</span>
         <input class="facet-input" type="number" ng-model="hazardFacetMagnitudeMin" min="0"
-          placeholder="Enter minimum magnitude...">
+          placeholder="Enter minimum magnitude..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (max)</span>
-        <input class="facet-input" type="number" max="8" placeholder="Enter maximum magnitude...">
+        <input class="facet-input" type="number" max="8" placeholder="Enter maximum magnitude..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Depth (min)</span>
-        <input class="facet-input" type="number" placeholder="Enter minimum depth...">
+        <input class="facet-input" type="number" placeholder="Enter minimum depth..." (keyup.enter)="facetChanged($event)">
       </div>
 
       <div class="facet">
         <span class="search-header">Earthquake: Depth (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum depth...">
+        <input class="facet-input" type="number" placeholder="Enter maximum depth..." (keyup.enter)="facetChanged($event)">
       </div>
     </section>
     <section class="conditional-facets" *ngIf="showMTBFireOC == true">
       <!-- Fire Cause -->
       <div class="facet">
         <span class="search-header">MTBS Fire: Number of Acres Burned (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum acres burned ...">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum acres burned ..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Number of Acres Burned (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum acres burned ...">
+        <input class="facet-input" type="number" min="0" placeholder="Enter maximum acres burned ..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum mean dNBR..">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum mean dNBR.." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum mean dNBR..">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum mean dNBR.." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR..">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum standard deviation of mean dNBR..">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)">
       </div>
     </section>
     <section class="conditional-facets" *ngIf="showNOAAOC == true">
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Deaths (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct deaths..">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct deaths.." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Deaths (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum direct deaths..">
+        <input class="facet-input" type="number" placeholder="Enter maximum direct deaths.." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct injured number...">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct injured number..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum direct injured number...">
+        <input class="facet-input" type="number" min="0" placeholder="Enter maximum direct injured number..." (keyup.enter)="facetChanged($event)">
       </div>
     </section>
   </div>
@@ -165,7 +177,7 @@
   <div class="facet">
     <span class="search-header">Expert Topic(s)</span>
     <div class="expert-types">
-      <tree-root class="expert-types" [nodes]="expertClassesDisplay" (activate)="facetChanged()"
+      <tree-root class="expert-types" [nodes]="expertClassesDisplay" (event)="facetChanged($event)"
         [options]="expertOptions"></tree-root>
     </div>
   </div>

@@ -21,6 +21,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { PeopleTableComponent } from './people-table/people-table.component';
 import { MapComponent } from './map/map.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -44,6 +46,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserModule,
     HttpClientModule,
     MatAutocompleteModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatTableModule,
     MatTabsModule,
     MatPaginatorModule,
