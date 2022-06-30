@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
-import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from '@circlon/angular-tree-component'
+import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping } from '@circlon/angular-tree-component'
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
@@ -55,36 +55,24 @@ export class FacetsComponent implements OnInit {
   // Holds all of the administrative regions used in autocompletion
   adminRegions: Array<string> = []
 
-  // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked
-  actionMap =  {
-    mouse: {
-      click: (tree, node, $event) => {
-      }
-    },
-  }
-
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
-    useCheckbox: true,
-    actionMapping: this.actionMap
+    useCheckbox: true
   }
 
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
-    useCheckbox: true,
-    actionMapping: this.actionMap
+    useCheckbox: true
   }
 
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
-    useCheckbox: true,
-    actionMapping: this.actionMap
+    useCheckbox: true
   }
 
   expertOptions: ITreeOptions = {
     getChildren: this.getExpertChildren.bind(this),
-    useCheckbox: true,
-    actionMapping: this.actionMap
+    useCheckbox: true
   }
 
   /**
@@ -110,6 +98,7 @@ export class FacetsComponent implements OnInit {
    * @returns An array of matching items
    */
    searchText(term, container:Array<string>) {
+    console.log(container)
     let matches:Array<string> = [];
     container.forEach(elem => {
       if (elem.indexOf(term) === 0) {
@@ -119,16 +108,6 @@ export class FacetsComponent implements OnInit {
     return matches.slice(0, 10);;
   }
 
-  /**
-   * Called when the datepicker is used. The signature for a data picking event needs two parameters
-   * which is why this function calls facetChanged.
-   *
-   * @param control The name of the control, this value is not used
-   * @param event The selection event
-   */
-  dateChanged(control: string, event) {
-    this.facetChanged(event);
-  }
   /**
    * Called when the user inputs text into the ZIP code input box
    * @param text$ The text in the ZIP code field
@@ -198,25 +177,13 @@ export class FacetsComponent implements OnInit {
    * Called when the hazard class is changed. This method exists separately than the other
    * facetChanged method because we want to process observation collections here
    */
-  hazardFacetChanged(event: ClickEvent | undefined=undefined) {
-    let selected = (eventName: string) => {
-      if (eventName === 'select') {
-        return true;
-      } else if (eventName === 'deselect') {
-        return false;
-      }
-      return undefined;
-    }
-
-    if (event && event.node && event.node.data) {
-      if (event.node.data.name == 'MTBS Fire') {
-        this.showMTBFireOC = selected(event.eventName)? true: false;
-      } else if (event.node.data.name == 'Earthquake') {
-        this.showEarthquakeOC = selected(event.eventName)? true: false;
-      } else if (event.node.data.name == 'NOAA Hurricane Event') {
-        this.showNOAAOC = selected(event.eventName)? true: false;
-      }
-      this.updateUrlParams();
+  hazardFacetChanged(event) {
+    if (event.node.data.name == 'MTBS Fire') {
+      this.showMTBFireOC = true;
+    } else if (event.node.data.name == 'Earthquake') {
+      this.showEarthquakeOC = true
+    } else if (event.node.data.name == 'NOAA Hurricane Event') {
+      this.showNOAAOC = true
     }
   }
 
@@ -225,17 +192,12 @@ export class FacetsComponent implements OnInit {
    * is called. It's responsible for updating the URL query parameters and for letting
    * the sibling components to update the data table.
    */
-  facetChanged(event: any=undefined) {
-    if (event) {
-      if (event instanceof KeyboardEvent) {
-        // The user pressed enter
-        this.updateUrlParams();
-      } else if (event.eventName == 'select' || event.eventName == 'deselect') {
-        // The user clicked a checkbox on a facet
-        this.updateUrlParams();
-      }
-    }
+  facetChanged() {
+    this.updateUrlParams();
+  }
 
+  generateArray(obj) {
+    return Object.keys(obj).map((key) => { return { key: key, value: obj[key] } });
   }
 
   /**
@@ -310,6 +272,7 @@ export class FacetsComponent implements OnInit {
    */
   updateUrlParams() {
     const queryParams: Params = {};
+
     if (this.adminRegion == '') {
       queryParams['admin_region'] = null;
     } else {
@@ -532,11 +495,4 @@ export class FacetsComponent implements OnInit {
       });
     });
   }
-}
-
-// Prototype for clicking events
-export interface ClickEvent {
-  eventName: string;
-  node: TreeNode,
-  treeModel: TreeModel,
 }

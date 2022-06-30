@@ -87,13 +87,3 @@ input:focus {
 .observation-collection {
   padding-top: 1rem;
 }
-
-.mat-form-field-flex {
-  background: white;
-}
-
-
- ::ng-deep .mat-form-field-flex {
-  /*change color of label*/
-  color: white !important;
- }
