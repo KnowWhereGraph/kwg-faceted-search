@@ -1,23 +1,33 @@
 .mat-column-name {
   margin-right: 1rem;
-  width: 9rem;
+  flex: 0 0 20%;
   font-size: 1rem;
 }
 
 .mat-column-type {
-  width: 3rem;
+  flex: 0 0 20%;
   justify-content: center;
+  margin-right: 1rem;
+  font-size: 1rem;
 }
 
 .mat-column-place {
-  // width: 2rem;
-  flex: 0 0 10%;
+  flex: 0 0 15%;
   justify-content: center;
+  margin-right: 1rem;
+  font-size: 1rem;
 }
 
-.mat-column-startDate,
+.mat-column-startDate {
+  justify-content: center;
+  flex: 0 0 15%;
+  font-size: 1rem;
+}
 .mat-column-endDate{
   justify-content: center;
+  flex: 0 0 18%;
+  padding-right: 0;
+  font-size: 1rem;
 }
 
 .hazard-header{
