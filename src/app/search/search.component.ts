@@ -105,7 +105,7 @@ export class SearchComponent implements OnInit {
       case "hazard":
         this.selectedTabIndex = Number(1);
         break;
-      case "people":
+      case "person":
         this.selectedTabIndex = Number(2);
         break;
     }

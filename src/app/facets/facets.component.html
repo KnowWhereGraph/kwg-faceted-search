@@ -7,7 +7,7 @@
 </div>
 
 <!-- Place Facets -->
-<div *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1">
+<div *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1" class="place-facets">
   <h3 class="facet-head">Place</h3>
   <div class="facet">
     <span class="search-header">Feature Type</span>
@@ -71,7 +71,7 @@
 </div>
 
 <!-- Hazard Facets -->
-<div *ngIf="selectedTabIndex === 1">
+<div *ngIf="selectedTabIndex === 1" class="hazard-facets">
   <h3 class="facet-head">Hazard</h3>
   <div class="facet">
     <span class="search-header">
@@ -160,7 +160,7 @@
 </div>
 
 <!-- Expert Facets -->
-<div *ngIf="selectedTabIndex === 2" class="people-facets">
+<div *ngIf="selectedTabIndex === 2" class="expert-facets">
   <h3 class="facet-head">EXPERTISE</h3>
   <div class="facet">
     <span class="search-header">Expert Topic(s)</span>

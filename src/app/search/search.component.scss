@@ -11,7 +11,9 @@
   padding-left: 2rem;
   padding-right: 2rem;
   background: #D8D8DD;
+  // Don't let the facet selection area expand past 15% of available space
   min-width: 15%;
+  max-width: 15%;
 }
 
 // Styling for the container that holds the results count, table, and paginator
@@ -21,8 +23,7 @@
   margin-top: 1rem;
   margin-left: 2rem;
   margin-right: 2rem;
-  min-width: 35%;
-  max-width: 45%;
+  width: 40%;
   height: 80rem;
 }
 
@@ -78,6 +79,6 @@
 }
 
 .map-container {
-  width:100%;
+  width: 45%;
   box-sizing: border-box;
 }

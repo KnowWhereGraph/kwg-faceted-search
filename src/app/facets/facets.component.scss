@@ -87,3 +87,24 @@ input:focus {
 .observation-collection {
   padding-top: 1rem;
 }
+
+.mat-form-field-flex {
+  background: white;
+}
+
+.people-facets {
+  padding-top: 1rem;
+}
+
+.place-facets {
+  padding-top: 1rem;
+}
+
+.expert-facets {
+  padding-top: 1rem;
+}
+
+ ::ng-deep .mat-form-field-flex {
+  /*change color of label*/
+  color: white !important;
+ }

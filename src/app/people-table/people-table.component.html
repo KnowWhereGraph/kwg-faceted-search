@@ -1,4 +1,7 @@
 <div class="table-container">
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize"
+  [pageIndex]="currentPage">
+  </mat-paginator>
   <mat-table [dataSource]="people" class="search-table">
 
   <!-- Name Column -->
@@ -44,7 +47,4 @@
   <mat-header-row *matHeaderRowDef="peopleColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: peopleColumns;"></mat-row>
   </mat-table>
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize"
-  [pageIndex]="currentPage">
-  </mat-paginator>
 </div>
