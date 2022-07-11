@@ -82,7 +82,7 @@ export class PeopleTableComponent implements OnInit {
             "name_uri": result["entity"]["value"],
             "affiliation": result["affiliationLabel"]["value"],
             "affiliation_uri": result["affiliation"]["value"],
-            "expertise": expertise,
+            "expertise": expertise.slice(0, 5),
             "place": result["affiliationQuantName"]? result["affiliationQuantName"]["value"]: "",
             "place_uri": result["affiliationLoc"]? result["affiliationLoc"]["value"]: ""
           });
