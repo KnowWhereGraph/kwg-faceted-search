@@ -1,7 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { MatPaginator } from '@angular/material/paginator';
 import { PlacesTableComponent } from '../places-table/places-table.component';
 
 @Component({
