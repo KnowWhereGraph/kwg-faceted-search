@@ -16,7 +16,8 @@ export class MapComponent implements OnInit {
   private map: any;
   @Input() locations: any;
   createMarkerCluster = L.markerClusterGroup();
-  markers: L.Marker[] = [];
+  // markers: L.Marker[] = [];
+
 
 
   constructor() {
@@ -24,19 +25,21 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-
   }
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.showClusters();
+    // clean all the clusters
+    console.log(this.createMarkerCluster);
+
+    // this.createMarkerCluster.clearLayers();
+
   }
 
   private initMap(): void {
     this.map = L.map('map', {
-      // center: [51.505, -0.09],
-      center: [-37.8208292333, 175.2214374833],
+      center: [25.79611, -96.86278],
+      // center: [-37.8208292333, 175.2214374833],
       zoom: 5
     });
 
@@ -71,6 +74,7 @@ export class MapComponent implements OnInit {
         drawRectangle: false,
         drawPolygon: false,
         drawCircle: true,
+        drawText: false,
 
         drawControls: true,
         editControls: true,
@@ -85,7 +89,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private showClusters(){
+  private showClusters(locations){
     const icon = L.icon({
       iconSize: [25, 41],
      iconAnchor: [10, 41],
@@ -96,20 +100,54 @@ export class MapComponent implements OnInit {
        "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
    });
 
-    let locations = [[-37.8210922667, 175.2209316333],
-    [-37.8210819833, 175.2213903167],
-    [-37.8210881833, 175.2215004833],
-    [-37.8211946833, 175.2213655333],
-    [-37.8209458667, 175.2214051333],
-    [-37.8208292333, 175.2214374833],
-    [-37.8325816, 175.2238798667],
-    [-37.8315855167, 175.2279767]];
+    // let locations = [[-37.8210922667, 175.2209316333],
+    // [-37.8210819833, 175.2213903167],
+    // [-37.8210881833, 175.2215004833],
+    // [-37.8211946833, 175.2213655333],
+    // [-37.8209458667, 175.2214051333],
+    // [-37.8208292333, 175.2214374833],
+    // [-37.8325816, 175.2238798667],
+    // [-37.8315855167, 175.2279767]];
+
+    // place: "http://stko-kwg.geog.ucsb.edu/lod/resource/geometry.multipolygon.North_America.United_States.USA.10_1"
+    // hazard: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-89.6458056 32.3111059)
+    // person: POINT (-77.86278 40.79611)
 
    for(let i = 0; i < locations.length; i++){
     let marker = L.marker([locations[i][0], locations[i][1]], {icon});
     this.createMarkerCluster.addLayer(marker);
   }
   this.map.addLayer(this.createMarkerCluster);
+  }
+
+
+  public displayClustersForTab(tabName, locations){
+    // clear all the clusters
+    var coordinates: number[][] = [];
+    this.createMarkerCluster.clearLayers();
+    // display the clusters
+
+    if (tabName == "place"){
+      coordinates = [];
+    } else{
+      for (var loc of locations){
+        var split_text = loc.split(" ");
+        var coord: number[] = [];
+        var coordX = parseFloat(split_text[1].split("(")[1]);
+        var coordY = parseFloat(split_text[2].split(")")[0]);
+        coord.push(coordY);
+        coord.push(coordX);
+        coordinates.push(coord);
+      }
+    }
+    console.log("tabName = ", tabName, ", coodinates: ", coordinates);
+
+    if(coordinates.length){
+      this.showClusters(coordinates);
+    }
+
+
+
   }
 
 

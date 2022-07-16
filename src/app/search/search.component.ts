@@ -126,18 +126,27 @@ export class SearchComponent implements OnInit {
   //   this.isCounting = false;
   // }
 
-  getPlaceLocationEvent(values){
+  @ViewChild('mapChild')
+  public mapChild: any;
 
+
+
+  getPlaceLocationEvent(values){
     this.returnedLocations = values;
+
+    console.log(this.mapChild.displayClustersForTab("place", values));
   }
 
   getHazardLocationEvent(values){
     this.returnedLocations = values;
+
+    console.log(this.mapChild.displayClustersForTab("hazard", this.returnedLocations));
   }
 
   getPeopleLocationEvent(values){
-
     this.returnedLocations = values;
+
+    console.log(this.mapChild.displayClustersForTab("people", values));
   }
 
   getLocationsFromComponent(values){
