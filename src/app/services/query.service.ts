@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueryService {
   // SPARQL Endpoint
-  private endpoint="https://stko-kwg.geog.ucsb.edu/sparql";
+  private endpoint=environment['graphEndpoint'];
   // The SPARQL query prefixes
   private prefixes = {
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -64,6 +64,7 @@ export class QueryService {
   // Returns the body of the query meant to get all of the relevant (to the facets) hazards.
   // This is used to populate the data table
   getHazardsQueryBody() {
+    console.log(environment)
     let query = `?entity rdf:type ?type;
     rdfs:label ?label;
     kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
@@ -142,25 +143,21 @@ export class QueryService {
    * Retrieves all of the zip codes that are in the graph.
    */
   getZipCodes() {
-    let zipCodeQuery = `SELECT DISTINCT ?zipcode ?zipcodeArea WHERE {
-      ?zipcodeArea rdf:type kwg-ont:ZipCodeArea;
-        rdfs:label ?zipcode.
-    } ORDER BY ASC(?zipcode)`;
-    return this.http.get('../assets/data/zipcode_areas.json');
+    return this.http.get('../assets/data/new/zipcode_cache.csv', {responseType: 'text'});
   }
 
   /**
    * Retrieves all of the zip codes that are in the graph.
    */
    getFIPSCodes() {
-    return this.http.get('../assets/data/fips_areas.json');
+    return this.http.get('../assets/data/new/fips_cache.csv', {responseType: 'text'});
   }
 
   /**
    * Retrieves all of the National Weather Zones that are in the graph.
    */
     getNWZones() {
-      return this.http.get('../assets/data/nwz_areas.json');
+      return this.http.get('../assets/data/new/nwz_cache.csv', {responseType: 'text'});
     }
 
   /**
@@ -322,7 +319,7 @@ export class QueryService {
      * Returns all of the climate divisions in the United States
      */
     getClimateDivisions() {
-      return this.http.get('../assets/data/us_climate_divisions.json');
+      return this.http.get('../assets/data/new/climate_division_cache.csv', {responseType: 'text'});
     }
 
     /**

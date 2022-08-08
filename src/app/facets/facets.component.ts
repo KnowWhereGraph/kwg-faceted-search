@@ -112,7 +112,7 @@ export class FacetsComponent implements OnInit {
    searchText(term, container:Array<string>) {
     let matches:Array<string> = [];
     container.forEach(elem => {
-      if (elem.indexOf(term) === 0) {
+      if (elem.toLowerCase().indexOf(term.toLowerCase()) === 0) {
         matches.push(String(elem));
       }
     });
@@ -223,7 +223,7 @@ export class FacetsComponent implements OnInit {
   /**
    * When facet values are changed and the user clicks 'Enter' or 'Search', this method
    * is called. It's responsible for updating the URL query parameters and for letting
-   * the sibling components to update the data table.
+   * the sibling components know to update the data table.
    */
   facetChanged(event: any=undefined) {
     if (event) {
@@ -235,54 +235,59 @@ export class FacetsComponent implements OnInit {
         this.updateUrlParams();
       }
     }
-
   }
 
   /**
    * Fetches the data for the typeahead input fields. The data is stored in corresponding
-   * member variables.
+   * class member variables.
    */
   fetchTypeaheadData() {
     this.queryService.getZipCodes().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
+        let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['zipcode']['value'].replace("zip code ", ""))
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1])
         });
+        formatted.pop();
         this.zipCodes = formatted;
       }
     });
 
     this.queryService.getFIPSCodes().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['fips']['value'])
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1]);
         });
+        formatted.pop();
         this.fipsCodes = formatted;
       }
     });
 
     this.queryService.getNWZones().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
+        let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['nwzone_label']['value'])
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1])
         });
+        formatted.pop();
         this.nwZones = formatted;
       }
     });
 
     this.queryService.getClimateDivisions().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['division_label']['value'].replace("US NOAA Climate Division ", ""))
-        });
+        // Get an array of rows of the form id,label
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1]);
+        })
+        // Remove the last empty line
+        formatted.pop()
         this.climateDivisions = formatted;
       }
     });
