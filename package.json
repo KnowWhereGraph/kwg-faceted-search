@@ -4,11 +4,13 @@
 =======
 >>>>>>> 178354f6 (indent problem)
   "name": "faceted-search",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "cache-prod": "node ./src/assets/scripts/fetch-cache.js http://stko-kwg.geog.ucsb.edu http://stko-kwg.geog.ucsb.edu",
+    "cache-stage": "node ./src/assets/scripts/fetch-cache.js http://stko-kwg.geog.ucsb.edu https://staging.knowwheregraph.org",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -28,6 +30,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "bootstrap": "^5.1.3",
     "jquery": "^3.6.0",
 =======
@@ -37,10 +40,18 @@
     "@geoman-io/leaflet-geoman-free": "^2.11.4",
 =======
 >>>>>>> 9313649f (Add autocompletion to the facets)
+=======
+    "@asymmetrik/ngx-leaflet-markercluster": "^13.0.1",
+>>>>>>> feb11910 (Add support for generating the cache via cli. Switch the format over to csv to save space and refactor the cache-reading code to compensate for the format difference)
     "@circlon/angular-tree-component": "^11.0.4",
     "@geoman-io/leaflet-geoman-free": "^2.11.4",
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@popperjs/core": "^2.10.2",
+<<<<<<< HEAD
+=======
+    "@types/leaflet.markercluster": "^1.5.0",
+    "axios": "^0.27.2",
+>>>>>>> feb11910 (Add support for generating the cache via cli. Switch the format over to csv to save space and refactor the cache-reading code to compensate for the format difference)
     "bootstrap": "^5.1.3",
     "leaflet": "^1.7.1",
     "leaflet.pm": "^2.2.0",
