@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
@@ -14,6 +14,8 @@ import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 export class FacetsComponent implements OnInit {
 
   floatLabelControl = new FormControl('auto');
+  // The selected facets
+  selectedTreeFacets: Array<any> = [];
   // The current tab that the user selected. This is used to decide which facets to show
   @Input() selectedTabIndex = 0;
   // This Administrative Region that the user specified
@@ -86,6 +88,8 @@ export class FacetsComponent implements OnInit {
     useCheckbox: true,
     actionMapping: this.actionMap
   }
+
+  @Output() facetChangedEvent = new EventEmitter<object>();
 
   /**
    * Called each time the search page is visited.
@@ -230,12 +234,39 @@ export class FacetsComponent implements OnInit {
       if (event instanceof KeyboardEvent) {
         // The user pressed enter
         this.updateUrlParams();
+        this.updateFacetSelections();
       } else if (event.eventName == 'select' || event.eventName == 'deselect') {
         // The user clicked a checkbox on a facet
         this.updateUrlParams();
+        this.selectedTreeFacets = Object.entries(event.treeModel.selectedLeafNodeIds)
+          .filter(([key, value]) => {
+            return (value === true);
+          }).map((id) => {
+            let node = event.treeModel.getNodeById(id[0]);
+          return node;
+        });
+        // Output selected tree facets in console log
+        console.log(this.selectedTreeFacets);
+        this.updateFacetSelections();    
       }
     }
 
+  }
+
+  /**
+   * The function to update facet selection and send it to the parent component SearchComponent
+   */
+  updateFacetSelections() {
+    let selectedFacets = {'selectedTabIndex':this.selectedTabIndex};
+
+    // update expertise topic facets
+    if (this.selectedTabIndex == 2)
+    {
+      selectedFacets['expertiseTopic'] = this.selectedTreeFacets;
+    }
+    // output selected expertise topic-related facets in console log
+    console.log(selectedFacets);
+    this.facetChangedEvent.emit(selectedFacets);
   }
 
   /**
