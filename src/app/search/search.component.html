@@ -1,6 +1,10 @@
 <div class="search-body">
   <!-- The left hand facets -->
-  <app-facets class="facets" [selectedTabIndex]="selectedTabIndex"></app-facets>
+  <app-facets class="facets" [selectedTabIndex]="selectedTabIndex"
+  (facetChangedEvent)="outputFacets($event)"></app-facets>
+  <ul>
+    <li *ngFor="let item of items">{{item}}</li>
+  </ul>
   <div class="results-body">
     <!-- The number of results from the last query -->
     <ng-container *ngIf="!isCounting && isSearching">

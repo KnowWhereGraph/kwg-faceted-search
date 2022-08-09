@@ -25,6 +25,14 @@ export class SearchComponent implements OnInit {
   // The number of results
   public totalSize: number = 0;
 
+  /**
+   * test for communication between facetComponent and searchComponent
+   */
+  items = ['item1', 'item2'];
+  outputFacets(facet: object){
+    this.items = Object.keys(facet);
+  }
+
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
 
   // variable to hold the data from the place/hazard/people component.
@@ -188,6 +196,7 @@ export class SearchComponent implements OnInit {
   getLocationsFromComponent(values){
     this.returnedLocations = values;
   }
+<<<<<<< HEAD
 >>>>>>> 19451625 (merge the change)
 =======
   // getLocationsFromComponent(values){
@@ -195,3 +204,10 @@ export class SearchComponent implements OnInit {
   // }
 >>>>>>> 9f3ef866 (uncomment console; jsdoc format)
 }
+=======
+
+
+
+
+}
+>>>>>>> 2faa7dda (Configure SearchComponent for testing its communication with FacetsComponent during expertise topic selection)
