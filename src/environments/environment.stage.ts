@@ -1,5 +1,5 @@
 export const environment = {
-  baseAddress: "https://staging.stko-kwg.geog.ucsb.edu",
-  graphEndpoint: "https://staging.stko-kwg.geog.ucsb.edu/sparql",
+  baseAddress: "https://staging.knowwheregraph.org/",
+  graphEndpoint: "https://staging.knowwheregraph.org/sparql",
   production: false
 };
