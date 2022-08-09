@@ -71,7 +71,7 @@ SELECT DISTINCT ?subject ?value WHERE {
 ?subject kwg-ont:hasFIPS ?value .
 } ORDER BY ASC(?value)`;
 console.log("Getting FIPS")
-fetchCache(fipsQuery, 'src/assets/data/new/fips_cache.csv')
+fetchCache(fipsQuery, 'src/assets/data/fips_cache.csv')
 
 // Download the ZIP codes cache
 let zipCodeQuery = `PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
@@ -81,7 +81,7 @@ SELECT DISTINCT ?subject ?value WHERE {
   BIND(REPLACE(STR(?label),"zip code ","") AS ?value)
 } ORDER BY ASC(?value)`;
 console.log("Getting ZIP Code")
-fetchCache(zipCodeQuery, 'src/assets/data/new/zipcode_cache.csv')
+fetchCache(zipCodeQuery, 'src/assets/data/zipcode_cache.csv')
 
 // Download the nwz cache
 let nwzQuery = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -92,7 +92,7 @@ SELECT DISTINCT ?subject ?value where {
                 rdfs:label ?value.
 } ORDER BY ASC(?value)`;
 console.log("Getting NWZ")
-fetchCache(nwzQuery, 'src/assets/data/new/nwz_cache.csv')
+fetchCache(nwzQuery, 'src/assets/data/nwz_cache.csv')
 
 // Download the US Climate Division cache
 let climateDivisionQuery = `PREFIX kwg-ont: <http://stko-kwg.geog.ucsb.edu/lod/ontology/>
@@ -102,7 +102,7 @@ SELECT DISTINCT ?subject ?value {
 	rdfs:label ?label.
   BIND(REPLACE(STR(?label),"US Climate Division with ID ","") AS ?value) .
 }`;
-fetchCache(climateDivisionQuery, 'src/assets/data/new/climate_division_cache.csv')
+fetchCache(climateDivisionQuery, 'src/assets/data/climate_division_cache.csv')
 
 // Download the Administrative Region cache
 let adminRegionQuery = `PREFIX kwg-ont: <http://stko-kwg.geog.ucsb.edu/lod/ontology/>
@@ -112,4 +112,4 @@ SELECT DISTINCT ?subject ?value {
 	rdfs:label ?label.
   BIND(REPLACE(STR(?label),"US Climate Division with ID ","") AS ?value) .
 }`;
-fetchCache(adminRegionQuery, 'src/assets/data/new/admin_region_cache.csv')
+//fetchCache(adminRegionQuery, 'src/assets/data/admin_region_cache.csv')
