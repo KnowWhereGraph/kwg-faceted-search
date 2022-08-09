@@ -143,21 +143,21 @@ export class QueryService {
    * Retrieves all of the zip codes that are in the graph.
    */
   getZipCodes() {
-    return this.http.get('../assets/data/new/zipcode_cache.csv', {responseType: 'text'});
+    return this.http.get('../assets/data/zipcode_cache.csv', {responseType: 'text'});
   }
 
   /**
    * Retrieves all of the zip codes that are in the graph.
    */
    getFIPSCodes() {
-    return this.http.get('../assets/data/new/fips_cache.csv', {responseType: 'text'});
+    return this.http.get('../assets/data/fips_cache.csv', {responseType: 'text'});
   }
 
   /**
    * Retrieves all of the National Weather Zones that are in the graph.
    */
     getNWZones() {
-      return this.http.get('../assets/data/new/nwz_cache.csv', {responseType: 'text'});
+      return this.http.get('../assets/data/nwz_cache.csv', {responseType: 'text'});
     }
 
   /**
@@ -319,7 +319,7 @@ export class QueryService {
      * Returns all of the climate divisions in the United States
      */
     getClimateDivisions() {
-      return this.http.get('../assets/data/new/climate_division_cache.csv', {responseType: 'text'});
+      return this.http.get('../assets/data/climate_division_cache.csv', {responseType: 'text'});
     }
 
     /**
