@@ -28,9 +28,9 @@ export class SearchComponent implements OnInit {
   /**
    * test for communication between facetComponent and searchComponent
    */
-  items = ['item1', 'item2'];
-  outputFacets(facet: object){
-    this.items = Object.keys(facet);
+  searchFacets = {};
+  changeFacets(selectedFacets: object){
+    this.searchFacets = selectedFacets;
   }
 
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;

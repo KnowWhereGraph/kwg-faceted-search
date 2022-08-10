@@ -1,10 +1,7 @@
 <div class="search-body">
   <!-- The left hand facets -->
   <app-facets class="facets" [selectedTabIndex]="selectedTabIndex"
-  (facetChangedEvent)="outputFacets($event)"></app-facets>
-  <ul>
-    <li *ngFor="let item of items">{{item}}</li>
-  </ul>
+  (facetChangedEvent)="changeFacets($event)"></app-facets>
   <div class="results-body">
     <!-- The number of results from the last query -->
     <ng-container *ngIf="!isCounting && isSearching">
@@ -47,7 +44,7 @@
           <span>Person</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPeopleLocationEvent($event)"></app-people-table>
+          <app-people-table [peopleFacets] = "searchFacets" (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPeopleLocationEvent($event)"></app-people-table>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

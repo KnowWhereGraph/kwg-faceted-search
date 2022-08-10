@@ -10,12 +10,17 @@ import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from 
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
+<<<<<<< HEAD
 /**
  * Component for the facet panel. This component is responsible for handling the display
  * and event handling of facet selections. When facets are selected, the component
  * fires an event containing a data structure of facet selections for other components
  * to process.
  */
+=======
+
+
+>>>>>>> 51bce0fa (Sending facet selection from searchComponent to PeopleTableComponent and update people-table)
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',
@@ -273,8 +278,6 @@ export class FacetsComponent implements OnInit {
             let node = event.treeModel.getNodeById(id[0]);
           return node;
         });
-        // Output selected tree facets in console log
-        console.log(this.selectedTreeFacets);
         this.updateFacetSelections();    
       }
     }
@@ -284,15 +287,13 @@ export class FacetsComponent implements OnInit {
    * The function to update facet selection and send it to the parent component SearchComponent
    */
   updateFacetSelections() {
-    let selectedFacets = {'selectedTabIndex':this.selectedTabIndex};
+    let selectedFacets = {};
 
     // update expertise topic facets
     if (this.selectedTabIndex == 2)
     {
-      selectedFacets['expertiseTopic'] = this.selectedTreeFacets;
+      selectedFacets['expertiseTopics'] = this.selectedTreeFacets;
     }
-    // output selected expertise topic-related facets in console log
-    console.log(selectedFacets);
     this.facetChangedEvent.emit(selectedFacets);
   }
 
