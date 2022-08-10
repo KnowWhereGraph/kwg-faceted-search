@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import {MatTableDataSource} from '@angular/material/table';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -10,6 +10,7 @@ import { QueryService } from '../services/query.service'
   styleUrls: ['./people-table.component.scss']
 })
 export class PeopleTableComponent implements OnInit {
+  @Input() peopleFacets = {};
   // Columns for the table
   peopleColumns: Array<String> = ["name", "affiliation", "expertise", "place"];
   // The data source that's responsible for fetching data
@@ -38,8 +39,8 @@ export class PeopleTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.peopleDataSource = new MatTableDataSource(this.people);
-    this.populateTable();
-    this.queryService.getPeopleCount(this.pageSize * 10).subscribe({
+    this.populateTable(this.peopleFacets['expertiseTopics']);
+    this.queryService.getPeopleCount(this.peopleFacets['expertiseTopics'], this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -56,8 +57,24 @@ export class PeopleTableComponent implements OnInit {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
-      this.populateTable(offset);
+      this.populateTable(this.peopleFacets['expertiseTopics'],offset);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    //this.peopleDataSource = new MatTableDataSource(this.people);
+    this.populateTable(this.peopleFacets['expertiseTopics']);
+    this.queryService.getPeopleCount(this.peopleFacets['expertiseTopics'], this.pageSize * 10).subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response)
+        this.totalSize = results[0]['COUNT']['value'];
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+      },
+      error: response => {
+        console.error("There was an error while retrieving the number of results", response)
+      }
+    })
   }
 
   /**
@@ -65,9 +82,9 @@ export class PeopleTableComponent implements OnInit {
    * which gets inserted into the subsequent query.
    * @param offset The query offset
    */
-   populateTable(offset:number=0) {
+   populateTable(expertiseTopicFacets, offset:number=0) {
 
-    this.queryService.getAllPeople(this.pageSize, offset).subscribe({
+    this.queryService.getAllPeople(expertiseTopicFacets, this.pageSize, offset).subscribe({
       next: response => {
         let results = this.queryService.getResults(response);
         this.locations = [];

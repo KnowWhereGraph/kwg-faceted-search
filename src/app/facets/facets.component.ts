@@ -6,6 +6,8 @@ import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from 
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
+
+
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',
@@ -245,8 +247,6 @@ export class FacetsComponent implements OnInit {
             let node = event.treeModel.getNodeById(id[0]);
           return node;
         });
-        // Output selected tree facets in console log
-        console.log(this.selectedTreeFacets);
         this.updateFacetSelections();    
       }
     }
@@ -257,15 +257,13 @@ export class FacetsComponent implements OnInit {
    * The function to update facet selection and send it to the parent component SearchComponent
    */
   updateFacetSelections() {
-    let selectedFacets = {'selectedTabIndex':this.selectedTabIndex};
+    let selectedFacets = {};
 
     // update expertise topic facets
     if (this.selectedTabIndex == 2)
     {
-      selectedFacets['expertiseTopic'] = this.selectedTreeFacets;
+      selectedFacets['expertiseTopics'] = this.selectedTreeFacets;
     }
-    // output selected expertise topic-related facets in console log
-    console.log(selectedFacets);
     this.facetChangedEvent.emit(selectedFacets);
   }
 
