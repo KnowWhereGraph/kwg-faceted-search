@@ -9,7 +9,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "cache-prod": "node ./src/assets/scripts/fetch-cache.js http://stko-kwg.geog.ucsb.edu http://stko-kwg.geog.ucsb.edu",
+    "cache-prod": "node ./src/assets/scripts/fetch-cache.js http://stko-kwg.geog.ucsb.edu https://stko-kwg.geog.ucsb.edu",
     "cache-stage": "node ./src/assets/scripts/fetch-cache.js http://stko-kwg.geog.ucsb.edu https://staging.knowwheregraph.org",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
