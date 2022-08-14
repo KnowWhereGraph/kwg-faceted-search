@@ -160,6 +160,13 @@ export class QueryService {
       return this.http.get('../assets/data/nwz_cache.csv', {responseType: 'text'});
     }
 
+   /**
+     * Returns all of the administrative regions in the United States
+     */
+    getAdministrativeRegions() {
+      return this.http.get('../assets/data/admin_region_cache.csv', {responseType: 'text'});
+    }
+
   /**
    * Gets the minimum amount of query for finding places.
    *
@@ -263,13 +270,6 @@ export class QueryService {
     // Given a sparql query response, return an array of values
     getResults(response: any) {
       return response['results']['bindings'];
-    }
-
-    /**
-     * Returns all of the administrative regions in the United States
-     */
-     getAdministrativeRegions() {
-      return this.http.get('../assets/data/us_admin_regions.json');
     }
 
     /**

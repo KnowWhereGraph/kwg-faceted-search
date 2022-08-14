@@ -46,7 +46,6 @@ async function fetchCache(query, fileName, data=[]) {
     data.push([res.subject.value, res.value.value]);
   })
 
-
   // If there are a non-zero number of records, ask for more
   if (results.data.results.bindings.length) {
     // Wait for fetchCache to complete, otherwise a promise will be pushed
@@ -64,6 +63,48 @@ async function fetchCache(query, fileName, data=[]) {
     console.error(err)
   };
 }
+
+/**
+ * Downloads the administrative region. This cache is more involved than the other
+ * caches, hence a new function for it. Refer to the documentation for 'fetchCache' for this function
+ *
+ * @param {*} query The SPARQL query to fetch the data.
+ * @param {*} fileName The name of the file where the data is saved
+ * @param {*} data An array of arrays, where the inner array contains [subject ,value], which come from the query
+ */
+ async function fetchAdministrativeCache(query, fileName, data=[]) {
+  // Determine how many records there are for an OFFSET
+  let count = data.length;
+  // Add an OFFSET to the query. This is how further results are obtained
+  let offset_query = query+` OFFSET ${count}`;
+  try {
+    let results = await sparqlRequest(offset_query);
+      results.data.results.bindings.forEach((res)=>{
+      data.push(res.usa_label.value);
+      data.push(res.state_label.value);
+      data.push(res.county_label.value);
+  });
+  // If there are a non-zero number of records, ask for more
+  if (results.data.results.bindings.length) {
+    // Wait for fetchAdministrativeCache to complete, otherwise a promise will be pushed
+    try {
+      data.push(await fetchAdministrativeCache(query, fileName, data));
+    } catch(err) {
+      console.error("Error fetching more cache results!", err)
+    }
+  } else {
+    let file = fs.createWriteStream(fileName);
+    file.on('error', (err) => { console.error("Failed writing to disk", err) });
+    let de_duplicated = new Set(data);
+    de_duplicated.forEach((record) => {
+      file.write(record+'\n');
+    })
+    file.end();
+  }} catch(err) {
+    console.error(err)
+  };
+}
+
 
 // Download the FIPS codes cache
 let fipsQuery = `PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
@@ -102,14 +143,22 @@ SELECT DISTINCT ?subject ?value {
 	rdfs:label ?label.
   BIND(REPLACE(STR(?label),"US Climate Division with ID ","") AS ?value) .
 }`;
+console.log("Getting Climate Divisions")
 fetchCache(climateDivisionQuery, 'src/assets/data/climate_division_cache.csv')
 
 // Download the Administrative Region cache
 let adminRegionQuery = `PREFIX kwg-ont: <http://stko-kwg.geog.ucsb.edu/lod/ontology/>
+PREFIX kwgr: <http://stko-kwg.geog.ucsb.edu/lod/resource/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?subject ?value {
-	?subject rdf:type kwg-ont:USClimateDivision;
-	rdfs:label ?label.
-  BIND(REPLACE(STR(?label),"US Climate Division with ID ","") AS ?value) .
-}`;
-//fetchCache(adminRegionQuery, 'src/assets/data/admin_region_cache.csv')
+SELECT ?county ?county_label ?state ?state_label ?usa ?usa_label WHERE {
+  ?county rdf:type kwg-ont:AdministrativeRegion_3 .
+  ?county kwg-ont:sfWithin ?state .
+  ?state kwg-ont:sfWithin ?usa.
+  values ?usa {kwgr:Earth.North_America.United_States.USA}
+  ?county rdfs:label ?county_label .
+  ?state rdfs:label ?state_label .
+  ?usa rdfs:label ?usa_label .
+} ORDER BY ?usa_label ?state_label ?county_label`;
+console.log("Getting Administrative Regions")
+fetchAdministrativeCache(adminRegionQuery, 'src/assets/data/admin_region_cache.csv')
