@@ -14,11 +14,11 @@ In either case, the source is built to a `./dist` folder which is then served by
 
 Before building, the cache must be generated. Handling this task before building will ensure that they're included in the `dist/` folder. The cache generation script has no way of telling which environment file . Because of this, the base url needs to be included in the call to the execution of the script-seen in `package.json`. To generate the cache, call either of the two commands below
 
-`npm run cache-stage`
+`npm run cache-prod`
 
 or
 
-`npm run cache-prod`
+`npm run cache-stage`
 
 Building works similarly however, the deployment URL's are kept in the `environment.ts` file, conforming to Angular's build conventions.
 

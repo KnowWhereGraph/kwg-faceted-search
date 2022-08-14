@@ -110,13 +110,15 @@ export class FacetsComponent implements OnInit {
    * @returns An array of matching items
    */
    searchText(term, container:Array<string>) {
+    console.log("Searching for: ", term);
     let matches:Array<string> = [];
     container.forEach(elem => {
+      console.log(elem)
       if (elem.toLowerCase().indexOf(term.toLowerCase()) === 0) {
         matches.push(String(elem));
       }
     });
-    return matches.slice(0, 10);;
+    return matches.slice(0, 10);
   }
 
   /**
@@ -132,7 +134,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the ZIP code input box
    * @param text$ The text in the ZIP code field
-   * @returns
+   * @returns Terms that match the input text
    */
   searchZIPCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -145,7 +147,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the FIPS code input box
    * @param text$ The text in the zip code field
-   * @returns
+   * @returns Terms that match the input text
    */
   searchFIPSCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -158,7 +160,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the National Weather Zone input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
      searchNWZones: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
       return text$.pipe(
@@ -171,7 +173,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the National Weather Zone input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
    searchClimateDivision: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -184,9 +186,9 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the Administrative Regions input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
-   searchAdminRegions: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+  searchAdminRegions: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -294,11 +296,14 @@ export class FacetsComponent implements OnInit {
 
     this.queryService.getAdministrativeRegions().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['countyLabel']['value']);
-        });
+        // Get an array of rows of the form id,label
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row);
+        })
+        // Remove the last empty line
+        formatted.pop()
         this.adminRegions = formatted;
       }
     });
