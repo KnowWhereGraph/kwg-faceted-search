@@ -58,8 +58,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     RouterModule.forRoot([
     {path: '', component: IndexComponent},
     {path: 'search', component: SearchComponent},
-
-
   ]),
     BrowserAnimationsModule,
     NgbModule,

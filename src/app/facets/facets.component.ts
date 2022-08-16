@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
@@ -6,6 +6,12 @@ import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from 
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
+/**
+ * Component for the facet panel. This component is responsible for handling the display
+ * and event handling of facet selections. When facets are selected, the component
+ * fires an event containing a data structure of facet selections for other components
+ * to process.
+ */
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',
@@ -63,24 +69,40 @@ export class FacetsComponent implements OnInit {
     },
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the administrative regions list.
+   */
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the hazard class list.
+   */
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the GNIS list.
+   */
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the expert topics list.
+   */
   expertOptions: ITreeOptions = {
     getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true,
@@ -110,10 +132,8 @@ export class FacetsComponent implements OnInit {
    * @returns An array of matching items
    */
    searchText(term, container:Array<string>) {
-    console.log("Searching for: ", term);
     let matches:Array<string> = [];
     container.forEach(elem => {
-      console.log(elem)
       if (elem.toLowerCase().indexOf(term.toLowerCase()) === 0) {
         matches.push(String(elem));
       }
@@ -226,6 +246,8 @@ export class FacetsComponent implements OnInit {
    * When facet values are changed and the user clicks 'Enter' or 'Search', this method
    * is called. It's responsible for updating the URL query parameters and for letting
    * the sibling components know to update the data table.
+   *
+   * @param event The event fired from the facet changing
    */
   facetChanged(event: any=undefined) {
     if (event) {
@@ -472,6 +494,7 @@ export class FacetsComponent implements OnInit {
   }
 
   /**
+    * Returns the children of a particular hazard.
     *
     * @param node The node that the user selected
   */
@@ -544,7 +567,10 @@ export class FacetsComponent implements OnInit {
   }
 }
 
-// Prototype for clicking events
+/**
+ * Prototype for clicking events. It has the name of the event, the node,
+ * and the tree model for all of the nodes.
+*/
 export interface ClickEvent {
   eventName: string;
   node: TreeNode,
