@@ -65,8 +65,8 @@ async function fetchCache(query, fileName, data=[]) {
 }
 
 /**
- * Downloads the administrative region. This cache is more involved than the other
- * caches, hence a new function for it. Refer to the documentation for 'fetchCache' for this function
+ * Downloads the administrative region. This cache is only a single
+ * column csv file, which is why it's a separate function than 'fetchCache'.
  *
  * @param {*} query The SPARQL query to fetch the data.
  * @param {*} fileName The name of the file where the data is saved

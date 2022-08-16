@@ -3,12 +3,15 @@ import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
 
+/**
+ * Component for the places table. This component is responsible for representing the
+ * data table on the 'Places' tab.
+ */
 @Component({
   selector: 'app-places-table',
   templateUrl: './places-table.component.html',
   styleUrls: ['./places-table.component.scss']
 })
-
 export class PlacesTableComponent implements OnInit {
   // Columns for the table
   placesColumns: Array<String> = ["name", "type"];
@@ -33,17 +36,29 @@ export class PlacesTableComponent implements OnInit {
   locations: Array<string> = [];
   @Output() locationEvent = new EventEmitter();
 
+  /**
+   * Creates a new table for the place results.
+   *
+   * @param queryService The query service for SPARQL queries.
+   */
   constructor(private queryService: QueryService) {
     // Initialize the places data to an empty array
     this.placesDataSource = new MatTableDataSource();
    }
 
+  /**
+   * When ready, initialize the data source and get the search results.
+   */
   ngOnInit(): void {
     this.placesDataSource = new MatTableDataSource(this.places);
     this.populateTable();
     this.getResultsSize();
   }
 
+   /**
+   * Once the view has been initialized, catch any events on the paginator
+   * to update the table.
+   */
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
@@ -103,7 +118,10 @@ export class PlacesTableComponent implements OnInit {
    });
   }
 }
-// Prototype for Places
+
+/**
+ * Prototype for a row in the table; represents a Place.
+ */
 export interface Place {
   name: string,
   nameUri: string;

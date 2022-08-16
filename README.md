@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Knowledge Explorer
 
 The Knowledge Explorer is an AngularJS webapp designed to give an overview of the information stored in the backing graph database.
@@ -19,56 +20,73 @@ The Knowledge Explorer is licensed under Apache 2. Code contributions are welcom
 # FacetedSearch
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.2.
+=======
+# Faceted Search
+The search interface for KnowWhereGraph.
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
 
 ## Building and Deploying
+The project has two environments that it can be run under:
 
-The project has two modes that it can be run under:
-1. production: Uses the production endpoint and base address
-2. stage: Uses the staging endpoint and base address
+1. production: Uses the production endpoint and base address. This is typically used for general development.
+2. stage: Uses the staging endpoint and base address. This is typically used when developing against a new graph.
 
-In either case, the source is built to a `./dist` folder which is then served by NGINX.
 
-### Cache Generation and Building
+### Generating the Cache
 
-Before building, the cache must be generated. Handling this task before building will ensure that they're included in the `dist/` folder. The cache generation script has no way of telling which environment file . Because of this, the base url needs to be included in the call to the execution of the script-seen in `package.json`. To generate the cache, call either of the two commands below
+Before building, the cache must be generated. Handling this task before the actual angular build step ensures that the cache is included in the `dist/` folder. 
 
-`npm run cache-prod`
+To generate the cache, call either of the two commands below, depending on which environment you want
+
+`npm run cache-production`
 
 or
 
 `npm run cache-stage`
 
-Building works similarly however, the deployment URL's are kept in the `environment.ts` file, conforming to Angular's build conventions.
+### Building
 
-To choose between configurations, use the `--configuration` flag, outlined in the Angular documentation. The `production` flag should be used for production builds and `stage` for staging.
+When building choose between the configurations specified in with the `--configuration` flag. The `production` flag should be used for production builds and `stage` for staging.
 
 `ng build --configuration <production/stage>`
 
+This command builds outputs the build in the `dist/` folder.
+
 ### Deploying
 
-#### Development Mode
+There are three types of deployments:
+
+1. Local: Normal development mode, run locally
+2. Docker: Deploying with docker using nginx
+3. Server: Deployments on a server, using nginx
+
+#### Locally (Development Mode)
 When working on the faceted-search, use the traditional `ng serve`. Visit the site locally at http://localhost:4200.
 
-#### Locally
-To run the full NGINX and Angular stack, first download the cache, then build the source, and then use the included Dockerfile.
+#### Docker + NGINX
+To run the full NGINX and Angular stack, run the docker container created from the included Dockerfile.
 
-Together,
-
-```
-
+```bash
 docker build -t faceted-search .
 docker run -d -p 8080:80 faceted-search
 ```
 
 Visit http://localhost:8080 for the deployment.
 
+#### Staging & Production Servers
+When deploying on the staging or production servers, first fetch the cache, then build the project, and finally copy the files to a location that is being served by NGINX.
 
+For example,
 
-#### Staging & Production
-When deploying on the staging or production servers, first fetch the cache, then build the project, and copy the files to .....
+```bash
+npm run cache-prod
+npm run build --configuration=stage
+cp -r dist/faceted-search/* /var/www/html
+```
 
-The single page architecture requires the nginx configuration to include `try_files $uri /index.html`. 
+## Contributing
 
+<<<<<<< HEAD
 ## Components
 The application has been broken into discrete component objects. Every page has the `nav` and the `footer` components; the rest of the page's content is driven by other components.
 
@@ -104,3 +122,6 @@ The number of results from user searches is also displayed in this component and
 =======
 The search component is the main view of the search page. It contains the `facets` component, each of the different tables, and the map component.
 >>>>>>> feb11910 (Add support for generating the cache via cli. Switch the format over to csv to save space and refactor the cache-reading code to compensate for the format difference)
+=======
+Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates.
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)

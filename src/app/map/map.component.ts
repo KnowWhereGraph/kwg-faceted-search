@@ -1,10 +1,14 @@
-import { Component, Input, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import "leaflet.markercluster";
 
 // install leaflet markercluster: https://blog.mestwin.net/leaflet-angular-marker-clustering/
+/**
+ * Component for the map interface. This component is responsible for handling map
+ * updates and displaying information on the map.
+ */
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -15,20 +19,41 @@ export class MapComponent implements OnInit {
   private map: any;
   @Input() locations: any;
   createMarkerCluster = L.markerClusterGroup();
+<<<<<<< HEAD
 
   constructor() {
   }
 
   ngOnInit(): void {
   }
+=======
+  markers: L.Marker[] = [];
 
+  /**
+   * An empty constructor; the map is initialized after the view is ready.
+   */
+  constructor() { }
+
+  /**
+   * An empty ngOnInit to satisfy the constraints from OnInit.
+   */
+  ngOnInit(): void { }
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
+
+  /**
+   * Once the view is ready, initialize the map and show the data clusters.
+   */
   ngAfterViewInit(): void {
     this.initMap();
     // this.createMarkerCluster.clearLayers();
   }
 
+  /**
+   * Creates a new map instance centered at a point.
+   */
   private initMap(): void {
     this.map = L.map('map', {
+<<<<<<< HEAD
       center: [25.79611, -96.86278],
       zoom: 5
     });
@@ -54,6 +79,22 @@ export class MapComponent implements OnInit {
       attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
       crossOrigin: true
     });
+=======
+      center: [-37.8208292333, 175.2214374833],
+      zoom: 5
+    });
+
+    // The tile layer from mapbox definition
+    const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+        });
+
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
     tiles.addTo(this.map);
 
     // add the circle drawing, edits, and clear functions to support further spatial search on the homepage
@@ -82,7 +123,14 @@ export class MapComponent implements OnInit {
     }
   }
 
+<<<<<<< HEAD
   private showClusters(locations){
+=======
+  /**
+   * Creates the cluster icons on the map.
+   */
+  private showClusters() {
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
     const icon = L.icon({
       iconSize: [25, 41],
      iconAnchor: [10, 41],
@@ -91,16 +139,19 @@ export class MapComponent implements OnInit {
      iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
      shadowUrl:
        "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
-   });
+    });
 
     // place: "http://stko-kwg.geog.ucsb.edu/lod/resource/geometry.multipolygon.North_America.United_States.USA.10_1"
     // hazard: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-89.6458056 32.3111059)
     // person: POINT (-77.86278 40.79611)
 
-   for(let i = 0; i < locations.length; i++){
-    let marker = L.marker([locations[i][0], locations[i][1]], {icon});
-    this.createMarkerCluster.addLayer(marker);
+    for(let i = 0; i < locations.length; i++) {
+      let marker = L.marker([locations[i][0], locations[i][1]], {icon});
+      this.createMarkerCluster.addLayer(marker);
+    }
+    this.map.addLayer(this.createMarkerCluster);
   }
+<<<<<<< HEAD
   this.map.addLayer(this.createMarkerCluster);
   }
 
@@ -127,4 +178,6 @@ export class MapComponent implements OnInit {
       this.showClusters(coordinates);
     }
   }
+=======
+>>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
 }
