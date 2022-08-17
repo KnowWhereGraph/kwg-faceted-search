@@ -3,6 +3,12 @@ import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table';
 import { QueryService } from '../services/query.service';
 
+/**
+ * Component that represents a table of Hazards. This is the component that
+ * is rendered when users select the 'Hazards' tab on the main search landing page.
+ * It's responsible for populating itself and catching events from the Facets Component
+ * when facets are selected (so that it knows to fetch new data).
+ */
 @Component({
   selector: 'app-hazards-table',
   templateUrl: './hazards-table.component.html',
@@ -27,20 +33,34 @@ export class HazardsTableComponent implements OnInit {
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
-  // Event that sends the locations of hazards from a query to the parent component
+  // Event that sends the locations of hazards from a query to the parent component. This
+  // is used in the map display
   locations: Array<string> = [];
   @Output() locationEvent = new EventEmitter();
 
+  /**
+   * Creates a new Hazards-table component. It initializes a new data source
+   * for the data table.
+   * @param queryService The query service so that SPARQL queries can be sent to fetch data.
+   */
   constructor(private queryService: QueryService) {
     this.hazardsDataSource = new MatTableDataSource();
   }
 
+  /**
+   * When the component is ready, initialize the table source,
+   * displays the results, and then counts the number of results.
+   */
   ngOnInit(): void {
     this.hazardsDataSource = new MatTableDataSource(this.hazards);
     this.populateTable();
     this.getResultsSize();
   }
 
+  /**
+   * Once the view has finished initializing, make the paginator subscribe
+   * to user clicks which either change the page or page size.
+   */
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
@@ -152,7 +172,10 @@ export class HazardsTableComponent implements OnInit {
   }
 }
 
-// Prototype for Hazard
+/**
+ * Prototype for a hazard row. It contains information about the hazard
+ * that the user sees.
+ */
 export interface Hazard {
   name: string;
   entityUri: string,
