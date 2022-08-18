@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import "leaflet.markercluster";
+import { auto } from '@popperjs/core';
 
 // install leaflet markercluster: https://blog.mestwin.net/leaflet-angular-marker-clustering/
 /**
