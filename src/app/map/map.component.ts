@@ -146,12 +146,13 @@ export class MapComponent implements OnInit {
     // hazard: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-89.6458056 32.3111059)
     // person: POINT (-77.86278 40.79611)
 
-    for(let i = 0; i < locations.length; i++) {
-      let marker = L.marker([locations[i][0], locations[i][1]], {icon});
+    for(let i = 0; i < this.locations.length; i++) {
+      let marker = L.marker([this.locations[i][0], this.locations[i][1]], {icon});
       this.createMarkerCluster.addLayer(marker);
     }
     this.map.addLayer(this.createMarkerCluster);
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
   this.map.addLayer(this.createMarkerCluster);
   }
@@ -181,4 +182,6 @@ export class MapComponent implements OnInit {
   }
 =======
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
+=======
+>>>>>>> 19451625 (merge the change)
 }
