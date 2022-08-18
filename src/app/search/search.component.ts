@@ -122,7 +122,6 @@ export class SearchComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-<<<<<<< HEAD
   // getTestEventValue(testNumber: number){
   //   console.log("print the test value: ", testNumber);
   //   this.testValue = testNumber;
@@ -139,17 +138,13 @@ export class SearchComponent implements OnInit {
 
 
 
-  getPlaceLocationEvent(values){
-=======
   /**
    * Called when an event with a set of locations is triggered
    *
    * @param values The locations in the event
    */
   getPlaceLocationEvent (values){
->>>>>>> origin/angular
     this.returnedLocations = values;
-
     console.log(this.mapChild.displayClustersForTab("place", values));
   }
 
@@ -160,7 +155,6 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values){
     this.returnedLocations = values;
-
     console.log(this.mapChild.displayClustersForTab("hazard", this.returnedLocations));
   }
 
@@ -170,15 +164,11 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getPeopleLocationEvent(values){
-<<<<<<< HEAD
     this.returnedLocations = values;
-
     console.log(this.mapChild.displayClustersForTab("people", values));
   }
 
   getLocationsFromComponent(values){
-=======
->>>>>>> origin/angular
     this.returnedLocations = values;
   }
 }
