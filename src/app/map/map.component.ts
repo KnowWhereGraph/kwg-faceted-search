@@ -4,6 +4,7 @@ import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import "leaflet.markercluster";
 import { auto } from '@popperjs/core';
+// import { timeStamp } from 'console';
 
 // install leaflet markercluster: https://blog.mestwin.net/leaflet-angular-marker-clustering/
 /**
@@ -21,6 +22,11 @@ export class MapComponent implements OnInit {
   @Input() locations: any;
   createMarkerCluster = L.markerClusterGroup();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  // markers: L.Marker[] = [];
+
+>>>>>>> b845fbe8 (recenter the map)
 
   constructor() {
   }
@@ -80,6 +86,7 @@ export class MapComponent implements OnInit {
       attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
       crossOrigin: true
     });
+<<<<<<< HEAD
 =======
       center: [-37.8208292333, 175.2214374833],
       zoom: 5
@@ -94,6 +101,8 @@ export class MapComponent implements OnInit {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
         });
+=======
+>>>>>>> b845fbe8 (recenter the map)
 
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
     tiles.addTo(this.map);
@@ -125,6 +134,7 @@ export class MapComponent implements OnInit {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   private showClusters(locations){
 =======
   /**
@@ -132,6 +142,9 @@ export class MapComponent implements OnInit {
    */
   private showClusters() {
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
+=======
+  private showClusters(locations){
+>>>>>>> b845fbe8 (recenter the map)
     const icon = L.icon({
       iconSize: [25, 41],
      iconAnchor: [10, 41],
@@ -146,11 +159,40 @@ export class MapComponent implements OnInit {
     // hazard: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-89.6458056 32.3111059)
     // person: POINT (-77.86278 40.79611)
 
-    for(let i = 0; i < this.locations.length; i++) {
-      let marker = L.marker([this.locations[i][0], this.locations[i][1]], {icon});
+    for(let i = 0; i < locations.length; i++) {
+      let marker = L.marker([locations[i][0], locations[i][1]], {icon});
       this.createMarkerCluster.addLayer(marker);
     }
+
+    this.map.fitBounds(this.createMarkerCluster.getBounds());
     this.map.addLayer(this.createMarkerCluster);
+
+  }
+
+  public displayClustersForTab(tabName, locations){
+    // clear all the clusters
+    var coordinates: number[][] = [];
+    this.createMarkerCluster.clearLayers();
+    // display the clusters
+
+    if (tabName == "place"){
+      coordinates = [];
+    } else{
+      for (var loc of locations){
+        var split_text = loc.split(" ");
+        var coord: number[] = [];
+        var coordX = parseFloat(split_text[1].split("(")[1]);
+        var coordY = parseFloat(split_text[2].split(")")[0]);
+        coord.push(coordY);
+        coord.push(coordX);
+        coordinates.push(coord);
+      }
+    }
+    console.log("tabName = ", tabName, ", coodinates: ", coordinates);
+
+    if(coordinates.length){
+      this.showClusters(coordinates);
+    }
   }
 <<<<<<< HEAD
 <<<<<<< HEAD
