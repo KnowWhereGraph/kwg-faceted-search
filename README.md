@@ -1,40 +1,65 @@
-# FacetedSearch
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.2.
+# Faceted Search
+The search interface for KnowWhereGraph.
 
 ## Building and Deploying
+The project has two environments that it can be run under:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. production: Uses the production endpoint and base address. This is typically used for general development.
+2. stage: Uses the staging endpoint and base address. This is typically used when developing against a new graph.
 
-To run locally, run `ng serve` for a dev server and navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Components
-The application has been broken into discrete component objects. Every page has the `nav` and the `footer` components; the rest of the page's content is driven by other components.
+### Generating the Cache
 
-Each type of search (Place, Hazard, Person) has its own component. This has resulted in a fair amount of code overlap and isn't DRY. This is mostly due to not seeing the forest through the trees; in the future we may find that we can combine all tables into one.
+Before building, the cache must be generated. Handling this task before the actual angular build step ensures that the cache is included in the `dist/` folder. 
 
-### facets
-The `facets` component is responsible for displaying and emitting events about user selections. As of right now (03/02/2022) the event system hasn't been written.
+To generate the cache, call either of the two commands below, depending on which environment you want
 
-The appropriate facets are displayed based on the current selected tab index of the Angular Material Tab control in the `search` component. When new tabs are selected, an event is fired to update the corresponding tab index variable in the `facets` component which the template uses.
+`npm run cache-production`
 
-### footer
-The `footer` component is responsible for the website footer
+or
 
-### hazards-table
-The `hazards-table` has the logic for the table when users select the 'hazards' tab on the `search` component.
+`npm run cache-stage`
 
-### index
-The `index` component is responsible for the content on the main landing page.
+### Building
 
-### nav
-The `nav` component is responsible for the website banner and navigation links.
+When building choose between the configurations specified in with the `--configuration` flag. The `production` flag should be used for production builds and `stage` for staging.
 
-### places-table
-The `places-table` component is responsible for the table that's rendered when users select the 'Places' tab in the `search` component.
+`ng build --configuration <production/stage>`
 
-### search
-The search component is the main view of the search page. It contains the `facets` component and the various table components.
+This command builds outputs the build in the `dist/` folder.
 
-The number of results from user searches is also displayed in this component and is obtained through child-parent data sharing using events from the table components
+### Deploying
 
+There are three types of deployments:
+
+1. Local: Normal development mode, run locally
+2. Docker: Deploying with docker using nginx
+3. Server: Deployments on a server, using nginx
+
+#### Locally (Development Mode)
+When working on the faceted-search, use the traditional `ng serve`. Visit the site locally at http://localhost:4200.
+
+#### Docker + NGINX
+To run the full NGINX and Angular stack, run the docker container created from the included Dockerfile.
+
+```bash
+docker build -t faceted-search .
+docker run -d -p 8080:80 faceted-search
+```
+
+Visit http://localhost:8080 for the deployment.
+
+#### Staging & Production Servers
+When deploying on the staging or production servers, first fetch the cache, then build the project, and finally copy the files to a location that is being served by NGINX.
+
+For example,
+
+```bash
+npm run cache-prod
+npm run build --configuration=stage
+cp -r dist/faceted-search/* /var/www/html
+```
+
+## Contributing
+
+Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates.

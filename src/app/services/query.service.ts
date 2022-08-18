@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment'
 
-
+/**
+ * Service for making SPARQL queries. This class contains helpers for sending requests to
+ * GraphDB and processing the results.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class QueryService {
   // SPARQL Endpoint
-  private endpoint="https://stko-kwg.geog.ucsb.edu/sparql";
+  private endpoint=environment['graphEndpoint'];
+
   // The SPARQL query prefixes
   private prefixes = {
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -31,15 +36,23 @@ export class QueryService {
   // A string representation of the prefixes
   prefixesCombined: string = '';
 
-  // Service constructor. It's responsible for creating a string representation of the
-  // prefixes and creating the HttpClient object used to send queries
+  /**
+   * Service constructor. It's responsible for creating a string representation of the
+   * prefixes and creating the HttpClient object used to send queries
+   * @param http The HTTP client to perform requests
+   */
   constructor(private http: HttpClient) {
     for (let [si_prefix, p_prefix_iri] of Object.entries(this.prefixes)) {
       this.prefixesCombined += `PREFIX ${si_prefix}: <${p_prefix_iri}>\n`;
     }
   }
 
-  // Takes a query string without the prefixes and returns the fully crafted query
+  /**
+   * Takes a query string without the prefixes and returns the fully crafted query
+   * @param query The SPARQL query being prepared
+   * @param reason Flag whether reasoning is enabled
+   * @returns The request body for a valid SPARQL query against GraphDB
+   */
   getRequestBody(query: string, reason: boolean=true) {
     let fullQuery = this.prefixesCombined+query;
     let httpParams = new URLSearchParams();
@@ -49,6 +62,7 @@ export class QueryService {
   }
 
   /**
+   * Creates the headers for a SPARQL query
    *
    * @param id The query identifier
    * @returns A set of headers that are used in a SPARQL query
@@ -61,8 +75,12 @@ export class QueryService {
     return { headers: headers };
   }
 
-  // Returns the body of the query meant to get all of the relevant (to the facets) hazards.
-  // This is used to populate the data table
+  /**
+   * Returns the body of the query meant to get all of the relevant (to the facets) hazards.
+   * This is used to populate the data table
+   *
+   * @returns A portion of a SPARQL query
+   */
   getHazardsQueryBody() {
     let query = `?entity rdf:type ?type;
     rdfs:label ?label;
@@ -94,7 +112,7 @@ export class QueryService {
    *
    * @param limit The highest number to count to
    * @param offset The offset to start counting from
-   * @returns
+   * @returns The number of hazards found
    */
   getHazardCount(limit: number=20, offset=0) {
     let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
@@ -107,6 +125,7 @@ export class QueryService {
    * Given a list of properties about a hazard, query the database for information about
    *
    * @param entities: An array of entity URI's
+   * @return The properties of a hazard
    **/
   getHazardProperties(entities: Array<string>) {
     let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt (group_concat(distinct ?type; separator = ",") as ?type) (group_concat(distinct ?typeLabel; separator = ",") as ?typeLabel) {
@@ -140,27 +159,36 @@ export class QueryService {
 
   /**
    * Retrieves all of the zip codes that are in the graph.
+   * @return An array of zip codes
    */
   getZipCodes() {
-    let zipCodeQuery = `SELECT DISTINCT ?zipcode ?zipcodeArea WHERE {
-      ?zipcodeArea rdf:type kwg-ont:ZipCodeArea;
-        rdfs:label ?zipcode.
-    } ORDER BY ASC(?zipcode)`;
-    return this.http.get('../assets/data/zipcode_areas.json');
+    return this.http.get('../assets/data/zipcode_cache.csv', {responseType: 'text'});
   }
 
   /**
-   * Retrieves all of the zip codes that are in the graph.
+   * Retrieves all of the FIPS codes that are in the graph.
+   * @return An array of FIPS codes
    */
    getFIPSCodes() {
-    return this.http.get('../assets/data/fips_areas.json');
+    return this.http.get('../assets/data/fips_cache.csv', {responseType: 'text'});
   }
 
   /**
    * Retrieves all of the National Weather Zones that are in the graph.
+   *
+   * @return An array of national weather zones
    */
     getNWZones() {
-      return this.http.get('../assets/data/nwz_areas.json');
+      return this.http.get('../assets/data/nwz_cache.csv', {responseType: 'text'});
+    }
+
+   /**
+     * Returns all of the administrative regions in the United States
+     *
+     * @return An array of administrative regions
+     */
+    getAdministrativeRegions() {
+      return this.http.get('../assets/data/admin_region_cache.csv', {responseType: 'text'});
     }
 
   /**
@@ -195,6 +223,7 @@ export class QueryService {
      *
      * @param limit The maximum number of results to retrieve
      * @param offset The number of results to skip
+     * @return The number of places matching the facet selection
     */
     getPlacesCount(limit: number=20, offset=0) {
       let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getPlacesQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
@@ -259,6 +288,7 @@ export class QueryService {
      *
      * @param limit The maximum number of results to retrieve
      * @param offset The number of results to skip
+     * @return The number of results
      */
      getPeopleCount(expertiseTopics, limit: number=20, offset=0) {
       let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
@@ -267,20 +297,20 @@ export class QueryService {
       return this.http.post(this.endpoint, body, headers);
     }
 
-    // Given a sparql query response, return an array of values
+    /**
+     * Given a sparql query response, return an array of values
+     *
+     * @param response The HTTP web response
+     * @returns The results as an array in the bindings
+     */
     getResults(response: any) {
       return response['results']['bindings'];
     }
 
     /**
-     * Returns all of the administrative regions in the United States
-     */
-     getAdministrativeRegions() {
-      return this.http.get('../assets/data/us_admin_regions.json');
-    }
-
-    /**
      * Gets the highest level administrative region, the United States
+     *
+     * @return Information about the US
      */
     getTopLevelAdministrativeRegions() {
       let query = `select ?country ?country_label where {
@@ -293,7 +323,9 @@ export class QueryService {
     }
 
     /**
-     * Gets the highest level administrative region,
+     * Gets the highest level administrative region
+     *
+     * @return The topmost administrative regions in the US
      */
      getStateAdministrativeRegions() {
       let query = `SELECT DISTINCT ?state ?state_label where {
@@ -310,6 +342,7 @@ export class QueryService {
      * Gets the counties in an administrative region
      *
      * @param {String} stateURI The URI of the state whose counties are being queried
+     * @return All of the region's counties
      */
      getCountyAdministrativeRegions(stateURI: string) {
       let query = `SELECT DISTINCT ?county_label where {
@@ -324,9 +357,11 @@ export class QueryService {
 
     /**
      * Returns all of the climate divisions in the United States
+     *
+     * @returns An array of climate divisions
      */
     getClimateDivisions() {
-      return this.http.get('../assets/data/us_climate_divisions.json');
+      return this.http.get('../assets/data/climate_division_cache.csv', {responseType: 'text'});
     }
 
     /**
@@ -347,6 +382,12 @@ export class QueryService {
       return this.http.post(this.endpoint, body, headers);
     }
 
+    /**
+     * Gets all of the children of a particular hazard.
+     *
+     * @param hazardURI The parent hazard
+     * @returns All of the parent hazard's children
+     */
     getHazardChildren(hazardURI: string) {
       let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?child) as ?count) where {
         ?hazard rdfs:subClassOf <`+hazardURI+`> .
@@ -361,10 +402,15 @@ export class QueryService {
       return this.http.post(this.endpoint, body, headers);
     }
 
+    /**
+     * Retrieves all of the GNIS subclasses
+     *
+     * @returns The subclasses of the major GNIS classes
+     */
     getGNISClasses() {
       let query = `SELECT DISTINCT ?place ?place_label {
         ?place rdfs:label ?place_label .
-        values ?place {usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain}
+        values ?place { usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain }
       } ORDER BY ASC(?place_label)`
       let headers = this.getRequestHeaders('KE_13');
       // Disable reasoning so that we only get the top level hazards

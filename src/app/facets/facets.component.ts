@@ -6,8 +6,12 @@ import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from 
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
-
-
+/**
+ * Component for the facet panel. This component is responsible for handling the display
+ * and event handling of facet selections. When facets are selected, the component
+ * fires an event containing a data structure of facet selections for other components
+ * to process.
+ */
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',
@@ -67,24 +71,40 @@ export class FacetsComponent implements OnInit {
     },
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the administrative regions list.
+   */
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the hazard class list.
+   */
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the GNIS list.
+   */
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
     useCheckbox: true,
     actionMapping: this.actionMap
   }
 
+  /**
+   * An angular-tree component definition for specifying node behavior.
+   * This specification is specific to the expert topics list.
+   */
   expertOptions: ITreeOptions = {
     getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true,
@@ -118,11 +138,11 @@ export class FacetsComponent implements OnInit {
    searchText(term, container:Array<string>) {
     let matches:Array<string> = [];
     container.forEach(elem => {
-      if (elem.indexOf(term) === 0) {
+      if (elem.toLowerCase().indexOf(term.toLowerCase()) === 0) {
         matches.push(String(elem));
       }
     });
-    return matches.slice(0, 10);;
+    return matches.slice(0, 10);
   }
 
   /**
@@ -138,7 +158,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the ZIP code input box
    * @param text$ The text in the ZIP code field
-   * @returns
+   * @returns Terms that match the input text
    */
   searchZIPCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -151,7 +171,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the FIPS code input box
    * @param text$ The text in the zip code field
-   * @returns
+   * @returns Terms that match the input text
    */
   searchFIPSCodes: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -164,7 +184,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the National Weather Zone input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
      searchNWZones: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
       return text$.pipe(
@@ -177,7 +197,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the National Weather Zone input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
    searchClimateDivision: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
@@ -190,9 +210,9 @@ export class FacetsComponent implements OnInit {
   /**
    * Called when the user inputs text into the Administrative Regions input box
    * @param text$ The text in the NWZ field
-   * @returns
+   * @returns Terms that match the input text
    */
-   searchAdminRegions: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+  searchAdminRegions: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
@@ -229,7 +249,9 @@ export class FacetsComponent implements OnInit {
   /**
    * When facet values are changed and the user clicks 'Enter' or 'Search', this method
    * is called. It's responsible for updating the URL query parameters and for letting
-   * the sibling components to update the data table.
+   * the sibling components know to update the data table.
+   *
+   * @param event The event fired from the facet changing
    */
   facetChanged(event: any=undefined) {
     if (event) {
@@ -250,7 +272,6 @@ export class FacetsComponent implements OnInit {
         this.updateFacetSelections();    
       }
     }
-
   }
 
   /**
@@ -269,60 +290,69 @@ export class FacetsComponent implements OnInit {
 
   /**
    * Fetches the data for the typeahead input fields. The data is stored in corresponding
-   * member variables.
+   * class member variables.
    */
   fetchTypeaheadData() {
     this.queryService.getZipCodes().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
+        let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['zipcode']['value'].replace("zip code ", ""))
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1])
         });
+        formatted.pop();
         this.zipCodes = formatted;
       }
     });
 
     this.queryService.getFIPSCodes().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['fips']['value'])
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1]);
         });
+        formatted.pop();
         this.fipsCodes = formatted;
       }
     });
 
     this.queryService.getNWZones().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
+        let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['nwzone_label']['value'])
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1])
         });
+        formatted.pop();
         this.nwZones = formatted;
       }
     });
 
     this.queryService.getClimateDivisions().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['division_label']['value'].replace("US NOAA Climate Division ", ""))
-        });
+        // Get an array of rows of the form id,label
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row.split(',')[1]);
+        })
+        // Remove the last empty line
+        formatted.pop()
         this.climateDivisions = formatted;
       }
     });
 
     this.queryService.getAdministrativeRegions().subscribe({
       next: response => {
-        let results = this.queryService.getResults(response);
-        let formatted: Array<any> = [];
-        results.forEach((element) => {
-          formatted.push(element['countyLabel']['value']);
-        });
+        // Get an array of rows of the form id,label
+        let responseRows: Array<string> = response.split(/[\n]+/);
+        let formatted: Array<string> = [];
+        responseRows.forEach((row) => {
+          formatted.push(row);
+        })
+        // Remove the last empty line
+        formatted.pop()
         this.adminRegions = formatted;
       }
     });
@@ -491,6 +521,7 @@ export class FacetsComponent implements OnInit {
   }
 
   /**
+    * Returns the children of a particular hazard.
     *
     * @param node The node that the user selected
   */
@@ -563,7 +594,10 @@ export class FacetsComponent implements OnInit {
   }
 }
 
-// Prototype for clicking events
+/**
+ * Prototype for clicking events. It has the name of the event, the node,
+ * and the tree model for all of the nodes.
+*/
 export interface ClickEvent {
   eventName: string;
   node: TreeNode,

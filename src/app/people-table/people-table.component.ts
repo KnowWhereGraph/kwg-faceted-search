@@ -1,9 +1,14 @@
 import { Component, Input, OnInit, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import {MatTableDataSource} from '@angular/material/table';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { QueryService } from '../services/query.service'
 
+/**
+ * Component for the 'People' table. This component represents the table for
+ * people. This is rendered when users click the 'People' tab. It is responsible
+ * for handling queries and displaying the table.
+ */
 @Component({
   selector: 'app-people-table',
   templateUrl: './people-table.component.html',
@@ -28,15 +33,24 @@ export class PeopleTableComponent implements OnInit {
   public currentPage = 0;
   // The number of results
   public totalSize = 0;
+  // Holds the locations of the results
   locations: Array<string> = [];
   // Event that sends the locations of people from a query to the parent component
   @Output() locationEvent = new EventEmitter();
 
-
+  /**
+   * Creates a new table for people.
+   *
+   * @param queryService The query service for SPARQL queries
+   */
   constructor(private queryService: QueryService) {
     this.peopleDataSource = new MatTableDataSource();
   }
 
+  /**
+   * When the table is initialized, create the table's data source, fetch
+   * the first set of results, show them, and then count them.
+   */
   ngOnInit(): void {
     this.peopleDataSource = new MatTableDataSource(this.people);
     this.populateTable(this.peopleFacets['expertiseTopics']);
@@ -53,6 +67,10 @@ export class PeopleTableComponent implements OnInit {
     })
   }
 
+  /**
+   * Once the view has been initialized, catch any events on the paginator
+   * to update the table.
+   */
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
@@ -115,7 +133,9 @@ export class PeopleTableComponent implements OnInit {
   }
 }
 
-// Prototype for Person
+/**
+ * Prototype for a row in the table; represents a Person.
+ */
 export interface Person {
   name: string,
   name_uri: string,
