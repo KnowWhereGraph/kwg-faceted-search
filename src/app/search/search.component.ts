@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PlacesTableComponent } from '../places-table/places-table.component';
 /**
@@ -92,7 +92,6 @@ export class SearchComponent implements OnInit {
         queryParams: queryParams,
         queryParamsHandling: 'merge',
       });
-
   }
 
   /**
