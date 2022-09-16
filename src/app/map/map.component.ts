@@ -188,7 +188,7 @@ export class MapComponent implements OnInit {
         coordinates.push(coord);
       }
     }
-    console.log("tabName = ", tabName, ", coodinates: ", coordinates);
+    // console.log("tabName = ", tabName, ", coodinates: ", coordinates);
 
     if(coordinates.length){
       this.showClusters(coordinates);
