@@ -13,7 +13,8 @@
     </ng-container>
 
     <ng-container *ngIf="!isCounting && !isSearching">
-      <p class="results-count">At Least {{totalSize}} Results</p>
+      <p class="results-count" *ngIf="totalSize!=0">At Least {{totalSize}} Results</p>
+      <p class="results-count" *ngIf="totalSize==0">0 Results</p>
     </ng-container>
 
     <!-- The 'Place', 'Hazard', 'People' tab groups -->
