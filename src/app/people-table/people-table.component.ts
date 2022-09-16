@@ -53,18 +53,6 @@ export class PeopleTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.peopleDataSource = new MatTableDataSource(this.people);
-    this.populateTable(this.peopleFacets['expertiseTopics']);
-    this.queryService.getPeopleCount(this.peopleFacets['expertiseTopics'], this.pageSize * 10).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response)
-        this.totalSize = results[0]['COUNT']['value'];
-        // Update the number of results
-        this.resultsCountEvent.emit(this.totalSize);
-      },
-      error: response => {
-        console.error("There was an error while retrieving the number of results", response)
-      }
-    })
   }
 
   /**
@@ -75,14 +63,58 @@ export class PeopleTableComponent implements OnInit {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
-      this.populateTable(this.peopleFacets['expertiseTopics'],offset);
+      this.populateTable(offset);
     });
   }
 
+  /**
+   * Called when users make facet selections
+   *
+   * @param changes The change event
+   */
   ngOnChanges(changes: SimpleChanges) {
-    //this.peopleDataSource = new MatTableDataSource(this.people);
-    this.populateTable(this.peopleFacets['expertiseTopics']);
-    this.queryService.getPeopleCount(this.peopleFacets['expertiseTopics'], this.pageSize * 10).subscribe({
+    this.populateTable();
+    this.countResults();
+  }
+
+  /**
+   * Triggered to count the number of experts that have expertise in
+   * a particular field.
+   */
+  countResults() {
+    if (this.peopleFacets['expertiseTopics'] !== undefined && this.peopleFacets['expertiseTopics'].length) {
+      let expertiseTopics: Array<string>;
+      expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
+        return expertiseTopic['data']['uri']
+      });
+    this.queryService.getSubTopics(expertiseTopics).subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        results = results.map(res => {
+          return res['sub_topic']['value']
+        });
+        if (!results.length) {
+          results = expertiseTopics
+        }
+        this.getPeopleCount(results)
+      },
+      error: response => {
+        console.error("There was an error while finding subtopics", response)
+      }
+    })
+    } else {
+      this.getPeopleCount(this.peopleFacets['expertiseTopics'])
+    }
+  }
+
+  /**
+   * Counts the number of experts that are expertise in the fields contained
+   * in expertiseTopics.
+   *
+   * @param expertiseTopics An array of expert topic URIs
+   */
+  getPeopleCount(expertiseTopics: Array<string>) {
+    this.queryService.getPeopleCount(expertiseTopics, this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -92,20 +124,57 @@ export class PeopleTableComponent implements OnInit {
       error: response => {
         console.error("There was an error while retrieving the number of results", response)
       }
-    })
+    });
   }
 
   /**
    * Populates the data table with people. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
    * which gets inserted into the subsequent query.
+   *
    * @param offset The query offset
    */
+<<<<<<< HEAD
 <<<<<<< HEAD
    populateTable(offset:number=0) {
     this.queryService.getAllPeople(this.pageSize, offset).subscribe({
 =======
    populateTable(expertiseTopicFacets, offset:number=0) {
+=======
+   populateTable(offset:number=0) {
+    // Retrieves a list of all the potential subtopics for each topic. If there aren't any,
+    // use the existing values in expertiseTopicFacets
+    if (this.peopleFacets['expertiseTopics'] !== undefined && this.peopleFacets['expertiseTopics'].length) {
+      let expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
+        return expertiseTopic['data']['uri']
+    });
+    this.queryService.getSubTopics(expertiseTopics).subscribe({
+      next: response => {
+        let results = this.queryService.getResults(response);
+        results = results.map(res => {
+          return res['sub_topic']['value']
+        });
+        if (!results.length) {
+          results = expertiseTopics
+        }
+        this.queryPeople(results, offset);
+      },
+      error: response => {
+        console.error("There was an error while retrieving subtopics", response)
+      }
+    });
+    } else {
+      this.queryPeople(this.peopleFacets['expertiseTopics'], offset);
+    }
+  }
+>>>>>>> 5990c42a (Enable querying experts)
 
+  /**
+   * Queries the database for people and populates the table with the results.
+   *
+   * @param expertiseTopicFacets An array of URIs of expert topics
+   * @param offset The offset to start at for obtaining experts
+   */
+  queryPeople(expertiseTopicFacets: Array<string>, offset:number=0) {
     this.queryService.getAllPeople(expertiseTopicFacets, this.pageSize, offset).subscribe({
 >>>>>>> 51bce0fa (Sending facet selection from searchComponent to PeopleTableComponent and update people-table)
       next: response => {
@@ -117,7 +186,7 @@ export class PeopleTableComponent implements OnInit {
           expertise =  result["expertise"]["value"].split(', ').map(function (x, i) {
             return [x, result["expertiseLabel"]["value"].split(', ')[i]]
           });
-           this.people.push({
+          this.people.push({
             "name": result["label"]["value"],
             "name_uri": result["entity"]["value"],
             "affiliation": result["affiliationLabel"]["value"],
@@ -133,8 +202,11 @@ export class PeopleTableComponent implements OnInit {
         this.peopleDataSource = new MatTableDataSource(this.people);
         this.searchQueryFinishedEvent.emit(true);
         this.locationEvent.emit(this.locations);
+      },
+      error: response => {
+        console.error("There was an error while populating the data table", response)
       }
-   });
+    });
   }
 }
 

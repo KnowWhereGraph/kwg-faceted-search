@@ -235,15 +235,12 @@ export class QueryService {
   /**
    * Gets the minimum amount of query for finding people.
    *
+   * @param expertiseTopics The strings of the expert topics
    * @returns A string of SPARQL without the SELECT predicate
    */
    getPeopleQueryBody(expertiseTopics) {
     let expertiseTopicQuery = '';
-    if (typeof expertiseTopics !== "undefined")
-    {
-      expertiseTopics = expertiseTopics.map(expertiseTopic => {
-        return expertiseTopic['data']['uri']
-      });
+    if (typeof expertiseTopics !== "undefined") {
       if (expertiseTopics.length > 0) {
         expertiseTopicQuery = `values ?expertise {<` + expertiseTopics.join('> <') + `>}`;
       }
@@ -272,11 +269,12 @@ export class QueryService {
   /**
    * Gets all of the people in the database.
    *
+   * @param expertiseTopics The URIs of the expert topics
    * @param limit The maximum number of results to retrieve
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-    getAllPeople(expertiseTopics, limit: number=20, offset=0) {
+    getAllPeople(expertiseTopics: Array<string>, limit: number=20, offset=0) {
       let query = `SELECT * WHERE {`+this.getPeopleQueryBody(expertiseTopics)+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
       let headers = this.getRequestHeaders('KE_06');
       let body = this.getRequestBody(query);
@@ -284,13 +282,30 @@ export class QueryService {
     }
 
     /**
+     * Retrieves a list of all the sub-topics for a given list of topics.
+     *
+     * @param expertiseTopics An array of expert topics
+     * @returns An observable with the query results
+     */
+    getSubTopics(expertiseTopics: Array<string>) {
+      let query = `SELECT ?sub_topic WHERE {
+        ?parent_topic kwg-ont:hasSubTopic ?sub_topic .
+        values ?parent_topic {<` + expertiseTopics.join('> <') + `>}
+      }`
+      let headers = this.getRequestHeaders('KE_16');
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
      * Gets the total number of people matching a facet selection
      *
+     * @param expertiseTopics The expert topics that people might be experts in
      * @param limit The maximum number of results to retrieve
      * @param offset The number of results to skip
      * @return The number of results
      */
-     getPeopleCount(expertiseTopics, limit: number=20, offset=0) {
+     getPeopleCount(expertiseTopics: Array<string> | undefined, limit: number=20, offset: number=0) {
       let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
       let headers = this.getRequestHeaders('KE_07');
       let body = this.getRequestBody(query);
