@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PlacesTableComponent } from '../places-table/places-table.component';
 /**
@@ -111,6 +111,7 @@ export class SearchComponent implements OnInit {
         queryParams: queryParams,
         queryParamsHandling: 'merge',
       });
+
   }
 
   /**
@@ -140,22 +141,6 @@ export class SearchComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  // getTestEventValue(testNumber: number){
-  //   console.log("print the test value: ", testNumber);
-  //   this.testValue = testNumber;
-  //   console.log("test value is : ", testNumber);
-  // }
-
-  // changeResultsCount(newCount: number) {
-  //   this.totalSize = newCount;
-  //   this.isCounting = false;
-  // }
-
-  @ViewChild('mapChild')
-  public mapChild: any;
-
-
-
   /**
    * Called when an event with a set of locations is triggered
    *
@@ -167,7 +152,10 @@ export class SearchComponent implements OnInit {
 =======
 >>>>>>> 19451625 (merge the change)
     this.returnedLocations = values;
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("place", values)
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
   }
 
   /**
@@ -177,7 +165,10 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values){
     this.returnedLocations = values;
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
   }
 
   /**
@@ -187,6 +178,7 @@ export class SearchComponent implements OnInit {
    */
   getPeopleLocationEvent(values){
     this.returnedLocations = values;
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("people", values)
   }
 <<<<<<< HEAD
@@ -195,6 +187,8 @@ export class SearchComponent implements OnInit {
 <<<<<<< HEAD
   getLocationsFromComponent(values){
     this.returnedLocations = values;
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
   }
 <<<<<<< HEAD
 >>>>>>> 19451625 (merge the change)

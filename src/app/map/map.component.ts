@@ -3,8 +3,7 @@ import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import "leaflet.markercluster";
-import { auto } from '@popperjs/core';
-// import { timeStamp } from 'console';
+
 
 // install leaflet markercluster: https://blog.mestwin.net/leaflet-angular-marker-clustering/
 /**
@@ -21,6 +20,7 @@ export class MapComponent implements OnInit {
   private map: any;
   @Input() locations: any;
   createMarkerCluster = L.markerClusterGroup();
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -48,11 +48,26 @@ export class MapComponent implements OnInit {
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
 
   /**
+=======
+  markers: L.Marker[] = [];
+
+  /**
+   * An empty constructor; the map is initialized after the view is ready.
+   */
+  constructor() { }
+
+  /**
+   * An empty ngOnInit to satisfy the constraints from OnInit.
+   */
+  ngOnInit(): void { }
+
+  /**
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
    * Once the view is ready, initialize the map and show the data clusters.
    */
   ngAfterViewInit(): void {
     this.initMap();
-    // this.createMarkerCluster.clearLayers();
+    this.showClusters();
   }
 
   /**
@@ -60,6 +75,7 @@ export class MapComponent implements OnInit {
    */
   private initMap(): void {
     this.map = L.map('map', {
+<<<<<<< HEAD
 <<<<<<< HEAD
       center: [25.79611, -96.86278],
       zoom: 5
@@ -91,6 +107,21 @@ export class MapComponent implements OnInit {
       center: [-37.8208292333, 175.2214374833],
       zoom: 5
     });
+=======
+      center: [-37.8208292333, 175.2214374833],
+      zoom: 5
+    });
+
+    // The tile layer from mapbox definition
+    const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+        });
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
 
     // The tile layer from mapbox definition
     const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -121,7 +152,6 @@ export class MapComponent implements OnInit {
         drawRectangle: false,
         drawPolygon: false,
         drawCircle: true,
-        drawText: false,
 
         drawControls: true,
         editControls: true,
@@ -136,6 +166,7 @@ export class MapComponent implements OnInit {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   /**
    * Show given locations as point clusters on the map
@@ -144,14 +175,19 @@ export class MapComponent implements OnInit {
 >>>>>>> 9f3ef866 (uncomment console; jsdoc format)
   private showClusters(locations){
 =======
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
   /**
    * Creates the cluster icons on the map.
    */
   private showClusters() {
+<<<<<<< HEAD
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
 =======
   private showClusters(locations){
 >>>>>>> b845fbe8 (recenter the map)
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
     const icon = L.icon({
       iconSize: [25, 41],
      iconAnchor: [10, 41],
@@ -162,17 +198,21 @@ export class MapComponent implements OnInit {
        "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
     });
 
-    // place: "http://stko-kwg.geog.ucsb.edu/lod/resource/geometry.multipolygon.North_America.United_States.USA.10_1"
-    // hazard: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>POINT (-89.6458056 32.3111059)
-    // person: POINT (-77.86278 40.79611)
+    let locations = [[-37.8210922667, 175.2209316333],
+    [-37.8210819833, 175.2213903167],
+    [-37.8210881833, 175.2215004833],
+    [-37.8211946833, 175.2213655333],
+    [-37.8209458667, 175.2214051333],
+    [-37.8208292333, 175.2214374833],
+    [-37.8325816, 175.2238798667],
+    [-37.8315855167, 175.2279767]];
 
     for(let i = 0; i < locations.length; i++) {
       let marker = L.marker([locations[i][0], locations[i][1]], {icon});
       this.createMarkerCluster.addLayer(marker);
     }
-
-    this.map.fitBounds(this.createMarkerCluster.getBounds());
     this.map.addLayer(this.createMarkerCluster);
+<<<<<<< HEAD
 
   }
 
@@ -203,6 +243,8 @@ export class MapComponent implements OnInit {
     if(coordinates.length){
       this.showClusters(coordinates);
     }
+=======
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
   }
 <<<<<<< HEAD
 <<<<<<< HEAD

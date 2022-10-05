@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /**
  * Component for the navigation bar. This component encompasses the navigation
@@ -20,6 +19,7 @@ export class NavComponent implements OnInit {
   /**
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
+<<<<<<< HEAD
   ngOnInit(): void {
   }
 
@@ -32,4 +32,7 @@ export class NavComponent implements OnInit {
    onTabChanged(tabChangeEvent: MatTabChangeEvent) {
     let clickedIndex = tabChangeEvent.index;
   }
+=======
+  ngOnInit(): void { }
+>>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
 }
