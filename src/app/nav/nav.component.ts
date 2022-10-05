@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 
 /**
  * Component for the navigation bar. This component encompasses the navigation
@@ -20,18 +19,5 @@ export class NavComponent implements OnInit {
   /**
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
-  ngOnInit(): void {
-    console.log("here is the navigation");
-  }
-
-
-  /**
-   * An event handler that gets triggered when the tab changes
-   *
-   * @param tabChangeEvent The event for the tab change
-   */
-   onTabChanged(tabChangeEvent: MatTabChangeEvent) {
-    let clickedIndex = tabChangeEvent.index;
-    console.log("here is the navigation progile");
-  }
+  ngOnInit(): void { }
 }
