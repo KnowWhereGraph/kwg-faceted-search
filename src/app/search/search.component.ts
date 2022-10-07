@@ -159,7 +159,7 @@ export class SearchComponent implements OnInit {
 =======
 >>>>>>> 19451625 (merge the change)
     this.returnedLocations = values;
-    console.log(this.mapChild.displayClustersForTab("place", values));
+    this.mapChild.displayClustersForTab("place", values)
   }
 
   /**
@@ -169,7 +169,7 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values){
     this.returnedLocations = values;
-    console.log(this.mapChild.displayClustersForTab("hazard", this.returnedLocations));
+    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
   }
 
   /**
@@ -179,13 +179,19 @@ export class SearchComponent implements OnInit {
    */
   getPeopleLocationEvent(values){
     this.returnedLocations = values;
-    console.log(this.mapChild.displayClustersForTab("people", values));
+    this.mapChild.displayClustersForTab("people", values)
   }
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
   getLocationsFromComponent(values){
     this.returnedLocations = values;
   }
 >>>>>>> 19451625 (merge the change)
+=======
+  // getLocationsFromComponent(values){
+  //   this.returnedLocations = values;
+  // }
+>>>>>>> 9f3ef866 (uncomment console; jsdoc format)
 }

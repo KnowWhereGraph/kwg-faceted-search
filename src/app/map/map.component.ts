@@ -135,6 +135,13 @@ export class MapComponent implements OnInit {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  /**
+   * Show given locations as point clusters on the map
+   * @param locations coordinates of points
+   */
+>>>>>>> 9f3ef866 (uncomment console; jsdoc format)
   private showClusters(locations){
 =======
   /**
@@ -169,11 +176,15 @@ export class MapComponent implements OnInit {
 
   }
 
+  /**
+   * Display point clustering for given tab name (place, hazard, or people)
+   * @param tabName choose the tab name for locations to be shown
+   * @param locations coordinates for points
+   */
   public displayClustersForTab(tabName, locations){
     // clear all the clusters
     var coordinates: number[][] = [];
     this.createMarkerCluster.clearLayers();
-    // display the clusters
 
     if (tabName == "place"){
       coordinates = [];
@@ -188,7 +199,6 @@ export class MapComponent implements OnInit {
         coordinates.push(coord);
       }
     }
-    // console.log("tabName = ", tabName, ", coodinates: ", coordinates);
 
     if(coordinates.length){
       this.showClusters(coordinates);
