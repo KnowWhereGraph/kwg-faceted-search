@@ -21,7 +21,6 @@ export class NavComponent implements OnInit {
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
   ngOnInit(): void {
-    console.log("here is the navigation");
   }
 
 
@@ -32,6 +31,5 @@ export class NavComponent implements OnInit {
    */
    onTabChanged(tabChangeEvent: MatTabChangeEvent) {
     let clickedIndex = tabChangeEvent.index;
-    console.log("here is the navigation progile");
   }
 }
