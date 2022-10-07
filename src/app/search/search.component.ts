@@ -25,6 +25,14 @@ export class SearchComponent implements OnInit {
   // The number of results
   public totalSize: number = 0;
 
+  /**
+   * test for communication between facetComponent and searchComponent
+   */
+  searchFacets = {};
+  changeFacets(selectedFacets: object){
+    this.searchFacets = selectedFacets;
+  }
+
   @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
 
   // variable to hold the data from the place/hazard/people component.

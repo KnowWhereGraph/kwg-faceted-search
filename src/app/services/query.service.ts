@@ -235,46 +235,64 @@ export class QueryService {
   /**
    * Gets the minimum amount of query for finding people.
    *
+   * @param expertiseTopics The strings of the expert topics
    * @returns A string of SPARQL without the SELECT predicate
    */
-   getPeopleQueryBody() {
-    let query = `SELECT distinct ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName
-    (group_concat(distinct ?expert; separator = ", ") as ?expertise)
-    (group_concat(distinct ?expertLabel; separator = ", ") as ?expertiseLabel)
-    WHERE {
+   getPeopleQueryBody(expertiseTopics) {
+    let expertiseTopicQuery = '';
+    if (typeof expertiseTopics !== "undefined") {
+      if (expertiseTopics.length > 0) {
+        expertiseTopicQuery = `values ?expertise {<` + expertiseTopics.join('> <') + `>}`;
+      }
+    }
+    let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
+    (group_concat(distinct ?expertise; separator = ", ") as ?expertise)
+    (group_concat(distinct ?expertiseLabel; separator = ", ") as ?expertiseLabel)
+    where {
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
-        ?entity kwg-ont:hasExpertise ?expert.
-        ?expert rdfs:label ?expertLabel.
-        OPTIONAL
-        {
-            ?entity iospress:contributorAffiliation ?affiliation.
-            ?affiliation rdfs:label ?affiliationLabel.
-            OPTIONAL {
-              ?affiliation geo:hasGeometry/geo:asWKT ?wkt.
-            }
-            OPTIONAL {
-              ?affiliation kwg-ont:sfWithin ?affiliationLoc .
-              ?affiliationLoc rdf:type kwg-ont:AdministrativeRegion_3 .
-              ?affiliationLoc rdfs:label ?affiliationLoc_label.
-              ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName
-            }
-        }
-
-    } GROUP BY ?label ?entity ?affiliation ?affiliationLabel ?wkt ?affiliationLoc ?affiliationQuantName`
+        ?entity kwg-ont:hasExpertise ?expertise.
+        ${expertiseTopicQuery}
+        ?expertise rdfs:label ?expertiseLabel.
+        ?entity iospress:contributorAffiliation ?affiliation.
+        ?affiliation rdfs:label ?affiliationLabel;
+                      kwg-ont:sfWithin ?affiliationLoc;
+        			        geo:hasGeometry/geo:asWKT ?wkt.
+    	  ?affiliationLoc rdf:type ?affiliationLoc_type;
+                     	  rdfs:label ?affiliationLoc_label.
+    	  values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
+        optional { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
+    } group by ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`
     return query;
   }
 
   /**
    * Gets all of the people in the database.
    *
+   * @param expertiseTopics The URIs of the expert topics
    * @param limit The maximum number of results to retrieve
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-    getAllPeople(limit: number=20, offset=0) {
-      let query = `SELECT * WHERE {`+this.getPeopleQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
+    getAllPeople(expertiseTopics: Array<string>, limit: number=20, offset=0) {
+      let query = `SELECT * WHERE {`+this.getPeopleQueryBody(expertiseTopics)+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
       let headers = this.getRequestHeaders('KE_06');
+      let body = this.getRequestBody(query);
+      return this.http.post(this.endpoint, body, headers);
+    }
+
+    /**
+     * Retrieves a list of all the sub-topics for a given list of topics.
+     *
+     * @param expertiseTopics An array of expert topics
+     * @returns An observable with the query results
+     */
+    getSubTopics(expertiseTopics: Array<string>) {
+      let query = `SELECT ?sub_topic WHERE {
+        ?parent_topic kwg-ont:hasSubTopic ?sub_topic .
+        values ?parent_topic {<` + expertiseTopics.join('> <') + `>}
+      }`
+      let headers = this.getRequestHeaders('KE_16');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
     }
@@ -282,12 +300,13 @@ export class QueryService {
     /**
      * Gets the total number of people matching a facet selection
      *
+     * @param expertiseTopics The expert topics that people might be experts in
      * @param limit The maximum number of results to retrieve
      * @param offset The number of results to skip
      * @return The number of results
      */
-     getPeopleCount(limit: number=20, offset=0) {
-      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody() + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
+     getPeopleCount(expertiseTopics: Array<string> | undefined, limit: number=20, offset: number=0) {
+      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
       let headers = this.getRequestHeaders('KE_07');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);

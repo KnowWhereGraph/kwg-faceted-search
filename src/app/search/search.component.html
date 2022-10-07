@@ -1,6 +1,7 @@
 <div class="search-body">
   <!-- The left hand facets -->
-  <app-facets class="facets" [selectedTabIndex]="selectedTabIndex"></app-facets>
+  <app-facets class="facets" [selectedTabIndex]="selectedTabIndex"
+  (facetChangedEvent)="changeFacets($event)"></app-facets>
   <div class="results-body">
     <!-- The number of results from the last query -->
     <ng-container *ngIf="!isCounting && isSearching">
@@ -12,7 +13,8 @@
     </ng-container>
 
     <ng-container *ngIf="!isCounting && !isSearching">
-      <p class="results-count">At Least {{totalSize}} Results</p>
+      <p class="results-count" *ngIf="totalSize!=0">At Least {{totalSize}} Results</p>
+      <p class="results-count" *ngIf="totalSize==0">0 Results</p>
     </ng-container>
 
     <!-- The 'Place', 'Hazard', 'People' tab groups -->
@@ -43,7 +45,7 @@
           <span>Person</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPeopleLocationEvent($event)"></app-people-table>
+          <app-people-table [peopleFacets] = "searchFacets" (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPeopleLocationEvent($event)"></app-people-table>
         </ng-template>
       </mat-tab>
     </mat-tab-group>

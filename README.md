@@ -10,7 +10,7 @@ The project has two environments that it can be run under:
 
 ### Generating the Cache
 
-Before building, the cache must be generated. Handling this task before the actual angular build step ensures that the cache is included in the `dist/` folder. 
+Before building, the cache must be generated. Handling this task before the actual angular build step ensures that the cache is included in the `dist/` folder. You'll need an empty folder `src/assets/data`; create it if it doesn't exist (`mkdir src/assets/data`).
 
 To generate the cache, call either of the two commands below, depending on which environment you want
 
