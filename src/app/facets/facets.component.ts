@@ -21,23 +21,39 @@ export class FacetsComponent implements OnInit {
 
   floatLabelControl = new FormControl('auto');
   // The selected facets
-  selectedTreeFacets: Array<any> = [];
+  selectedExpertFacets: Array<any> = [];
+  // The selected place facets from the tree
+  selectedFeatureTypeFacet: Array<any> = [];
   // The current tab that the user selected. This is used to decide which facets to show
   @Input() selectedTabIndex = 0;
+  // The keyword that the user put in the search bar
+  keyword: string = '';
   // This Administrative Region that the user specified
   adminRegion: string = '';
+  // A dict of admin region label -> URI
+  adminRegionRecords: Map<string, string> = new Map();
   // The Zip Code that the user has selected
   zipCode: string = '';
+  // A dict of zipcode label -> URI
+  zipCodeRecords: Map<string, string> = new Map();
   // The Climate Division that the user has selected
   climateDivision: string = '';
+  // A dict of division label -> URI
+  climateDivsionRecords: Map<string, string> = new Map();
   // The national Weather Zone that the user has selected
   nationalWeatherZone: string = '';
+  // Dict of the nwz records of label -> URI
+  nationalWeatherZoneRecords: Map<string, string> = new Map();
   // The FIPS code that the user has entered
   fipsCode: string = '';
+  // A dict of admin regions label -> URI
+  fipsCodeRecords: Map<string, string> = new Map();
   // Container that holds all of the admin regions that are shown on the UI
   administrativeRegionsDisplay: Array<any> = [];
   // Container for all of the hazard classes that are shown in the dropdown selection
   hazardClassesDisplay: Array<any> = [];
+  // A dict of GNIS label -> URI
+  gnisRecords: Map<string, string> = new Map();
   // Container for all the GNIS classes in the dropdown menu
   gnisClassesDisplay: Array<{ name: string, hasChildren: boolean }> = [];
   // Container for all of the experts in the dropdown facet
@@ -63,11 +79,11 @@ export class FacetsComponent implements OnInit {
   // Holds all of the administrative regions used in autocompletion
   adminRegions: Array<string> = []
 
-  // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked
+  // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked by
+  // doing nothing with the action
   actionMap =  {
     mouse: {
-      click: (tree, node, $event) => {
-      }
+      click: (tree, node, $event) => { }
     },
   }
 
@@ -78,7 +94,8 @@ export class FacetsComponent implements OnInit {
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Admin"
   }
 
   /**
@@ -88,7 +105,8 @@ export class FacetsComponent implements OnInit {
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Hazard"
   }
 
   /**
@@ -98,7 +116,8 @@ export class FacetsComponent implements OnInit {
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "GNIS"
   }
 
   /**
@@ -108,7 +127,8 @@ export class FacetsComponent implements OnInit {
   expertOptions: ITreeOptions = {
     getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Expert"
   }
 
   @Output() facetChangedEvent = new EventEmitter<object>();
@@ -255,35 +275,54 @@ export class FacetsComponent implements OnInit {
    */
   facetChanged(event: any=undefined) {
     if (event) {
-      if (event instanceof KeyboardEvent) {
-        // The user pressed enter
+      if (event instanceof KeyboardEvent || event instanceof PointerEvent) {
+        // The user pressed enter or clicked 'Search'
         this.updateUrlParams();
         this.updateFacetSelections();
       } else if (event.eventName == 'select' || event.eventName == 'deselect') {
         // The user clicked a checkbox on a facet
         this.updateUrlParams();
-        this.selectedTreeFacets = Object.entries(event.treeModel.selectedLeafNodeIds)
+        let selected = Object.entries(event.treeModel.selectedLeafNodeIds)
           .filter(([key, value]) => {
             return (value === true);
           }).map((id) => {
             let node = event.treeModel.getNodeById(id[0]);
           return node;
         });
-        this.updateFacetSelections();    
+        if (event.treeModel.options.options.idField === "GNIS") {
+          this.selectedFeatureTypeFacet = selected;
+        } else if (event.treeModel.options.options.idField === "Expert") {
+          this.selectedExpertFacets = selected;
+        }
+        this.updateFacetSelections();
       }
     }
   }
 
   /**
-   * The function to update facet selection and send it to the parent component SearchComponent
+   * The function to retrieve the selected facets and send them to the parent component SearchComponent.
    */
   updateFacetSelections() {
-    let selectedFacets = {};
-
-    // update expertise topic facets
-    if (this.selectedTabIndex == 2)
+    let selectedFacets = {'keyword': this.keyword};
+    if (this.selectedTabIndex == 0) {
+      selectedFacets['adminRegion'] = this.adminRegionRecords.get(this.adminRegion);
+      selectedFacets['climateDivision'] = this.climateDivsionRecords.get(this.climateDivision);
+      selectedFacets['zipCode'] = this.zipCodeRecords.get(this.zipCode);
+      selectedFacets['fipsCode'] = this.fipsCodeRecords.get(this.fipsCode);
+      selectedFacets['nationalWeatherZone'] = this.nationalWeatherZoneRecords.get(this.nationalWeatherZone);
+      // Select the URI of the GNIS types
+      let gnisURIS: Array<string> = new Array();
+      this.selectedFeatureTypeFacet.forEach((gnisType) => {
+        gnisURIS.push(gnisType.data.uri);
+      })
+      selectedFacets['gnisType'] = gnisURIS;
+    } else if (this.selectedTabIndex == 1)
     {
-      selectedFacets['expertiseTopics'] = this.selectedTreeFacets;
+
+    }
+    else if (this.selectedTabIndex == 2)
+    {
+      selectedFacets['expertiseTopics'] = this.selectedExpertFacets;
     }
     this.facetChangedEvent.emit(selectedFacets);
   }
@@ -299,6 +338,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<any> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1])
+          this.zipCodeRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.zipCodes = formatted;
@@ -311,6 +351,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1]);
+          this.fipsCodeRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.fipsCodes = formatted;
@@ -323,6 +364,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<any> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1])
+          this.nationalWeatherZoneRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.nwZones = formatted;
@@ -336,6 +378,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1]);
+          this.climateDivsionRecords.set(row.split(',')[1], row.split(',')[0])
         })
         // Remove the last empty line
         formatted.pop()
@@ -349,7 +392,8 @@ export class FacetsComponent implements OnInit {
         let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
-          formatted.push(row);
+          formatted.push((row.split(',')[1]));
+          this.adminRegionRecords.set(row.split(',')[1], row.split(',')[0])
         })
         // Remove the last empty line
         formatted.pop()
@@ -426,7 +470,8 @@ export class FacetsComponent implements OnInit {
             name: element['place_label']['value'],
             hasChildren: true,
             uri: element['place']['value']
-          })
+          });
+          this.gnisRecords.set(element['place_label']['value'], element['place']['value'])
         });
         this.gnisClassesDisplay = formatted;
       }
@@ -562,6 +607,7 @@ export class FacetsComponent implements OnInit {
               hasChildren: hasChildren,
               uri: element['place']['value']
             });
+            this.gnisRecords.set(element['gnis_label']['value'], element['place']['value'])
           })
           resolve(states);
         }

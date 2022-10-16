@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
@@ -13,6 +13,7 @@ import { QueryService } from '../services/query.service'
   styleUrls: ['./places-table.component.scss']
 })
 export class PlacesTableComponent implements OnInit {
+  @Input() placesFacets = {};
   // Columns for the table
   placesColumns: Array<String> = ["name", "type"];
   // The data source that's responsible for fetching data
@@ -52,7 +53,6 @@ export class PlacesTableComponent implements OnInit {
   ngOnInit(): void {
     this.placesDataSource = new MatTableDataSource(this.places);
     this.populateTable();
-    this.getResultsSize();
   }
 
    /**
@@ -64,27 +64,17 @@ export class PlacesTableComponent implements OnInit {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
       this.populateTable(offset);
-      this.getResultsSize();
     });
   }
 
-  /**
-   * Retrieves the number of results for a query and updates the count in the UI
-  */
-  getResultsSize() {
-    this.queryService.getPlacesCount(this.pageSize * 10).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response)
-        this.totalSize = results[0]['COUNT']['value'];
-        // Update the number of results
-        this.resultsCountEvent.emit(this.totalSize);
-        this.testEvent.emit(500);
-      },
-      error: response => {
-        console.error("There was an error while retrieving the number of results", response)
-      }
-    });
-  }
+    /**
+   * Called when users make facet selections
+   *
+   * @param changes The change event
+   */
+     ngOnChanges(changes: SimpleChanges) {
+      this.populateTable();
+    }
 
   /**
    * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
@@ -93,32 +83,30 @@ export class PlacesTableComponent implements OnInit {
    * @param count The number of results to retrieve
    */
    populateTable(offset:number=0, count: number=20) {
-
     // A map of a place's URI to its properties that are retrieved from the database
-    this.queryService.getAllPlaces(count, offset).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response)
+    this.queryService.getPlaces(this.placesFacets, count, offset).then((results: any) => {
         this.places = [];
         this.locations = [];
-        for (var result of results) {
+        results.records.forEach(result => {
           this.places.push({
-            "name": result["label"]["value"],
-            "nameUri": result["entity"]["value"],
-            "type": result["typeLabel"]["value"],
-            "typeUri": result["type"]["value"],
+            "name": result["place_name"],
+            "nameUri": result["place"],
+            "type": result["place_type_name"],
+            "typeUri": result["place_type"],
           });
-          if (result['geo']){
-            this.locations.push(result['geo']['value']);
+          if (result['wkt']){
+            this.locations.push(result['wkt']['value']);
           }
-        }
+        });
+        this.totalSize = results.count;
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
         this.placesDataSource = new MatTableDataSource(this.places);
         this.searchQueryFinishedEvent.emit(true);
         this.locationEvent.emit(this.locations);
-      }
-   });
+      });
+    }
   }
-}
-
 /**
  * Prototype for a row in the table; represents a Place.
  */

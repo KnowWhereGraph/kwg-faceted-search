@@ -44,7 +44,7 @@ async function fetchCache(query, fileName, data=[]) {
   let results = await sparqlRequest(offset_query);
     results.data.results.bindings.forEach((res)=>{
     data.push([res.subject.value, res.value.value]);
-  })
+  });
 
   // If there are a non-zero number of records, ask for more
   if (results.data.results.bindings.length) {
@@ -79,10 +79,32 @@ async function fetchCache(query, fileName, data=[]) {
   let offset_query = query+` OFFSET ${count}`;
   try {
     let results = await sparqlRequest(offset_query);
-      results.data.results.bindings.forEach((res)=>{
-      data.push(res.usa_label.value);
-      data.push(res.state_label.value);
-      data.push(res.county_label.value);
+      results.data.results.bindings.forEach((res) => {
+        // Check if the top level node has already been added
+        let has_top_level = false;
+        data.forEach((data_record) => {
+          if (data_record[0] == res.usa.value) {
+            has_top_level = true
+            return;
+          }
+        });
+        // Add the top level node
+        if (!has_top_level) {
+          data.push([res.usa.value,res.usa_label.value]);
+        }
+        // Check if the stat node has already been added
+        let has_state_level = false;
+        data.forEach((data_record) => {
+          if (data_record[0] == res.state.value) {
+            has_state_level = true
+            return;
+          }
+        });
+        // Add the top level node
+        if (!has_state_level) {
+          data.push([res.state.value, res.state_label.value]);
+        }
+      data.push([res.county.value, res.county_label.value]);
   });
   // If there are a non-zero number of records, ask for more
   if (results.data.results.bindings.length) {
@@ -95,9 +117,8 @@ async function fetchCache(query, fileName, data=[]) {
   } else {
     let file = fs.createWriteStream(fileName);
     file.on('error', (err) => { console.error("Failed writing to disk", err) });
-    let de_duplicated = new Set(data);
-    de_duplicated.forEach((record) => {
-      file.write(record+'\n');
+    data.forEach((record) => {
+      file.write(record.join(',')+'\n');
     })
     file.end();
   }} catch(err) {
