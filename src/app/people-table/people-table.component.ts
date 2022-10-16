@@ -114,7 +114,7 @@ export class PeopleTableComponent implements OnInit {
    * @param expertiseTopics An array of expert topic URIs
    */
   getPeopleCount(expertiseTopics: Array<string>) {
-    this.queryService.getPeopleCount(expertiseTopics, this.pageSize * 10).subscribe({
+    this.queryService.getPeopleCount(expertiseTopics, this.peopleFacets['keyword'], this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -175,8 +175,12 @@ export class PeopleTableComponent implements OnInit {
    * @param offset The offset to start at for obtaining experts
    */
   queryPeople(expertiseTopicFacets: Array<string>, offset:number=0) {
+<<<<<<< HEAD
     this.queryService.getAllPeople(expertiseTopicFacets, this.pageSize, offset).subscribe({
 >>>>>>> 51bce0fa (Sending facet selection from searchComponent to PeopleTableComponent and update people-table)
+=======
+    this.queryService.getAllPeople(expertiseTopicFacets, this.peopleFacets['keyword'], this.pageSize, offset).subscribe({
+>>>>>>> 3fde403d (Support searching for places)
       next: response => {
         let results = this.queryService.getResults(response);
         this.locations = [];

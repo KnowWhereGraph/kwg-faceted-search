@@ -25,7 +25,7 @@
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-places-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPlaceLocationEvent($event)"></app-places-table>
+          <app-places-table [placesFacets] = "searchFacets" (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getPlaceLocationEvent($event)"></app-places-table>
         </ng-template>
       </mat-tab>
 

@@ -47,6 +47,28 @@ export class QueryService {
     }
   }
 
+/**
+ * Performs a SPARQL query
+ *
+ * @param {string} query The query that is being performed
+ * @returns
+ */
+ async query(query) {
+  let d_form = new FormData();
+  d_form.append('query', this.prefixes + query);
+  let d_res:any = await fetch(this.endpoint, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            Accept: 'application/sparql-results+json',
+        },
+        body: this.getRequestBody(query),
+    }).catch((error) => {
+      console.error("There was an error while running a query: ", error);
+    });
+  return await d_res.json();
+}
+
   /**
    * Takes a query string without the prefixes and returns the fully crafted query
    * @param query The SPARQL query being prepared
@@ -194,61 +216,200 @@ export class QueryService {
   /**
    * Gets the minimum amount of query for finding places.
    *
+   * @param placesFacets The facets selected
+   * @param limit The maximum number of results to fetch
+   * @param offset The results offset
    * @returns A string of SPARQL without the SELECT predicate
    */
-  getPlacesQueryBody() {
-    let query = `?entity a ?type; rdfs:label|kwg-ont:hasZipCode ?label; geo:hasGeometry ?geo.
-      values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
-      ?type rdfs:label ?typeLabel`
-    return query;
+  async getPlaces(placesFacets, limit, offset) {
+    let formattedResults: Array<any> = [];
+    let placeQuery = `SELECT DISTINCT ?entity ?label ?quantifiedName ?type ?typeLabel where {`;
+
+    if (placesFacets["keyword"] && placesFacets["keyword"] != "") {
+      placeQuery += `
+      ?search a elastic-index:kwg_fs_index;
+      elastic:query "${placesFacets["keyword"]}";
+      elastic:entities ?entity.
+      ?entity elastic:score ?score.
+      `;
+    }
+
+    let enteredAdminRegion: boolean = placesFacets["adminRegion"] && placesFacets["adminRegion"] != '';
+    let enteredFips: boolean = placesFacets["fipsCode"] && placesFacets["fipsCode"] != '';
+    let enteredZip: boolean = placesFacets["zipCode"] && placesFacets["zipCode"] != '';
+    let enteredCD: boolean = placesFacets["climateDivision"] && placesFacets["climateDivision"] != '';
+    let enteredNationalWeatherZone: boolean = placesFacets["nationalWeatherZone"] && placesFacets["nationalWeatherZone"] != '';
+    let enteredGNIS: boolean = placesFacets['gnisType'] && placesFacets['gnisType'].length;
+    if (enteredGNIS) {
+      // Add brackets around each URI for the query
+      let queryURIS = placesFacets['gnisType'].map((uri) => `<${uri}>`).join(" ");
+      placeQuery += `
+        ?entity a ?type; rdfs:label ?label.
+        ?type rdfs:label ?typeLabel.
+        values ?type { ${queryURIS} }
+        `;
+      if (enteredAdminRegion || enteredCD || enteredNationalWeatherZone || enteredZip || enteredFips) {
+        placeQuery += `
+          ?entity kwg-ont:sfWithin ?s2cell.
+          ?s2cell rdf:type kwg-ont:KWGCellLevel13;
+            kwg-ont:spatialRelation ?placesConnectedToS2.
+          ?placesConnectedToS2 kwg-ont:sfWithin ?superPlacesConnectedToS2.
+          `;
+        let placesConnectedToS2: Array<string> = [];
+        if (enteredAdminRegion) {
+          placesConnectedToS2.push(`<${placesFacets['adminRegion']}>`);
+        }
+        if (enteredZip) {
+          placesConnectedToS2.push(`<${placesFacets['zipCode']}>`);
+        }
+        if (enteredFips) {
+          placesConnectedToS2.push(`<${placesFacets['fipsCode']}>`);
+        }
+        if (enteredCD) {
+          placesConnectedToS2.push(`<${placesFacets['climateDivision']}>`);
+        }
+        if (enteredNationalWeatherZone) {
+          placesConnectedToS2.push(`<${placesFacets['nationalWeatherZone']}>`);
+        }
+        placeQuery += `filter (?placesConnectedToS2 in (${placesConnectedToS2.join(', ')}) || ?superPlacesConnectedToS2 in (${placesConnectedToS2.join(', ')}))`;
+      }
+    }
+    else {
+      if (enteredAdminRegion || enteredCD || enteredNationalWeatherZone || enteredZip || enteredFips) {
+        let typeQueries: Array<string> = [];
+        if (enteredAdminRegion) {
+          typeQueries.push(`{
+            ?entity rdf:type ?type; rdfs:label ?label.
+            values ?entity { <` + placesFacets["adminRegion"] + `> }
+            ?type rdfs:label ?typeLabel.
+            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3}
+          }`);
+        }
+        if (enteredZip) {
+          typeQueries.push(`
+          {
+            ?entity rdf:type ?type; rdfs:label ?label.
+            values ?entity { <` + placesFacets["zipCode"] + `> }
+            ?type rdfs:label ?typeLabel.
+            values ?type {kwg-ont:ZipCodeArea}
+          }`);
+        }
+        if (enteredFips) {
+          typeQueries.push(`
+          {
+            ?entity rdf:type ?type; kwg-ont:hasFIPS|kwg-ont:climateDivisionFIPS ?label.
+            values ?entity { <` + placesFacets["fipsCode"] + `> }
+            ?type rdfs:label ?typeLabel.
+            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:USClimateDivision}
+          }`);
+        }
+        if (enteredCD) {
+          typeQueries.push(`
+          {
+            ?entity rdf:type ?type; rdfs:label ?label.
+            values ?entity { <` + placesFacets["climateDivision"] + `> }
+            values ?type {kwg-ont:USClimateDivision}
+            ?type rdfs:label ?typeLabel
+          }`);
+        }
+        if (enteredNationalWeatherZone) {
+          typeQueries.push(`
+          {
+            ?entity rdf:type ?type; rdfs:label ?label.
+            values ?entity { <` + placesFacets["nationalWeatherZone"] + `> }
+            ?type rdfs:label ?typeLabel.
+            values ?type {kwg-ont:NWZone}
+          }`);
+        }
+        // Combine the queries with a union
+        placeQuery += typeQueries.join(' UNION ');
+      }
+      else {
+        // Otherwise no facets have been changed, so use the default query
+        placeQuery += `
+        {
+          ?entity rdf:type ?type; rdfs:label ?label.
+          OPTIONAL
+          {
+            ?entity kwg-ont:quantifiedName ?quantifiedName.
+          }
+          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
+          ?type rdfs:label ?typeLabel
+        }`;
+      }
+    }
+
+
+    if (typeof placesFacets["spatialSearchWkt"] != 'undefined') {
+      placeQuery += `
+          ?entity geo:sfWithin '${placesFacets["spatialSearchWkt"]}'^^geo:wktLiteral.
+      `;
+    }
+
+    // Close the main query
+    placeQuery += `}`;
+
+    // If the user included a keyword search, sort them by the most relevant string results from ES
+    if (placesFacets["keyword"] && placesFacets["keyword"] != "") {
+      placeQuery += ` order by desc(?score)`;
+    }
+
+    let queryResults: Response = await this.query(placeQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
+    let entityRawValues: Array<any> = [];
+
+    queryResults['results']['bindings'].forEach(row => {
+      entityRawValues.push(row.entity.value);
+      formattedResults.push({
+        'place': row.entity.value,
+        'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
+        'place_type': row.type.value,
+        'place_type_name': row.typeLabel.value,
+      })
+    });
+    if (entityRawValues.length == 0) {
+      return { 'count': 0, 'record': {} };
+    }
+
+    let wktQuery = await this.query(`select ?entity ?wkt where { ?entity geo:hasGeometry/geo:asWKT ?wkt. values ?entity {<${entityRawValues.join('> <')}>} }`);
+    let wktResults = {};
+    for (let row of wktQuery['results']['bindings']) {
+      wktResults[row.entity.value] = (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '');
+    }
+
+    for (let i = 0; i < formattedResults.length; i++) {
+      formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
+    }
+
+    let countResults = await this.query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + limit + `}`);
+    return { 'count': countResults.results.bindings[0].count.value, 'records': formattedResults };
   }
 
   /**
-   * Gets all of the places in the database.
-   *
-   * @param limit The maximum number of results to retrieve
-   * @param offset The number of results to skip
-   * @returns An observable that the caller can watch
-   */
-     getAllPlaces(limit: number=20, offset=0) {
-      let query = `
-      SELECT * WHERE {`+this.getPlacesQueryBody()+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-      let headers = this.getRequestHeaders('KE_04');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
-
-    /**
-     * Gets the total number of places matching a facet selection
-     *
-     * @param limit The maximum number of results to retrieve
-     * @param offset The number of results to skip
-     * @return The number of places matching the facet selection
-    */
-    getPlacesCount(limit: number=20, offset=0) {
-      let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getPlacesQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
-      let headers = this.getRequestHeaders('KE_05');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
-
-  /**
    * Gets the minimum amount of query for finding people.
-   *
+   * @param keyword Any keywords the user searched for
    * @param expertiseTopics The strings of the expert topics
    * @returns A string of SPARQL without the SELECT predicate
    */
-   getPeopleQueryBody(expertiseTopics) {
+   getPeopleQueryBody(expertiseTopics, keyword="") {
     let expertiseTopicQuery = '';
     if (typeof expertiseTopics !== "undefined") {
       if (expertiseTopics.length > 0) {
         expertiseTopicQuery = `values ?expertise {<` + expertiseTopics.join('> <') + `>}`;
       }
     }
+    let keyword_query = ``;
+    if (keyword != "") {
+      keyword_query =`?search a elastic-index:kwg_fs_index;
+      elastic:query "${keyword}";
+      elastic:entities ?entity.
+      ?entity elastic:score ?score.`;
+  }
+
     let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expertise; separator = ", ") as ?expertise)
     (group_concat(distinct ?expertiseLabel; separator = ", ") as ?expertiseLabel)
     where {
+      ${keyword_query}
         ?entity rdf:type iospress:Contributor.
         ?entity rdfs:label ?label.
         ?entity kwg-ont:hasExpertise ?expertise.
@@ -270,12 +431,13 @@ export class QueryService {
    * Gets all of the people in the database.
    *
    * @param expertiseTopics The URIs of the expert topics
+   * @param keywords Any keywords the user searched for
    * @param limit The maximum number of results to retrieve
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-    getAllPeople(expertiseTopics: Array<string>, limit: number=20, offset=0) {
-      let query = `SELECT * WHERE {`+this.getPeopleQueryBody(expertiseTopics)+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
+    getAllPeople(expertiseTopics: Array<string>, keywords="", limit: number=20, offset=0) {
+      let query = `SELECT * WHERE {`+this.getPeopleQueryBody(expertiseTopics, keywords)+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
       let headers = this.getRequestHeaders('KE_06');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);
@@ -301,12 +463,13 @@ export class QueryService {
      * Gets the total number of people matching a facet selection
      *
      * @param expertiseTopics The expert topics that people might be experts in
+     * @param keywords Any keywords the user searched for
      * @param limit The maximum number of results to retrieve
      * @param offset The number of results to skip
      * @return The number of results
      */
-     getPeopleCount(expertiseTopics: Array<string> | undefined, limit: number=20, offset: number=0) {
-      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
+     getPeopleCount(expertiseTopics: Array<string> | undefined, keywords="", limit: number=20, offset: number=0) {
+      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics, keywords) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
       let headers = this.getRequestHeaders('KE_07');
       let body = this.getRequestBody(query);
       return this.http.post(this.endpoint, body, headers);

@@ -1,8 +1,8 @@
 <div class="search-box">
   <form class="search-form">
     <label class="sr-only" for="keyword">Search by keyword</label>
-    <input class="search-input" type="text" id="keyword" name="keyword" placeholder="Search by keyword">
-    <input class="search-submit" type="submit" value="Search">
+    <input class="search-input" type="text" id="keyword" name="keyword" [(ngModel)]="keyword" placeholder="Search by keyword" (keyup.enter)="facetChanged($event)">
+    <input class="search-submit" type="submit" value="Search" (click)="facetChanged($event)">
   </form>
 </div>
 
