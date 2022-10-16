@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PlacesTableComponent } from '../places-table/places-table.component';
 /**
@@ -100,7 +100,6 @@ export class SearchComponent implements OnInit {
         queryParams: queryParams,
         queryParamsHandling: 'merge',
       });
-
   }
 
   /**
@@ -130,6 +129,22 @@ export class SearchComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  // getTestEventValue(testNumber: number){
+  //   console.log("print the test value: ", testNumber);
+  //   this.testValue = testNumber;
+  //   console.log("test value is : ", testNumber);
+  // }
+
+  // changeResultsCount(newCount: number) {
+  //   this.totalSize = newCount;
+  //   this.isCounting = false;
+  // }
+
+  @ViewChild('mapChild')
+  public mapChild: any;
+
+
+
   /**
    * Called when an event with a set of locations is triggered
    *
@@ -137,6 +152,7 @@ export class SearchComponent implements OnInit {
    */
   getPlaceLocationEvent (values){
     this.returnedLocations = values;
+    console.log(this.mapChild.displayClustersForTab("place", values));
   }
 
   /**
@@ -146,6 +162,7 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values){
     this.returnedLocations = values;
+    console.log(this.mapChild.displayClustersForTab("hazard", this.returnedLocations));
   }
 
   /**
@@ -154,6 +171,11 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getPeopleLocationEvent(values){
+    this.returnedLocations = values;
+    console.log(this.mapChild.displayClustersForTab("people", values));
+  }
+
+  getLocationsFromComponent(values){
     this.returnedLocations = values;
   }
 }

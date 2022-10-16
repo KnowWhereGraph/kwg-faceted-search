@@ -53,6 +53,8 @@
 
   <!-- The map -->
   <div class="map-container">
-    <app-map [locations] = 'returnedLocations'></app-map>
+    <!-- <app-map [msgFromSearchParent] = 'testValue'></app-map> -->
+    <app-map #mapChild [locations] = 'returnedLocations'></app-map>
+    <!-- <app-map [locations] = 'returnedLocations'></app-map> -->
   </div>
 </div>
