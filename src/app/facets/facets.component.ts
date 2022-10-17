@@ -313,21 +313,24 @@ export class FacetsComponent implements OnInit {
    */
   updateFacetSelections() {
     let selectedFacets = {'keyword': this.keyword};
-    if (this.selectedTabIndex == 0) {
+    if (this.selectedTabIndex == 0 || this.selectedTabIndex == 1) {
       selectedFacets['adminRegion'] = this.adminRegionRecords.get(this.adminRegion);
       selectedFacets['climateDivision'] = this.climateDivsionRecords.get(this.climateDivision);
       selectedFacets['zipCode'] = this.zipCodeRecords.get(this.zipCode);
       selectedFacets['fipsCode'] = this.fipsCodeRecords.get(this.fipsCode);
       selectedFacets['nationalWeatherZone'] = this.nationalWeatherZoneRecords.get(this.nationalWeatherZone);
-      // Select the URI of the GNIS types
-      let gnisURIS: Array<string> = new Array();
-      this.selectedFeatureTypeFacet.forEach((gnisType) => {
-        gnisURIS.push(gnisType.data.uri);
-      })
-      selectedFacets['gnisType'] = gnisURIS;
-    } else if (this.selectedTabIndex == 1)
-    {
+    }
+    if (this.selectedTabIndex == 1) {
+      selectedFacets['hazardStart'] = undefined;
+      selectedFacets['hazardEnd'] = undefined;
+      selectedFacets['hazardTypes'] = this.hazardClassesDisplay;
 
+            // Select the URI of the GNIS types
+            let gnisURIS: Array<string> = new Array();
+            this.selectedFeatureTypeFacet.forEach((gnisType) => {
+              gnisURIS.push(gnisType.data.uri);
+            })
+            selectedFacets['gnisType'] = gnisURIS;
     }
     else if (this.selectedTabIndex == 2)
     {

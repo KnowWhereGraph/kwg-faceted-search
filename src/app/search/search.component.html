@@ -35,7 +35,7 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getHazardLocationEvent($event)"></app-hazards-table>
+          <app-hazards-table [hazardFacets] = "searchFacets" (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()" (locationEvent) = "getHazardLocationEvent($event)"></app-hazards-table>
         </ng-template>
       </mat-tab>
 
