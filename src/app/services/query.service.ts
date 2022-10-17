@@ -385,6 +385,204 @@ export class QueryService {
   }
 
   /**
+   *
+   * @param hazardFacets
+   * @param pageNum
+   * @param recordNum
+   */
+  async getHazardSearchResults(hazardFacets, pageNum, recordNum) {
+    let formattedResults: any = [];
+
+    let hazardQuery = `select distinct ?entity ?label ?wkt {`;
+
+    //Keyword search
+    if (hazardFacets["keyword"] && hazardFacets["keyword"] != "") {
+      hazardQuery += `
+        ?search a elastic-index:kwg_fs_index;
+        elastic:query "${hazardFacets["keyword"]}";
+        elastic:entities ?entity.
+        ?entity elastic:score ?score.
+        `;
+    }
+    let typeQuery = ``;
+    if (hazardFacets["hazardTypes"] && hazardFacets["hazardTypes"].length > 0) {
+      // Put brackets around each URI
+      let typeURIS = hazardFacets["hazardTypes"].map((uri) => `<${uri}>`).join(" ");
+      typeQuery += `filter (?type in (${typeURIS})`;
+    }
+
+    //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
+    let placeEntities: Array<string> = new Array();
+    if (hazardFacets["adminRegion"] && hazardFacets["adminRegion"].length > 0) {
+      placeEntities = hazardFacets["facetRegions"];
+    }
+    if (hazardFacets['zipCode'] && hazardFacets['zipCode'] != "") {
+      placeEntities.push(hazardFacets['zipCode']);
+    }
+    if (hazardFacets['fipsCode'] && hazardFacets['fipsCode'] != "") {
+      placeEntities.push(hazardFacets['zipCode']);
+    }
+    if (hazardFacets["climateDivision"] && hazardFacets["climateDivision"] != "") {
+      placeEntities.push();
+    }
+    if (hazardFacets["nationalWeatherZone"] && hazardFacets["nationalWeatherZone"] != "") {
+      placeEntities.push(hazardFacets['nationalWeatherZone']);
+    }
+    // return 0 result if no places satisfy the inputs
+    if (Array.from(new Set(placeEntities))[0] == `` && Array.from(new Set(placeEntities)).length == 1) {
+      return { 'count': 0, 'record': {} };
+    }
+
+    let placeSearchQuery = ``;
+    if (hazardFacets["gnisType"] && hazardFacets["gnisType"].length > 0) {
+      let gnisTypeArray = hazardFacets['gnisType'].map((uri) => `<${uri}>`).join(" ");
+
+      placeSearchQuery += `
+            ?entity kwg-ont:sfWithin ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13;
+                    kwg-ont:spatialRelation ?gnisEntity.
+            ?gnisEntity kwg-ont:sfWithin ?s2cellGNIS;
+                        rdf:type ?gnisPlaceType.
+            values ?gnisPlaceType {${gnisTypeArray}}
+        `;
+      if (placeEntities.length > 0) {
+        placeSearchQuery += `
+                ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+                ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
+            `;
+      }
+    }
+    else if (placeEntities.length > 0) {
+      placeSearchQuery += `
+            ?entity kwg-ont:spatialRelation ?s2Cell .
+            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+            ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
+        `;
+    }
+
+    //Filter by the date hazard occurred
+    let dateQuery = '';
+    if ((hazardFacets["hazardStart"] && hazardFacets["hazardStart"] != "") || (hazardFacets["hazardEnd"] && hazardFacets["hazardEnd"] != "")) {
+      let dateArr: Array<string> = new Array();
+      if (hazardFacets["hazardStart"] != "") {
+        dateArr.push(`(?startTimeLabel > "` + hazardFacets["hazardStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?startTimeLabel > "` + hazardFacets["hazardStart"] + `"^^xsd:date)`);
+        dateArr.push(`(?endTimeLabel > "` + hazardFacets["hazardStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + hazardFacets["hazardStart"] + `"^^xsd:date)`);
+      }
+      if (hazardFacets["hazardEnd"] && hazardFacets["hazardEnd"] != "") {
+        dateArr.push(`("` + hazardFacets["hazardEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "` + hazardFacets["hazardEnd"] + `"^^xsd:date > ?startTimeLabel)`);
+        dateArr.push(`("` + hazardFacets["hazardEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "` + hazardFacets["hazardEnd"] + `"^^xsd:date > ?endTimeLabel)`);
+      }
+      dateQuery = `
+            ?observationCollection sosa:phenomenonTime ?time.
+            ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+                  time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+            FILTER (` + dateArr.join(' && ') + `)`;
+    }
+
+    //Filter by a circle on the map
+    let spatialSearchQuery = '';
+    if (typeof hazardFacets["spatialSearchWkt"] != 'undefined') {
+      spatialSearchQuery += `
+            ?entity geo:sfWithin '${hazardFacets["spatialSearchWkt"]}'^^geo:wktLiteral.
+        `;
+    }
+
+    //Build the full query
+    hazardQuery += `
+        ?entity rdf:type ?type;
+                rdfs:label ?label;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
+        optional
+        {
+            ?entity geo:hasGeometry/geo:asWKT ?wkt.
+        }
+        ?type rdfs:subClassOf kwg-ont:Hazard.
+        ?entity kwg-ont:sfWithin ?place.
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+        ${typeQuery}
+        ${placeSearchQuery}
+        ${dateQuery}
+
+        ${spatialSearchQuery}
+    }`;
+    //${this.getHazardSearchResults(hazardFacets, pageNum, recordNum)}
+
+    // If the user is searching for a hazard by keyword, sort them by the most relevant first
+    if (hazardFacets["keyword"] != "") {
+      hazardQuery += ` ORDER BY desc(?score)`;
+    }
+
+    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    let entityQueryStr: string = '';
+    let hazardEntites: Array<string> = new Array();
+    for (let row of queryResults['results'].bindings) {
+      formattedResults.push({
+        'hazard': row.entity.value,
+        'hazard_name': row.label.value,
+        'hazard_type': '',
+        'hazard_type_name': '',
+        'place': '',
+        'place_name': '',
+        'start_date': '',
+        'start_date_name': '',
+        'end_date': '',
+        'end_date_name': '',
+        'wkt': (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '')
+      });
+      hazardEntites.push(row.entity.value);
+      // URIS that can be placed in the query (they have the <> brackets)
+      entityQueryStr = hazardEntites.map((uri) => `<${uri}>`).join(" ");
+    }
+
+    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
+    {
+        ?entity rdf:type ?type;
+                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
+
+        ?type rdfs:label ?typeLabel.
+        OPTIONAL
+        {
+            ?entity kwg-ont:sfWithin ?place.
+            ?place rdf:type kwg-ont:AdministrativeRegion;
+                   rdfs:label ?placeLabel.
+            OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
+        }
+        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
+              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+        VALUES ?entity {${entityQueryStr}}
+    } GROUP BY ?entity` ;
+
+    console.log("Sending Query: ", hazardAttributesQuery);
+    queryResults = await this.query(hazardAttributesQuery);
+    queryResults['results']['bindings'].forEach(function (row, counterRow) {
+      // If there isn't a quantified name use the regular label
+      if (typeof row.placeQuantName === 'undefined') {
+        // If there isn't a place name, use ''
+        if (typeof row.placeLabel === 'undefined') {
+          formattedResults[counterRow]['place_name'] = '';
+        } else {
+          formattedResults[counterRow]['place_name'] = row.placeLabel.value.split('||')[0];
+        }
+      } else {
+        formattedResults[counterRow]['place_name'] = row.placeQuantName.value.split('||')[0];
+      }
+      formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
+      formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
+      formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||')[0];
+      formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
+      formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
+      formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
+      formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
+    })
+
+    let countResults = await this.query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum * 10 + `}`);
+    return { 'count': countResults['results']['bindings'][0].count.value, 'record': formattedResults };
+  }
+
+  /**
    * Gets the minimum amount of query for finding people.
    * @param keyword Any keywords the user searched for
    * @param expertiseTopics The strings of the expert topics
