@@ -84,6 +84,9 @@ npm run build --configuration=stage
 cp -r dist/faceted-search/* /var/www/html
 ```
 
+### Versioning
+The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
+
 ## Contributing
 
 <<<<<<< HEAD
