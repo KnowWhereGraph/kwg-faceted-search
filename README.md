@@ -60,6 +60,9 @@ npm run build --configuration=stage
 cp -r dist/faceted-search/* /var/www/html
 ```
 
+### Versioning
+The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
+
 ## Contributing
 
 Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates.
