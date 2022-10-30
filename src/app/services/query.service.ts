@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment'
 })
 export class QueryService {
   // SPARQL Endpoint
-  private endpoint=environment['graphEndpoint'];
+  private endpoint = environment['graphEndpoint'];
 
   // The SPARQL query prefixes
   private prefixes = {
@@ -47,27 +47,27 @@ export class QueryService {
     }
   }
 
-/**
- * Performs a SPARQL query
- *
- * @param {string} query The query that is being performed
- * @returns
- */
- async query(query) {
-  let d_form = new FormData();
-  d_form.append('query', this.prefixes + query);
-  let d_res:any = await fetch(this.endpoint, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            Accept: 'application/sparql-results+json',
-        },
-        body: this.getRequestBody(query),
+  /**
+   * Performs a SPARQL query
+   *
+   * @param {string} query The query that is being performed
+   * @returns
+   */
+  async query(query) {
+    let d_form = new FormData();
+    d_form.append('query', this.prefixes + query);
+    let d_res: any = await fetch(this.endpoint, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/sparql-results+json',
+      },
+      body: this.getRequestBody(query),
     }).catch((error) => {
       console.error("There was an error while running a query: ", error);
     });
-  return await d_res.json();
-}
+    return await d_res.json();
+  }
 
   /**
    * Takes a query string without the prefixes and returns the fully crafted query
@@ -75,8 +75,8 @@ export class QueryService {
    * @param reason Flag whether reasoning is enabled
    * @returns The request body for a valid SPARQL query against GraphDB
    */
-  getRequestBody(query: string, reason: boolean=true) {
-    let fullQuery = this.prefixesCombined+query;
+  getRequestBody(query: string, reason: boolean = true) {
+    let fullQuery = this.prefixesCombined + query;
     let httpParams = new URLSearchParams();
     httpParams.set('query', fullQuery);
     httpParams.set('infer', String(reason));
@@ -104,108 +104,108 @@ export class QueryService {
    * @returns A string of SPARQL for querying the observation collections
    */
   getObsCollectionQuery(parameters) {
-  let typedHazardQuery = ``;
-  if ((parameters["magnitudeMin"] && parameters["magnitudeMin"] != "") || (parameters["magnitudeMax"] && parameters["magnitudeMax"] != "")) {
+    let typedHazardQuery = ``;
+    if ((parameters["magnitudeMin"] && parameters["magnitudeMin"] != "") || (parameters["magnitudeMax"] && parameters["magnitudeMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["magnitudeMin"] && parameters["magnitudeMin"] != "")
-          facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["magnitudeMin"]);
+        facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["magnitudeMin"]);
       if (parameters["magnitudeMax"] && parameters["magnitudeMax"] != "")
-          facetArr.push(parameters["magnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
+        facetArr.push(parameters["magnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?magnitudeObj.
           ?magnitudeObj sosa:observedProperty kwgr:EarthquakeObservableProperty.mag.
           ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["quakeDepthMin"] && parameters["quakeDepthMin"] != "") || (parameters["quakeDepthMax"] && parameters["quakeDepthMax"] != "")) {
+    if ((parameters["quakeDepthMin"] && parameters["quakeDepthMin"] != "") || (parameters["quakeDepthMax"] && parameters["quakeDepthMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["quakeDepthMin"] && parameters["quakeDepthMin"] != "")
-          facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["quakeDepthMin"]);
+        facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["quakeDepthMin"]);
       if (parameters["quakeDepthMax"] && parameters["quakeDepthMax"] != "")
-          facetArr.push(parameters["quakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
+        facetArr.push(parameters["quakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?quakeDepthObj.
           ?quakeDepthObj sosa:observedProperty kwgr:EarthquakeObservableProperty.depth.
           ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["acresBurnedMin"] && parameters["acresBurnedMin"] != "") || (parameters["acresBurnedMax"] && parameters["acresBurnedMax"] != "")) {
+    if ((parameters["acresBurnedMin"] && parameters["acresBurnedMin"] != "") || (parameters["acresBurnedMax"] && parameters["acresBurnedMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["acresBurnedMin"] && parameters["acresBurnedMin"] != "")
-          facetArr.push(`?numAcresBurned > ` + parameters["acresBurnedMin"]);
+        facetArr.push(`?numAcresBurned > ` + parameters["acresBurnedMin"]);
       if (parameters["acresBurnedMax"] && parameters["acresBurnedMax"] != "")
-          facetArr.push(parameters["acresBurnedMax"] + ` > ?numAcresBurned`);
+        facetArr.push(parameters["acresBurnedMax"] + ` > ?numAcresBurned`);
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?numAcresBurnedObj.
           #?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel.
           ?numAcresBurnedObj sosa:observedProperty kwgr:mtbsFireObservableProperty.NumberOfAcresBurned.
           ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["meanDnbrMin"] && parameters["meanDnbrMin"] != "") || (parameters["meanDnbrMax"] && parameters["meanDnbrMax"] != "")) {
+    if ((parameters["meanDnbrMin"] && parameters["meanDnbrMin"] != "") || (parameters["meanDnbrMax"] && parameters["meanDnbrMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["meanDnbrMin"] && parameters["meanDnbrMin"] != "") {
-          facetArr.push(`?meanVal > ` + parameters["meanDnbrMin"]);
+        facetArr.push(`?meanVal > ` + parameters["meanDnbrMin"]);
       }
-      if (parameters["meanDnbrMax"]  && parameters["meanDnbrMax"] != "") {
-          facetArr.push(parameters["meanDnbrMax"] + ` > ?meanVal`);
+      if (parameters["meanDnbrMax"] && parameters["meanDnbrMax"] != "") {
+        facetArr.push(parameters["meanDnbrMax"] + ` > ?meanVal`);
       }
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?meanValObj.
           #?meanValObj rdfs:label ?meanValObjLabel.
           ?meanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.MeandNBRValue.
           ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["sDMeanDnbrMin"] && parameters["sDMeanDnbrMin"] != "") || (parameters["sDMeanDnbrMax"] && parameters["sDMeanDnbrMax"] != "")) {
+    if ((parameters["sDMeanDnbrMin"] && parameters["sDMeanDnbrMin"] != "") || (parameters["sDMeanDnbrMax"] && parameters["sDMeanDnbrMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["sDMeanDnbrMin"] && parameters["sDMeanDnbrMin"] != "") {
-          facetArr.push(`?stanDevMeanVal > ` + parameters["sDMeanDnbrMin"]);
+        facetArr.push(`?stanDevMeanVal > ` + parameters["sDMeanDnbrMin"]);
       }
       if (parameters["sDMeanDnbrMax"] && parameters["sDMeanDnbrMax"] != "") {
-          facetArr.push(parameters["sDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
+        facetArr.push(parameters["sDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
       }
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?stanDevMeanValObj.
           #?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel.
           ?stanDevMeanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.StandardDeviationOfMeandNBRValue.
           ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") || (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "")) {
-    let facetArr: Array<string> = [];
-    if (parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") {
-      facetArr.push(`?deathDirectVal > ` + parameters["numberDeathsMin"]);
-    }
-    if (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "") {
-      facetArr.push(parameters["numberDeathsMax"] + ` > ?deathDirectVal`);
-    }
-    typedHazardQuery += `
+    if ((parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") || (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") {
+        facetArr.push(`?deathDirectVal > ` + parameters["numberDeathsMin"]);
+      }
+      if (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "") {
+        facetArr.push(parameters["numberDeathsMax"] + ` > ?deathDirectVal`);
+      }
+      typedHazardQuery += `
       ?observationCollection sosa:hasMember ?deathDirectValObj.
       ?deathDirectValObj sosa:observedProperty kwgr:impactObservableProperty.deathDirect.
       ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if ((parameters["numberInjuredMin"] && parameters["numberInjuredMin"] != "") || (parameters["numberInjuredMax"] && parameters["numberInjuredMax"] != "")) {
+    if ((parameters["numberInjuredMin"] && parameters["numberInjuredMin"] != "") || (parameters["numberInjuredMax"] && parameters["numberInjuredMax"] != "")) {
       let facetArr: Array<string> = [];
       if (parameters["numberInjuredMin"] && parameters["numberInjuredMin"] != "")
-          facetArr.push(`?injuryDirectVal > ` + parameters["numberInjuredMin"]);
+        facetArr.push(`?injuryDirectVal > ` + parameters["numberInjuredMin"]);
       if (parameters["numberInjuredMax"] && parameters["numberInjuredMax"] != "")
-          facetArr.push(parameters["numberInjuredMax"] + ` > ?injuryDirectVal`);
+        facetArr.push(parameters["numberInjuredMax"] + ` > ?injuryDirectVal`);
       typedHazardQuery += `
           ?observationCollection sosa:hasMember ?injuryDirectValObj.
           #?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
           ?injuryDirectValObj sosa:observedProperty kwgr:impactObservableProperty.injuryDirect.
           ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
-  }
+    }
 
-  if (typedHazardQuery != ``){
-    typedHazardQuery += `
+    if (typedHazardQuery != ``) {
+      typedHazardQuery += `
       ?entity sosa:isFeatureOfInterestOf ?observationCollection.
     `;
+    }
+    return typedHazardQuery;
   }
-  return typedHazardQuery;
-}
 
   /**
    * Returns the body of the query meant to get all of the relevant (to the facets) hazards.
@@ -231,9 +231,9 @@ export class QueryService {
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-  getAllHazards(limit: number=20, offset=0) {
+  getAllHazards(limit: number = 20, offset = 0) {
     let query = `
-    SELECT DISTINCT * WHERE {`+this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString();
+    SELECT DISTINCT * WHERE {`+ this.getHazardsQueryBody() + `} LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString();
     let headers = this.getRequestHeaders('KE_01');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
@@ -246,8 +246,8 @@ export class QueryService {
    * @param offset The offset to start counting from
    * @returns The number of hazards found
    */
-  getHazardCount(limit: number=20, offset=0) {
-    let query=`SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getHazardsQueryBody()+`} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
+  getHazardCount(limit: number = 20, offset = 0) {
+    let query = `SELECT (COUNT(*) as ?COUNT) { SELECT DISTINCT ?entity {` + this.getHazardsQueryBody() + `} LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString() + '}';
     let headers = this.getRequestHeaders('KE_02');
     let body = this.getRequestBody(query);
     return this.http.post(this.endpoint, body, headers);
@@ -259,7 +259,7 @@ export class QueryService {
    * @param entities: An array of entity URI's
    * @return The properties of a hazard
    **/
-  getHazardProperties(entities: Array<string>, limit=20) {
+  getHazardProperties(entities: Array<string>, limit = 20) {
     let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt (group_concat(distinct ?type; separator = ",") as ?type) (group_concat(distinct ?typeLabel; separator = ",") as ?typeLabel) {
       values ?entity {${entities.join(' ')}}
       ?entity a ?type .
@@ -284,9 +284,9 @@ export class QueryService {
           ?entity geo:hasGeometry/geo:asWKT ?wkt.
       }
     } GROUP BY ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt LIMIT ${limit}`
-  let headers = this.getRequestHeaders('KE_03');
-  let body = this.getRequestBody(query);
-  return this.http.post(this.endpoint, body, headers);
+    let headers = this.getRequestHeaders('KE_03');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
   }
 
   /**
@@ -294,15 +294,15 @@ export class QueryService {
    * @return An array of zip codes
    */
   getZipCodes() {
-    return this.http.get('../assets/data/zipcode_cache.csv', {responseType: 'text'});
+    return this.http.get('../assets/data/zipcode_cache.csv', { responseType: 'text' });
   }
 
   /**
    * Retrieves all of the FIPS codes that are in the graph.
    * @return An array of FIPS codes
    */
-   getFIPSCodes() {
-    return this.http.get('../assets/data/fips_cache.csv', {responseType: 'text'});
+  getFIPSCodes() {
+    return this.http.get('../assets/data/fips_cache.csv', { responseType: 'text' });
   }
 
   /**
@@ -310,18 +310,18 @@ export class QueryService {
    *
    * @return An array of national weather zones
    */
-    getNWZones() {
-      return this.http.get('../assets/data/nwz_cache.csv', {responseType: 'text'});
-    }
+  getNWZones() {
+    return this.http.get('../assets/data/nwz_cache.csv', { responseType: 'text' });
+  }
 
-   /**
-     * Returns all of the administrative regions in the United States
-     *
-     * @return An array of administrative regions
-     */
-    getAdministrativeRegions() {
-      return this.http.get('../assets/data/admin_region_cache.csv', {responseType: 'text'});
-    }
+  /**
+    * Returns all of the administrative regions in the United States
+    *
+    * @return An array of administrative regions
+    */
+  getAdministrativeRegions() {
+    return this.http.get('../assets/data/admin_region_cache.csv', { responseType: 'text' });
+  }
 
   /**
    * Gets the minimum amount of query for finding places.
@@ -491,7 +491,7 @@ export class QueryService {
     }
 
     return { 'query': placeQuery, 'records': formattedResults };
-    
+
   }
 
   /**
@@ -657,7 +657,7 @@ export class QueryService {
    * @param expertiseTopics The strings of the expert topics
    * @returns A string of SPARQL without the SELECT predicate
    */
-   getPeopleQueryBody(expertiseTopics, keyword="") {
+  getPeopleQueryBody(expertiseTopics, keyword = "") {
     let expertiseTopicQuery = '';
     if (typeof expertiseTopics !== "undefined") {
       if (expertiseTopics.length > 0) {
@@ -666,11 +666,11 @@ export class QueryService {
     }
     let keyword_query = ``;
     if (keyword != "") {
-      keyword_query =`?search a elastic-index:kwg_fs_index;
+      keyword_query = `?search a elastic-index:kwg_fs_index;
       elastic:query "${keyword}";
       elastic:entities ?entity.
       ?entity elastic:score ?score.`;
-  }
+    }
 
     let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
     (group_concat(distinct ?expertise; separator = ", ") as ?expertise)
@@ -703,117 +703,117 @@ export class QueryService {
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-    getAllPeople(expertiseTopics: Array<string>, keywords="", limit: number=20, offset=0) {
-      let query = `SELECT * WHERE {`+this.getPeopleQueryBody(expertiseTopics, keywords)+`} LIMIT `+limit.toString()+`OFFSET`+offset.toString();
-      let headers = this.getRequestHeaders('KE_06');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+  getAllPeople(expertiseTopics: Array<string>, keywords = "", limit: number = 20, offset = 0) {
+    let query = `SELECT * WHERE {` + this.getPeopleQueryBody(expertiseTopics, keywords) + `} LIMIT ` + limit.toString() + `OFFSET` + offset.toString();
+    let headers = this.getRequestHeaders('KE_06');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Retrieves a list of all the sub-topics for a given list of topics.
-     *
-     * @param expertiseTopics An array of expert topics
-     * @returns An observable with the query results
-     */
-    getSubTopics(expertiseTopics: Array<string>) {
-      let query = `SELECT ?sub_topic WHERE {
+  /**
+   * Retrieves a list of all the sub-topics for a given list of topics.
+   *
+   * @param expertiseTopics An array of expert topics
+   * @returns An observable with the query results
+   */
+  getSubTopics(expertiseTopics: Array<string>) {
+    let query = `SELECT ?sub_topic WHERE {
         ?parent_topic kwg-ont:hasSubTopic ?sub_topic .
         values ?parent_topic {<` + expertiseTopics.join('> <') + `>}
       }`
-      let headers = this.getRequestHeaders('KE_16');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_16');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Gets the total number of people matching a facet selection
-     *
-     * @param expertiseTopics The expert topics that people might be experts in
-     * @param keywords Any keywords the user searched for
-     * @param limit The maximum number of results to retrieve
-     * @param offset The number of results to skip
-     * @return The number of results
-     */
-     getPeopleCount(expertiseTopics: Array<string> | undefined, keywords="", limit: number=20, offset: number=0) {
-      let query=`SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics, keywords) + `} LIMIT `+limit.toString()+` OFFSET `+offset.toString()+'}';
-      let headers = this.getRequestHeaders('KE_07');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+  /**
+   * Gets the total number of people matching a facet selection
+   *
+   * @param expertiseTopics The expert topics that people might be experts in
+   * @param keywords Any keywords the user searched for
+   * @param limit The maximum number of results to retrieve
+   * @param offset The number of results to skip
+   * @return The number of results
+   */
+  getPeopleCount(expertiseTopics: Array<string> | undefined, keywords = "", limit: number = 20, offset: number = 0) {
+    let query = `SELECT (COUNT(*) as ?COUNT)  { SELECT DISTINCT ?entity {` + this.getPeopleQueryBody(expertiseTopics, keywords) + `} LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString() + '}';
+    let headers = this.getRequestHeaders('KE_07');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Given a sparql query response, return an array of values
-     *
-     * @param response The HTTP web response
-     * @returns The results as an array in the bindings
-     */
-    getResults(response: any) {
-      return response['results']['bindings'];
-    }
+  /**
+   * Given a sparql query response, return an array of values
+   *
+   * @param response The HTTP web response
+   * @returns The results as an array in the bindings
+   */
+  getResults(response: any) {
+    return response['results']['bindings'];
+  }
 
-    /**
-     * Gets the highest level administrative region, the United States
-     *
-     * @return Information about the US
-     */
-    getTopLevelAdministrativeRegions() {
-      let query = `select ?country ?country_label where {
+  /**
+   * Gets the highest level administrative region, the United States
+   *
+   * @return Information about the US
+   */
+  getTopLevelAdministrativeRegions() {
+    let query = `select ?country ?country_label where {
         values ?country {kwgr:Earth.North_America.United_States.USA}
         ?country rdfs:label ?country_label .
       }`
-      let headers = this.getRequestHeaders('KE_08');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_08');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Gets the highest level administrative region
-     *
-     * @return The topmost administrative regions in the US
-     */
-     getStateAdministrativeRegions() {
-      let query = `SELECT DISTINCT ?state ?state_label where {
+  /**
+   * Gets the highest level administrative region
+   *
+   * @return The topmost administrative regions in the US
+   */
+  getStateAdministrativeRegions() {
+    let query = `SELECT DISTINCT ?state ?state_label where {
         ?state kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA .
     	?state a kwg-ont:AdministrativeRegion_2 .
         ?state rdfs:label ?state_label .
     } ORDER BY ?state_label`
-      let headers = this.getRequestHeaders('KE_09');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_09');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Gets the counties in an administrative region
-     *
-     * @param {String} stateURI The URI of the state whose counties are being queried
-     * @return All of the region's counties
-     */
-     getCountyAdministrativeRegions(stateURI: string) {
-      let query = `SELECT DISTINCT ?county_label ?county where {
-        ?county kwg-ont:sfWithin <`+stateURI+`> .
+  /**
+   * Gets the counties in an administrative region
+   *
+   * @param {String} stateURI The URI of the state whose counties are being queried
+   * @return All of the region's counties
+   */
+  getCountyAdministrativeRegions(stateURI: string) {
+    let query = `SELECT DISTINCT ?county_label ?county where {
+        ?county kwg-ont:sfWithin <`+ stateURI + `> .
     	  ?county a kwg-ont:AdministrativeRegion_3 .
         ?county rdfs:label ?county_label .
         } ORDER BY ?state_label`
-      let headers = this.getRequestHeaders('KE_10');
-      let body = this.getRequestBody(query);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_10');
+    let body = this.getRequestBody(query);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Returns all of the climate divisions in the United States
-     *
-     * @returns An array of climate divisions
-     */
-    getClimateDivisions() {
-      return this.http.get('../assets/data/climate_division_cache.csv', {responseType: 'text'});
-    }
+  /**
+   * Returns all of the climate divisions in the United States
+   *
+   * @returns An array of climate divisions
+   */
+  getClimateDivisions() {
+    return this.http.get('../assets/data/climate_division_cache.csv', { responseType: 'text' });
+  }
 
-    /**
-     * Gets the top level hazard classes.
-     */
-    getTopLevelHazards() {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
+  /**
+   * Gets the top level hazard classes.
+   */
+  getTopLevelHazards() {
+    let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
         ?hazard rdfs:subClassOf kwg-ont:Hazard .
         ?hazard rdfs:label ?hazard_label .
         OPTIONAL {
@@ -821,63 +821,63 @@ export class QueryService {
           FILTER (!isBlank(?child))
         }
         } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
-      let headers = this.getRequestHeaders('KE_11');
-      // Disable reasoning so that we only get the top level hazards
-      let body = this.getRequestBody(query, false);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_11');
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Gets all of the children of a particular hazard.
-     *
-     * @param hazardURI The parent hazard
-     * @returns All of the parent hazard's children
-     */
-    getHazardChildren(hazardURI: string) {
-      let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?child) as ?count) where {
-        ?hazard rdfs:subClassOf <`+hazardURI+`> .
+  /**
+   * Gets all of the children of a particular hazard.
+   *
+   * @param hazardURI The parent hazard
+   * @returns All of the parent hazard's children
+   */
+  getHazardChildren(hazardURI: string) {
+    let query = `SELECT DISTINCT ?hazard ?hazard_label (count(distinct ?child) as ?count) where {
+        ?hazard rdfs:subClassOf <`+ hazardURI + `> .
         ?hazard rdfs:label ?hazard_label .
         OPTIONAL {
           ?child rdfs:subClassOf ?hazard .
         }
       } GROUP BY ?hazard ?hazard_label ORDER BY ?hazard_label`
-      let headers = this.getRequestHeaders('KE_12');
-      // Disable reasoning so that we only get the top level hazards
-      let body = this.getRequestBody(query, false);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_12');
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Retrieves all of the GNIS subclasses
-     *
-     * @returns The subclasses of the major GNIS classes
-     */
-    getGNISClasses() {
-      let query = `SELECT DISTINCT ?place ?place_label {
+  /**
+   * Retrieves all of the GNIS subclasses
+   *
+   * @returns The subclasses of the major GNIS classes
+   */
+  getGNISClasses() {
+    let query = `SELECT DISTINCT ?place ?place_label {
         ?place rdfs:label ?place_label .
         values ?place { usgs:BuiltUpArea usgs:SurfaceWater usgs:Terrain }
       } ORDER BY ASC(?place_label)`
-      let headers = this.getRequestHeaders('KE_13');
-      // Disable reasoning so that we only get the top level hazards
-      let body = this.getRequestBody(query, false);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_13');
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
-    /**
-     * Gets all of the subclasses of a GNIS type
-     *
-     * @param gnisURI The URI of the subject whose children are in question
-     */
-    getGNISChildren(gnisURI: string) {
-      let query = `SELECT DISTINCT ?place ?gnis_label (count(distinct ?gnis) as ?count) where {
-        ?place rdfs:subClassOf <`+gnisURI+`> .
+  /**
+   * Gets all of the subclasses of a GNIS type
+   *
+   * @param gnisURI The URI of the subject whose children are in question
+   */
+  getGNISChildren(gnisURI: string) {
+    let query = `SELECT DISTINCT ?place ?gnis_label (count(distinct ?gnis) as ?count) where {
+        ?place rdfs:subClassOf <`+ gnisURI + `> .
         ?place rdfs:label ?gnis_label .
         } GROUP BY ?place ?gnis_label ORDER BY ?gnis_label`
-      let headers = this.getRequestHeaders('KE_14');
-      // Disable reasoning so that we only get the top level hazards
-      let body = this.getRequestBody(query, false);
-      return this.http.post(this.endpoint, body, headers);
-    }
+    let headers = this.getRequestHeaders('KE_14');
+    // Disable reasoning so that we only get the top level hazards
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
 
   /**
    * Gets all of the expert topics that aren't the child of any other (top level)
@@ -907,7 +907,7 @@ export class QueryService {
    */
   getExpertChildren(parent: string) {
     let query = `SELECT DISTINCT ?name ?sub_topic (COUNT(DISTINCT ?child) as ?count) where {
-      <`+parent+`> kwg-ont:hasSubTopic ?sub_topic .
+      <`+ parent + `> kwg-ont:hasSubTopic ?sub_topic .
       ?sub_topic rdfs:label ?name .
       OPTIONAL {
         ?sub_topic kwg-ont:hasSubTopic ?child .

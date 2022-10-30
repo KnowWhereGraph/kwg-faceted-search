@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
 
@@ -47,7 +47,7 @@ export class PlacesTableComponent implements OnInit {
   constructor(private queryService: QueryService) {
     // Initialize the places data to an empty array
     this.placesDataSource = new MatTableDataSource();
-   }
+  }
 
   /**
    * When ready, initialize the data source and get the search results.
@@ -59,26 +59,26 @@ export class PlacesTableComponent implements OnInit {
     this.resultsCountEvent.emit(this.totalSize);
   }
 
-   /**
-   * Once the view has been initialized, catch any events on the paginator
-   * to update the table.
-   */
+  /**
+  * Once the view has been initialized, catch any events on the paginator
+  * to update the table.
+  */
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex*this.pageSize;
+      let offset = event.pageIndex * this.pageSize;
       this.populateTable(offset);
     });
   }
 
-    /**
-   * Called when users make facet selections
-   *
-   * @param changes The change event
-   */
-     ngOnChanges(changes: SimpleChanges) {
-      this.populateTable();
-    }
+  /**
+ * Called when users make facet selections
+ *
+ * @param changes The change event
+ */
+  ngOnChanges(changes: SimpleChanges) {
+    this.populateTable();
+  }
 
   /**
    * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
@@ -86,36 +86,36 @@ export class PlacesTableComponent implements OnInit {
    * @param offset The query offset
    * @param count The number of results to retrieve
    */
-   populateTable(offset:number=0, count: number=20) {
+  populateTable(offset: number = 0, count: number = 20) {
     this.searchQueryStartedEvent.emit();
     this.places = [];
     this.placesDataSource = new MatTableDataSource(this.places);
     // A map of a place's URI to its properties that are retrieved from the database
     this.queryService.getPlaces(this.placesFacets, count, offset).then((results: any) => {
-        this.places = [];
-        this.locations = [];
-        results.records.forEach(result => {
-          this.places.push({
-            "name": result["place_name"],
-            "nameUri": result["place"],
-            "type": result["place_type_name"],
-            "typeUri": result["place_type"],
-          });
-          if (result['wkt']){
-            this.locations.push(result['wkt']['value']);
-          }
+      this.places = [];
+      this.locations = [];
+      results.records.forEach(result => {
+        this.places.push({
+          "name": result["place_name"],
+          "nameUri": result["place"],
+          "type": result["place_type_name"],
+          "typeUri": result["place_type"],
         });
-        this.placesDataSource = new MatTableDataSource(this.places);
-        this.queryService.query(`select (count(*) as ?count) { ` + results.query +  'LIMIT ' + count * 10 + ` }`).then((res) => {
-          this.totalSize = res.results.bindings[0].count.value;
-          // Update the number of results
-          this.resultsCountEvent.emit(this.totalSize);
-          this.searchQueryFinishedEvent.emit(true);
-        })
-        this.locationEvent.emit(this.locations);
+        if (result['wkt']) {
+          this.locations.push(result['wkt']['value']);
+        }
       });
-    }
+      this.placesDataSource = new MatTableDataSource(this.places);
+      this.queryService.query(`select (count(*) as ?count) { ` + results.query + 'LIMIT ' + count * 10 + ` }`).then((res) => {
+        this.totalSize = res.results.bindings[0].count.value;
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+      })
+      this.locationEvent.emit(this.locations);
+    });
   }
+}
 /**
  * Prototype for a row in the table; represents a Place.
  */

@@ -29,7 +29,7 @@ export class SearchComponent implements OnInit {
    * test for communication between facetComponent and searchComponent
    */
   searchFacets = {};
-  changeFacets(selectedFacets: object){
+  changeFacets(selectedFacets: object) {
     this.searchFacets = selectedFacets;
   }
 
@@ -90,7 +90,7 @@ export class SearchComponent implements OnInit {
     this.isSearching = true;
 
     let clickedTabName = "place";
-    switch (clickedIndex){
+    switch (clickedIndex) {
       case 0:
         clickedTabName = "place";
         break
@@ -111,8 +111,8 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab');
-    
-    switch (tab){
+
+    switch (tab) {
       case "place":
         this.selectedTabIndex = Number(0);
         break;
@@ -137,7 +137,7 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getPlaceLocationEvent (values){
+  getPlaceLocationEvent(values) {
     this.returnedLocations = values;
   }
 
@@ -146,7 +146,7 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getHazardLocationEvent(values){
+  getHazardLocationEvent(values) {
     this.returnedLocations = values;
   }
 
@@ -155,7 +155,7 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getPeopleLocationEvent(values){
+  getPeopleLocationEvent(values) {
     this.returnedLocations = values;
   }
 }

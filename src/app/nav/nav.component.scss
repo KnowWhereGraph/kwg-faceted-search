@@ -1,8 +1,10 @@
 @import "../../variables.scss";
 
 .nav {
-  margin-bottom: 0;;
+  margin-bottom: 0;
+  ;
 }
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -267,7 +269,7 @@
         margin-bottom: 0;
       }
 
-      .nav-item .item:hover{
+      .nav-item .item:hover {
         color: #2FB9CF;
         padding-bottom: 7.5px;
         border-bottom: solid 2px;
