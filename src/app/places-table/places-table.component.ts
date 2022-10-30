@@ -36,6 +36,8 @@ export class PlacesTableComponent implements OnInit {
   // Event that sends the locations of results from a query to the parent component
   locations: Array<string> = [];
   @Output() locationEvent = new EventEmitter();
+  // Event that notifies the parent component that a query has started
+  @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
 
   /**
    * Creates a new table for the place results.
@@ -53,6 +55,8 @@ export class PlacesTableComponent implements OnInit {
   ngOnInit(): void {
     this.placesDataSource = new MatTableDataSource(this.places);
     this.populateTable();
+    this.totalSize = 0;
+    this.resultsCountEvent.emit(this.totalSize);
   }
 
    /**
@@ -83,6 +87,9 @@ export class PlacesTableComponent implements OnInit {
    * @param count The number of results to retrieve
    */
    populateTable(offset:number=0, count: number=20) {
+    this.searchQueryStartedEvent.emit();
+    this.places = [];
+    this.placesDataSource = new MatTableDataSource(this.places);
     // A map of a place's URI to its properties that are retrieved from the database
     this.queryService.getPlaces(this.placesFacets, count, offset).then((results: any) => {
         this.places = [];
@@ -98,11 +105,13 @@ export class PlacesTableComponent implements OnInit {
             this.locations.push(result['wkt']['value']);
           }
         });
-        this.totalSize = results.count;
-        // Update the number of results
-        this.resultsCountEvent.emit(this.totalSize);
         this.placesDataSource = new MatTableDataSource(this.places);
-        this.searchQueryFinishedEvent.emit(true);
+        this.queryService.query(`select (count(*) as ?count) { ` + results.query +  'LIMIT ' + count * 10 + ` }`).then((res) => {
+          this.totalSize = res.results.bindings[0].count.value;
+          // Update the number of results
+          this.resultsCountEvent.emit(this.totalSize);
+          this.searchQueryFinishedEvent.emit(true);
+        })
         this.locationEvent.emit(this.locations);
       });
     }

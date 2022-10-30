@@ -31,8 +31,12 @@ export class FacetsComponent implements OnInit {
   floatLabelControl = new FormControl('auto');
   // The selected facets
   selectedExpertFacets: Array<any> = [];
-  // The selected place facets from the tree
+  // The selected place (GNIS) facets
   selectedFeatureTypeFacet: Array<any> = [];
+  // The selected location facets (dynamic dropdown list)
+  selectedLocationFacets: Array<any> = [];
+  // The selected hazard classes
+  selectedHazardFacets: Array<any> = [];
   // The current tab that the user selected. This is used to decide which facets to show
   @Input() selectedTabIndex = 0;
   // The keyword that the user put in the search bar
@@ -54,7 +58,7 @@ export class FacetsComponent implements OnInit {
   // Dict of the nwz records of label -> URI
   nationalWeatherZoneRecords: Map<string, string> = new Map();
   // The FIPS code that the user has entered
-  fipsCode: string = '';
+  fipsCode: string|undefined = '';
   // A dict of admin regions label -> URI
   fipsCodeRecords: Map<string, string> = new Map();
   // Container that holds all of the admin regions that are shown on the UI
@@ -68,9 +72,9 @@ export class FacetsComponent implements OnInit {
   // Container for all of the experts in the dropdown facet
   expertClassesDisplay: Array<{ name: string, hasChildren: boolean, uri: string }> = [];
   // The start date of the search
-  startDate: string = "";
+  startDate: string|undefined = undefined;
   // The end date of the search
-  endDate: string = "";
+  endDate: string|undefined = undefined;
   // Flag set when the MTBFire observation collections should be shown
   showMTBFireOC: boolean = false;
   // Flag set when the Earthquake observation collections should be shown
@@ -84,9 +88,24 @@ export class FacetsComponent implements OnInit {
   // Holds all of the National Weather Zones used in autocompletion
   fipsCodes: Array<string> = [];
   // Holds all of the climate divisions used in autocompletion
-  climateDivisions: Array<string> = []
+  climateDivisions: Array<string> = [];
   // Holds all of the administrative regions used in autocompletion
-  adminRegions: Array<string> = []
+  adminRegions: Array<string> = [];
+  // The different observation collection values
+  magnitudeMin: number|undefined = undefined;
+  magnitudeMax: number|undefined = undefined;
+  quakeDepthMax: number|undefined = undefined;
+  quakeDepthMin: number|undefined = undefined;
+  acresBurnedMin: number|undefined = undefined;
+  acresBurnedMax: number|undefined = undefined;
+  meanDnbrMin: number|undefined = undefined;
+  meanDnbrMax: number|undefined = undefined;
+  sDMeanDnbrMin: number|undefined = undefined;
+  sDMeanDnbrMax: number|undefined = undefined;
+  numberDeathsMin: number|undefined = undefined;
+  numberDeathsMax: number|undefined = undefined;
+  numberInjuredMin: number|undefined = undefined;
+  numberInjuredMax: number|undefined = undefined;
 
   // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked by
   // doing nothing with the action
@@ -154,6 +173,44 @@ export class FacetsComponent implements OnInit {
   ngOnInit(): void {
     this.populateDynamicFacets();
     this.fetchTypeaheadData();
+  }
+
+  /**
+   * Clears the facets. This should be called when the user switches tabs so that certain facet values don't
+   * carry over to the next tab sesison.
+   */
+  clearFacets(): void {
+    this.selectedExpertFacets = [];
+    this.selectedFeatureTypeFacet = [];
+    this.selectedLocationFacets = [];
+    this.selectedHazardFacets;
+    this.keyword = '';
+    this.adminRegion = '';
+    this.zipCode = '';
+    this.climateDivision = '';
+    this.nationalWeatherZone = '';
+    this.fipsCode = undefined;
+    this.startDate = undefined;
+    this.endDate = undefined;
+    this.showMTBFireOC = false;
+    this.showEarthquakeOC = false;
+    this.showNOAAOC = false;
+    this.magnitudeMin = undefined;
+    this.magnitudeMax = undefined;
+    this.quakeDepthMax = undefined;
+    this.quakeDepthMin = undefined;
+    this.acresBurnedMin = undefined;
+    this.acresBurnedMax = undefined;
+    this.meanDnbrMin = undefined;
+    this.meanDnbrMax = undefined;
+    this.sDMeanDnbrMin = undefined;
+    this.sDMeanDnbrMax = undefined;
+    this.numberDeathsMin = undefined;
+    this.numberDeathsMax = undefined;
+    this.numberInjuredMin = undefined;
+    this.numberInjuredMax = undefined;
+  
+    this.updateFacetSelections();
   }
 
   /**
@@ -264,6 +321,17 @@ export class FacetsComponent implements OnInit {
     }
 
     if (event && event.node && event.node.data) {
+      let selectedNodes = Object.entries(event.treeModel.selectedLeafNodeIds)
+      .filter(([key, value]) => {
+        return (value === true);
+      }).map((id) => {
+        let node = event.treeModel.getNodeById(id[0]);
+      return node;
+    });
+      let selectedHazards: Array<string> = selectedNodes.map((node) => {
+        return node.data.uri;
+      });
+      this.selectedHazardFacets = selectedHazards;
       if (event.node.data.name == 'MTBS Fire') {
         this.showMTBFireOC = selected(event.eventName)? true: false;
       } else if (event.node.data.name == 'Earthquake') {
@@ -271,7 +339,8 @@ export class FacetsComponent implements OnInit {
       } else if (event.node.data.name == 'NOAA Hurricane Event') {
         this.showNOAAOC = selected(event.eventName)? true: false;
       }
-      this.updateUrlParams();
+      this.updateFacetSelections();
+      //this.updateUrlParams();
     }
   }
 
@@ -284,13 +353,7 @@ export class FacetsComponent implements OnInit {
    */
   facetChanged(event: any=undefined) {
     if (event) {
-      if (event instanceof KeyboardEvent || event instanceof PointerEvent) {
-        // The user pressed enter or clicked 'Search'
-        this.updateUrlParams();
-        this.updateFacetSelections();
-      } else if (event.eventName == 'select' || event.eventName == 'deselect') {
-        // The user clicked a checkbox on a facet
-        this.updateUrlParams();
+      if (event.eventName == 'select' || event.eventName == 'deselect') {
         let selected = Object.entries(event.treeModel.selectedLeafNodeIds)
           .filter(([key, value]) => {
             return (value === true);
@@ -298,13 +361,23 @@ export class FacetsComponent implements OnInit {
             let node = event.treeModel.getNodeById(id[0]);
           return node;
         });
+        // Check to see if the facet was dynamically populated. If it was, save the URI
         if (event.treeModel.options.options.idField === "GNIS") {
+          // A GNIS place type was selected
           this.selectedFeatureTypeFacet = selected;
+        } else if (event.treeModel.options.options.idField === "Admin") {
+          // An administrative region was selected
+          let selectedPlaces: Array<string> = selected.map((node) => {
+            return node.data.uri;
+          });
+          this.selectedLocationFacets = selectedPlaces;
         } else if (event.treeModel.options.options.idField === "Expert") {
+          // An expertise was selected
           this.selectedExpertFacets = selected;
         }
-        this.updateFacetSelections();
       }
+      //this.updateUrlParams();
+      this.updateFacetSelections();
     }
   }
 
@@ -312,30 +385,56 @@ export class FacetsComponent implements OnInit {
    * The function to retrieve the selected facets and send them to the parent component SearchComponent.
    */
   updateFacetSelections() {
-    let selectedFacets = {'keyword': this.keyword};
-    if (this.selectedTabIndex == 0 || this.selectedTabIndex == 1) {
-      selectedFacets['adminRegion'] = this.adminRegionRecords.get(this.adminRegion);
-      selectedFacets['climateDivision'] = this.climateDivsionRecords.get(this.climateDivision);
-      selectedFacets['zipCode'] = this.zipCodeRecords.get(this.zipCode);
-      selectedFacets['fipsCode'] = this.fipsCodeRecords.get(this.fipsCode);
-      selectedFacets['nationalWeatherZone'] = this.nationalWeatherZoneRecords.get(this.nationalWeatherZone);
+    // Select the URI of the GNIS types
+    let gnisURIS: Array<string> = new Array();
+    this.selectedFeatureTypeFacet.forEach((gnisType) => {
+      gnisURIS.push(gnisType.data.uri);
+    })
+    let startDate: string|undefined = undefined;
+    if (this.startDate) {
+      startDate = new Date(this.startDate).toISOString()
     }
-    if (this.selectedTabIndex == 1) {
-      selectedFacets['hazardStart'] = undefined;
-      selectedFacets['hazardEnd'] = undefined;
-      selectedFacets['hazardTypes'] = this.hazardClassesDisplay;
+    let endDate: string| undefined = undefined;
+    if (this.endDate) {
+      endDate = new Date(this.endDate).toISOString()
+    }
 
-            // Select the URI of the GNIS types
-            let gnisURIS: Array<string> = new Array();
-            this.selectedFeatureTypeFacet.forEach((gnisType) => {
-              gnisURIS.push(gnisType.data.uri);
-            })
-            selectedFacets['gnisType'] = gnisURIS;
+    const getVal = (container, key) => {
+      if (key === undefined) {
+        return key;
+      } else {
+        return container.get(key);
+      }
     }
-    else if (this.selectedTabIndex == 2)
-    {
-      selectedFacets['expertiseTopics'] = this.selectedExpertFacets;
-    }
+
+    let selectedFacets = {
+      'keyword': this.keyword,
+      'climateDivision': this.climateDivsionRecords.get(this.climateDivision),
+      'zipCode': getVal(this.zipCodeRecords, this.zipCode),
+      'fipsCode': getVal(this.fipsCodeRecords, this.fipsCode),
+      'nationalWeatherZone': this.nationalWeatherZoneRecords.get(this.nationalWeatherZone),
+      'gnisType': gnisURIS,
+      'adminRegion': this.adminRegionRecords.get(this.adminRegion),
+      'hazardTypes': this.selectedHazardFacets,
+      'location': this.selectedLocationFacets,
+      'expertiseTopics': this.selectedExpertFacets,
+      'startDate': startDate,
+      'endDate': endDate,
+      'magnitudeMin': this.magnitudeMin,
+      'magnitudeMax': this.magnitudeMax,
+      'quakeDepthMax': this.quakeDepthMax,
+      'quakeDepthMin': this.quakeDepthMin,
+      'acresBurnedMin': this.acresBurnedMin,
+      'acresBurnedMax': this.acresBurnedMax,
+      'meanDnbrMin': this.meanDnbrMin,
+      'meanDnbrMax': this.meanDnbrMax,
+      'sDMeanDnbrMin': this.sDMeanDnbrMin,
+      'sDMeanDnbrMax': this.sDMeanDnbrMax,
+      'numberDeathsMin': this.numberDeathsMin,
+      'numberDeathsMax': this.numberDeathsMax,
+      'numberInjuredMin': this.numberInjuredMin,
+      'numberInjuredMax': this.numberInjuredMax
+    };
     this.facetChangedEvent.emit(selectedFacets);
   }
 
@@ -513,7 +612,8 @@ export class FacetsComponent implements OnInit {
           this.administrativeRegionsDisplay = [{
             name: element['country_label']['value'],
             hasChildren: true,
-            level: "country"
+            level: "country",
+            uri: element['country']['value']
           }];
         })
       }
@@ -568,6 +668,7 @@ export class FacetsComponent implements OnInit {
               states.push({
                 name: element['county_label']['value'],
                 hasChildren: false,
+                uri: element['county']['value']
               });
             })
             resolve(states);

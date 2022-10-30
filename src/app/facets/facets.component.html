@@ -106,66 +106,66 @@
     <section class="conditional-facets" *ngIf="showEarthquakeOC == true">
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (min)</span>
-        <input class="facet-input" type="number" ng-model="hazardFacetMagnitudeMin" min="0"
+        <input class="facet-input" type="number" [(ngModel)]="magnitudeMin" min="0"
           placeholder="Enter minimum magnitude..." (keyup.enter)="facetChanged($event)">
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (max)</span>
-        <input class="facet-input" type="number" max="8" placeholder="Enter maximum magnitude..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" max="8" placeholder="Enter maximum magnitude..." (keyup.enter)="facetChanged($event)" [(ngModel)]="magnitudeMax">
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Depth (min)</span>
-        <input class="facet-input" type="number" placeholder="Enter minimum depth..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" placeholder="Enter minimum depth..." (keyup.enter)="facetChanged($event)" [(ngModel)]="quakeDepthMin">
       </div>
 
       <div class="facet">
         <span class="search-header">Earthquake: Depth (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum depth..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" placeholder="Enter maximum depth..." (keyup.enter)="facetChanged($event)" [(ngModel)]="quakeDepthMax">
       </div>
     </section>
     <section class="conditional-facets" *ngIf="showMTBFireOC == true">
       <!-- Fire Cause -->
       <div class="facet">
         <span class="search-header">MTBS Fire: Number of Acres Burned (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum acres burned ..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum acres burned ..." (keyup.enter)="facetChanged($event)" [(ngModel)]="acresBurnedMin">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Number of Acres Burned (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum acres burned ..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="0" placeholder="Enter maximum acres burned ..." (keyup.enter)="facetChanged($event)" [(ngModel)]="acresBurnedMax">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum mean dNBR.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum mean dNBR.." (keyup.enter)="facetChanged($event)" [(ngModel)]="meanDnbrMin">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum mean dNBR.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum mean dNBR.." (keyup.enter)="facetChanged($event)" [(ngModel)]="meanDnbrMax">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)" [(ngModel)]="sDMeanDnbrMin">
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)" [(ngModel)]="sDMeanDnbrMax">
       </div>
     </section>
     <section class="conditional-facets" *ngIf="showNOAAOC == true">
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Deaths (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct deaths.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct deaths.." (keyup.enter)="facetChanged($event)" [(ngModel)]="numberDeathsMin">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Deaths (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum direct deaths.." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" placeholder="Enter maximum direct deaths.." (keyup.enter)="facetChanged($event)" [(ngModel)]="numberDeathsMax">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct injured number..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct injured number..." (keyup.enter)="facetChanged($event)" [(ngModel)]="numberInjuredMin">
       </div>
       <div class="facet">
         <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum direct injured number..." (keyup.enter)="facetChanged($event)">
+        <input class="facet-input" type="number" min="0" placeholder="Enter maximum direct injured number..." (keyup.enter)="facetChanged($event)" [(ngModel)]="numberInjuredMax">
       </div>
     </section>
   </div>

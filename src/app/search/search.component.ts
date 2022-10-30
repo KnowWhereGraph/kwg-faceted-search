@@ -73,6 +73,14 @@ export class SearchComponent implements OnInit {
   }
 
   /**
+   * Event handler to set the searching state
+   * 
+   */
+  searchQueryStarted() {
+    this.isSearching = true;
+  }
+
+  /**
    * Event handler that gets triggered by a child component when a main
    * search query finishes
    */
@@ -104,13 +112,6 @@ export class SearchComponent implements OnInit {
         clickedTabName = "people";
     }
     const queryParams = { tab: clickedTabName };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: queryParams,
-        queryParamsHandling: 'merge',
-      });
 
   }
 
@@ -121,6 +122,7 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab');
+    
     switch (tab){
       case "place":
         this.selectedTabIndex = Number(0);

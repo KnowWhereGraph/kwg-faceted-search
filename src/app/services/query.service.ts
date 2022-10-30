@@ -98,6 +98,116 @@ export class QueryService {
   }
 
   /**
+   * Creates a SPARQL query based on the observation collections that a user may have entered
+   * 
+   * @param parameters The user's facets
+   * @returns A string of SPARQL for querying the observation collections
+   */
+  getObsCollectionQuery(parameters) {
+  let typedHazardQuery = ``;
+  if ((parameters["magnitudeMin"] && parameters["magnitudeMin"] != "") || (parameters["magnitudeMax"] && parameters["magnitudeMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["magnitudeMin"] && parameters["magnitudeMin"] != "")
+          facetArr.push(`xsd:decimal(STR(?magnitude)) > ` + parameters["magnitudeMin"]);
+      if (parameters["magnitudeMax"] && parameters["magnitudeMax"] != "")
+          facetArr.push(parameters["magnitudeMax"] + ` > xsd:decimal(STR(?magnitude))`);
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?magnitudeObj.
+          ?magnitudeObj sosa:observedProperty kwgr:EarthquakeObservableProperty.mag.
+          ?magnitudeObj sosa:hasSimpleResult ?magnitude FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["quakeDepthMin"] && parameters["quakeDepthMin"] != "") || (parameters["quakeDepthMax"] && parameters["quakeDepthMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["quakeDepthMin"] && parameters["quakeDepthMin"] != "")
+          facetArr.push(`xsd:decimal(STR(?quakeDepth)) > ` + parameters["quakeDepthMin"]);
+      if (parameters["quakeDepthMax"] && parameters["quakeDepthMax"] != "")
+          facetArr.push(parameters["quakeDepthMax"] + ` > xsd:decimal(STR(?quakeDepth))`);
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?quakeDepthObj.
+          ?quakeDepthObj sosa:observedProperty kwgr:EarthquakeObservableProperty.depth.
+          ?quakeDepthObj sosa:hasSimpleResult ?quakeDepth FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["acresBurnedMin"] && parameters["acresBurnedMin"] != "") || (parameters["acresBurnedMax"] && parameters["acresBurnedMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["acresBurnedMin"] && parameters["acresBurnedMin"] != "")
+          facetArr.push(`?numAcresBurned > ` + parameters["acresBurnedMin"]);
+      if (parameters["acresBurnedMax"] && parameters["acresBurnedMax"] != "")
+          facetArr.push(parameters["acresBurnedMax"] + ` > ?numAcresBurned`);
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?numAcresBurnedObj.
+          #?numAcresBurnedObj rdfs:label ?numAcresBurnedObjLabel.
+          ?numAcresBurnedObj sosa:observedProperty kwgr:mtbsFireObservableProperty.NumberOfAcresBurned.
+          ?numAcresBurnedObj sosa:hasSimpleResult ?numAcresBurned FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["meanDnbrMin"] && parameters["meanDnbrMin"] != "") || (parameters["meanDnbrMax"] && parameters["meanDnbrMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["meanDnbrMin"] && parameters["meanDnbrMin"] != "") {
+          facetArr.push(`?meanVal > ` + parameters["meanDnbrMin"]);
+      }
+      if (parameters["meanDnbrMax"]  && parameters["meanDnbrMax"] != "") {
+          facetArr.push(parameters["meanDnbrMax"] + ` > ?meanVal`);
+      }
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?meanValObj.
+          #?meanValObj rdfs:label ?meanValObjLabel.
+          ?meanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.MeandNBRValue.
+          ?meanValObj sosa:hasSimpleResult ?meanVal FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["sDMeanDnbrMin"] && parameters["sDMeanDnbrMin"] != "") || (parameters["sDMeanDnbrMax"] && parameters["sDMeanDnbrMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["sDMeanDnbrMin"] && parameters["sDMeanDnbrMin"] != "") {
+          facetArr.push(`?stanDevMeanVal > ` + parameters["sDMeanDnbrMin"]);
+      }
+      if (parameters["sDMeanDnbrMax"] && parameters["sDMeanDnbrMax"] != "") {
+          facetArr.push(parameters["sDMeanDnbrMax"] + ` > ?stanDevMeanVal`);
+      }
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?stanDevMeanValObj.
+          #?stanDevMeanValObj rdfs:label ?stanDevMeanValObjLabel.
+          ?stanDevMeanValObj sosa:observedProperty kwgr:mtbsFireObservableProperty.StandardDeviationOfMeandNBRValue.
+          ?stanDevMeanValObj sosa:hasSimpleResult ?stanDevMeanVal FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") || (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "")) {
+    let facetArr: Array<string> = [];
+    if (parameters["numberDeathsMin"] && parameters["numberDeathsMin"] != "") {
+      facetArr.push(`?deathDirectVal > ` + parameters["numberDeathsMin"]);
+    }
+    if (parameters["numberDeathsMax"] && parameters["numberDeathsMax"] != "") {
+      facetArr.push(parameters["numberDeathsMax"] + ` > ?deathDirectVal`);
+    }
+    typedHazardQuery += `
+      ?observationCollection sosa:hasMember ?deathDirectValObj.
+      ?deathDirectValObj sosa:observedProperty kwgr:impactObservableProperty.deathDirect.
+      ?deathDirectValObj sosa:hasSimpleResult ?deathDirectVal FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if ((parameters["numberInjuredMin"] && parameters["numberInjuredMin"] != "") || (parameters["numberInjuredMax"] && parameters["numberInjuredMax"] != "")) {
+      let facetArr: Array<string> = [];
+      if (parameters["numberInjuredMin"] && parameters["numberInjuredMin"] != "")
+          facetArr.push(`?injuryDirectVal > ` + parameters["numberInjuredMin"]);
+      if (parameters["numberInjuredMax"] && parameters["numberInjuredMax"] != "")
+          facetArr.push(parameters["numberInjuredMax"] + ` > ?injuryDirectVal`);
+      typedHazardQuery += `
+          ?observationCollection sosa:hasMember ?injuryDirectValObj.
+          #?injuryDirectValObj rdfs:label ?injuryDirectValObjLabel.
+          ?injuryDirectValObj sosa:observedProperty kwgr:impactObservableProperty.injuryDirect.
+          ?injuryDirectValObj sosa:hasSimpleResult ?injuryDirectVal FILTER (` + facetArr.join(' && ') + `).`;
+  }
+
+  if (typedHazardQuery != ``){
+    typedHazardQuery += `
+      ?entity sosa:isFeatureOfInterestOf ?observationCollection.
+    `;
+  }
+  return typedHazardQuery;
+}
+
+  /**
    * Returns the body of the query meant to get all of the relevant (to the facets) hazards.
    * This is used to populate the data table
    *
@@ -149,7 +259,7 @@ export class QueryService {
    * @param entities: An array of entity URI's
    * @return The properties of a hazard
    **/
-  getHazardProperties(entities: Array<string>) {
+  getHazardProperties(entities: Array<string>, limit=20) {
     let query = `SELECT DISTINCT ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt (group_concat(distinct ?type; separator = ",") as ?type) (group_concat(distinct ?typeLabel; separator = ",") as ?typeLabel) {
       values ?entity {${entities.join(' ')}}
       ?entity a ?type .
@@ -173,7 +283,7 @@ export class QueryService {
       {
           ?entity geo:hasGeometry/geo:asWKT ?wkt.
       }
-    } GROUP BY ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt`
+    } GROUP BY ?entity ?place ?placeLabel ?placeQuantName ?time ?startTimeLabel ?endTimeLabel ?wkt LIMIT ${limit}`
   let headers = this.getRequestHeaders('KE_03');
   let body = this.getRequestBody(query);
   return this.http.post(this.endpoint, body, headers);
@@ -380,17 +490,18 @@ export class QueryService {
       formattedResults[i]['wkt'] = wktResults[formattedResults[i]['place']];
     }
 
-    let countResults = await this.query(`select (count(*) as ?count) { ` + placeQuery + ` LIMIT ` + limit + `}`);
-    return { 'count': countResults.results.bindings[0].count.value, 'records': formattedResults };
+    return { 'query': placeQuery, 'records': formattedResults };
+    
   }
 
   /**
+   * Gets the search results for hazards
    *
-   * @param hazardFacets
-   * @param pageNum
-   * @param recordNum
+   * @param hazardFacets A dictionary of facets and their values
+   * @param limit The maximum number of records to fetch
+   * @param offset The offset at which to start fetching results from
    */
-  async getHazardSearchResults(hazardFacets, pageNum, recordNum) {
+  async getHazardSearchResults(hazardFacets, limit, offset) {
     let formattedResults: any = [];
 
     let hazardQuery = `select distinct ?entity ?label ?wkt {`;
@@ -407,20 +518,20 @@ export class QueryService {
     let typeQuery = ``;
     if (hazardFacets["hazardTypes"] && hazardFacets["hazardTypes"].length > 0) {
       // Put brackets around each URI
-      let typeURIS = hazardFacets["hazardTypes"].map((uri) => `<${uri}>`).join(" ");
-      typeQuery += `filter (?type in (${typeURIS})`;
+      let typeURIS = hazardFacets["hazardTypes"].map((hazard) => `<${hazard}>`).join(", ");
+      typeQuery += `filter (?type in (${typeURIS}))`;
     }
 
     //These filters handle search by place type (regions, zipcode, fips, nwz, uscd)
     let placeEntities: Array<string> = new Array();
-    if (hazardFacets["adminRegion"] && hazardFacets["adminRegion"].length > 0) {
-      placeEntities = hazardFacets["facetRegions"];
+    if (hazardFacets["location"] && hazardFacets["location"].length > 0) {
+      placeEntities = hazardFacets["location"];
     }
     if (hazardFacets['zipCode'] && hazardFacets['zipCode'] != "") {
       placeEntities.push(hazardFacets['zipCode']);
     }
     if (hazardFacets['fipsCode'] && hazardFacets['fipsCode'] != "") {
-      placeEntities.push(hazardFacets['zipCode']);
+      placeEntities.push(hazardFacets['fipsCode']);
     }
     if (hazardFacets["climateDivision"] && hazardFacets["climateDivision"] != "") {
       placeEntities.push();
@@ -446,33 +557,35 @@ export class QueryService {
             values ?gnisPlaceType {${gnisTypeArray}}
         `;
       if (placeEntities.length > 0) {
+        let placeEntitiesConnected = placeEntities.map((uri) => `<${uri}>`).join(" ");
         placeSearchQuery += `
                 ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
-                values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+                values ?placesConnectedToS2 { ${placeEntitiesConnected} }
                 ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
             `;
       }
     }
     else if (placeEntities.length > 0) {
+      let placeEntitiesConnected = placeEntities.map((uri) => `<${uri}>`).join(" ");
       placeSearchQuery += `
             ?entity kwg-ont:spatialRelation ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
-            values ?placesConnectedToS2 {kwgr:` + placeEntities.join(' kwgr:') + `}
+            values ?placesConnectedToS2 { ${placeEntitiesConnected} }
             ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
         `;
     }
 
     //Filter by the date hazard occurred
     let dateQuery = '';
-    if ((hazardFacets["hazardStart"] && hazardFacets["hazardStart"] != "") || (hazardFacets["hazardEnd"] && hazardFacets["hazardEnd"] != "")) {
+    if ((hazardFacets["startDate"] && hazardFacets["startDate"] != "") || (hazardFacets["endDate"] && hazardFacets["endDate"] != "")) {
       let dateArr: Array<string> = new Array();
-      if (hazardFacets["hazardStart"] != "") {
-        dateArr.push(`(?startTimeLabel > "` + hazardFacets["hazardStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?startTimeLabel > "` + hazardFacets["hazardStart"] + `"^^xsd:date)`);
-        dateArr.push(`(?endTimeLabel > "` + hazardFacets["hazardStart"] + `T00:00:00+00:00"^^xsd:dateTime || ?endTimeLabel > "` + hazardFacets["hazardStart"] + `"^^xsd:date)`);
+      if (hazardFacets["startDate"] && hazardFacets["startDate"] != "") {
+        dateArr.push(`(?startTimeLabel > "` + hazardFacets["startDate"] + `"^^xsd:dateTime || ?startTimeLabel > "` + hazardFacets["startDate"] + `"^^xsd:date)`);
+        dateArr.push(`(?endTimeLabel > "` + hazardFacets["startDate"] + `"^^xsd:dateTime || ?endTimeLabel > "` + hazardFacets["startDate"] + `"^^xsd:date)`);
       }
-      if (hazardFacets["hazardEnd"] && hazardFacets["hazardEnd"] != "") {
-        dateArr.push(`("` + hazardFacets["hazardEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?startTimeLabel || "` + hazardFacets["hazardEnd"] + `"^^xsd:date > ?startTimeLabel)`);
-        dateArr.push(`("` + hazardFacets["hazardEnd"] + `T00:00:00+00:00"^^xsd:dateTime > ?endTimeLabel || "` + hazardFacets["hazardEnd"] + `"^^xsd:date > ?endTimeLabel)`);
+      if (hazardFacets["endDate"] && hazardFacets["endDate"] != "") {
+        dateArr.push(`("` + hazardFacets["endDate"] + `"^^xsd:dateTime > ?startTimeLabel || "` + hazardFacets["endDate"] + `"^^xsd:date > ?startTimeLabel)`);
+        dateArr.push(`("` + hazardFacets["endDate"] + `"^^xsd:dateTime > ?endTimeLabel || "` + hazardFacets["endDate"] + `"^^xsd:date > ?endTimeLabel)`);
       }
       dateQuery = `
             ?observationCollection sosa:phenomenonTime ?time.
@@ -505,20 +618,19 @@ export class QueryService {
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
-
+        ${this.getObsCollectionQuery(hazardFacets)}
         ${spatialSearchQuery}
     }`;
-    //${this.getHazardSearchResults(hazardFacets, pageNum, recordNum)}
 
     // If the user is searching for a hazard by keyword, sort them by the most relevant first
-    if (hazardFacets["keyword"] != "") {
+    if (hazardFacets["keyword"] && hazardFacets["keyword"] != "") {
       hazardQuery += ` ORDER BY desc(?score)`;
     }
 
-    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + recordNum + ` OFFSET ` + (pageNum - 1) * recordNum);
+    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + (offset - 1) * offset);
     let entityQueryStr: string = '';
     let hazardEntites: Array<string> = new Array();
-    for (let row of queryResults['results'].bindings) {
+    queryResults['results']['bindings'].forEach(row => {
       formattedResults.push({
         'hazard': row.entity.value,
         'hazard_name': row.label.value,
@@ -535,51 +647,8 @@ export class QueryService {
       hazardEntites.push(row.entity.value);
       // URIS that can be placed in the query (they have the <> brackets)
       entityQueryStr = hazardEntites.map((uri) => `<${uri}>`).join(" ");
-    }
-
-    let hazardAttributesQuery = `select distinct ?entity (group_concat(distinct ?placeQuantName; separator = "||") as ?placeQuantName) (group_concat(distinct ?placeLabel; separator = "||") as ?placeLabel) (group_concat(distinct ?type; separator = "||") as ?type) (group_concat(distinct ?typeLabel; separator = "||") as ?typeLabel) (group_concat(distinct ?place; separator = "||") as ?place) (group_concat(distinct ?time; separator = "||") as ?time) (group_concat(distinct ?startTimeLabel; separator = "||") as ?startTimeLabel) (group_concat(distinct ?endTimeLabel; separator = "||") as ?endTimeLabel)
-    {
-        ?entity rdf:type ?type;
-                kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
-
-        ?type rdfs:label ?typeLabel.
-        OPTIONAL
-        {
-            ?entity kwg-ont:sfWithin ?place.
-            ?place rdf:type kwg-ont:AdministrativeRegion;
-                   rdfs:label ?placeLabel.
-            OPTIONAL { ?place kwg-ont:quantifiedName ?placeQuantName .}
-        }
-        ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
-              time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
-        VALUES ?entity {${entityQueryStr}}
-    } GROUP BY ?entity` ;
-
-    console.log("Sending Query: ", hazardAttributesQuery);
-    queryResults = await this.query(hazardAttributesQuery);
-    queryResults['results']['bindings'].forEach(function (row, counterRow) {
-      // If there isn't a quantified name use the regular label
-      if (typeof row.placeQuantName === 'undefined') {
-        // If there isn't a place name, use ''
-        if (typeof row.placeLabel === 'undefined') {
-          formattedResults[counterRow]['place_name'] = '';
-        } else {
-          formattedResults[counterRow]['place_name'] = row.placeLabel.value.split('||')[0];
-        }
-      } else {
-        formattedResults[counterRow]['place_name'] = row.placeQuantName.value.split('||')[0];
-      }
-      formattedResults[counterRow]['hazard_type'] = row.type.value.split('||');
-      formattedResults[counterRow]['hazard_type_name'] = row.typeLabel.value.split('||');
-      formattedResults[counterRow]['place'] = (typeof row.place === 'undefined') ? '' : row.place.value.split('||')[0];
-      formattedResults[counterRow]['start_date'] = row.time.value.split('||')[0];
-      formattedResults[counterRow]['start_date_name'] = row.startTimeLabel.value.split('||')[0];
-      formattedResults[counterRow]['end_date'] = row.time.value.split('||')[0];
-      formattedResults[counterRow]['end_date_name'] = row.endTimeLabel.value.split('||')[0];
-    })
-
-    let countResults = await this.query(`select (count(*) as ?count) { ` + hazardQuery + ` LIMIT ` + recordNum * 10 + `}`);
-    return { 'count': countResults['results']['bindings'][0].count.value, 'record': formattedResults };
+    });
+    return { 'query': hazardQuery, 'record': formattedResults };
   }
 
   /**
@@ -721,7 +790,7 @@ export class QueryService {
      * @return All of the region's counties
      */
      getCountyAdministrativeRegions(stateURI: string) {
-      let query = `SELECT DISTINCT ?county_label where {
+      let query = `SELECT DISTINCT ?county_label ?county where {
         ?county kwg-ont:sfWithin <`+stateURI+`> .
     	  ?county a kwg-ont:AdministrativeRegion_3 .
         ?county rdfs:label ?county_label .
