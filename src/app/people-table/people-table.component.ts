@@ -37,6 +37,8 @@ export class PeopleTableComponent implements OnInit {
   locations: Array<string> = [];
   // Event that sends the locations of people from a query to the parent component
   @Output() locationEvent = new EventEmitter();
+  // Event that notifies the parent component that a query has started
+  @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
 
   /**
    * Creates a new table for people.
@@ -63,6 +65,7 @@ export class PeopleTableComponent implements OnInit {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
       let offset = event.pageIndex*this.pageSize;
+      this.searchQueryStartedEvent.emit();
       this.populateTable(offset);
     });
   }
@@ -73,6 +76,7 @@ export class PeopleTableComponent implements OnInit {
    * @param changes The change event
    */
   ngOnChanges(changes: SimpleChanges) {
+    this.searchQueryStartedEvent.emit();
     this.populateTable();
     this.countResults();
   }
