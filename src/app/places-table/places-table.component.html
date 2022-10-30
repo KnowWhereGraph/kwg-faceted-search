@@ -1,5 +1,6 @@
 <div class="table-container">
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]"
+    [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
   <mat-table [dataSource]="placesDataSource" class="results-table">
     <!-- Name Column -->
     <ng-container matColumnDef="name" >
@@ -7,6 +8,7 @@
       <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
     </ng-container>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   <!-- Name Column -->
   <ng-container matColumnDef="name" >
@@ -17,17 +19,29 @@
       </span>
     </mat-cell>
   </ng-container>
+=======
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell">
+          <a [href]="row.nameUri" target="_blank">{{row.name}}</a>
+        </span>
+      </mat-cell>
+    </ng-container>
+>>>>>>> 093c3e3c (Format all source fileS)
 
-  <!-- Type Column -->
-  <ng-container matColumnDef="type" >
-    <mat-header-cell *matHeaderCellDef mat-sort-header class="place-type-header"> Type </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      <span class="overflow-cell">
-        <a [href]="row.typeUri" target="_blank">{{row.type}}</a>
-      </span>
-    </mat-cell>
-  </ng-container>
+    <!-- Type Column -->
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-type-header"> Type </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <span class="overflow-cell">
+          <a [href]="row.typeUri" target="_blank">{{row.type}}</a>
+        </span>
+      </mat-cell>
+    </ng-container>
 
+<<<<<<< HEAD
   <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
 </mat-table>
@@ -43,3 +57,8 @@
   </mat-table>
 </div>
 >>>>>>> 0b4776c7 (Limit the number of results to 10 * the number of results shown in the table)
+=======
+    <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
+  </mat-table>
+>>>>>>> 093c3e3c (Format all source fileS)

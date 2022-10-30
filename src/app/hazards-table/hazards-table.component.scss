@@ -23,14 +23,15 @@
   flex: 0 0 15%;
   font-size: 1rem;
 }
-.mat-column-endDate{
+
+.mat-column-endDate {
   justify-content: center;
   flex: 0 0 18%;
   padding-right: 0;
   font-size: 1rem;
 }
 
-.hazard-header{
+.hazard-header {
   justify-content: center;
 }
 
@@ -39,6 +40,6 @@ tr.results-row:hover {
   background: #777;
 }
 
-mat-cell > span.overflow-cell {
+mat-cell>span.overflow-cell {
   word-wrap: break-word;
 }

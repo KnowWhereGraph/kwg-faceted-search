@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
-import {MatTableDataSource} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { QueryService } from '../services/query.service'
 
@@ -64,7 +64,7 @@ export class PeopleTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex*this.pageSize;
+      let offset = event.pageIndex * this.pageSize;
       this.searchQueryStartedEvent.emit();
       this.populateTable(offset);
     });
@@ -91,21 +91,21 @@ export class PeopleTableComponent implements OnInit {
       expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
         return expertiseTopic['data']['uri']
       });
-    this.queryService.getSubTopics(expertiseTopics).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response);
-        results = results.map(res => {
-          return res['sub_topic']['value']
-        });
-        if (!results.length) {
-          results = expertiseTopics
+      this.queryService.getSubTopics(expertiseTopics).subscribe({
+        next: response => {
+          let results = this.queryService.getResults(response);
+          results = results.map(res => {
+            return res['sub_topic']['value']
+          });
+          if (!results.length) {
+            results = expertiseTopics
+          }
+          this.getPeopleCount(results)
+        },
+        error: response => {
+          console.error("There was an error while finding subtopics", response)
         }
-        this.getPeopleCount(results)
-      },
-      error: response => {
-        console.error("There was an error while finding subtopics", response)
-      }
-    })
+      })
     } else {
       this.getPeopleCount(this.peopleFacets['expertiseTopics'])
     }
@@ -139,33 +139,37 @@ export class PeopleTableComponent implements OnInit {
    */
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
    populateTable(offset:number=0) {
     this.queryService.getAllPeople(this.pageSize, offset).subscribe({
 =======
    populateTable(expertiseTopicFacets, offset:number=0) {
 =======
    populateTable(offset:number=0) {
+=======
+  populateTable(offset: number = 0) {
+>>>>>>> 093c3e3c (Format all source fileS)
     // Retrieves a list of all the potential subtopics for each topic. If there aren't any,
     // use the existing values in expertiseTopicFacets
     if (this.peopleFacets['expertiseTopics'] !== undefined && this.peopleFacets['expertiseTopics'].length) {
       let expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
         return expertiseTopic['data']['uri']
-    });
-    this.queryService.getSubTopics(expertiseTopics).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response);
-        results = results.map(res => {
-          return res['sub_topic']['value']
-        });
-        if (!results.length) {
-          results = expertiseTopics
+      });
+      this.queryService.getSubTopics(expertiseTopics).subscribe({
+        next: response => {
+          let results = this.queryService.getResults(response);
+          results = results.map(res => {
+            return res['sub_topic']['value']
+          });
+          if (!results.length) {
+            results = expertiseTopics
+          }
+          this.queryPeople(results, offset);
+        },
+        error: response => {
+          console.error("There was an error while retrieving subtopics", response)
         }
-        this.queryPeople(results, offset);
-      },
-      error: response => {
-        console.error("There was an error while retrieving subtopics", response)
-      }
-    });
+      });
     } else {
       this.queryPeople(this.peopleFacets['expertiseTopics'], offset);
     }
@@ -178,11 +182,15 @@ export class PeopleTableComponent implements OnInit {
    * @param expertiseTopicFacets An array of URIs of expert topics
    * @param offset The offset to start at for obtaining experts
    */
+<<<<<<< HEAD
   queryPeople(expertiseTopicFacets: Array<string>, offset:number=0) {
 <<<<<<< HEAD
     this.queryService.getAllPeople(expertiseTopicFacets, this.pageSize, offset).subscribe({
 >>>>>>> 51bce0fa (Sending facet selection from searchComponent to PeopleTableComponent and update people-table)
 =======
+=======
+  queryPeople(expertiseTopicFacets: Array<string>, offset: number = 0) {
+>>>>>>> 093c3e3c (Format all source fileS)
     this.queryService.getAllPeople(expertiseTopicFacets, this.peopleFacets['keyword'], this.pageSize, offset).subscribe({
 >>>>>>> 3fde403d (Support searching for places)
       next: response => {
@@ -190,8 +198,8 @@ export class PeopleTableComponent implements OnInit {
         this.locations = [];
         this.people = [];
         for (var result of results) {
-          let expertise: Array<[string, string]> =[]
-          expertise =  result["expertise"]["value"].split(', ').map(function (x, i) {
+          let expertise: Array<[string, string]> = []
+          expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
             return [x, result["expertiseLabel"]["value"].split(', ')[i]]
           });
           this.people.push({
@@ -200,10 +208,10 @@ export class PeopleTableComponent implements OnInit {
             "affiliation": result["affiliationLabel"]["value"],
             "affiliation_uri": result["affiliation"]["value"],
             "expertise": expertise.slice(0, 5),
-            "place": result["affiliationQuantName"]? result["affiliationQuantName"]["value"]: "",
-            "place_uri": result["affiliationLoc"]? result["affiliationLoc"]["value"]: ""
+            "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
+            "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : ""
           });
-          if (result['wkt']){
+          if (result['wkt']) {
             this.locations.push(result['wkt']['value']);
           }
         }

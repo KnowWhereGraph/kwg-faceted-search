@@ -114,6 +114,7 @@ export class MapComponent implements OnInit {
 
     // The tile layer from mapbox definition
     const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+<<<<<<< HEAD
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox/streets-v11',
@@ -122,6 +123,15 @@ export class MapComponent implements OnInit {
             accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
         });
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
+=======
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
+    });
+>>>>>>> 093c3e3c (Format all source fileS)
 
     // The tile layer from mapbox definition
     const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -139,12 +149,12 @@ export class MapComponent implements OnInit {
     tiles.addTo(this.map);
 
     // add the circle drawing, edits, and clear functions to support further spatial search on the homepage
-    if(this.map){
+    if (this.map) {
       this.map.pm.addControls({
         position: "topleft",
         positions: {
-            draw: "topleft",
-            edit: "topleft"
+          draw: "topleft",
+          edit: "topleft"
         },
         drawMarker: false,
         drawCircleMarker: false,
@@ -159,7 +169,7 @@ export class MapComponent implements OnInit {
         customControls: true,
         cutPolygon: false,
         rotateMode: false
-    });
+      });
     }
   }
 
@@ -190,12 +200,12 @@ export class MapComponent implements OnInit {
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
     const icon = L.icon({
       iconSize: [25, 41],
-     iconAnchor: [10, 41],
-     popupAnchor: [2, -40],
-     // specify the path here
-     iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
-     shadowUrl:
-       "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
+      iconAnchor: [10, 41],
+      popupAnchor: [2, -40],
+      // specify the path here
+      iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
+      shadowUrl:
+        "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
     });
 
     let locations = [[-37.8210922667, 175.2209316333],
@@ -207,8 +217,8 @@ export class MapComponent implements OnInit {
     [-37.8325816, 175.2238798667],
     [-37.8315855167, 175.2279767]];
 
-    for(let i = 0; i < locations.length; i++) {
-      let marker = L.marker([locations[i][0], locations[i][1]], {icon});
+    for (let i = 0; i < locations.length; i++) {
+      let marker = L.marker([locations[i][0], locations[i][1]], { icon });
       this.createMarkerCluster.addLayer(marker);
     }
     this.map.addLayer(this.createMarkerCluster);

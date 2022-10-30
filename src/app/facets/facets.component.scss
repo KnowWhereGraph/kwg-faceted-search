@@ -40,7 +40,7 @@
   margin-bottom: 1rem;
 }
 
-.facet-input{
+.facet-input {
   height: 1.5rem;
   width: 100%;
 }
@@ -56,13 +56,13 @@
 }
 
 input {
-  border:0;
-  outline:0;
+  border: 0;
+  outline: 0;
   border-radius: 3px;
 }
 
 input:focus {
-  outline:none!important;
+  outline: none !important;
 }
 
 .facet-head {
@@ -104,7 +104,7 @@ input:focus {
   padding-top: 1rem;
 }
 
- ::ng-deep .mat-form-field-flex {
+::ng-deep .mat-form-field-flex {
   /*change color of label*/
   color: white !important;
- }
+}
