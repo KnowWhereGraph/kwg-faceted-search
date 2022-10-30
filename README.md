@@ -38,7 +38,7 @@ Before building, the cache must be generated. Handling this task before the actu
 
 To generate the cache, call either of the two commands below, depending on which environment you want
 
-`npm run cache-production`
+`npm run cache-prod`
 
 or
 
