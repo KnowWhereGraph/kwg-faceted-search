@@ -14,7 +14,7 @@ Before building, the cache must be generated. Handling this task before the actu
 
 To generate the cache, call either of the two commands below, depending on which environment you want
 
-`npm run cache-production`
+`npm run cache-prod`
 
 or
 
@@ -59,6 +59,9 @@ npm run cache-prod
 npm run build --configuration=stage
 cp -r dist/faceted-search/* /var/www/html
 ```
+
+### Versioning
+The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
 
 ## Contributing
 

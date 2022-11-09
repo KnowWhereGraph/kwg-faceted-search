@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PlacesTableComponent } from '../places-table/places-table.component';
 /**
@@ -24,12 +24,14 @@ export class SearchComponent implements OnInit {
   public currentPage: number = 0;
   // The number of results
   public totalSize: number = 0;
+  @ViewChild('mapChild')
+  public mapChild: any;
 
   /**
    * test for communication between facetComponent and searchComponent
    */
   searchFacets = {};
-  changeFacets(selectedFacets: object){
+  changeFacets(selectedFacets: object) {
     this.searchFacets = selectedFacets;
   }
 
@@ -62,6 +64,14 @@ export class SearchComponent implements OnInit {
   }
 
   /**
+   * Event handler to set the searching state
+   * 
+   */
+  searchQueryStarted() {
+    this.isSearching = true;
+  }
+
+  /**
    * Event handler that gets triggered by a child component when a main
    * search query finishes
    */
@@ -82,7 +92,7 @@ export class SearchComponent implements OnInit {
     this.isSearching = true;
 
     let clickedTabName = "place";
-    switch (clickedIndex){
+    switch (clickedIndex) {
       case 0:
         clickedTabName = "place";
         break
@@ -93,13 +103,7 @@ export class SearchComponent implements OnInit {
         clickedTabName = "people";
     }
     const queryParams = { tab: clickedTabName };
-    this.router.navigate(
-      [],
-      {
-        relativeTo: this.route,
-        queryParams: queryParams,
-        queryParamsHandling: 'merge',
-      });
+
   }
 
   /**
@@ -109,7 +113,8 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab');
-    switch (tab){
+
+    switch (tab) {
       case "place":
         this.selectedTabIndex = Number(0);
         break;
@@ -129,28 +134,12 @@ export class SearchComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  // getTestEventValue(testNumber: number){
-  //   console.log("print the test value: ", testNumber);
-  //   this.testValue = testNumber;
-  //   console.log("test value is : ", testNumber);
-  // }
-
-  // changeResultsCount(newCount: number) {
-  //   this.totalSize = newCount;
-  //   this.isCounting = false;
-  // }
-
-  @ViewChild('mapChild')
-  public mapChild: any;
-
-
-
   /**
    * Called when an event with a set of locations is triggered
    *
    * @param values The locations in the event
    */
-  getPlaceLocationEvent (values){
+  getPlaceLocationEvent(values) {
     this.returnedLocations = values;
     this.mapChild.displayClustersForTab("place", values)
   }
@@ -160,7 +149,7 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getHazardLocationEvent(values){
+  getHazardLocationEvent(values) {
     this.returnedLocations = values;
     this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
   }
@@ -174,8 +163,4 @@ export class SearchComponent implements OnInit {
     this.returnedLocations = values;
     this.mapChild.displayClustersForTab("people", values)
   }
-
-  // getLocationsFromComponent(values){
-  //   this.returnedLocations = values;
-  // }
 }

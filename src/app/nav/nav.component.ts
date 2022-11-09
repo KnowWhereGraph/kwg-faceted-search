@@ -32,4 +32,5 @@ export class NavComponent implements OnInit {
    onTabChanged(tabChangeEvent: MatTabChangeEvent) {
     let clickedIndex = tabChangeEvent.index;
   }
+
 }

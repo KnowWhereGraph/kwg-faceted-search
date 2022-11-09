@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
 import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from '@circlon/angular-tree-component'
-import {Observable, OperatorFunction} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import { Observable, OperatorFunction } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 /**
  * Component for the facet panel. This component is responsible for handling the display
@@ -21,31 +21,51 @@ export class FacetsComponent implements OnInit {
 
   floatLabelControl = new FormControl('auto');
   // The selected facets
-  selectedTreeFacets: Array<any> = [];
+  selectedExpertFacets: Array<any> = [];
+  // The selected place (GNIS) facets
+  selectedFeatureTypeFacet: Array<any> = [];
+  // The selected location facets (dynamic dropdown list)
+  selectedLocationFacets: Array<any> = [];
+  // The selected hazard classes
+  selectedHazardFacets: Array<any> = [];
   // The current tab that the user selected. This is used to decide which facets to show
   @Input() selectedTabIndex = 0;
+  // The keyword that the user put in the search bar
+  keyword: string = '';
   // This Administrative Region that the user specified
   adminRegion: string = '';
+  // A dict of admin region label -> URI
+  adminRegionRecords: Map<string, string> = new Map();
   // The Zip Code that the user has selected
   zipCode: string = '';
+  // A dict of zipcode label -> URI
+  zipCodeRecords: Map<string, string> = new Map();
   // The Climate Division that the user has selected
   climateDivision: string = '';
+  // A dict of division label -> URI
+  climateDivsionRecords: Map<string, string> = new Map();
   // The national Weather Zone that the user has selected
   nationalWeatherZone: string = '';
+  // Dict of the nwz records of label -> URI
+  nationalWeatherZoneRecords: Map<string, string> = new Map();
   // The FIPS code that the user has entered
-  fipsCode: string = '';
+  fipsCode: string | undefined = '';
+  // A dict of admin regions label -> URI
+  fipsCodeRecords: Map<string, string> = new Map();
   // Container that holds all of the admin regions that are shown on the UI
   administrativeRegionsDisplay: Array<any> = [];
   // Container for all of the hazard classes that are shown in the dropdown selection
   hazardClassesDisplay: Array<any> = [];
+  // A dict of GNIS label -> URI
+  gnisRecords: Map<string, string> = new Map();
   // Container for all the GNIS classes in the dropdown menu
   gnisClassesDisplay: Array<{ name: string, hasChildren: boolean }> = [];
   // Container for all of the experts in the dropdown facet
   expertClassesDisplay: Array<{ name: string, hasChildren: boolean, uri: string }> = [];
   // The start date of the search
-  startDate: string = "";
+  startDate: string | undefined = undefined;
   // The end date of the search
-  endDate: string = "";
+  endDate: string | undefined = undefined;
   // Flag set when the MTBFire observation collections should be shown
   showMTBFireOC: boolean = false;
   // Flag set when the Earthquake observation collections should be shown
@@ -59,15 +79,30 @@ export class FacetsComponent implements OnInit {
   // Holds all of the National Weather Zones used in autocompletion
   fipsCodes: Array<string> = [];
   // Holds all of the climate divisions used in autocompletion
-  climateDivisions: Array<string> = []
+  climateDivisions: Array<string> = [];
   // Holds all of the administrative regions used in autocompletion
-  adminRegions: Array<string> = []
+  adminRegions: Array<string> = [];
+  // The different observation collection values
+  magnitudeMin: number | undefined = undefined;
+  magnitudeMax: number | undefined = undefined;
+  quakeDepthMax: number | undefined = undefined;
+  quakeDepthMin: number | undefined = undefined;
+  acresBurnedMin: number | undefined = undefined;
+  acresBurnedMax: number | undefined = undefined;
+  meanDnbrMin: number | undefined = undefined;
+  meanDnbrMax: number | undefined = undefined;
+  sDMeanDnbrMin: number | undefined = undefined;
+  sDMeanDnbrMax: number | undefined = undefined;
+  numberDeathsMin: number | undefined = undefined;
+  numberDeathsMax: number | undefined = undefined;
+  numberInjuredMin: number | undefined = undefined;
+  numberInjuredMax: number | undefined = undefined;
 
-  // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked
-  actionMap =  {
+  // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked by
+  // doing nothing with the action
+  actionMap = {
     mouse: {
-      click: (tree, node, $event) => {
-      }
+      click: (tree, node, $event) => { }
     },
   }
 
@@ -78,7 +113,8 @@ export class FacetsComponent implements OnInit {
   adminRegionOptions: ITreeOptions = {
     getChildren: this.getRegionChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Admin"
   }
 
   /**
@@ -88,7 +124,8 @@ export class FacetsComponent implements OnInit {
   hazardOptions: ITreeOptions = {
     getChildren: this.getHazardChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Hazard"
   }
 
   /**
@@ -98,7 +135,8 @@ export class FacetsComponent implements OnInit {
   gnisOptions: ITreeOptions = {
     getChildren: this.getGNISChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "GNIS"
   }
 
   /**
@@ -108,7 +146,8 @@ export class FacetsComponent implements OnInit {
   expertOptions: ITreeOptions = {
     getChildren: this.getExpertChildren.bind(this),
     useCheckbox: true,
-    actionMapping: this.actionMap
+    actionMapping: this.actionMap,
+    idField: "Expert"
   }
 
   @Output() facetChangedEvent = new EventEmitter<object>();
@@ -128,6 +167,44 @@ export class FacetsComponent implements OnInit {
   }
 
   /**
+   * Clears the facets. This should be called when the user switches tabs so that certain facet values don't
+   * carry over to the next tab sesison.
+   */
+  clearFacets(): void {
+    this.selectedExpertFacets = [];
+    this.selectedFeatureTypeFacet = [];
+    this.selectedLocationFacets = [];
+    this.selectedHazardFacets;
+    this.keyword = '';
+    this.adminRegion = '';
+    this.zipCode = '';
+    this.climateDivision = '';
+    this.nationalWeatherZone = '';
+    this.fipsCode = undefined;
+    this.startDate = undefined;
+    this.endDate = undefined;
+    this.showMTBFireOC = false;
+    this.showEarthquakeOC = false;
+    this.showNOAAOC = false;
+    this.magnitudeMin = undefined;
+    this.magnitudeMax = undefined;
+    this.quakeDepthMax = undefined;
+    this.quakeDepthMin = undefined;
+    this.acresBurnedMin = undefined;
+    this.acresBurnedMax = undefined;
+    this.meanDnbrMin = undefined;
+    this.meanDnbrMax = undefined;
+    this.sDMeanDnbrMin = undefined;
+    this.sDMeanDnbrMax = undefined;
+    this.numberDeathsMin = undefined;
+    this.numberDeathsMax = undefined;
+    this.numberInjuredMin = undefined;
+    this.numberInjuredMax = undefined;
+
+    this.updateFacetSelections();
+  }
+
+  /**
    * Searches a list for potential matches. This is used in the typeahead input fields to match
    * the user's input to an existing zip, fips, etc.
    *
@@ -135,8 +212,8 @@ export class FacetsComponent implements OnInit {
    * @param container The array of things being searched.
    * @returns An array of matching items
    */
-   searchText(term, container:Array<string>) {
-    let matches:Array<string> = [];
+  searchText(term, container: Array<string>) {
+    let matches: Array<string> = [];
     container.forEach(elem => {
       if (elem.toLowerCase().indexOf(term.toLowerCase()) === 0) {
         matches.push(String(elem));
@@ -164,7 +241,7 @@ export class FacetsComponent implements OnInit {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? []: this.searchText(term, this.zipCodes))
+      map(term => term.length < 2 ? [] : this.searchText(term, this.zipCodes))
     )
   }
 
@@ -177,7 +254,7 @@ export class FacetsComponent implements OnInit {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? []: this.searchText(term, this.fipsCodes))
+      map(term => term.length < 2 ? [] : this.searchText(term, this.fipsCodes))
     )
   }
 
@@ -186,24 +263,24 @@ export class FacetsComponent implements OnInit {
    * @param text$ The text in the NWZ field
    * @returns Terms that match the input text
    */
-     searchNWZones: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-      return text$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        map(term => term.length < 2 ? []: this.searchText(term, this.nwZones))
-      )
-    }
+  searchNWZones: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? [] : this.searchText(term, this.nwZones))
+    )
+  }
 
   /**
    * Called when the user inputs text into the National Weather Zone input box
    * @param text$ The text in the NWZ field
    * @returns Terms that match the input text
    */
-   searchClimateDivision: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
+  searchClimateDivision: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? []: this.searchText(term, this.climateDivisions))
+      map(term => term.length < 2 ? [] : this.searchText(term, this.climateDivisions))
     )
   }
 
@@ -216,7 +293,7 @@ export class FacetsComponent implements OnInit {
     return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      map(term => term.length < 2 ? []: this.searchText(term, this.adminRegions))
+      map(term => term.length < 2 ? [] : this.searchText(term, this.adminRegions))
     )
   }
 
@@ -224,7 +301,7 @@ export class FacetsComponent implements OnInit {
    * Called when the hazard class is changed. This method exists separately than the other
    * facetChanged method because we want to process observation collections here
    */
-  hazardFacetChanged(event: ClickEvent | undefined=undefined) {
+  hazardFacetChanged(event: ClickEvent | undefined = undefined) {
     let selected = (eventName: string) => {
       if (eventName === 'select') {
         return true;
@@ -235,14 +312,26 @@ export class FacetsComponent implements OnInit {
     }
 
     if (event && event.node && event.node.data) {
+      let selectedNodes = Object.entries(event.treeModel.selectedLeafNodeIds)
+        .filter(([key, value]) => {
+          return (value === true);
+        }).map((id) => {
+          let node = event.treeModel.getNodeById(id[0]);
+          return node;
+        });
+      let selectedHazards: Array<string> = selectedNodes.map((node) => {
+        return node.data.uri;
+      });
+      this.selectedHazardFacets = selectedHazards;
       if (event.node.data.name == 'MTBS Fire') {
-        this.showMTBFireOC = selected(event.eventName)? true: false;
+        this.showMTBFireOC = selected(event.eventName) ? true : false;
       } else if (event.node.data.name == 'Earthquake') {
-        this.showEarthquakeOC = selected(event.eventName)? true: false;
+        this.showEarthquakeOC = selected(event.eventName) ? true : false;
       } else if (event.node.data.name == 'NOAA Hurricane Event') {
-        this.showNOAAOC = selected(event.eventName)? true: false;
+        this.showNOAAOC = selected(event.eventName) ? true : false;
       }
-      this.updateUrlParams();
+      this.updateFacetSelections();
+      //this.updateUrlParams();
     }
   }
 
@@ -253,38 +342,90 @@ export class FacetsComponent implements OnInit {
    *
    * @param event The event fired from the facet changing
    */
-  facetChanged(event: any=undefined) {
+  facetChanged(event: any = undefined) {
     if (event) {
-      if (event instanceof KeyboardEvent) {
-        // The user pressed enter
-        this.updateUrlParams();
-        this.updateFacetSelections();
-      } else if (event.eventName == 'select' || event.eventName == 'deselect') {
-        // The user clicked a checkbox on a facet
-        this.updateUrlParams();
-        this.selectedTreeFacets = Object.entries(event.treeModel.selectedLeafNodeIds)
+      if (event.eventName == 'select' || event.eventName == 'deselect') {
+        let selected = Object.entries(event.treeModel.selectedLeafNodeIds)
           .filter(([key, value]) => {
             return (value === true);
           }).map((id) => {
             let node = event.treeModel.getNodeById(id[0]);
-          return node;
-        });
-        this.updateFacetSelections();    
+            return node;
+          });
+        // Check to see if the facet was dynamically populated. If it was, save the URI
+        if (event.treeModel.options.options.idField === "GNIS") {
+          // A GNIS place type was selected
+          this.selectedFeatureTypeFacet = selected;
+        } else if (event.treeModel.options.options.idField === "Admin") {
+          // An administrative region was selected
+          let selectedPlaces: Array<string> = selected.map((node) => {
+            return node.data.uri;
+          });
+          this.selectedLocationFacets = selectedPlaces;
+        } else if (event.treeModel.options.options.idField === "Expert") {
+          // An expertise was selected
+          this.selectedExpertFacets = selected;
+        }
       }
+      //this.updateUrlParams();
+      this.updateFacetSelections();
     }
   }
 
   /**
-   * The function to update facet selection and send it to the parent component SearchComponent
+   * The function to retrieve the selected facets and send them to the parent component SearchComponent.
    */
   updateFacetSelections() {
-    let selectedFacets = {};
-
-    // update expertise topic facets
-    if (this.selectedTabIndex == 2)
-    {
-      selectedFacets['expertiseTopics'] = this.selectedTreeFacets;
+    // Select the URI of the GNIS types
+    let gnisURIS: Array<string> = new Array();
+    this.selectedFeatureTypeFacet.forEach((gnisType) => {
+      gnisURIS.push(gnisType.data.uri);
+    })
+    let startDate: string | undefined = undefined;
+    if (this.startDate) {
+      startDate = new Date(this.startDate).toISOString()
     }
+    let endDate: string | undefined = undefined;
+    if (this.endDate) {
+      endDate = new Date(this.endDate).toISOString()
+    }
+
+    const getVal = (container, key) => {
+      if (key === undefined) {
+        return key;
+      } else {
+        return container.get(key);
+      }
+    }
+
+    let selectedFacets = {
+      'keyword': this.keyword,
+      'climateDivision': this.climateDivsionRecords.get(this.climateDivision),
+      'zipCode': getVal(this.zipCodeRecords, this.zipCode),
+      'fipsCode': getVal(this.fipsCodeRecords, this.fipsCode),
+      'nationalWeatherZone': this.nationalWeatherZoneRecords.get(this.nationalWeatherZone),
+      'gnisType': gnisURIS,
+      'adminRegion': this.adminRegionRecords.get(this.adminRegion),
+      'hazardTypes': this.selectedHazardFacets,
+      'location': this.selectedLocationFacets,
+      'expertiseTopics': this.selectedExpertFacets,
+      'startDate': startDate,
+      'endDate': endDate,
+      'magnitudeMin': this.magnitudeMin,
+      'magnitudeMax': this.magnitudeMax,
+      'quakeDepthMax': this.quakeDepthMax,
+      'quakeDepthMin': this.quakeDepthMin,
+      'acresBurnedMin': this.acresBurnedMin,
+      'acresBurnedMax': this.acresBurnedMax,
+      'meanDnbrMin': this.meanDnbrMin,
+      'meanDnbrMax': this.meanDnbrMax,
+      'sDMeanDnbrMin': this.sDMeanDnbrMin,
+      'sDMeanDnbrMax': this.sDMeanDnbrMax,
+      'numberDeathsMin': this.numberDeathsMin,
+      'numberDeathsMax': this.numberDeathsMax,
+      'numberInjuredMin': this.numberInjuredMin,
+      'numberInjuredMax': this.numberInjuredMax
+    };
     this.facetChangedEvent.emit(selectedFacets);
   }
 
@@ -299,6 +440,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<any> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1])
+          this.zipCodeRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.zipCodes = formatted;
@@ -311,6 +453,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1]);
+          this.fipsCodeRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.fipsCodes = formatted;
@@ -323,6 +466,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<any> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1])
+          this.nationalWeatherZoneRecords.set(row.split(',')[1], row.split(',')[0])
         });
         formatted.pop();
         this.nwZones = formatted;
@@ -336,6 +480,7 @@ export class FacetsComponent implements OnInit {
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
           formatted.push(row.split(',')[1]);
+          this.climateDivsionRecords.set(row.split(',')[1], row.split(',')[0])
         })
         // Remove the last empty line
         formatted.pop()
@@ -349,7 +494,8 @@ export class FacetsComponent implements OnInit {
         let responseRows: Array<string> = response.split(/[\n]+/);
         let formatted: Array<string> = [];
         responseRows.forEach((row) => {
-          formatted.push(row);
+          formatted.push((row.split(',')[1]));
+          this.adminRegionRecords.set(row.split(',')[1], row.split(',')[0])
         })
         // Remove the last empty line
         formatted.pop()
@@ -426,7 +572,8 @@ export class FacetsComponent implements OnInit {
             name: element['place_label']['value'],
             hasChildren: true,
             uri: element['place']['value']
-          })
+          });
+          this.gnisRecords.set(element['place_label']['value'], element['place']['value'])
         });
         this.gnisClassesDisplay = formatted;
       }
@@ -456,7 +603,8 @@ export class FacetsComponent implements OnInit {
           this.administrativeRegionsDisplay = [{
             name: element['country_label']['value'],
             hasChildren: true,
-            level: "country"
+            level: "country",
+            uri: element['country']['value']
           }];
         })
       }
@@ -511,6 +659,7 @@ export class FacetsComponent implements OnInit {
               states.push({
                 name: element['county_label']['value'],
                 hasChildren: false,
+                uri: element['county']['value']
               });
             })
             resolve(states);
@@ -562,6 +711,7 @@ export class FacetsComponent implements OnInit {
               hasChildren: hasChildren,
               uri: element['place']['value']
             });
+            this.gnisRecords.set(element['gnis_label']['value'], element['place']['value'])
           })
           resolve(states);
         }

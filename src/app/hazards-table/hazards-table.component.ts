@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, SimpleChanges, ViewChild, Input } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table';
 import { QueryService } from '../services/query.service';
@@ -15,6 +15,7 @@ import { QueryService } from '../services/query.service';
   styleUrls: ['./hazards-table.component.scss']
 })
 export class HazardsTableComponent implements OnInit {
+  @Input() hazardFacets = {};
   // Holds all of the hazards that are actively being displayed in the table
   hazards: Array<Hazard> = [];
   // Columns for the table
@@ -33,6 +34,8 @@ export class HazardsTableComponent implements OnInit {
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
+  // Event that notifies the parent component that a query has started
+  @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
   // Event that sends the locations of hazards from a query to the parent component. This
   // is used in the map display
   locations: Array<string> = [];
@@ -53,9 +56,19 @@ export class HazardsTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.hazardsDataSource = new MatTableDataSource(this.hazards);
-    this.populateTable();
-    this.getResultsSize();
+    this.populateTableA();
+    //this.getResultsSize();
   }
+
+  /**
+   * Called when users make facet selections
+   *
+   * @param changes The change event
+   */
+  ngOnChanges(changes: SimpleChanges) {
+    this.populateTableA();
+  }
+
 
   /**
    * Once the view has finished initializing, make the paginator subscribe
@@ -64,9 +77,9 @@ export class HazardsTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex*this.pageSize;
-      this.populateTable(offset);
-      this.getResultsSize();
+      let offset = event.pageIndex * this.pageSize;
+      this.populateTableA(offset);
+      //this.getResultsSize();
     });
   }
 
@@ -87,31 +100,27 @@ export class HazardsTableComponent implements OnInit {
     });
   }
 
-  /**
-   * Populates the data table with hazards. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
-   * which gets inserted into the subsequent query.
-   *
-   * @param offset The query offset
-   */
-  populateTable(offset:number=0) {
+  populateTableA(offset: number = 0) {
+    this.searchQueryStartedEvent.emit();
+    // Clear the current results set so that the table is blank
+    this.hazards = [];
+    this.hazardsDataSource = new MatTableDataSource(this.hazards);
     // A map of a hazard's URI to its properties that are retrieved from the database
-    let hazardRecords = new  Map<string, any>();
+    let hazardRecords = new Map<string, any>();
     // Get a list of all the hazards and their associated properties. Start by first getting a list of all the
     // hazard URI's.
-    this.queryService.getAllHazards(this.pageSize, offset).subscribe({
-      next: response => {
+    this.queryService.getHazardSearchResults(this.hazardFacets, this.pageSize, offset).then((results: any) => {
       // Once the hazards have been retrieved, attempt to get the associated properties
-      let results = this.queryService.getResults(response);
       let hazardUris: Array<string> = [];
       this.locations = [];
       // Once the initial list of hazards is retrieved, create a list of URIs and get additional information about them
-      for (var result of results) {
-        let entityUri = result['entity']['value'];
+      results.record.forEach(row => {
+        let entityUri = row['hazard'];
         let entityInfo = {
-          "name": result["label"]["value"],
-          "nameUri": result["entity"]["value"],
-          "type": result["typeLabel"]["value"],
-          "typeUri": result["type"]["value"],
+          "name": row["hazard_name"],
+          "nameUri": row["hazard_type"],
+          "type": row["hazard_type_name"],
+          "typeUri": row["type"],
         }
         // Save the name and type of the hazard for later
         hazardRecords.set(entityUri, entityInfo);
@@ -119,14 +128,21 @@ export class HazardsTableComponent implements OnInit {
         entityUri = entityUri.replace('http://stko-kwg.geog.ucsb.edu/lod/resource/', 'kwgr:')
         // Make a list of all the hazards that we want properties for
         hazardUris.push(entityUri);
-      }
-      this.queryService.getHazardProperties(hazardUris).subscribe({
+      });
+
+      this.queryService.query(`SELECT (COUNT(*) as ?count) {` + results.query + ` LIMIT` + this.pageSize * 10 + `}`).then((res) => {
+        this.totalSize = res.results.bindings[0].count.value;
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+      })
+      this.queryService.getHazardProperties(hazardUris, this.pageSize).subscribe({
         next: response => {
           // Once all of the properties have been retrieved, populate the table
-          results = this.queryService.getResults(response);
+          let hazard_properties = this.queryService.getResults(response);
           this.hazards = [];
-          for (var row of results) {
+          hazard_properties.forEach(row => {
             let record = hazardRecords.get(row.entity.value);
+            record.entityUri = row.entity.value;
             record.place = (typeof row.place === 'undefined') ? '' : row.place.value;
             record.placeName = (typeof row.placeQuantName === 'undefined') ? '' : row.placeQuantName.value;
             record.placeWkt = (typeof row.placeWkt === 'undefined') ? '' : row.placeWkt.value;
@@ -135,14 +151,14 @@ export class HazardsTableComponent implements OnInit {
             record.endDate = (typeof row.time === 'undefined') ? '' : row.time.value;
             record.endDateName = (typeof row.endTimeLabel === 'undefined') ? '' : row.endTimeLabel.value;
             record.wkt = (typeof row.wkt === 'undefined') ? '' : row.wkt.value;
-            let resTypes = row["typeLabel"]["value"].split(',').filter(function(resType) { return (resType !== "NIFCWildfire") })
+            let resTypes = row["typeLabel"]["value"].split(',').filter(function (resType) { return (resType !== "NIFCWildfire") })
             let types: Array<[string, string]> = [];
             types = row.type.value.split(",").map(function (x, i) {
               return [x, resTypes[i]]
             });
-            this.hazards.push({
+            let new_record = {
               name: record.name,
-              entityUri: record.nameUri,
+              entityUri: record.entityUri,
               type: types,
               place: record.placeName,
               placeUri: record.place,
@@ -151,11 +167,12 @@ export class HazardsTableComponent implements OnInit {
               endDateUri: record.endDate,
               endDate: record.endDateName,
               dateUri: record.time,
-            });
-            if (record.wkt){
+            }
+            this.hazards.push(new_record);
+            if (record.wkt) {
               this.locations.push(record.wkt);
             }
-          }
+          });
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
           this.searchQueryFinishedEvent.emit(true);
           this.locationEvent.emit(this.locations);
@@ -164,10 +181,6 @@ export class HazardsTableComponent implements OnInit {
           console.error("Error getting the hazard properties", error)
         }
       })
-      },
-      error: error => {
-        console.error("Error")
-      }
     })
   }
 }

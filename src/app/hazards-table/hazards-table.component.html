@@ -1,6 +1,6 @@
 <div class="table-container">
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]" [showFirstLastButtons]="true" [length]="totalSize"
-  [pageIndex]="currentPage">
+  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]"
+    [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage">
   </mat-paginator>
   <mat-table [dataSource]="hazards" class="search-table">
     <!-- Name Column -->
@@ -18,7 +18,8 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Type </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a *ngFor="let typeData of row.type; let isLast=last" [href]="typeData[0]" target="_blank">{{typeData[1]}}{{isLast ? '' : ', '}}</a>
+          <a *ngFor="let typeData of row.type; let isLast=last" [href]="typeData[0]"
+            target="_blank">{{typeData[1]}}{{isLast ? '' : ', '}}</a>
         </span>
       </mat-cell>
     </ng-container>

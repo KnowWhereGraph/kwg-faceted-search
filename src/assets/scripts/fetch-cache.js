@@ -11,16 +11,16 @@ let endpoint = `${process.argv.slice(2)[1]}/graphdb/repositories/KWG`;
  * @param {string} query: The SPARQL query string
  * @returns A promise
  */
-sparqlRequest = async function(query) {
+sparqlRequest = async function (query) {
   var bodyFormData = new URLSearchParams();
   bodyFormData.append('query', query);
   return axios.post(endpoint, bodyFormData,
-  {
-    headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "application/sparql-results+json"
-    }
-  });
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/sparql-results+json"
+      }
+    });
 }
 
 /**
@@ -35,31 +35,32 @@ sparqlRequest = async function(query) {
  * @param {*} fileName The name of the file where the data is saved
  * @param {*} data An array of arrays, where the inner array contains [subject ,value], which come from the query
  */
-async function fetchCache(query, fileName, data=[]) {
+async function fetchCache(query, fileName, data = []) {
   // Determine how many records there are for an OFFSET
   let count = data.length;
   // Add an OFFSET to the query. This is how further results are obtained
-  let offset_query = query+` OFFSET ${count}`;
+  let offset_query = query + ` OFFSET ${count}`;
   try {
-  let results = await sparqlRequest(offset_query);
-    results.data.results.bindings.forEach((res)=>{
-    data.push([res.subject.value, res.value.value]);
-  })
+    let results = await sparqlRequest(offset_query);
+    results.data.results.bindings.forEach((res) => {
+      data.push([res.subject.value, res.value.value]);
+    });
 
-  // If there are a non-zero number of records, ask for more
-  if (results.data.results.bindings.length) {
-    // Wait for fetchCache to complete, otherwise a promise will be pushed
-    try {
-      data.push(await fetchCache(query, fileName, data));
-    } catch(err) {
-      console.error("Error fetching more cache results!", err)
+    // If there are a non-zero number of records, ask for more
+    if (results.data.results.bindings.length) {
+      // Wait for fetchCache to complete, otherwise a promise will be pushed
+      try {
+        data.push(await fetchCache(query, fileName, data));
+      } catch (err) {
+        console.error("Error fetching more cache results!", err)
+      }
+    } else {
+      let file = fs.createWriteStream(fileName);
+      file.on('error', (err) => { console.error("Failed writing to disk", err) });
+      data.forEach((record) => { file.write(record.join(',') + '\n'); });
+      file.end();
     }
-  } else {
-    let file = fs.createWriteStream(fileName);
-    file.on('error', (err) => { console.error("Failed writing to disk", err) });
-    data.forEach((record) => { file.write(record.join(',') + '\n'); });
-    file.end();
-  }} catch(err) {
+  } catch (err) {
     console.error(err)
   };
 }
@@ -72,35 +73,57 @@ async function fetchCache(query, fileName, data=[]) {
  * @param {*} fileName The name of the file where the data is saved
  * @param {*} data An array of arrays, where the inner array contains [subject ,value], which come from the query
  */
- async function fetchAdministrativeCache(query, fileName, data=[]) {
+async function fetchAdministrativeCache(query, fileName, data = []) {
   // Determine how many records there are for an OFFSET
   let count = data.length;
   // Add an OFFSET to the query. This is how further results are obtained
-  let offset_query = query+` OFFSET ${count}`;
+  let offset_query = query + ` OFFSET ${count}`;
   try {
     let results = await sparqlRequest(offset_query);
-      results.data.results.bindings.forEach((res)=>{
-      data.push(res.usa_label.value);
-      data.push(res.state_label.value);
-      data.push(res.county_label.value);
-  });
-  // If there are a non-zero number of records, ask for more
-  if (results.data.results.bindings.length) {
-    // Wait for fetchAdministrativeCache to complete, otherwise a promise will be pushed
-    try {
-      data.push(await fetchAdministrativeCache(query, fileName, data));
-    } catch(err) {
-      console.error("Error fetching more cache results!", err)
+    results.data.results.bindings.forEach((res) => {
+      // Check if the top level node has already been added
+      let has_top_level = false;
+      data.forEach((data_record) => {
+        if (data_record[0] == res.usa.value) {
+          has_top_level = true
+          return;
+        }
+      });
+      // Add the top level node
+      if (!has_top_level) {
+        data.push([res.usa.value, res.usa_label.value]);
+      }
+      // Check if the stat node has already been added
+      let has_state_level = false;
+      data.forEach((data_record) => {
+        if (data_record[0] == res.state.value) {
+          has_state_level = true
+          return;
+        }
+      });
+      // Add the top level node
+      if (!has_state_level) {
+        data.push([res.state.value, res.state_label.value]);
+      }
+      data.push([res.county.value, res.county_label.value]);
+    });
+    // If there are a non-zero number of records, ask for more
+    if (results.data.results.bindings.length) {
+      // Wait for fetchAdministrativeCache to complete, otherwise a promise will be pushed
+      try {
+        data.push(await fetchAdministrativeCache(query, fileName, data));
+      } catch (err) {
+        console.error("Error fetching more cache results!", err)
+      }
+    } else {
+      let file = fs.createWriteStream(fileName);
+      file.on('error', (err) => { console.error("Failed writing to disk", err) });
+      data.forEach((record) => {
+        file.write(record.join(',') + '\n');
+      })
+      file.end();
     }
-  } else {
-    let file = fs.createWriteStream(fileName);
-    file.on('error', (err) => { console.error("Failed writing to disk", err) });
-    let de_duplicated = new Set(data);
-    de_duplicated.forEach((record) => {
-      file.write(record+'\n');
-    })
-    file.end();
-  }} catch(err) {
+  } catch (err) {
     console.error(err)
   };
 }
