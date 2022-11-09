@@ -162,7 +162,7 @@ export class MapComponent implements OnInit {
         drawRectangle: false,
         drawPolygon: false,
         drawCircle: true,
-
+        drawText: false,
         drawControls: true,
         editControls: true,
         optionsControls: true,
