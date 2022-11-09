@@ -37,7 +37,6 @@ export class MapComponent implements OnInit {
    */
   ngAfterViewInit(): void {
     this.initMap();
-    this.showClusters();
   }
 
   /**
@@ -87,9 +86,10 @@ export class MapComponent implements OnInit {
   }
 
   /**
-   * Creates the cluster icons on the map.
+   * Show given locations as point clusters on the map
+   * @param locations coordinates of points
    */
-  private showClusters() {
+  private showClusters(locations){
     const icon = L.icon({
       iconSize: [25, 41],
       iconAnchor: [10, 41],
@@ -100,19 +100,40 @@ export class MapComponent implements OnInit {
         "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
     });
 
-    let locations = [[-37.8210922667, 175.2209316333],
-    [-37.8210819833, 175.2213903167],
-    [-37.8210881833, 175.2215004833],
-    [-37.8211946833, 175.2213655333],
-    [-37.8209458667, 175.2214051333],
-    [-37.8208292333, 175.2214374833],
-    [-37.8325816, 175.2238798667],
-    [-37.8315855167, 175.2279767]];
-
     for (let i = 0; i < locations.length; i++) {
       let marker = L.marker([locations[i][0], locations[i][1]], { icon });
       this.createMarkerCluster.addLayer(marker);
     }
     this.map.addLayer(this.createMarkerCluster);
+
+  }
+
+  /**
+   * Display point clustering for given tab name (place, hazard, or people)
+   * @param tabName choose the tab name for locations to be shown
+   * @param locations coordinates for points
+   */
+  public displayClustersForTab(tabName, locations){
+    // clear all the clusters
+    var coordinates: number[][] = [];
+    this.createMarkerCluster.clearLayers();
+
+    if (tabName == "place"){
+      coordinates = [];
+    } else{
+      for (var loc of locations){
+        var split_text = loc.split(" ");
+        var coord: number[] = [];
+        var coordX = parseFloat(split_text[1].split("(")[1]);
+        var coordY = parseFloat(split_text[2].split(")")[0]);
+        coord.push(coordY);
+        coord.push(coordX);
+        coordinates.push(coord);
+      }
+    }
+
+    if(coordinates.length){
+      this.showClusters(coordinates);
+    }
   }
 }

@@ -24,6 +24,8 @@ export class SearchComponent implements OnInit {
   public currentPage: number = 0;
   // The number of results
   public totalSize: number = 0;
+  @ViewChild('mapChild')
+  public mapChild: any;
 
   /**
    * test for communication between facetComponent and searchComponent
@@ -139,6 +141,7 @@ export class SearchComponent implements OnInit {
    */
   getPlaceLocationEvent(values) {
     this.returnedLocations = values;
+    this.mapChild.displayClustersForTab("place", values)
   }
 
   /**
@@ -148,6 +151,7 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values) {
     this.returnedLocations = values;
+    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
   }
 
   /**
@@ -155,7 +159,8 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getPeopleLocationEvent(values) {
+  getPeopleLocationEvent(values){
     this.returnedLocations = values;
+    this.mapChild.displayClustersForTab("people", values)
   }
 }
