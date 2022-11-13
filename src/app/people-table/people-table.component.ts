@@ -73,13 +73,13 @@ export class PeopleTableComponent implements OnInit {
     });
   }
 
-    /**
-   * The changes are directed by the search component, hence an empty event listener
-   *
-   * @param changes The change event
-   */
-     ngOnChanges(changes: SimpleChanges) {
-    }
+  /**
+ * The changes are directed by the search component, hence an empty event listener
+ *
+ * @param changes The change event
+ */
+  ngOnChanges(changes: SimpleChanges) {
+  }
 
 
   /**
@@ -121,34 +121,34 @@ export class PeopleTableComponent implements OnInit {
    */
   queryPeople(facets) {
     this.queryService.getAllPeople(facets['expertiseTopics'], facets['keyword'], this.pageSize, this.offset).then((response: any) => {
-        this.locations = [];
-        this.people = [];
-        response.results['results']['bindings'].forEach(result => {
-          let expertise: Array<[string, string]> = []
-          expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
-            return [x, result["expertiseLabel"]["value"].split(', ')[i]]
-          });
-          this.people.push({
-            "name": result["label"]["value"],
-            "name_uri": result["entity"]["value"],
-            "affiliation": result["affiliationLabel"]["value"],
-            "affiliation_uri": result["affiliation"]["value"],
-            "expertise": expertise.slice(0, 5),
-            "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
-            "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : "",
-            "wkt": result["wkt"]["value"]
-          });
+      this.locations = [];
+      this.people = [];
+      response.results['results']['bindings'].forEach(result => {
+        let expertise: Array<[string, string]> = []
+        expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
+          return [x, result["expertiseLabel"]["value"].split(', ')[i]]
         });
-        this.peopleDataSource = new MatTableDataSource(this.people);
-        this.searchQueryFinishedEvent.emit(true);
-        this.queryService.query(`select (count(*) as ?count) { ` + response.query + ` } LIMIT 200`).then((res) => {
-          this.totalSize = res.results.bindings[0].count.value;
-          // Update the number of results
-          this.resultsCountEvent.emit(this.totalSize);
-          this.searchQueryFinishedEvent.emit(true);
-        })
-        this.locationEvent.emit(this.people);
+        this.people.push({
+          "name": result["label"]["value"],
+          "name_uri": result["entity"]["value"],
+          "affiliation": result["affiliationLabel"]["value"],
+          "affiliation_uri": result["affiliation"]["value"],
+          "expertise": expertise.slice(0, 5),
+          "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
+          "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : "",
+          "wkt": result["wkt"]["value"]
+        });
       });
+      this.peopleDataSource = new MatTableDataSource(this.people);
+      this.searchQueryFinishedEvent.emit(true);
+      this.queryService.query(`select (count(*) as ?count) { ` + response.query + ` } LIMIT 200`).then((res) => {
+        this.totalSize = res.results.bindings[0].count.value;
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+      })
+      this.locationEvent.emit(this.people);
+    });
   }
   /**
    * Triggered to count the number of experts that have expertise in
@@ -177,21 +177,21 @@ export class PeopleTableComponent implements OnInit {
       })
     } else {
       this.getPeopleCount(facets)
+    }
   }
-}
 
-/**
-   * Counts the number of experts that are expertise in the fields contained
-   * in expertiseTopics.
-   *
-   * @param expertiseTopics An array of expert topic URIs
-   */
+  /**
+     * Counts the number of experts that are expertise in the fields contained
+     * in expertiseTopics.
+     *
+     * @param expertiseTopics An array of expert topic URIs
+     */
   getPeopleCount(facets) {
     this.queryService.getPeopleCount(facets['expertiseTopics'], facets['keyword'], this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
-       this.totalSize = results[0]['COUNT']['value'];
-       // Update the number of results
+        this.totalSize = results[0]['COUNT']['value'];
+        // Update the number of results
         this.resultsCountEvent.emit(this.totalSize);
       },
       error: response => {

@@ -54,8 +54,8 @@ export class MapComponent implements OnInit {
   /**
    * An empty constructor; the map is initialized after the view is ready.
    */
-  constructor() { 
-    
+  constructor() {
+
   }
 
   /**
@@ -185,6 +185,7 @@ export class MapComponent implements OnInit {
    * @param locations coordinates of points
    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 9f3ef866 (uncomment console; jsdoc format)
   private showClusters(locations){
 =======
@@ -204,6 +205,9 @@ export class MapComponent implements OnInit {
 =======
   private showPoint(feature){
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
+=======
+  private showPoint(feature) {
+>>>>>>> 1420d57c (Format code)
     const icon = L.icon({
       iconSize: [25, 41],
       iconAnchor: [10, 41],
@@ -237,7 +241,7 @@ export class MapComponent implements OnInit {
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
 
     L.geoJSON(feature, {
-      pointToLayer: function(feature, latlng) {
+      pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
           icon: icon
         });
@@ -249,14 +253,14 @@ export class MapComponent implements OnInit {
    * Plots a location on the map
    * @param geom
    */
-   private showTwoDim(geom){
+  private showTwoDim(geom) {
     const icon = L.icon({
       iconSize: [25, 41],
       iconAnchor: [10, 41],
       popupAnchor: [2, -40],
       // specify the path here
       iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
-      
+
     });
 
     let marker = L.marker([location[0], location[1]], { icon });
@@ -269,22 +273,22 @@ export class MapComponent implements OnInit {
    * @param tabName choose the tab name for locations to be shown
    * @param records coordinates for points
    */
-  public displayClustersForTab(tabName: string, records: Array<JSON>){
+  public displayClustersForTab(tabName: string, records: Array<JSON>) {
     this.createMarkerCluster.clearLayers();
-    let wkt_reader = new  wkt.Wkt();
+    let wkt_reader = new wkt.Wkt();
     let wkt_representation = {};
     records.forEach(record => {
       try {
         wkt_representation = wkt_reader.read(record['wkt']).toJson();
       } catch (error) {
-          console.warn("Failed to read the geometry of a table result: ", record, error)
-          return;
+        console.warn("Failed to read the geometry of a table result: ", record, error)
+        return;
       }
-      if(tabName == "people") {
+      if (tabName == "people") {
         wkt_representation["properties"]["name"] = record["name"],
-        wkt_representation["properties"]["affiliation"] = record["affiliation"],
-        wkt_representation["properties"]["expertise"] = record["expertise"],
-        wkt_representation["properties"]["place"] = record["place"]
+          wkt_representation["properties"]["affiliation"] = record["affiliation"],
+          wkt_representation["properties"]["expertise"] = record["expertise"],
+          wkt_representation["properties"]["place"] = record["place"]
       }
 
 <<<<<<< HEAD

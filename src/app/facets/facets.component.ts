@@ -112,21 +112,21 @@ export class FacetsComponent implements OnInit {
   numberInjuredMax: number | undefined = undefined;
   // The facet state
   selectedFacets = {}
-    // Reference to the gnis map component
-    @ViewChild('gnisTree')
-    public gnisTree: any;
+  // Reference to the gnis map component
+  @ViewChild('gnisTree')
+  public gnisTree: any;
 
-    // Reference to the country/state/county map component
-    @ViewChild('adminTree')
-    public adminTree: any;
+  // Reference to the country/state/county map component
+  @ViewChild('adminTree')
+  public adminTree: any;
 
-    // Reference to the expert map component
-    @ViewChild('expertTree')
-    public expertTree: any;
+  // Reference to the expert map component
+  @ViewChild('expertTree')
+  public expertTree: any;
 
-    // Reference to the expert map component
-    @ViewChild('hazardTree')
-    public hazardTree: any;
+  // Reference to the expert map component
+  @ViewChild('hazardTree')
+  public hazardTree: any;
 
   // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked by
   // doing nothing with the action
@@ -349,15 +349,15 @@ export class FacetsComponent implements OnInit {
     selectedNodes.forEach((node_id) => {
       // Get the node object
       let node = this.hazardTree.treeModel.getNodeById(node_id[0])
-      if(node.data.name == 'MTBS Fire') {
+      if (node.data.name == 'MTBS Fire') {
         foundMTBS = true;
-        }
-        if (node.data.name == 'Earthquake') {
-          foundEQ = true
-        }
-        if (node.data.name == 'NOAA Hurricane Event') {
-          foundNOAA = true;
-        }
+      }
+      if (node.data.name == 'Earthquake') {
+        foundEQ = true
+      }
+      if (node.data.name == 'NOAA Hurricane Event') {
+        foundNOAA = true;
+      }
     });
     this.showEarthquakeOC = foundEQ;
     this.showMTBFireOC = foundMTBS;
@@ -368,23 +368,6 @@ export class FacetsComponent implements OnInit {
       this.showEarthquakeOC = false;
       this.showNOAAOC = false;
     }
-    }
-  
-  /**
-   * Returns either the URIs or Node objects of all the selected nodes in a tree
-   * 
-   * @param treeModel The tree containing the nodes (ie GNIS tree, hazards tree)
-   * @param uri Boolean whether to return the URI. If false, return the Node object
-   * @returns An array of Node or string URIs of selected items in a tree
-   */
-  getSelectedNodesURIs(treeModel: TreeModel, uri: boolean=true) {
-    return Object.entries(treeModel.selectedLeafNodeIds)
-    .filter(([key, value]) => {
-      return (value === true);
-    }).map((id) => {
-      let node = treeModel.getNodeById(id[0]);
-        return node.data.uri;
-    });
   }
 
   /**
@@ -394,7 +377,24 @@ export class FacetsComponent implements OnInit {
    * @param uri Boolean whether to return the URI. If false, return the Node object
    * @returns An array of Node or string URIs of selected items in a tree
    */
-   getSelectedNodes(treeModel: TreeModel, uri: boolean=true) {
+  getSelectedNodesURIs(treeModel: TreeModel, uri: boolean = true) {
+    return Object.entries(treeModel.selectedLeafNodeIds)
+      .filter(([key, value]) => {
+        return (value === true);
+      }).map((id) => {
+        let node = treeModel.getNodeById(id[0]);
+        return node.data.uri;
+      });
+  }
+
+  /**
+   * Returns either the URIs or Node objects of all the selected nodes in a tree
+   * 
+   * @param treeModel The tree containing the nodes (ie GNIS tree, hazards tree)
+   * @param uri Boolean whether to return the URI. If false, return the Node object
+   * @returns An array of Node or string URIs of selected items in a tree
+   */
+  getSelectedNodes(treeModel: TreeModel, uri: boolean = true) {
     return Object.entries(treeModel.selectedLeafNodeIds).filter(([key, value]) => {
       return (value === true);
     });
@@ -421,7 +421,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Handles the event when the state of the Admin Area tree changes
    */
-   adminFacetChange($event) {
+  adminFacetChange($event) {
     // Check to see if any nodes were selected.
     let nodes = this.getSelectedNodesURIs(this.adminTree.treeModel);
     // Check to see if it's equal to the previous selection
@@ -434,7 +434,7 @@ export class FacetsComponent implements OnInit {
   /**
    * Handles the event when the state of the expert tree changes
    */
-   expertFacetChange($event) {
+  expertFacetChange($event) {
     // Check to see if any nodes were selected.
     let nodes = this.getSelectedNodesURIs(this.expertTree.treeModel);
     // Check to see if it's equal to the previous selection
@@ -454,20 +454,20 @@ export class FacetsComponent implements OnInit {
   facetChanged(event) {
     if (event) {
       if (event.eventName == 'select' || event.eventName == 'deselect') {
-       if (event.eventName == "initialized" ||
-       event.eventName == "updateData" ||
-       event.eventName == "toggleExpanded" ||
-       event.eventName == "loadNodeChildren" ||
-       event.eventName == "blur" ||
-       event.eventName == "focus") {
-        // Avoid updating the table for misc tree facet events that get fired
-        return;
+        if (event.eventName == "initialized" ||
+          event.eventName == "updateData" ||
+          event.eventName == "toggleExpanded" ||
+          event.eventName == "loadNodeChildren" ||
+          event.eventName == "blur" ||
+          event.eventName == "focus") {
+          // Avoid updating the table for misc tree facet events that get fired
+          return;
+        }
+      } else {
+        this.updateFacetSelections();
       }
-    } else {
-      this.updateFacetSelections();
     }
   }
-}
 
   /**
    * The function to retrieve the selected facets and send them to the parent component SearchComponent.

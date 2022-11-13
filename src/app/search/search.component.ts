@@ -66,7 +66,7 @@ export class SearchComponent implements OnInit {
         break;
     }
   }
-    // variable to hold the data from the place/hazard/people component.
+  // variable to hold the data from the place/hazard/people component.
   public returnedLocations: any;
 
   /**

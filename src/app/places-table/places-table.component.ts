@@ -74,12 +74,12 @@ export class PlacesTableComponent implements OnInit {
     });
   }
 
-    /**
-   * The changes are directed by the search component, hence an empty event listener
-   *
-   * @param changes The change event
-   */
-     ngOnChanges(changes: SimpleChanges) {}
+  /**
+ * The changes are directed by the search component, hence an empty event listener
+ *
+ * @param changes The change event
+ */
+  ngOnChanges(changes: SimpleChanges) { }
 
   /**
    * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
@@ -87,7 +87,7 @@ export class PlacesTableComponent implements OnInit {
    * @param offset The query offset
    * @param count The number of results to retrieve
    */
-  populateTable(facets={}) {
+  populateTable(facets = {}) {
     this.searchQueryStartedEvent.emit();
     this.places = [];
     this.placesDataSource = new MatTableDataSource(this.places);

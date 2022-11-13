@@ -54,7 +54,7 @@ export class QueryService {
    * @param {string} query_id The identifier of the query. Should be of the form KE-1234
    * @returns
    */
-  async query(query, query_id="KE-0") {
+  async query(query, query_id = "KE-0") {
     let d_form = new FormData();
     d_form.append('query', this.prefixes + query);
     let d_res: any = await fetch(this.endpoint, {
@@ -705,8 +705,8 @@ export class QueryService {
   async getAllPeople(expertiseTopics: Array<string>, keywords = "", limit: number = 20, offset = 0) {
     let query_body = this.getPeopleQueryBody(expertiseTopics, keywords);
     let query = `SELECT * WHERE {` + query_body + `}`;
-    let people_response: Response = await this.query(query+`LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString(), 'KE-06');
-    return {'query': query, 'results': people_response}
+    let people_response: Response = await this.query(query + `LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString(), 'KE-06');
+    return { 'query': query, 'results': people_response }
   }
 
   /**
