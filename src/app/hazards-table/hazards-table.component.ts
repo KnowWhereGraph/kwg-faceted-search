@@ -67,7 +67,7 @@ export class HazardsTableComponent implements OnInit {
    *
    * @param changes The change event
    */
-  ngOnChanges(changes: SimpleChanges) {}
+  ngOnChanges(changes: SimpleChanges) { }
 
 
   /**
@@ -76,7 +76,6 @@ export class HazardsTableComponent implements OnInit {
    */
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
-      console.log("Got event")
       this.pageSize = event.pageSize;
       this.offset = event.pageIndex * this.pageSize;
       this.paginationEvent.emit();
@@ -100,12 +99,11 @@ export class HazardsTableComponent implements OnInit {
     });
   }
 
-  populateTable(facets={}) {
+  populateTable(facets = {}) {
     if (Object.keys(facets).length) {
       this.facets = facets;
     }
-    
-    console.log("Populating weith offset:", this.offset)
+
     this.searchQueryStartedEvent.emit();
     // Clear the current results set so that the table is blank
     this.hazards = [];

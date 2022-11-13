@@ -63,7 +63,7 @@ export class SearchComponent implements OnInit {
         break;
     }
   }
-    // variable to hold the data from the place/hazard/people component.
+  // variable to hold the data from the place/hazard/people component.
   public returnedLocations: any;
 
   /**
@@ -195,7 +195,7 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-  getPeopleLocationEvent(values){
+  getPeopleLocationEvent(values) {
     this.returnedLocations = values;
     //this.mapChild.displayClustersForTab("people", values)
   }

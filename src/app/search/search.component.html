@@ -33,9 +33,10 @@
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-places-table #placesTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
-            (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
-            (locationEvent)="getPlaceLocationEvent($event)"></app-places-table>
+          <app-places-table #placesTable (paginationEvent)="recievedPagination()"
+            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getPlaceLocationEvent($event)">
+          </app-places-table>
         </ng-template>
       </mat-tab>
 
@@ -45,9 +46,10 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
-            (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
-            (locationEvent)="getHazardLocationEvent($event)"></app-hazards-table>
+          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()"
+            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getHazardLocationEvent($event)">
+          </app-hazards-table>
         </ng-template>
       </mat-tab>
 
@@ -57,9 +59,10 @@
           <span>Person</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table #peopleTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
-            (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
-            (locationEvent)="getPeopleLocationEvent($event)"></app-people-table>
+          <app-people-table #peopleTable (paginationEvent)="recievedPagination()"
+            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getPeopleLocationEvent($event)">
+          </app-people-table>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
@@ -67,6 +70,6 @@
 
   <!-- The map -->
   <div class="map-container">
-    <app-map #mapChild [locations] = 'returnedLocations'></app-map>
+    <app-map #mapChild [locations]='returnedLocations'></app-map>
   </div>
 </div>
