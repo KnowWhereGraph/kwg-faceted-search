@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
@@ -97,6 +97,23 @@ export class FacetsComponent implements OnInit {
   numberDeathsMax: number | undefined = undefined;
   numberInjuredMin: number | undefined = undefined;
   numberInjuredMax: number | undefined = undefined;
+  // The facet state
+  selectedFacets = {}
+    // Reference to the gnis map component
+    @ViewChild('gnisTree')
+    public gnisTree: any;
+
+    // Reference to the country/state/county map component
+    @ViewChild('adminTree')
+    public adminTree: any;
+
+    // Reference to the expert map component
+    @ViewChild('expertTree')
+    public expertTree: any;
+
+    // Reference to the expert map component
+    @ViewChild('hazardTree')
+    public hazardTree: any;
 
   // An action map that all of the checkbox facets share. It disables highlighting the facet when clicked by
   // doing nothing with the action
@@ -301,37 +318,116 @@ export class FacetsComponent implements OnInit {
    * Called when the hazard class is changed. This method exists separately than the other
    * facetChanged method because we want to process observation collections here
    */
-  hazardFacetChanged(event: ClickEvent | undefined = undefined) {
-    let selected = (eventName: string) => {
-      if (eventName === 'select') {
-        return true;
-      } else if (eventName === 'deselect') {
-        return false;
-      }
-      return undefined;
+  hazardFacetChanged(event) {
+
+    // Check to see if any nodes were selected.
+    let nodeUris = this.getSelectedNodesURIs(this.hazardTree.treeModel);
+    // Check to see if it's equal to the previous selection
+    if (JSON.stringify(nodeUris) != JSON.stringify(this.selectedFacets['hazardTypes'])) {
+      this.selectedHazardFacets = nodeUris;
+      this.updateFacetSelections();
     }
 
-    if (event && event.node && event.node.data) {
-      let selectedNodes = Object.entries(event.treeModel.selectedLeafNodeIds)
-        .filter(([key, value]) => {
-          return (value === true);
-        }).map((id) => {
-          let node = event.treeModel.getNodeById(id[0]);
-          return node;
-        });
-      let selectedHazards: Array<string> = selectedNodes.map((node) => {
+    let selectedNodes = this.getSelectedNodes(this.hazardTree.treeModel);
+    // Handle showing the OC by checking each slected node for its name
+    let foundNOAA = false;
+    let foundMTBS = false;
+    let foundEQ = false;
+    selectedNodes.forEach((node_id) => {
+      // Get the node object
+      let node = this.hazardTree.treeModel.getNodeById(node_id[0])
+      if(node.data.name == 'MTBS Fire') {
+        foundMTBS = true;
+        }
+        if (node.data.name == 'Earthquake') {
+          foundEQ = true
+        }
+        if (node.data.name == 'NOAA Hurricane Event') {
+          foundNOAA = true;
+        }
+    });
+    this.showEarthquakeOC = foundEQ;
+    this.showMTBFireOC = foundMTBS;
+    this.showNOAAOC = foundNOAA
+
+    if (selectedNodes.length == 0) {
+      this.showMTBFireOC = false;
+      this.showEarthquakeOC = false;
+      this.showNOAAOC = false;
+    }
+    }
+  
+  /**
+   * Returns either the URIs or Node objects of all the selected nodes in a tree
+   * 
+   * @param treeModel The tree containing the nodes (ie GNIS tree, hazards tree)
+   * @param uri Boolean whether to return the URI. If false, return the Node object
+   * @returns An array of Node or string URIs of selected items in a tree
+   */
+  getSelectedNodesURIs(treeModel: TreeModel, uri: boolean=true) {
+    return Object.entries(treeModel.selectedLeafNodeIds)
+    .filter(([key, value]) => {
+      return (value === true);
+    }).map((id) => {
+      let node = treeModel.getNodeById(id[0]);
         return node.data.uri;
-      });
-      this.selectedHazardFacets = selectedHazards;
-      if (event.node.data.name == 'MTBS Fire') {
-        this.showMTBFireOC = selected(event.eventName) ? true : false;
-      } else if (event.node.data.name == 'Earthquake') {
-        this.showEarthquakeOC = selected(event.eventName) ? true : false;
-      } else if (event.node.data.name == 'NOAA Hurricane Event') {
-        this.showNOAAOC = selected(event.eventName) ? true : false;
-      }
+    });
+  }
+
+  /**
+   * Returns either the URIs or Node objects of all the selected nodes in a tree
+   * 
+   * @param treeModel The tree containing the nodes (ie GNIS tree, hazards tree)
+   * @param uri Boolean whether to return the URI. If false, return the Node object
+   * @returns An array of Node or string URIs of selected items in a tree
+   */
+   getSelectedNodes(treeModel: TreeModel, uri: boolean=true) {
+    return Object.entries(treeModel.selectedLeafNodeIds).filter(([key, value]) => {
+      return (value === true);
+    });
+  }
+
+  /**
+   * Handles the event when the state of the GNIS tree changes
+   */
+  gnisFacetChange($event) {
+    // Check to see if any nodes were selected.
+    let node_ids = this.getSelectedNodes(this.gnisTree.treeModel, false);
+    let nodes: Array<any> = [];
+    node_ids.forEach((node) => {
+      nodes.push(this.gnisTree.treeModel.getNodeById(node[0]))
+    })
+    let nodeUris = this.getSelectedNodesURIs(this.gnisTree.treeModel, false);
+    // Check to see if it's equal to the previous selection
+    if (JSON.stringify(nodeUris) != JSON.stringify(this.selectedFacets['gnisType'])) {
+      this.selectedFeatureTypeFacet = nodeUris;
+      this.updateFacetSelections()
+    }
+  }
+
+  /**
+   * Handles the event when the state of the Admin Area tree changes
+   */
+   adminFacetChange($event) {
+    // Check to see if any nodes were selected.
+    let nodes = this.getSelectedNodesURIs(this.adminTree.treeModel);
+    // Check to see if it's equal to the previous selection
+    if (JSON.stringify(nodes) != JSON.stringify(this.selectedFacets['location'])) {
+      this.selectedLocationFacets = nodes;
+      this.updateFacetSelections()
+    }
+  }
+
+  /**
+   * Handles the event when the state of the expert tree changes
+   */
+   expertFacetChange($event) {
+    // Check to see if any nodes were selected.
+    let nodes = this.getSelectedNodesURIs(this.expertTree.treeModel);
+    // Check to see if it's equal to the previous selection
+    if (JSON.stringify(nodes) != JSON.stringify(this.selectedFacets['expertiseTopics'])) {
+      this.selectedExpertFacets = nodes;
       this.updateFacetSelections();
-      //this.updateUrlParams();
     }
   }
 
@@ -342,45 +438,28 @@ export class FacetsComponent implements OnInit {
    *
    * @param event The event fired from the facet changing
    */
-  facetChanged(event: any = undefined) {
+  facetChanged(event) {
     if (event) {
       if (event.eventName == 'select' || event.eventName == 'deselect') {
-        let selected = Object.entries(event.treeModel.selectedLeafNodeIds)
-          .filter(([key, value]) => {
-            return (value === true);
-          }).map((id) => {
-            let node = event.treeModel.getNodeById(id[0]);
-            return node;
-          });
-        // Check to see if the facet was dynamically populated. If it was, save the URI
-        if (event.treeModel.options.options.idField === "GNIS") {
-          // A GNIS place type was selected
-          this.selectedFeatureTypeFacet = selected;
-        } else if (event.treeModel.options.options.idField === "Admin") {
-          // An administrative region was selected
-          let selectedPlaces: Array<string> = selected.map((node) => {
-            return node.data.uri;
-          });
-          this.selectedLocationFacets = selectedPlaces;
-        } else if (event.treeModel.options.options.idField === "Expert") {
-          // An expertise was selected
-          this.selectedExpertFacets = selected;
-        }
+       if (event.eventName == "initialized" ||
+       event.eventName == "updateData" ||
+       event.eventName == "toggleExpanded" ||
+       event.eventName == "loadNodeChildren" ||
+       event.eventName == "blur" ||
+       event.eventName == "focus") {
+        // Avoid updating the table for misc tree facet events that get fired
+        return;
       }
-      //this.updateUrlParams();
+    } else {
       this.updateFacetSelections();
     }
   }
+}
 
   /**
    * The function to retrieve the selected facets and send them to the parent component SearchComponent.
    */
   updateFacetSelections() {
-    // Select the URI of the GNIS types
-    let gnisURIS: Array<string> = new Array();
-    this.selectedFeatureTypeFacet.forEach((gnisType) => {
-      gnisURIS.push(gnisType.data.uri);
-    })
     let startDate: string | undefined = undefined;
     if (this.startDate) {
       startDate = new Date(this.startDate).toISOString()
@@ -398,13 +477,13 @@ export class FacetsComponent implements OnInit {
       }
     }
 
-    let selectedFacets = {
+    this.selectedFacets = {
       'keyword': this.keyword,
       'climateDivision': this.climateDivsionRecords.get(this.climateDivision),
       'zipCode': getVal(this.zipCodeRecords, this.zipCode),
       'fipsCode': getVal(this.fipsCodeRecords, this.fipsCode),
       'nationalWeatherZone': this.nationalWeatherZoneRecords.get(this.nationalWeatherZone),
-      'gnisType': gnisURIS,
+      'gnisType': this.selectedFeatureTypeFacet,
       'adminRegion': this.adminRegionRecords.get(this.adminRegion),
       'hazardTypes': this.selectedHazardFacets,
       'location': this.selectedLocationFacets,
@@ -426,7 +505,7 @@ export class FacetsComponent implements OnInit {
       'numberInjuredMin': this.numberInjuredMin,
       'numberInjuredMax': this.numberInjuredMax
     };
-    this.facetChangedEvent.emit(selectedFacets);
+    this.facetChangedEvent.emit(this.selectedFacets);
   }
 
   /**

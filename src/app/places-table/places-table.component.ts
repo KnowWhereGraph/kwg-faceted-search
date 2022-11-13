@@ -13,7 +13,6 @@ import { QueryService } from '../services/query.service'
   styleUrls: ['./places-table.component.scss']
 })
 export class PlacesTableComponent implements OnInit {
-  @Input() placesFacets = {};
   // Columns for the table
   placesColumns: Array<String> = ["name", "type"];
   // The data source that's responsible for fetching data
@@ -25,6 +24,8 @@ export class PlacesTableComponent implements OnInit {
   public currentPage = 0;
   // The number of results
   public totalSize = 0;
+  // The query offset
+  private offset = 0;
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
@@ -38,6 +39,8 @@ export class PlacesTableComponent implements OnInit {
   @Output() locationEvent = new EventEmitter();
   // Event that notifies the parent component that a query has started
   @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
+  // Triggered on paginations. It tells the search component to trigger a table refresh (sending the facet data)
+  @Output() paginationEvent = new EventEmitter<void>();
 
   /**
    * Creates a new table for the place results.
@@ -66,19 +69,17 @@ export class PlacesTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex * this.pageSize;
-      this.populateTable(offset);
+      this.offset = event.pageIndex * this.pageSize;
+      this.paginationEvent.emit();
     });
   }
 
-  /**
- * Called when users make facet selections
- *
- * @param changes The change event
- */
-  ngOnChanges(changes: SimpleChanges) {
-    this.populateTable();
-  }
+    /**
+   * The changes are directed by the search component, hence an empty event listener
+   *
+   * @param changes The change event
+   */
+     ngOnChanges(changes: SimpleChanges) {}
 
   /**
    * Populates the data table with places. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
@@ -86,12 +87,12 @@ export class PlacesTableComponent implements OnInit {
    * @param offset The query offset
    * @param count The number of results to retrieve
    */
-  populateTable(offset: number = 0, count: number = 20) {
+  populateTable(facets={}) {
     this.searchQueryStartedEvent.emit();
     this.places = [];
     this.placesDataSource = new MatTableDataSource(this.places);
     // A map of a place's URI to its properties that are retrieved from the database
-    this.queryService.getPlaces(this.placesFacets, count, offset).then((results: any) => {
+    this.queryService.getPlaces(facets, this.pageSize, this.offset).then((results: any) => {
       this.places = [];
       this.locations = [];
       results.records.forEach(result => {
@@ -102,11 +103,11 @@ export class PlacesTableComponent implements OnInit {
           "typeUri": result["place_type"],
         });
         if (result['wkt']) {
-          this.locations.push(result['wkt']['value']);
+          this.locations.push(result['wkt']);
         }
       });
       this.placesDataSource = new MatTableDataSource(this.places);
-      this.queryService.query(`select (count(*) as ?count) { ` + results.query + 'LIMIT ' + count * 10 + ` }`).then((res) => {
+      this.queryService.query(`select (count(*) as ?count) { ` + results.query + 'LIMIT ' + this.pageSize * 10 + ` }`).then((res) => {
         this.totalSize = res.results.bindings[0].count.value;
         // Update the number of results
         this.resultsCountEvent.emit(this.totalSize);
