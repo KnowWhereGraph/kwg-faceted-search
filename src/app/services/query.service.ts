@@ -51,9 +51,10 @@ export class QueryService {
    * Performs a SPARQL query
    *
    * @param {string} query The query that is being performed
+   * @param {string} query_id The identifier of the query. Should be of the form KE-1234
    * @returns
    */
-  async query(query) {
+  async query(query, query_id = "KE-0") {
     let d_form = new FormData();
     d_form.append('query', this.prefixes + query);
     let d_res: any = await fetch(this.endpoint, {
@@ -61,6 +62,7 @@ export class QueryService {
       mode: 'cors',
       headers: {
         Accept: 'application/sparql-results+json',
+        'X-Request-Id': query_id
       },
       body: this.getRequestBody(query),
     }).catch((error) => {
@@ -627,8 +629,7 @@ export class QueryService {
       hazardQuery += ` ORDER BY desc(?score)`;
     }
 
-    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + (offset - 1) * offset);
-    let entityQueryStr: string = '';
+    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
     let hazardEntites: Array<string> = new Array();
     queryResults['results']['bindings'].forEach(row => {
       formattedResults.push({
@@ -645,8 +646,6 @@ export class QueryService {
         'wkt': (typeof row.wkt === 'undefined') ? '' : row.wkt.value.replace('<http://www.opengis.net/def/crs/OGC/1.3/CRS84>', '')
       });
       hazardEntites.push(row.entity.value);
-      // URIS that can be placed in the query (they have the <> brackets)
-      entityQueryStr = hazardEntites.map((uri) => `<${uri}>`).join(" ");
     });
     return { 'query': hazardQuery, 'record': formattedResults };
   }
@@ -703,11 +702,11 @@ export class QueryService {
    * @param offset The number of results to skip
    * @returns An observable that the caller can watch
    */
-  getAllPeople(expertiseTopics: Array<string>, keywords = "", limit: number = 20, offset = 0) {
-    let query = `SELECT * WHERE {` + this.getPeopleQueryBody(expertiseTopics, keywords) + `} LIMIT ` + limit.toString() + `OFFSET` + offset.toString();
-    let headers = this.getRequestHeaders('KE_06');
-    let body = this.getRequestBody(query);
-    return this.http.post(this.endpoint, body, headers);
+  async getAllPeople(expertiseTopics: Array<string>, keywords = "", limit: number = 20, offset = 0) {
+    let query_body = this.getPeopleQueryBody(expertiseTopics, keywords);
+    let query = `SELECT * WHERE {` + query_body + `}`;
+    let people_response: Response = await this.query(query + `LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString(), 'KE-06');
+    return { 'query': query, 'results': people_response }
   }
 
   /**

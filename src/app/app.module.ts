@@ -56,9 +56,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     TreeModule,
     RouterModule.forRoot([
-    {path: '', component: IndexComponent},
-    {path: 'search', component: SearchComponent},
-  ]),
+      { path: '', component: IndexComponent },
+      { path: 'search', component: SearchComponent },
+    ]),
     BrowserAnimationsModule,
     NgbModule,
   ],

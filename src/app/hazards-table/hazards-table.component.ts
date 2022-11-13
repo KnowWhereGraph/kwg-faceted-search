@@ -15,7 +15,6 @@ import { QueryService } from '../services/query.service';
   styleUrls: ['./hazards-table.component.scss']
 })
 export class HazardsTableComponent implements OnInit {
-  @Input() hazardFacets = {};
   // Holds all of the hazards that are actively being displayed in the table
   hazards: Array<Hazard> = [];
   // Columns for the table
@@ -30,12 +29,17 @@ export class HazardsTableComponent implements OnInit {
   public currentPage = 0;
   // The number of results. This is used by the paginator to create the page numbers
   public totalSize = 0;
+  // The page offset
+  private offset = 0;
+  private facets = {};
   // Event that sends the number of results from a query to the parent component
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
   // Event that notifies the parent component that a query has started
   @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
+  // Triggered on paginations. It tells the search component to trigger a table refresh (sending the facet data)
+  @Output() paginationEvent = new EventEmitter<void>();
   // Event that sends the locations of hazards from a query to the parent component. This
   // is used in the map display
   locations: Array<string> = [];
@@ -56,18 +60,14 @@ export class HazardsTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.hazardsDataSource = new MatTableDataSource(this.hazards);
-    this.populateTableA();
-    //this.getResultsSize();
   }
 
   /**
-   * Called when users make facet selections
+   * The changes are directed by the search component, hence an empty event listener
    *
    * @param changes The change event
    */
-  ngOnChanges(changes: SimpleChanges) {
-    this.populateTableA();
-  }
+  ngOnChanges(changes: SimpleChanges) { }
 
 
   /**
@@ -77,9 +77,8 @@ export class HazardsTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex * this.pageSize;
-      this.populateTableA(offset);
-      //this.getResultsSize();
+      this.offset = event.pageIndex * this.pageSize;
+      this.paginationEvent.emit();
     });
   }
 
@@ -100,7 +99,11 @@ export class HazardsTableComponent implements OnInit {
     });
   }
 
-  populateTableA(offset: number = 0) {
+  populateTable(facets = {}) {
+    if (Object.keys(facets).length) {
+      this.facets = facets;
+    }
+
     this.searchQueryStartedEvent.emit();
     // Clear the current results set so that the table is blank
     this.hazards = [];
@@ -109,7 +112,7 @@ export class HazardsTableComponent implements OnInit {
     let hazardRecords = new Map<string, any>();
     // Get a list of all the hazards and their associated properties. Start by first getting a list of all the
     // hazard URI's.
-    this.queryService.getHazardSearchResults(this.hazardFacets, this.pageSize, offset).then((results: any) => {
+    this.queryService.getHazardSearchResults(facets, this.pageSize, this.offset).then((results: any) => {
       // Once the hazards have been retrieved, attempt to get the associated properties
       let hazardUris: Array<string> = [];
       this.locations = [];
@@ -167,6 +170,7 @@ export class HazardsTableComponent implements OnInit {
               endDateUri: record.endDate,
               endDate: record.endDateName,
               dateUri: record.time,
+              wkt: record.wkt
             }
             this.hazards.push(new_record);
             if (record.wkt) {
@@ -175,7 +179,7 @@ export class HazardsTableComponent implements OnInit {
           });
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
           this.searchQueryFinishedEvent.emit(true);
-          this.locationEvent.emit(this.locations);
+          this.locationEvent.emit(this.hazards);
         },
         error: error => {
           console.error("Error getting the hazard properties", error)

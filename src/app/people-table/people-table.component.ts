@@ -15,7 +15,6 @@ import { QueryService } from '../services/query.service'
   styleUrls: ['./people-table.component.scss']
 })
 export class PeopleTableComponent implements OnInit {
-  @Input() peopleFacets = {};
   // Columns for the table
   peopleColumns: Array<String> = ["name", "affiliation", "expertise", "place"];
   // The data source that's responsible for fetching data
@@ -33,12 +32,16 @@ export class PeopleTableComponent implements OnInit {
   public currentPage = 0;
   // The number of results
   public totalSize = 0;
+  // Query offset
+  private offset = 0;
   // Holds the locations of the results
   locations: Array<string> = [];
   // Event that sends the locations of people from a query to the parent component
   @Output() locationEvent = new EventEmitter();
   // Event that notifies the parent component that a query has started
   @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
+  // Triggered on paginations. It tells the search component to trigger a table refresh (sending the facet data)
+  @Output() paginationEvent = new EventEmitter<void>();
 
   /**
    * Creates a new table for people.
@@ -64,31 +67,97 @@ export class PeopleTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize;
-      let offset = event.pageIndex * this.pageSize;
+      this.offset = event.pageIndex * this.pageSize;
       this.searchQueryStartedEvent.emit();
-      this.populateTable(offset);
+      this.paginationEvent.emit();
     });
   }
 
   /**
-   * Called when users make facet selections
-   *
-   * @param changes The change event
-   */
+ * The changes are directed by the search component, hence an empty event listener
+ *
+ * @param changes The change event
+ */
   ngOnChanges(changes: SimpleChanges) {
-    this.searchQueryStartedEvent.emit();
-    this.populateTable();
-    this.countResults();
   }
 
+
+  /**
+   * Populates the data table with people. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
+   * which gets inserted into the subsequent query.
+   *
+   * @param offset The query offset
+   */
+  populateTable(facets) {
+    // Retrieves a list of all the potential subtopics for each topic. If there aren't any,
+    // use the existing values in expertiseTopicFacets
+    if (facets['expertiseTopics'] !== undefined && facets['expertiseTopics'].length) {
+      let expertiseTopics = facets['expertiseTopics'];
+      this.queryService.getSubTopics(expertiseTopics).subscribe({
+        next: response => {
+          let results = this.queryService.getResults(response);
+          results = results.map(res => {
+            return res['sub_topic']['value'];
+          });
+          if (!results.length) {
+            results = expertiseTopics
+          }
+          facets['expertiseTopics'] = results;
+          this.queryPeople(facets);
+        },
+        error: response => {
+          console.error("There was an error while retrieving subtopics", response)
+        }
+      });
+    } else {
+      this.queryPeople(facets);
+    }
+  }
+
+  /**
+   * Queries the database for people and populates the table with the results.
+   *
+   * @param expertiseTopicFacets An array of URIs of expert topics
+   */
+  queryPeople(facets) {
+    this.queryService.getAllPeople(facets['expertiseTopics'], facets['keyword'], this.pageSize, this.offset).then((response: any) => {
+      this.locations = [];
+      this.people = [];
+      response.results['results']['bindings'].forEach(result => {
+        let expertise: Array<[string, string]> = []
+        expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
+          return [x, result["expertiseLabel"]["value"].split(', ')[i]]
+        });
+        this.people.push({
+          "name": result["label"]["value"],
+          "name_uri": result["entity"]["value"],
+          "affiliation": result["affiliationLabel"]["value"],
+          "affiliation_uri": result["affiliation"]["value"],
+          "expertise": expertise.slice(0, 5),
+          "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
+          "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : "",
+          "wkt": result["wkt"]["value"]
+        });
+      });
+      this.peopleDataSource = new MatTableDataSource(this.people);
+      this.searchQueryFinishedEvent.emit(true);
+      this.queryService.query(`select (count(*) as ?count) { ` + response.query + ` } LIMIT 200`).then((res) => {
+        this.totalSize = res.results.bindings[0].count.value;
+        // Update the number of results
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+      })
+      this.locationEvent.emit(this.people);
+    });
+  }
   /**
    * Triggered to count the number of experts that have expertise in
    * a particular field.
    */
-  countResults() {
-    if (this.peopleFacets['expertiseTopics'] !== undefined && this.peopleFacets['expertiseTopics'].length) {
+  countResults(facets) {
+    if (facets['expertiseTopics'] !== undefined && facets['expertiseTopics'].length) {
       let expertiseTopics: Array<string>;
-      expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
+      expertiseTopics = facets['expertiseTopics'].map(expertiseTopic => {
         return expertiseTopic['data']['uri']
       });
       this.queryService.getSubTopics(expertiseTopics).subscribe({
@@ -107,18 +176,18 @@ export class PeopleTableComponent implements OnInit {
         }
       })
     } else {
-      this.getPeopleCount(this.peopleFacets['expertiseTopics'])
+      this.getPeopleCount(facets)
     }
   }
 
   /**
-   * Counts the number of experts that are expertise in the fields contained
-   * in expertiseTopics.
-   *
-   * @param expertiseTopics An array of expert topic URIs
-   */
-  getPeopleCount(expertiseTopics: Array<string>) {
-    this.queryService.getPeopleCount(expertiseTopics, this.peopleFacets['keyword'], this.pageSize * 10).subscribe({
+     * Counts the number of experts that are expertise in the fields contained
+     * in expertiseTopics.
+     *
+     * @param expertiseTopics An array of expert topic URIs
+     */
+  getPeopleCount(facets) {
+    this.queryService.getPeopleCount(facets['expertiseTopics'], facets['keyword'], this.pageSize * 10).subscribe({
       next: response => {
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
@@ -131,78 +200,6 @@ export class PeopleTableComponent implements OnInit {
     });
   }
 
-  /**
-   * Populates the data table with people. Because the user may be on a different table page than 1, it accepts an 'offset' parameter
-   * which gets inserted into the subsequent query.
-   *
-   * @param offset The query offset
-   */
-  populateTable(offset: number = 0) {
-    // Retrieves a list of all the potential subtopics for each topic. If there aren't any,
-    // use the existing values in expertiseTopicFacets
-    if (this.peopleFacets['expertiseTopics'] !== undefined && this.peopleFacets['expertiseTopics'].length) {
-      let expertiseTopics = this.peopleFacets['expertiseTopics'].map(expertiseTopic => {
-        return expertiseTopic['data']['uri']
-      });
-      this.queryService.getSubTopics(expertiseTopics).subscribe({
-        next: response => {
-          let results = this.queryService.getResults(response);
-          results = results.map(res => {
-            return res['sub_topic']['value']
-          });
-          if (!results.length) {
-            results = expertiseTopics
-          }
-          this.queryPeople(results, offset);
-        },
-        error: response => {
-          console.error("There was an error while retrieving subtopics", response)
-        }
-      });
-    } else {
-      this.queryPeople(this.peopleFacets['expertiseTopics'], offset);
-    }
-  }
-
-  /**
-   * Queries the database for people and populates the table with the results.
-   *
-   * @param expertiseTopicFacets An array of URIs of expert topics
-   * @param offset The offset to start at for obtaining experts
-   */
-  queryPeople(expertiseTopicFacets: Array<string>, offset: number = 0) {
-    this.queryService.getAllPeople(expertiseTopicFacets, this.peopleFacets['keyword'], this.pageSize, offset).subscribe({
-      next: response => {
-        let results = this.queryService.getResults(response);
-        this.locations = [];
-        this.people = [];
-        for (var result of results) {
-          let expertise: Array<[string, string]> = []
-          expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
-            return [x, result["expertiseLabel"]["value"].split(', ')[i]]
-          });
-          this.people.push({
-            "name": result["label"]["value"],
-            "name_uri": result["entity"]["value"],
-            "affiliation": result["affiliationLabel"]["value"],
-            "affiliation_uri": result["affiliation"]["value"],
-            "expertise": expertise.slice(0, 5),
-            "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
-            "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : ""
-          });
-          if (result['wkt']) {
-            this.locations.push(result['wkt']['value']);
-          }
-        }
-        this.peopleDataSource = new MatTableDataSource(this.people);
-        this.searchQueryFinishedEvent.emit(true);
-        this.locationEvent.emit(this.locations);
-      },
-      error: response => {
-        console.error("There was an error while populating the data table", response)
-      }
-    });
-  }
 }
 
 /**
@@ -216,4 +213,5 @@ export interface Person {
   expertise: Array<[SafeResourceUrl, string]>,
   place: string,
   place_uri: string,
+  wkt: string
 }

@@ -13,7 +13,8 @@
   <div class="facet">
     <span class="search-header">Feature Type</span>
     <div class="scrollable-facet">
-      <tree-root class="facet-tree" [nodes]="gnisClassesDisplay" (event)="facetChanged($event)" [options]="gnisOptions">
+      <tree-root class="facet-tree" #gnisTree [nodes]="gnisClassesDisplay" (stateChange)="gnisFacetChange($event)"
+        [options]="gnisOptions">
       </tree-root>
     </div>
   </div>
@@ -34,8 +35,8 @@
     </span>
     <!-- Only show the US Places nested checkbox facet on the Hazards tab -->
     <div class="scrollable-facet">
-      <tree-root class="facet-tree tree" [nodes]="administrativeRegionsDisplay" (event)="facetChanged($event)"
-        [options]="adminRegionOptions">
+      <tree-root class="facet-tree tree" #adminTree [nodes]="administrativeRegionsDisplay"
+        (stateChange)="adminFacetChange($event)" [options]="adminRegionOptions">
       </tree-root>
     </div>
   </div>
@@ -104,8 +105,8 @@
   </div>
   <span class="search-header">Hazard Type(s)</span>
   <div class="hazard-types">
-    <tree-root class="facet-tree hazard-tree" [nodes]="hazardClassesDisplay" (event)="hazardFacetChanged($event)"
-      [options]="hazardOptions"> </tree-root>
+    <tree-root class="facet-tree hazard-tree" #hazardTree [nodes]="hazardClassesDisplay"
+      (stateChange)="hazardFacetChanged($event)" [options]="hazardOptions"> </tree-root>
   </div>
   <!--(click)="onEvent($event)"-->
   <div class="facet observation-collection">
@@ -198,8 +199,8 @@
   <div class="facet">
     <span class="search-header">Expert Topic(s)</span>
     <div class="expert-types">
-      <tree-root class="expert-types" [nodes]="expertClassesDisplay" (event)="facetChanged($event)"
-        [options]="expertOptions"></tree-root>
+      <tree-root class="expert-types" #expertTree [nodes]="expertClassesDisplay"
+        (stateChange)="expertFacetChange($event)" [options]="expertOptions"></tree-root>
     </div>
   </div>
 </div>
