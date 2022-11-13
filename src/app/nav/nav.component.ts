@@ -22,6 +22,7 @@ export class NavComponent implements OnInit {
 <<<<<<< HEAD
   ngOnInit(): void {
   }
+<<<<<<< HEAD
 
 
   /**
@@ -35,4 +36,6 @@ export class NavComponent implements OnInit {
 =======
   ngOnInit(): void { }
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
+=======
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
 }

@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { PlacesTableComponent } from '../places-table/places-table.component';
+
 /**
  * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
  * Based on the tab clicked, it renders the appropriate table component.
@@ -24,18 +24,49 @@ export class SearchComponent implements OnInit {
   public currentPage: number = 0;
   // The number of results
   public totalSize: number = 0;
+<<<<<<< HEAD
+=======
+  // State of all of the facet values
+  facetState = {};
+
+  // Reference to the map component
+  @ViewChild('mapChild')
+  public mapChild: any;
+  // Reference to the places tab
+  @ViewChild('placesTable')
+  public placesTable: any;
+  // Reference to the hazards table
+  @ViewChild('hazardsTable')
+  public hazardsTable: any;
+  // Reference people table
+  @ViewChild('peopleTable')
+  public peopleTable: any;
+  // Reference to the facets component
+  @ViewChild('appfacets')
+  public appfacets: any;
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
 
   /**
-   * test for communication between facetComponent and searchComponent
+   * Called when a facet changes
+   * 
+   * @param selectedFacets: object JSON object of the facet state
    */
-  searchFacets = {};
   changeFacets(selectedFacets: object) {
-    this.searchFacets = selectedFacets;
+    this.facetState = selectedFacets;
+    // Let the table know that it needs to update. First find out which table is active
+    switch (this.selectedTabIndex) {
+      case 0:
+        this.placesTable.populateTable(selectedFacets);
+        break;
+      case 1:
+        this.hazardsTable.populateTable(selectedFacets);
+        break;
+      case 2:
+        this.peopleTable.populateTable(selectedFacets);
+        break;
+    }
   }
-
-  @ViewChild(PlacesTableComponent) placesTable: PlacesTableComponent;
-
-  // variable to hold the data from the place/hazard/people component.
+    // variable to hold the data from the place/hazard/people component.
   public returnedLocations: any;
 
   /**
@@ -71,6 +102,15 @@ export class SearchComponent implements OnInit {
     this.totalSize = newCount;
     this.isCounting = false;
   }
+
+  /**
+   * Called when a pagination event is triggered.
+   */
+  recievedPagination() {
+    this.changeFacets(this.appfacets.selectedFacets);
+  }
+
+
 
   /**
    * Event handler to set the searching state
@@ -111,7 +151,7 @@ export class SearchComponent implements OnInit {
       case 2:
         clickedTabName = "people";
     }
-    const queryParams = { tab: clickedTabName };
+    //const queryParams = { tab: clickedTabName };
 
   }
 
@@ -159,9 +199,14 @@ export class SearchComponent implements OnInit {
 >>>>>>> 093c3e3c (Format all source fileS)
     this.returnedLocations = values;
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("place", values)
 =======
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
+=======
+    // We don't display place locations; uncomment this when we support it
+    //this.mapChild.displayClustersForTab("place", values)
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
   }
 
   /**
@@ -172,9 +217,13 @@ export class SearchComponent implements OnInit {
   getHazardLocationEvent(values) {
     this.returnedLocations = values;
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
 =======
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
+=======
+    //this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
   }
 
   /**
@@ -185,7 +234,11 @@ export class SearchComponent implements OnInit {
   getPeopleLocationEvent(values) {
     this.returnedLocations = values;
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("people", values)
+=======
+    //this.mapChild.displayClustersForTab("people", values)
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
   }
 <<<<<<< HEAD
 =======

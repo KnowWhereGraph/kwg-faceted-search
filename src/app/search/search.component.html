@@ -33,7 +33,7 @@
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-places-table [placesFacets]="searchFacets" (resultsCountEvent)="changeResultsCount($event)"
+          <app-places-table #placesTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
             (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
             (locationEvent)="getPlaceLocationEvent($event)"></app-places-table>
         </ng-template>
@@ -45,7 +45,7 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table [hazardFacets]="searchFacets" (resultsCountEvent)="changeResultsCount($event)"
+          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
             (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
             (locationEvent)="getHazardLocationEvent($event)"></app-hazards-table>
         </ng-template>
@@ -57,7 +57,7 @@
           <span>Person</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table [peopleFacets]="searchFacets" (resultsCountEvent)="changeResultsCount($event)"
+          <app-people-table #peopleTable (paginationEvent)="recievedPagination()" (resultsCountEvent)="changeResultsCount($event)"
             (searchQueryFinishedEvent)="searchQueryFinished()" (searchQueryStartedEvent)="searchQueryStarted()"
             (locationEvent)="getPeopleLocationEvent($event)"></app-people-table>
         </ng-template>
@@ -67,6 +67,7 @@
 
   <!-- The map -->
   <div class="map-container">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     <!-- <app-map [msgFromSearchParent] = 'testValue'></app-map> -->
@@ -84,5 +85,8 @@
 =======
     <app-map [locations]='returnedLocations'></app-map>
 >>>>>>> 093c3e3c (Format all source fileS)
+=======
+    <app-map #mapChild [locations] = 'returnedLocations'></app-map>
+>>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
   </div>
 </div>
