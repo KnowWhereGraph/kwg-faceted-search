@@ -42,6 +42,8 @@ export class PeopleTableComponent implements OnInit {
   @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
   // Triggered on paginations. It tells the search component to trigger a table refresh (sending the facet data)
   @Output() paginationEvent = new EventEmitter<void>();
+  // Used to trigger the error modal
+  @Output() errorModal = new EventEmitter<void>();
 
   /**
    * Creates a new table for people.
@@ -95,6 +97,13 @@ export class PeopleTableComponent implements OnInit {
       let expertiseTopics = facets['expertiseTopics'];
       this.queryService.getSubTopics(expertiseTopics).subscribe({
         next: response => {
+          if (response === false) {
+            this.totalSize = 0
+            this.resultsCountEvent.emit(this.totalSize);
+            this.searchQueryFinishedEvent.emit(true);
+            this.errorModal.emit();
+            return;
+          }
           let results = this.queryService.getResults(response);
           results = results.map(res => {
             return res['sub_topic']['value'];
@@ -106,7 +115,12 @@ export class PeopleTableComponent implements OnInit {
           this.queryPeople(facets);
         },
         error: response => {
-          console.error("There was an error while retrieving subtopics", response)
+          console.error("There was an error while retrieving subtopics", response);
+          this.totalSize = 0
+          this.resultsCountEvent.emit(this.totalSize);
+          this.searchQueryFinishedEvent.emit(true);
+          this.errorModal.emit();
+          return;
         }
       });
     } else {
@@ -123,6 +137,13 @@ export class PeopleTableComponent implements OnInit {
     this.queryService.getAllPeople(facets['expertiseTopics'], facets['keyword'], this.pageSize, this.offset).then((response: any) => {
       this.locations = [];
       this.people = [];
+      if (response === false) {
+        this.totalSize = 0
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+        this.errorModal.emit();
+        return;
+      }
       response.results['results']['bindings'].forEach(result => {
         let expertise: Array<[string, string]> = []
         expertise = result["expertise"]["value"].split(', ').map(function (x, i) {
@@ -162,6 +183,13 @@ export class PeopleTableComponent implements OnInit {
       });
       this.queryService.getSubTopics(expertiseTopics).subscribe({
         next: response => {
+          if (response === false) {
+            this.totalSize = 0
+            this.resultsCountEvent.emit(this.totalSize);
+            this.searchQueryFinishedEvent.emit(true);
+            this.errorModal.emit();
+            return;
+          }
           let results = this.queryService.getResults(response);
           results = results.map(res => {
             return res['sub_topic']['value']
@@ -189,13 +217,24 @@ export class PeopleTableComponent implements OnInit {
   getPeopleCount(facets) {
     this.queryService.getPeopleCount(facets['expertiseTopics'], facets['keyword'], this.pageSize * 10).subscribe({
       next: response => {
+        if (response === false) {
+          this.totalSize = 0
+          this.resultsCountEvent.emit(this.totalSize);
+          this.searchQueryFinishedEvent.emit(true);
+          this.errorModal.emit();
+          return;
+        }
         let results = this.queryService.getResults(response)
         this.totalSize = results[0]['COUNT']['value'];
         // Update the number of results
         this.resultsCountEvent.emit(this.totalSize);
       },
       error: response => {
-        console.error("There was an error while retrieving the number of results", response)
+        this.totalSize = 0
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+        this.errorModal.emit();
+        return;
       }
     });
   }

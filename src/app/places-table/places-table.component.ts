@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { QueryService } from '../services/query.service'
@@ -30,8 +30,8 @@ export class PlacesTableComponent implements OnInit {
   @Output() resultsCountEvent = new EventEmitter<number>();
   // Event that notifies the parent component that a query has finished
   @Output() searchQueryFinishedEvent = new EventEmitter<boolean>();
-  // Testing....
-  @Output() testEvent = new EventEmitter<number>();
+  // Used to trigger the error modal
+  @Output() errorModal = new EventEmitter<void>();
   // Paginator for the results
   @ViewChild(MatPaginator) paginator: MatPaginator;
   // Event that sends the locations of results from a query to the parent component
@@ -92,9 +92,18 @@ export class PlacesTableComponent implements OnInit {
     this.places = [];
     this.placesDataSource = new MatTableDataSource(this.places);
     // A map of a place's URI to its properties that are retrieved from the database
+
     this.queryService.getPlaces(facets, this.pageSize, this.offset).then((results: any) => {
       this.places = [];
       this.locations = [];
+      // Check to see if the query failed
+      if (results === false) {
+        this.totalSize = 0;
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+        this.errorModal.emit();
+        return;
+      }
       results.records.forEach(result => {
         this.places.push({
           "name": result["place_name"],
@@ -107,7 +116,8 @@ export class PlacesTableComponent implements OnInit {
         }
       });
       this.placesDataSource = new MatTableDataSource(this.places);
-      this.queryService.query(`select (count(*) as ?count) { ` + results.query + 'LIMIT ' + this.pageSize * 10 + ` }`).then((res) => {
+      this.queryService.query(`SELECT (COUNT(*) as ?count) { ` + results.query + 'LIMIT ' + this.pageSize * 10 + ` }`).then((res) => {
+        console.log("res: ", res)
         this.totalSize = res.results.bindings[0].count.value;
         // Update the number of results
         this.resultsCountEvent.emit(this.totalSize);
@@ -117,6 +127,7 @@ export class PlacesTableComponent implements OnInit {
     });
   }
 }
+
 /**
  * Prototype for a row in the table; represents a Place.
  */

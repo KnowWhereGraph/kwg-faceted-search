@@ -10,6 +10,7 @@ import { SearchComponent } from './search/search.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from "@angular/material/dialog";
 import { PlacesTableComponent } from './places-table/places-table.component'
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -26,6 +27,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ErrorModalComponent } from './error-modal/error-modal.component';
 
 @NgModule({
   declarations: [
@@ -40,13 +42,18 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HazardsTableComponent,
     PeopleTableComponent,
     MapComponent,
+<<<<<<< HEAD
 
+=======
+    ErrorModalComponent,
+>>>>>>> 04ee827b (Add an error modal)
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     MatAutocompleteModule,
     MatDatepickerModule,
+    MatDialogModule,
     MatNativeDateModule,
     MatTableModule,
     MatTabsModule,
