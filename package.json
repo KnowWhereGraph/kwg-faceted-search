@@ -17,12 +17,13 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^14.2.12",
-    "@angular/cdk": "^13.2.4",
+    "@angular/cdk": "^14.2.7",
     "@angular/common": "^14.2.12",
     "@angular/compiler": "^14.2.12",
     "@angular/core": "^14.2.12",
     "@angular/forms": "^14.2.12",
     "@angular/localize": "^14.2.12",
+<<<<<<< HEAD
     "@angular/material": "^13.2.4",
 <<<<<<< HEAD
     "@angular/platform-browser": "~13.2.0",
@@ -60,16 +61,36 @@
 >>>>>>> feb11910 (Add support for generating the cache via cli. Switch the format over to csv to save space and refactor the cache-reading code to compensate for the format difference)
     "bootstrap": "^5.1.3",
     "leaflet": "^1.7.1",
+=======
+    "@angular/material": "^14.2.7",
+    "@angular/platform-browser": "^14.2.12",
+    "@angular/platform-browser-dynamic": "^14.2.12",
+    "@angular/router": "^14.2.12",
+    "@asymmetrik/ngx-leaflet-markercluster": "^14.0.1",
+    "@circlon/angular-tree-component": "^11.0.4",
+    "@geoman-io/leaflet-geoman-free": "^2.13.1",
+    "@ng-bootstrap/ng-bootstrap": "^13.1.1",
+    "@popperjs/core": "^2.11.6",
+    "@types/leaflet.markercluster": "^1.5.1",
+    "axios": "^1.2.0",
+    "bootstrap": "^5.1.3",
+    "leaflet": "^1.9.3",
+    "leaflet.markercluster": "^1.5.3",
+>>>>>>> afb0190f (Upgrade 3rd party deps)
     "leaflet.pm": "^2.2.0",
 <<<<<<< HEAD
 >>>>>>> 178354f6 (indent problem)
     "rxjs": "~7.5.0",
 =======
     "rxjs": "^7.5.5",
+<<<<<<< HEAD
 >>>>>>> 9313649f (Add autocompletion to the facets)
     "tslib": "^2.3.0",
+=======
+    "tslib": "^2.4.1",
+>>>>>>> afb0190f (Upgrade 3rd party deps)
     "wicket": "^1.3.8",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.12.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.10",
