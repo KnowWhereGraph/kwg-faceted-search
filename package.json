@@ -16,14 +16,15 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~13.2.0",
+    "@angular/animations": "^14.2.12",
     "@angular/cdk": "^13.2.4",
-    "@angular/common": "~13.2.0",
-    "@angular/compiler": "~13.2.0",
-    "@angular/core": "~13.2.0",
-    "@angular/forms": "~13.2.0",
-    "@angular/localize": "~13.2.0",
+    "@angular/common": "^14.2.12",
+    "@angular/compiler": "^14.2.12",
+    "@angular/core": "^14.2.12",
+    "@angular/forms": "^14.2.12",
+    "@angular/localize": "^14.2.12",
     "@angular/material": "^13.2.4",
+<<<<<<< HEAD
     "@angular/platform-browser": "~13.2.0",
     "@angular/platform-browser-dynamic": "~13.2.0",
     "@angular/router": "~13.2.0",
@@ -41,6 +42,11 @@
 =======
 >>>>>>> 9313649f (Add autocompletion to the facets)
 =======
+=======
+    "@angular/platform-browser": "^14.2.12",
+    "@angular/platform-browser-dynamic": "^14.2.12",
+    "@angular/router": "^14.2.12",
+>>>>>>> f7974cf7 (Upgrade to Angular 14)
     "@asymmetrik/ngx-leaflet-markercluster": "^13.0.1",
 >>>>>>> feb11910 (Add support for generating the cache via cli. Switch the format over to csv to save space and refactor the cache-reading code to compensate for the format difference)
     "@circlon/angular-tree-component": "^11.0.4",
@@ -66,9 +72,9 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~13.2.2",
-    "@angular/cli": "~13.2.2",
-    "@angular/compiler-cli": "~13.2.0",
+    "@angular-devkit/build-angular": "^14.2.10",
+    "@angular/cli": "^14.2.10",
+    "@angular/compiler-cli": "^14.2.12",
     "@types/jasmine": "~3.10.0",
     "@types/leaflet": "^1.7.9",
     "@types/node": "^12.11.1",
@@ -78,8 +84,9 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
-    "typescript": "~4.5.2"
+    "typescript": "~4.8.4"
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     "name": "faceted-search",
@@ -134,3 +141,6 @@
 =======
 }
 >>>>>>> 178354f6 (indent problem)
+=======
+}
+>>>>>>> f7974cf7 (Upgrade to Angular 14)
