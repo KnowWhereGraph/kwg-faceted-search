@@ -68,6 +68,12 @@ export class QueryService {
     }).catch((error) => {
       console.error("There was an error while running a query: ", error);
     });
+
+    // Status codes need to be manually checked here
+    if(d_res.status !== 200) {
+      console.warn("There was an error running the query", query, d_res);
+      return false;
+    }
     return await d_res.json();
   }
 
@@ -465,10 +471,11 @@ export class QueryService {
     if (placesFacets["keyword"] && placesFacets["keyword"] != "") {
       placeQuery += ` order by desc(?score)`;
     }
-
-    let queryResults: Response = await this.query(placeQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
+    let queryResults: Response|boolean = await this.query(placeQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
     let entityRawValues: Array<any> = [];
-
+    if (queryResults === false) {
+      return false;
+    }
     queryResults['results']['bindings'].forEach(row => {
       entityRawValues.push(row.entity.value);
       formattedResults.push({
@@ -629,7 +636,10 @@ export class QueryService {
       hazardQuery += ` ORDER BY desc(?score)`;
     }
 
-    let queryResults: Response = await this.query(hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
+    let queryResults: Response|boolean = await this.query(hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + offset);
+    if (queryResults === false) {
+      return false;
+    }
     let hazardEntites: Array<string> = new Array();
     queryResults['results']['bindings'].forEach(row => {
       formattedResults.push({
@@ -705,7 +715,10 @@ export class QueryService {
   async getAllPeople(expertiseTopics: Array<string>, keywords = "", limit: number = 20, offset = 0) {
     let query_body = this.getPeopleQueryBody(expertiseTopics, keywords);
     let query = `SELECT * WHERE {` + query_body + `}`;
-    let people_response: Response = await this.query(query + `LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString(), 'KE-06');
+    let people_response: Response|boolean = await this.query(query + `LIMIT ` + limit.toString() + ` OFFSET ` + offset.toString(), 'KE-06');
+    if (people_response === false) {
+      return false;
+    }
     return { 'query': query, 'results': people_response }
   }
 
