@@ -16,7 +16,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
 import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from '@circlon/angular-tree-component'
 import { Observable, OperatorFunction } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, elementAt, map } from 'rxjs/operators';
 
 <<<<<<< HEAD
 /**
@@ -336,7 +336,6 @@ export class FacetsComponent implements OnInit {
    * facetChanged method because we want to process observation collections here
    */
   hazardFacetChanged(event) {
-
     // Check to see if any nodes were selected.
     let nodeUris = this.getSelectedNodesURIs(this.hazardTree.treeModel);
     // Check to see if it's equal to the previous selection
@@ -359,7 +358,7 @@ export class FacetsComponent implements OnInit {
       if (node.data.name == 'Earthquake') {
         foundEQ = true
       }
-      if (node.data.name == 'NOAA Hurricane Event') {
+      if (node.data.name == 'Hurricane Event') {
         foundNOAA = true;
       }
     });
@@ -778,7 +777,7 @@ export class FacetsComponent implements OnInit {
           let parsedResponse = this.queryService.getResults(response);
           parsedResponse.forEach(element => {
             states.push({
-              name: element['hazard_label']['value'],
+              name: this.concatHazardType(node.data.name, element['hazard_label']['value']),
               hasChildren: element['count']['value'] > 0,
               uri: element['hazard']['value']
             });
@@ -787,6 +786,34 @@ export class FacetsComponent implements OnInit {
         }
       });
     })
+  }
+
+  /**
+   * Takes a hazard type and removes part of its name. For example, 'NOAA Hurricane Event' becomes 'Hurricane Event'
+   * @param hazardName The name of the hazard type
+   */
+  concatHazardType(parentName: string, hazardName: string) {
+    if (parentName === 'MTBS Fire') {
+      if (hazardName !== 'MTBS Fire') {
+        // Return the string after the prefix
+        return hazardName.split('MTBS ').pop()
+      }
+    }
+    // All of the NOAA types need to be modified except for NOAA Hazard because it's top level
+    if (parentName ==='NOAA Hazard') {
+      if (hazardName !== 'NOAA Hazard') {
+        return hazardName.split('NOAA ').pop()
+      }
+    }
+
+ 
+     // Handle NIFC Fire
+     if (parentName ==='NIFC Fire') {
+      if (hazardName !== 'NIFC Fire') {
+        return hazardName.split('NIFC ').pop()
+      }
+    }
+    return hazardName;
   }
 
   /**
