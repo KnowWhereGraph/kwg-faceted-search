@@ -44,6 +44,8 @@ export class HazardsTableComponent implements OnInit {
   // is used in the map display
   locations: Array<string> = [];
   @Output() locationEvent = new EventEmitter();
+  // Used to trigger the error modal
+  @Output() errorModal = new EventEmitter<void>();
 
   /**
    * Creates a new Hazards-table component. It initializes a new data source
@@ -113,6 +115,13 @@ export class HazardsTableComponent implements OnInit {
     // Get a list of all the hazards and their associated properties. Start by first getting a list of all the
     // hazard URI's.
     this.queryService.getHazardSearchResults(facets, this.pageSize, this.offset).then((results: any) => {
+      if (results === false) {
+        this.totalSize = 0;
+        this.resultsCountEvent.emit(this.totalSize);
+        this.searchQueryFinishedEvent.emit(true);
+        this.errorModal.emit();
+        return;
+      }
       // Once the hazards have been retrieved, attempt to get the associated properties
       let hazardUris: Array<string> = [];
       this.locations = [];
@@ -140,6 +149,13 @@ export class HazardsTableComponent implements OnInit {
       })
       this.queryService.getHazardProperties(hazardUris, this.pageSize).subscribe({
         next: response => {
+          if (response === false) {
+            this.totalSize = 0;
+            this.resultsCountEvent.emit(this.totalSize);
+            this.searchQueryFinishedEvent.emit(true);
+            this.errorModal.emit();
+            return;
+          }
           // Once all of the properties have been retrieved, populate the table
           let hazard_properties = this.queryService.getResults(response);
           this.hazards = [];
@@ -182,7 +198,11 @@ export class HazardsTableComponent implements OnInit {
           this.locationEvent.emit(this.hazards);
         },
         error: error => {
-          console.error("Error getting the hazard properties", error)
+          this.totalSize = 0;
+          this.resultsCountEvent.emit(this.totalSize);
+          this.searchQueryFinishedEvent.emit(true);
+          this.errorModal.emit();
+          return;
         }
       })
     })

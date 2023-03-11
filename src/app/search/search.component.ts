@@ -1,6 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { ErrorModalComponent } from '../error-modal/error-modal.component';
 
 /**
  * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
@@ -73,7 +75,7 @@ export class SearchComponent implements OnInit {
    * @param route: The activated route for this page
    * @param router: The global router
    */
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private errorModal: MatDialog) {
     this.totalSize = 0;
     this.isCounting = true;
     this.isSearching = true;
@@ -95,8 +97,6 @@ export class SearchComponent implements OnInit {
   recievedPagination() {
     this.changeFacets(this.appfacets.selectedFacets);
   }
-
-
 
   /**
    * Event handler to set the searching state
@@ -198,5 +198,15 @@ export class SearchComponent implements OnInit {
   getPeopleLocationEvent(values) {
     this.returnedLocations = values;
     //this.mapChild.displayClustersForTab("people", values)
+  }
+
+  /**
+   * Opens the error modal dialog
+   */
+  openErrorModal() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '300px';
+    dialogConfig.height = '200px';
+    this.errorModal.open(ErrorModalComponent, dialogConfig);
   }
 }

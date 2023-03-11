@@ -33,7 +33,7 @@
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-places-table #placesTable (paginationEvent)="recievedPagination()"
+          <app-places-table #placesTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()"
             (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
             (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getPlaceLocationEvent($event)">
           </app-places-table>
@@ -46,7 +46,7 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()"
+          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()
             (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
             (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getHazardLocationEvent($event)">
           </app-hazards-table>
