@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { QueryService } from '../services/query.service'
 import { ITreeOptions, TreeNode, TREE_ACTIONS, IActionMapping, TreeModel } from '@circlon/angular-tree-component'
@@ -19,7 +19,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 })
 export class FacetsComponent implements OnInit {
 
-  floatLabelControl = new FormControl('auto');
+  floatLabelControl = new UntypedFormControl('auto');
   // The selected facets
   selectedExpertFacets: Array<any> = [];
   // The selected place (GNIS) facets
