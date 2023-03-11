@@ -573,7 +573,7 @@ export class QueryService {
             ?entity kwg-ont:spatialRelation ?s2Cell .
             ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
             values ?placesConnectedToS2 { ${placeEntitiesConnected} }
-            ?s2Cell kwg-ont:spatialRelation ?placesConnectedToS2.
+            ?s2Cell kwg-ont:spatialRelation+ ?placesConnectedToS2.
         `;
     }
 
