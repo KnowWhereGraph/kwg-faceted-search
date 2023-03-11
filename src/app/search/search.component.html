@@ -46,10 +46,10 @@
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()
+          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()"
             (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
             (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getHazardLocationEvent($event)">
-          </app-hazards-table>
+            </app-hazards-table>
         </ng-template>
       </mat-tab>
 
