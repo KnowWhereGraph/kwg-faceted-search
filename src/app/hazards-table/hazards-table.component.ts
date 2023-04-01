@@ -62,6 +62,7 @@ export class HazardsTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.hazardsDataSource = new MatTableDataSource(this.hazards);
+    this.populateTable();
   }
 
   /**
@@ -105,7 +106,6 @@ export class HazardsTableComponent implements OnInit {
     if (Object.keys(facets).length) {
       this.facets = facets;
     }
-
     this.searchQueryStartedEvent.emit();
     // Clear the current results set so that the table is blank
     this.hazards = [];

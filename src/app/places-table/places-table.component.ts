@@ -117,7 +117,6 @@ export class PlacesTableComponent implements OnInit {
       });
       this.placesDataSource = new MatTableDataSource(this.places);
       this.queryService.query(`SELECT (COUNT(*) as ?count) { ` + results.query + 'LIMIT ' + this.pageSize * 10 + ` }`).then((res) => {
-        console.log("res: ", res)
         this.totalSize = res.results.bindings[0].count.value;
         // Update the number of results
         this.resultsCountEvent.emit(this.totalSize);
