@@ -187,7 +187,7 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values) {
     this.returnedLocations = values;
-    //this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
   }
 
   /**

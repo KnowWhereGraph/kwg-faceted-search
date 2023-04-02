@@ -51,7 +51,7 @@ export class MapComponent implements OnInit {
     });
 
     // The tile layer from mapbox definition
-    const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    const tiles = L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       maxZoom: 18,
       id: 'mapbox/streets-v11',
@@ -61,37 +61,13 @@ export class MapComponent implements OnInit {
     });
 
     tiles.addTo(this.map);
-
-    // add the circle drawing, edits, and clear functions to support further spatial search on the homepage
-    if (this.map) {
-      this.map.pm.addControls({
-        position: "topleft",
-        positions: {
-          draw: "topleft",
-          edit: "topleft"
-        },
-        drawMarker: false,
-        drawCircleMarker: false,
-        drawPolyline: false,
-        drawRectangle: false,
-        drawPolygon: false,
-        drawCircle: true,
-        drawText: false,
-        drawControls: true,
-        editControls: true,
-        optionsControls: true,
-        customControls: true,
-        cutPolygon: false,
-        rotateMode: false
-      });
-    }
   }
 
   /**
    * Plots a location on the map
    * @param locations coordinates of points
    */
-  private showPoint(feature) {
+  private showGeometry(feature) {
     const icon = L.icon({
       iconSize: [25, 41],
       iconAnchor: [10, 41],
@@ -143,25 +119,34 @@ export class MapComponent implements OnInit {
     this.createMarkerCluster.clearLayers();
     let wkt_reader = new wkt.Wkt();
     let wkt_representation = {};
+    
     records.forEach(record => {
+      console.log("WKT: ", record['wkt']);
+      console.log("WKT: ", record);
       try {
         wkt_representation = wkt_reader.read(record['wkt']).toJson();
       } catch (error) {
+        // This is okay because not all results have geometries
         console.warn("Failed to read the geometry of a table result: ", record, error)
         return;
       }
+      wkt_representation['properties'] = {}
+      wkt_representation['properties']['name'] = record['name']
+
       if (tabName == "people") {
-        wkt_representation["properties"]["name"] = record["name"],
+        wkt_representation["properties"]["name"] = record["name"]
           wkt_representation["properties"]["affiliation"] = record["affiliation"],
           wkt_representation["properties"]["expertise"] = record["expertise"],
           wkt_representation["properties"]["place"] = record["place"]
+      } else if (tabName == "hazard") {
+
       }
 
       if (wkt_representation['type'] != "Point") {
         // Then it's a 2d geometry
       } else {
         // Add it as a point
-        this.showPoint(wkt_representation);
+        this.showGeometry(wkt_representation);
       }
     });
     this.map.addLayer(this.createMarkerCluster);
