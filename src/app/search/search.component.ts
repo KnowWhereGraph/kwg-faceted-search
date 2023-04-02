@@ -218,12 +218,16 @@ export class SearchComponent implements OnInit {
     this.returnedLocations = values;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
 =======
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
 =======
     //this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
+=======
+    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+>>>>>>> f94feaa9 (Remove unused code)
   }
 
   /**
