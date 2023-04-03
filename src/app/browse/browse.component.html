@@ -1,0 +1,28 @@
+<div class="browse-body">
+    <div class="title"><a href={{full_node_id}}><mat-icon [inline]="true" class="browse-open-icon">open_in_new</mat-icon></a><p class="node-title">{{node_name}}</p></div>
+
+<div class="map-body">
+    <div class=""></div>
+ <browser-map></browser-map>
+</div>
+
+<div class="outbound-relations">
+  <table class="triples-table">
+    <tr class= "predicates-row" *ngFor="let row of outbound">
+        <td class="predicate-td">
+            <a *ngIf="row.predicate_label" class="pred-link" href="{{row.predicate_kwg_link}}" >{{row.predicate_label}}</a>
+            <a *ngIf="!row.predicate_label" class="pred-link" href="{{row.predicate_kwg_link}}" >{{row.predicate_name}}</a>
+            <a href="{{ row.predicate_link }}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a>
+        </td>
+        <td class="object-td">
+            <tr class="object-tr" *ngFor="let obj of row.objects">
+                <td>
+                    <span *ngIf="obj.isPredicate" class="obj-literal">"{{obj.name}}"</span>
+                    <span *ngIf="!obj.isPredicate"><a class="obj-link" href="{{obj.localURI}}">{{obj.name}}</a><a href="{{obj.link}}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a></span>
+                </td>
+            </tr>
+        </td>
+    </tr>
+  </table>
+ </div>
+</div>

@@ -1,0 +1,23 @@
+@import "../../variables.scss";
+
+.searchTable {
+  width: 100rem;
+}
+
+.mat-column-name {
+  flex: 0 0 30%;
+  justify-content: center;
+}
+
+.mat-column-type {
+  flex: 0 0 50%;
+  justify-content: center;
+}
+
+.place-name-header {
+  justify-content: center;
+}
+
+.place-type-header {
+  justify-content: center;
+}

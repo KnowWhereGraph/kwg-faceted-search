@@ -1,0 +1,26 @@
+<mat-table [dataSource]="triples" class="triples-table">
+  <!-- Predicate Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header class="triples-header"> Predicatee </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="overflow-cell">
+        <a [href]="row.entityUri" target="_blank">{{row.name}}</a> <mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon>
+      </span>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Object Column -->
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef mat-sort-header class="triples-header"> Relation </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="overflow-cell">
+        <a *ngFor="let typeData of row.type; let isLast=last" [href]="typeData[0]"
+          target="_blank">{{typeData[1]}}{{isLast ? '' : ', '}}</a>
+      </span>
+    </mat-cell>
+  </ng-container>
+
+
+  <mat-header-row *matHeaderRowDef="hazardColumns"></mat-header-row>
+  <mat-row class="results-row" *matRowDef="let row; columns: hazardColumns;"></mat-row>
+</mat-table>

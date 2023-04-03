@@ -28,10 +28,16 @@ import { FormsModule } from '@angular/forms';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorModalComponent } from './error-modal/error-modal.component';
+import {BrowseComponent} from './browse/browse.component'
+import {BrowserMap} from './browser-map/browser-map.component'
+import {MatTooltipModule} from '@angular/material/tooltip'; 
+import {MatIconModule} from '@angular/material/icon'
+import {MatExpansionModule} from '@angular/material/expansion'; 
 
 @NgModule({
   declarations: [
     AppComponent,
+    BrowserMap,
     HeaderComponent,
     NavComponent,
     FooterComponent,
@@ -43,6 +49,7 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
     PeopleTableComponent,
     MapComponent,
     ErrorModalComponent,
+    BrowseComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,9 +66,13 @@ import { ErrorModalComponent } from './error-modal/error-modal.component';
     MatProgressSpinnerModule,
     FormsModule,
     TreeModule,
+    MatTooltipModule,
+    MatExpansionModule,
+    MatIconModule,
     RouterModule.forRoot([
       { path: '', component: IndexComponent },
       { path: 'search', component: SearchComponent },
+      { path: 'browse', component: BrowseComponent}
     ]),
     BrowserAnimationsModule,
     NgbModule,

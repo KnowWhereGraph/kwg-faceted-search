@@ -11,10 +11,10 @@ import { environment } from '../../environments/environment'
 })
 export class QueryService {
   // SPARQL Endpoint
-  private endpoint = environment['graphEndpoint'];
+  private endpoint = 'https://stko-kwg.geog.ucsb.edu/graphdb/repositories/KWG';
 
   // The SPARQL query prefixes
-  private prefixes = {
+  public prefixes = {
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
     'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
@@ -59,7 +59,6 @@ export class QueryService {
     d_form.append('query', this.prefixes + query);
     let d_res: any = await fetch(this.endpoint, {
       method: 'POST',
-      mode: 'cors',
       headers: {
         Accept: 'application/sparql-results+json',
         'X-Request-Id': query_id
@@ -928,6 +927,32 @@ export class QueryService {
     let headers = this.getRequestHeaders('KE_16');
     // Disable reasoning so that we only get the top level hazards
     let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
+
+  /**
+   * Retrieves all of the outbound relations for a node
+   * 
+   * @param uri The URI whose relations are being retrieved
+   * @returns The SPARQL ResultsSet from the endpoint
+   */
+  getOutboundPredicates(uri: string) {
+    let query = `SELECT DISTINCT ?predicate ?label WHERE { <`+uri+`> ?predicate ?o. OPTIONAL {?predicate rdfs:label ?label.} } ORDER BY ASC(?label)`
+    let headers = this.getRequestHeaders('KE_17');
+    let body = this.getRequestBody(query, false);
+    return this.http.post(this.endpoint, body, headers);
+  }
+
+  /**
+   * 
+   * @param uri
+   * @param predicate 
+   * @param limit 
+   */
+  getOutboundObjects(uri: string, predicate: string, limit=100) {
+    let query = `SELECT DISTINCT ?object ?label WHERE { <`+uri+`> <`+predicate+`> ?object. OPTIONAL {?object rdfs:label ?label. }} ORDER BY ASC(?label)    `
+    let headers = this.getRequestHeaders('KE_18');
+    let body = this.getRequestBody(query, true);
     return this.http.post(this.endpoint, body, headers);
   }
 }

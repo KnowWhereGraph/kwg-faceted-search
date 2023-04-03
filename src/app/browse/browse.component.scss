@@ -1,0 +1,98 @@
+@import "../../variables.scss";
+
+.browse-body{
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.map-body {
+  resize: horizontal;
+  border: 10px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.browse-open-icon {
+  transform: scale(2);
+  color: #2BA9BD;
+  margin-left: 0.5rem;
+}
+
+.browse-open-icon.table {
+  transform: scale(.75);
+  color: #2BA9BD;
+  margin: 0
+}
+
+.node-title {
+  font-size:x-large;
+  padding-left: 1rem;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.table-tooltip {
+  font-size: small;
+}
+
+.triples-table {
+  width: 100%;
+}
+
+.triples-table > tr:nth-of-type(odd) {
+  background-color: #f7f7f7;
+}
+.triples-table > tr:nth-of-type(even) {
+  background-color:  #f0f0f3;
+}
+
+.object-tr {
+  background-color: none !important;
+}
+
+.object-td {
+  display: block;
+  max-height: 12rem;
+  overflow-y: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.predicate-td {
+  text-align: right;
+  width: 15rem;
+  padding-right: 1rem;
+  vertical-align: top;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  
+}
+
+.outbound-relations {
+  margin-top: 0.5rem;
+  margin-bottom: 1.0rem;  
+}
+
+.pred-link {
+  color: #2c3e50;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+
+.obj-link {
+  color: #2BA9BD;
+  text-decoration: none;
+}
+
+.obj-literal {
+  color: black
+}
+
+.section-span {
+  display: flex;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
