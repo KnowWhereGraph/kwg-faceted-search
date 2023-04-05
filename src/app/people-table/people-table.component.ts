@@ -60,6 +60,7 @@ export class PeopleTableComponent implements OnInit {
    */
   ngOnInit(): void {
     this.peopleDataSource = new MatTableDataSource(this.people);
+    this.populateTable();
   }
 
   /**
@@ -90,7 +91,7 @@ export class PeopleTableComponent implements OnInit {
    *
    * @param offset The query offset
    */
-  populateTable(facets) {
+  populateTable(facets = {}) {
     // Retrieves a list of all the potential subtopics for each topic. If there aren't any,
     // use the existing values in expertiseTopicFacets
     if (facets['expertiseTopics'] !== undefined && facets['expertiseTopics'].length) {
