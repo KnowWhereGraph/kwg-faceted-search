@@ -205,8 +205,12 @@ export class SearchComponent implements OnInit {
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
 =======
     // We don't display place locations; uncomment this when we support it
+<<<<<<< HEAD
     //this.mapChild.displayClustersForTab("place", values)
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
+=======
+    this.mapChild.displayClustersForTab("place", values)
+>>>>>>> 4458e805 (Clear when viewing 'Place' tab and re-order card)
   }
 
   /**

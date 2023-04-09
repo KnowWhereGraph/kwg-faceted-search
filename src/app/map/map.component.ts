@@ -269,10 +269,14 @@ export class MapComponent implements OnInit {
       <br>
       <span><b>Expertise:</b> ${topicString}</span>
       <br>
-      ${phone.length ? phone_row : ''}
       ${email.length ? email_row : ''}
+<<<<<<< HEAD
       ${homepage.length ? homepage_row : ''}`
 >>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
+=======
+      ${homepage.length ? homepage_row : ''}
+      ${phone.length ? phone_row : ''}`
+>>>>>>> 4458e805 (Clear when viewing 'Place' tab and re-order card)
     }
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
 
@@ -302,6 +306,7 @@ export class MapComponent implements OnInit {
 
   /**
    * Display point clustering for given tab name (place, hazard, or people)
+   * 
    * @param tabName choose the tab name for locations to be shown
    * @param records coordinates for points
    */
