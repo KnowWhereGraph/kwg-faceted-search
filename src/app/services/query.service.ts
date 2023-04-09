@@ -681,7 +681,7 @@ export class QueryService {
       ?entity elastic:score ?score.`;
     }
 
-    let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?wkt
+    let query = `select distinct ?label ?entity ?affiliation ?affiliationLabel ?affiliationLoc ?affiliationQuantName ?affiliationLoc_label ?phone ?email ?homepage ?wkt
     (group_concat(distinct ?expertise; separator = ", ") as ?expertise)
     (group_concat(distinct ?expertiseLabel; separator = ", ") as ?expertiseLabel)
     where {
@@ -699,7 +699,10 @@ export class QueryService {
                      	  rdfs:label ?affiliationLoc_label.
     	  values ?affiliationLoc_type {kwg-ont:AdministrativeRegion_3}
         optional { ?affiliationLoc kwg-ont:quantifiedName ?affiliationQuantName }
-    } group by ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?wkt`
+        optional { ?entity kwg-ont:hasEmail ?email }
+        optional { ?entity kwg-ont:hasHomepage ?homepage }
+        optional { ?entity kwg-ont:hasPhone ?phone }
+    } group by ?label ?entity ?affiliation ?affiliationQuantName ?affiliationLabel ?affiliationLoc ?affiliationLoc_label ?phone ?email ?homepage ?wkt`
     return query;
   }
 
