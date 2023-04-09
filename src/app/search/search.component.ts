@@ -239,10 +239,14 @@ export class SearchComponent implements OnInit {
     this.returnedLocations = values;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.mapChild.displayClustersForTab("people", values)
 =======
     //this.mapChild.displayClustersForTab("people", values)
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
+=======
+    this.mapChild.displayClustersForTab("people", values)
+>>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
   }
 <<<<<<< HEAD
 <<<<<<< HEAD
