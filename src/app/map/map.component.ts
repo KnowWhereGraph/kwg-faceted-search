@@ -93,9 +93,9 @@ export class MapComponent implements OnInit {
       <br>
       <span><b>Expertise:</b> ${topicString}</span>
       <br>
-      ${phone.length ? phone_row : ''}
       ${email.length ? email_row : ''}
-      ${homepage.length ? homepage_row : ''}`
+      ${homepage.length ? homepage_row : ''}
+      ${phone.length ? phone_row : ''}`
     }
 
   /**
@@ -124,6 +124,7 @@ export class MapComponent implements OnInit {
 
   /**
    * Display point clustering for given tab name (place, hazard, or people)
+   * 
    * @param tabName choose the tab name for locations to be shown
    * @param records coordinates for points
    */

@@ -177,7 +177,7 @@ export class SearchComponent implements OnInit {
   getPlaceLocationEvent(values) {
     this.returnedLocations = values;
     // We don't display place locations; uncomment this when we support it
-    //this.mapChild.displayClustersForTab("place", values)
+    this.mapChild.displayClustersForTab("place", values)
   }
 
   /**
