@@ -177,7 +177,7 @@ export class SearchComponent implements OnInit {
   getPlaceLocationEvent(values) {
     this.returnedLocations = values;
     // We don't display place locations; uncomment this when we support it
-    //this.mapChild.displayClustersForTab("place", values)
+    this.mapChild.displayClustersForTab("place", values)
   }
 
   /**
@@ -187,7 +187,7 @@ export class SearchComponent implements OnInit {
    */
   getHazardLocationEvent(values) {
     this.returnedLocations = values;
-    //this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
   }
 
   /**
@@ -197,7 +197,7 @@ export class SearchComponent implements OnInit {
    */
   getPeopleLocationEvent(values) {
     this.returnedLocations = values;
-    //this.mapChild.displayClustersForTab("people", values)
+    this.mapChild.displayClustersForTab("people", values)
   }
 
   /**

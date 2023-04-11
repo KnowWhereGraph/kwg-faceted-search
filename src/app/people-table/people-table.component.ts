@@ -151,11 +151,14 @@ export class PeopleTableComponent implements OnInit {
           return [x, result["expertiseLabel"]["value"].split(', ')[i]]
         });
         this.people.push({
-          "name": result["label"]["value"],
-          "name_uri": result["entity"]["value"],
           "affiliation": result["affiliationLabel"]["value"],
           "affiliation_uri": result["affiliation"]["value"],
+          "email": result["email"] ? result["email"]["value"] : "",
           "expertise": expertise.slice(0, 5),
+          "homepage": result["homepage"] ? result["homepage"]["value"] : "",
+          "name": result["label"]["value"],
+          "name_uri": result["entity"]["value"],
+          "phone": result["phone"] ? result["phone"]["value"] : "",
           "place": result["affiliationQuantName"] ? result["affiliationQuantName"]["value"] : "",
           "place_uri": result["affiliationLoc"] ? result["affiliationLoc"]["value"] : "",
           "wkt": result["wkt"]["value"]
@@ -253,5 +256,8 @@ export interface Person {
   expertise: Array<[SafeResourceUrl, string]>,
   place: string,
   place_uri: string,
+  phone: string,
+  email: string,
+  homepage: string,
   wkt: string
 }
