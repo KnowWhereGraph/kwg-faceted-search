@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router"
+import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-not-found',
   templateUrl: './not-found.component.html',
-  styleUrls: ['./not-found.component.scss']
+  styleUrls: ['./not-found.component.scss'],
 })
 export class NotFoundComponent implements OnInit {
-
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.router.navigate(['/']);
+      this.router.navigate(['/'])
       // Sleep for 2 seconds and then redirect
-    }, 2000);
+    }, 2000)
   }
-
 }

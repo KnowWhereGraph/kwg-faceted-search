@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 @import "variables.scss";
+=======
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+@import 'variables.scss';
+>>>>>>> 421c4d2f (Add a code formatter & linter)
 
 // HTML styles used across all scss sheets
 .html {
@@ -10,7 +16,7 @@
   background: $base-dark;
   box-sizing: border-box;
   font-family: Sans-Serif;
-  color: #00021F;
+  color: #00021f;
   margin: 0;
   overflow-x: hidden;
   min-height: 100%;
@@ -37,7 +43,7 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .table-container {
@@ -67,7 +73,6 @@ body {
   flex-direction: column;
 }
 
-
 .mat-cell {
   font-size: large;
 }
@@ -96,7 +101,7 @@ body {
   overflow: auto;
   a {
     text-decoration: none;
-    color: #00021F;
+    color: #00021f;
   }
   a:hover {
     color: orange;
@@ -122,10 +127,10 @@ body {
 mat-form-field-flex {
   /*change color of label*/
   color: white !important;
- }
+}
 
- ::ng-deep .mat-datepicker-content .mat-calendar {
-  width: 229px!important;
-  height: 300px!important;
+::ng-deep .mat-datepicker-content .mat-calendar {
+  width: 229px !important;
+  height: 300px !important;
 }
 >>>>>>> 245963fb (Disable facet highlighting and make sure that all facets have events triggering)

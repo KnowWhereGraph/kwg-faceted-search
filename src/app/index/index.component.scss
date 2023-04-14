@@ -1,7 +1,7 @@
-@import "../../variables.scss";
+@import '../../variables.scss';
 
 .welcome-kwg {
-  background-color: #D9D9DE;
+  background-color: #d9d9de;
   z-index: -1;
   text-align: center;
   padding-top: 90px;
@@ -23,7 +23,7 @@
 }
 
 .explore {
-  background-color: #CFCFD5;
+  background-color: #cfcfd5;
   padding: 70px 0 90px;
   text-align: center;
 
@@ -32,7 +32,7 @@
     margin-bottom: 50px;
   }
 
-  .columns-3>* {
+  .columns-3 > * {
     width: 31%;
   }
 
@@ -50,11 +50,10 @@
   }
 
   .card-explore {
-
-    background: #FFFFFF;
-    box-shadow: 0 10px 64px 0 rgb(0, 0, 0, 0.20);
+    background: #ffffff;
+    box-shadow: 0 10px 64px 0 rgb(0, 0, 0, 0.2);
     border-radius: 5px;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     // text-align: center;
   }
 
@@ -86,9 +85,9 @@
   padding: 12px 30px;
   color: #fff;
   text-decoration: none;
-  box-shadow: 0 5px 15px 0 rgb(0, 0, 0, 0.20);
+  box-shadow: 0 5px 15px 0 rgb(0, 0, 0, 0.2);
   border-radius: 5px;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .button:hover {
@@ -97,7 +96,7 @@
 }
 
 .home-map {
-  background-color: #D9D9DE;
+  background-color: #d9d9de;
   text-align: center;
   position: relative;
   padding: 90px 0 120px;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 /**
  * Component for the navigation bar. This component encompasses the navigation
@@ -7,18 +7,18 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss']
+  styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit {
-
   /**
    * An empty constructor; this class is just markup and styling.
    */
-  constructor() { }
+  constructor() {}
 
   /**
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
+<<<<<<< HEAD
 <<<<<<< HEAD
   ngOnInit(): void {
   }
@@ -38,4 +38,7 @@ export class NavComponent implements OnInit {
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
 =======
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
+=======
+  ngOnInit(): void {}
+>>>>>>> 421c4d2f (Add a code formatter & linter)
 }

@@ -1,27 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
-import * as L from 'leaflet';
-import '@geoman-io/leaflet-geoman-free';
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
-import "leaflet.markercluster";
+import { Component, Input, OnInit } from '@angular/core'
+import * as L from 'leaflet'
+import '@geoman-io/leaflet-geoman-free'
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
+import 'leaflet.markercluster'
 import * as wkt from 'wicket'
-import * as turf from 'turf';
+import * as turf from 'turf'
 
 /**
  * Component for the map interface. This component is responsible for handling map
  * updates and displaying information on the map.
- * 
+ *
  * The overarching goal is to turn each node into a GeoJSON object and get it into the map object, while supporting
  * clustering.
- * 
+ *
  * This map uses the Marker Cluster Group plugin - which uses a layer to interface with the map. The GeoJSON
  * objects are added to the cluster layer, which is then added to the map.
  */
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements OnInit {
+<<<<<<< HEAD
 
   private map: any;
   @Input() locations: any;
@@ -60,18 +61,22 @@ export class MapComponent implements OnInit {
   markerCluster = L.markerClusterGroup();
 >>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
   markers: L.Marker[] = [];
+=======
+  private map: any
+  @Input() locations: any
+  markerCluster = L.markerClusterGroup()
+  markers: L.Marker[] = []
+>>>>>>> 421c4d2f (Add a code formatter & linter)
 
   /**
    * An empty constructor; the map is initialized after the view is ready.
    */
-  constructor() {
-
-  }
+  constructor() {}
 
   /**
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   /**
 >>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
@@ -144,10 +149,11 @@ export class MapComponent implements OnInit {
 =======
     this.map = L.map('map', {
       center: [36.895, -95.036667],
-      zoom: 4
-    });
+      zoom: 4,
+    })
 
     // The tile layer from mapbox definition
+<<<<<<< HEAD
     L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
 >>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -177,6 +183,21 @@ export class MapComponent implements OnInit {
 =======
     }).addTo(this.map);
 >>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
+=======
+    L.tileLayer(
+      'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ',
+      {
+        attribution:
+          'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken:
+          'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg',
+      }
+    ).addTo(this.map)
+>>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 
 <<<<<<< HEAD
@@ -186,8 +207,8 @@ export class MapComponent implements OnInit {
 =======
   /**
    * Plots a feature on the map. A long function because it contains several methods
-   * that need to be within this function's scope. 
-   * 
+   * that need to be within this function's scope.
+   *
    * @param feature The feature being plotted on the map
    */
 <<<<<<< HEAD
@@ -228,8 +249,8 @@ export class MapComponent implements OnInit {
       popupAnchor: [2, -40],
       // specify the path here
       iconUrl: '../../assets/images/map/marker.png',
-      shadowUrl: '../../assets/images/map/marker-shadow.png'
-    });
+      shadowUrl: '../../assets/images/map/marker-shadow.png',
+    })
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -256,7 +277,7 @@ export class MapComponent implements OnInit {
 =======
     /**
      * Returns the HTML used in the popup
-     * 
+     *
      * @param name Name off the person
      * @param affiliation Their affiliation
      * @param expertise The area of their expertise
@@ -265,17 +286,30 @@ export class MapComponent implements OnInit {
      * @param homepage Their website
      * @returns A string of HTML with inline styling
      */
+<<<<<<< HEAD
 >>>>>>> 942f9746 (Add support for plotting geometries as points on the 'Place' tab)
     function getPersonPopup(name: string, affiliation: string, expertise: [[string, string]], phone: string, email: string, homepage: string) {
+=======
+    function getPersonPopup(
+      name: string,
+      affiliation: string,
+      expertise: [[string, string]],
+      phone: string,
+      email: string,
+      homepage: string
+    ) {
+>>>>>>> 421c4d2f (Add a code formatter & linter)
       // Use Array to sort & handle concatenating the expert topics
       let expertTopics: Array<string> = []
-      expertise.forEach((topic) => {expertTopics.push(topic[1])})
+      expertise.forEach((topic) => {
+        expertTopics.push(topic[1])
+      })
       expertTopics.sort()
-      let topicString = expertTopics.join(", ")
+      let topicString = expertTopics.join(', ')
       // Get the name out of the exert topics
-      let phone_row = `<span><b>Phone: </b> <a target="_blank" href='tel:${phone}'>${phone}</a></span><br>`;
-      let homepage_row = `<span><b>Homepage:</b><a target="_blank" href='${homepage}'>${homepage}</a></span><br>`;
-      let email_row = `<span><b>Email: </b><a target="_blank" href='mailto:${email}'>${email}</a></span>`;
+      let phone_row = `<span><b>Phone: </b> <a target="_blank" href='tel:${phone}'>${phone}</a></span><br>`
+      let homepage_row = `<span><b>Homepage:</b><a target="_blank" href='${homepage}'>${homepage}</a></span><br>`
+      let email_row = `<span><b>Email: </b><a target="_blank" href='mailto:${email}'>${email}</a></span>`
       return `
       <span><b>Name:</b> ${name}</span>
       <br>
@@ -293,9 +327,13 @@ export class MapComponent implements OnInit {
 >>>>>>> 4458e805 (Clear when viewing 'Place' tab and re-order card)
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
 =======
  
+=======
+
+>>>>>>> 421c4d2f (Add a code formatter & linter)
     /**
      * Creates the popup for elements on the 'Place' tab
      * @param name The name of the place
@@ -331,64 +369,80 @@ export class MapComponent implements OnInit {
       <span><b>End Date:</b> ${endDate}</span>
       `
     }
-  /**
-   * Called on each map marker; used to set popup properties
-   * 
-   * @param feature The geojson feature being acted on
-   * @param layer The layer that the feature is in
-   * @param place_type: The type of place the node represents
-   */
-  function onEachFeature(feature, layer) {
-    let content = ''
-    if (feature.properties.type === "place") {
-      content = getPlacePopup(feature.properties.name, feature.properties.place_type);
-    } else if (feature.properties.type === 'people') {
-      content = getPersonPopup(feature.properties.name, feature.properties.affiliation, feature.properties.expertise, feature.properties.phone, feature.properties.email, feature.properties.homepage);
-    } else if (feature.properties.type === 'hazard') {
-      content = getHazardPopup(feature.properties.name, feature.properties.hazard_type, feature.properties.startDate, feature.properties.endDate);
+    /**
+     * Called on each map marker; used to set popup properties
+     *
+     * @param feature The geojson feature being acted on
+     * @param layer The layer that the feature is in
+     * @param place_type: The type of place the node represents
+     */
+    function onEachFeature(feature, layer) {
+      let content = ''
+      if (feature.properties.type === 'place') {
+        content = getPlacePopup(
+          feature.properties.name,
+          feature.properties.place_type
+        )
+      } else if (feature.properties.type === 'people') {
+        content = getPersonPopup(
+          feature.properties.name,
+          feature.properties.affiliation,
+          feature.properties.expertise,
+          feature.properties.phone,
+          feature.properties.email,
+          feature.properties.homepage
+        )
+      } else if (feature.properties.type === 'hazard') {
+        content = getHazardPopup(
+          feature.properties.name,
+          feature.properties.hazard_type,
+          feature.properties.startDate,
+          feature.properties.endDate
+        )
+      }
+      layer.bindPopup(content)
     }
-    layer.bindPopup(content);
-  } 
     // Get a geoJSON representation
     let newFeature = L.geoJSON(feature, {
       pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
-          icon: icon
-        });
+          icon: icon,
+        })
       },
-      onEachFeature: onEachFeature
-    });
+      onEachFeature: onEachFeature,
+    })
     // Add the feature to the marker layer
     this.markerCluster.addLayer(newFeature)
   }
 
   /**
    * Display point clustering for given tab name (place, hazard, or people)
-   * 
+   *
    * @param tabName choose the tab name for locations to be shown
    * @param records coordinates for points
    */
   public displayClustersForTab(tabName: string, records: Array<JSON>) {
     // If the map has already been initialized, clear it for repainting
-    this.markerCluster.clearLayers();
-    let wkt_reader = new wkt.Wkt();
-    let wkt_representation: any = {};
-    records.forEach(record => {
+    this.markerCluster.clearLayers()
+    let wkt_reader = new wkt.Wkt()
+    let wkt_representation: any = {}
+    records.forEach((record) => {
       try {
-        wkt_representation = wkt_reader.read(record['wkt']).toJson();
+        wkt_representation = wkt_reader.read(record['wkt']).toJson()
         // If this isn't a POINT geometry, turn it into one by using the centroid
         if (!this.isPoint(record['wkt'])) {
           let geojson = L.geoJSON(wkt_representation).toGeoJSON()
-          wkt_representation = turf.centroid(geojson);
+          wkt_representation = turf.centroid(geojson)
         }
       } catch (error) {
         // This is okay because not all results have geometries
-        console.warn("Failed to read the geometry of a table result: ", error);
-        return;
+        console.warn('Failed to read the geometry of a table result: ', error)
+        return
       }
       wkt_representation['properties'] = {}
       wkt_representation['properties']['name'] = record['name']
       // Get information for the popup based on the tab
+<<<<<<< HEAD
       if (tabName == "people") {
         wkt_representation["properties"]["type"] = "people"
           wkt_representation["properties"]["affiliation"] = record["affiliation"],
@@ -429,10 +483,30 @@ export class MapComponent implements OnInit {
         wkt_representation["properties"]["type"] = "hazard"
         wkt_representation["properties"]["name"] = record["name"];
         wkt_representation["properties"]["hazard_type"] = Array();
+=======
+      if (tabName == 'people') {
+        wkt_representation['properties']['type'] = 'people'
+        ;(wkt_representation['properties']['affiliation'] =
+          record['affiliation']),
+          (wkt_representation['properties']['expertise'] = record['expertise']),
+          (wkt_representation['properties']['place'] = record['place'])
+        wkt_representation['properties']['email'] = record['email']
+        wkt_representation['properties']['phone'] = record['phone']
+        wkt_representation['properties']['homepage'] = record['homepage']
+      } else if (tabName == 'place') {
+        wkt_representation['properties']['type'] = 'place'
+        wkt_representation['properties']['name'] = record['name']
+        wkt_representation['properties']['place_type'] = record['type']
+      } else if (tabName == 'hazard') {
+        wkt_representation['properties']['type'] = 'hazard'
+        wkt_representation['properties']['name'] = record['name']
+        wkt_representation['properties']['hazard_type'] = Array()
+>>>>>>> 421c4d2f (Add a code formatter & linter)
         // Get a unique set of types
-        let hazard_types = new Set();
-        record["type"].forEach(type_element => {
+        let hazard_types = new Set()
+        record['type'].forEach((type_element) => {
           hazard_types.add(type_element[1])
+<<<<<<< HEAD
         });
         wkt_representation["properties"]["hazard_type"] = [...hazard_types];
         wkt_representation["properties"]["startDate"] = record["startDate"];
@@ -449,13 +523,27 @@ export class MapComponent implements OnInit {
 <<<<<<< HEAD
 >>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
 =======
+=======
+        })
+        wkt_representation['properties']['hazard_type'] = [...hazard_types]
+        wkt_representation['properties']['startDate'] = record['startDate']
+        wkt_representation['properties']['endDate'] = record['endDate']
+      }
+      this.addFeature(wkt_representation)
+    })
+    this.map.addLayer(this.markerCluster)
+>>>>>>> 421c4d2f (Add a code formatter & linter)
     try {
-      this.map.fitBounds(this.markerCluster.getBounds());
+      this.map.fitBounds(this.markerCluster.getBounds())
     } catch (error) {
       // Sometimes if there aren't any valid geometries on the map, this throws
       // Leave it silent because it should be okay
+<<<<<<< HEAD
    }
 >>>>>>> 8a3571d1 (Add support for showign hazards on the map)
+=======
+    }
+>>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -494,13 +582,13 @@ export class MapComponent implements OnInit {
 
   /**
    * Determines whether a wkt string is describing a point or not
-   * 
+   *
    * @param wkt The WKT geometry
    * @returns A boolean whether the geometry is a point or not
    */
   private isPoint(wkt: string) {
-    if (wkt.includes("POINT") || wkt.includes("point")) {
-      return true;
+    if (wkt.includes('POINT') || wkt.includes('point')) {
+      return true
     }
     return false
   }

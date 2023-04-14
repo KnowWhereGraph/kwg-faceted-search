@@ -1,7 +1,15 @@
 <div class="table-container">
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]"
-    [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage"></mat-paginator>
+  <mat-paginator
+    class="paginator"
+    #paginator
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[20, 50, 100]"
+    [showFirstLastButtons]="true"
+    [length]="totalSize"
+    [pageIndex]="currentPage"
+  ></mat-paginator>
   <mat-table [dataSource]="placesDataSource" class="results-table">
+<<<<<<< HEAD
     <!-- Name Column -->
     <ng-container matColumnDef="name" >
       <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
@@ -20,12 +28,20 @@
     </mat-cell>
   </ng-container>
 =======
+=======
+>>>>>>> 421c4d2f (Add a code formatter & linter)
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-name-header"> Name </mat-header-cell>
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="place-name-header"
+      >
+        Name
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.nameUri" target="_blank">{{row.name}}</a>
+          <a [href]="row.nameUri" target="_blank">{{ row.name }}</a>
         </span>
       </mat-cell>
     </ng-container>
@@ -33,10 +49,16 @@
 
     <!-- Type Column -->
     <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="place-type-header"> Type </mat-header-cell>
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        class="place-type-header"
+      >
+        Type
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.typeUri" target="_blank">{{row.type}}</a>
+          <a [href]="row.typeUri" target="_blank">{{ row.type }}</a>
         </span>
       </mat-cell>
     </ng-container>
@@ -53,6 +75,7 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="placesColumns"></mat-header-row>
+<<<<<<< HEAD
     <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
   </mat-table>
 </div>
@@ -62,3 +85,8 @@
     <mat-row *matRowDef="let row; columns: placesColumns;"></mat-row>
   </mat-table>
 >>>>>>> 093c3e3c (Format all source fileS)
+=======
+    <mat-row *matRowDef="let row; columns: placesColumns"></mat-row>
+  </mat-table>
+</div>
+>>>>>>> 421c4d2f (Add a code formatter & linter)
