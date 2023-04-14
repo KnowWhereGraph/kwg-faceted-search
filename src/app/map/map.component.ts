@@ -4,6 +4,7 @@ import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import "leaflet.markercluster";
 import * as wkt from 'wicket'
+import * as turf from 'turf';
 
 /**
  * Component for the map interface. This component is responsible for handling map
@@ -60,7 +61,7 @@ export class MapComponent implements OnInit {
   }
 
   /**
-   * Plots a feature on the map. A long function because it contains several
+   * Plots a feature on the map. A long function because it contains several methods
    * that need to be within this function's scope. 
    * 
    * @param feature The feature being plotted on the map
@@ -75,6 +76,17 @@ export class MapComponent implements OnInit {
       shadowUrl: '../../assets/images/map/marker-shadow.png'
     });
 
+    /**
+     * Returns the HTML used in the popup
+     * 
+     * @param name Name off the person
+     * @param affiliation Their affiliation
+     * @param expertise The area of their expertise
+     * @param phone Their phone number
+     * @param email Their email
+     * @param homepage Their website
+     * @returns A string of HTML with inline styling
+     */
     function getPersonPopup(name: string, affiliation: string, expertise: [[string, string]], phone: string, email: string, homepage: string) {
       // Use Array to sort & handle concatenating the expert topics
       let expertTopics: Array<string> = []
@@ -85,7 +97,6 @@ export class MapComponent implements OnInit {
       let phone_row = `<span><b>Phone: </b> <a target="_blank" href='tel:${phone}'>${phone}</a></span><br>`;
       let homepage_row = `<span><b>Homepage:</b><a target="_blank" href='${homepage}'>${homepage}</a></span><br>`;
       let email_row = `<span><b>Email: </b><a target="_blank" href='mailto:${email}'>${email}</a></span>`;
-      console.log(phone_row)
       return `
       <span><b>Name:</b> ${name}</span>
       <br>
@@ -97,19 +108,38 @@ export class MapComponent implements OnInit {
       ${homepage.length ? homepage_row : ''}
       ${phone.length ? phone_row : ''}`
     }
+ 
+    /**
+     * Creates the popup for elements on the 'Place' tab
+     * @param name The name of the place
+     * @param place_type The type of the place
+     * @returns HTML that goes inside the map popup
+     */
+    function getPlacePopup(name: string, place_type: string) {
+      return `
+      <span><b>Name:</b> ${name}</span>
+      <br>
+      <span><b>Type:</b> ${place_type}</span>
+      `
+    }
 
   /**
    * Called on each map marker; used to set popup properties
    * 
    * @param feature The geojson feature being acted on
    * @param layer The layer that the feature is in
+   * @param place_type: The type of place the node represents
    */
   function onEachFeature(feature, layer) {
-    let content = getPersonPopup(feature.properties.name, feature.properties.affiliation, feature.properties.expertise, feature.properties.phone, feature.properties.email, feature.properties.homepage);
+    let content = ''
+    if (feature.properties.type === "place") {
+      content = getPlacePopup(feature.properties.name, feature.properties.place_type);
+    } else if (content === 'people') {
+      content = getPersonPopup(feature.properties.name, feature.properties.affiliation, feature.properties.expertise, feature.properties.phone, feature.properties.email, feature.properties.homepage);
+    }
     layer.bindPopup(content);
   } 
-
-    // Get a geoJSON representation from the json
+    // Get a geoJSON representation
     let newFeature = L.geoJSON(feature, {
       pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
@@ -133,14 +163,18 @@ export class MapComponent implements OnInit {
     // If the map has already been initialized, clear it for repainting
     this.markerCluster.clearLayers();
     let wkt_reader = new wkt.Wkt();
-    let wkt_representation = {};
-    
+    let wkt_representation: any = {};
     records.forEach(record => {
       try {
         wkt_representation = wkt_reader.read(record['wkt']).toJson();
+        // If this isn't a POINT geometry, turn it into one by using the centroid
+        if (!this.isPoint(record['wkt'])) {
+          let geojson = L.geoJSON(wkt_representation).toGeoJSON()
+          wkt_representation = turf.centroid(geojson);
+        }
       } catch (error) {
         // This is okay because not all results have geometries
-        console.warn("Failed to read the geometry of a table result: ", record, error);
+        console.warn("Failed to read the geometry of a table result: ", error);
         return;
       }
       wkt_representation['properties'] = {}
@@ -148,23 +182,33 @@ export class MapComponent implements OnInit {
 
       // Get information for the popup based on the tab
       if (tabName == "people") {
-        wkt_representation["properties"]["name"] = record["name"]
+        wkt_representation["properties"]["type"] = "people"
           wkt_representation["properties"]["affiliation"] = record["affiliation"],
           wkt_representation["properties"]["expertise"] = record["expertise"],
           wkt_representation["properties"]["place"] = record["place"]
           wkt_representation["properties"]["email"] = record["email"]
           wkt_representation["properties"]["phone"] = record["phone"]
           wkt_representation["properties"]["homepage"] = record["homepage"]
-      } else if (tabName == "hazard") {
-
+      } else if (tabName == "place") {
+        wkt_representation["properties"]["type"] = "place"
+        wkt_representation["properties"]["name"] = record["name"];
+        wkt_representation["properties"]["place_type"] = record["type"];
       }
-      if (wkt_representation['type'] != "Point") {
-        // Then it's a 2d geometry
-      } else {
-        // Add it as a point
-        this.addFeature(wkt_representation);
-      }
+      this.addFeature(wkt_representation);
     });
     this.map.addLayer(this.markerCluster);
+  }
+
+  /**
+   * Determines whether a wkt string is describing a point or not
+   * 
+   * @param wkt The WKT geometry
+   * @returns A boolean whether the geometry is a point or not
+   */
+  private isPoint(wkt: string) {
+    if (wkt.includes("POINT") || wkt.includes("point")) {
+      return true;
+    }
+    return false
   }
 }

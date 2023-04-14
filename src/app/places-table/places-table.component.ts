@@ -95,7 +95,6 @@ export class PlacesTableComponent implements OnInit {
 
     this.queryService.getPlaces(facets, this.pageSize, this.offset).then((results: any) => {
       this.places = [];
-      this.locations = [];
       // Check to see if the query failed
       if (results === false) {
         this.totalSize = 0;
@@ -105,16 +104,18 @@ export class PlacesTableComponent implements OnInit {
         return;
       }
       results.records.forEach(result => {
-        this.places.push({
-          "name": result["place_name"],
+        let record = {
+          "name": result["name"],
           "nameUri": result["place"],
           "type": result["place_type_name"],
           "typeUri": result["place_type"],
-        });
+        };
         if (result['wkt']) {
-          this.locations.push(result['wkt']);
+          record["wkt"] = result['wkt'];
         }
+        this.places.push(record);
       });
+      
       this.placesDataSource = new MatTableDataSource(this.places);
       this.queryService.query(`SELECT (COUNT(*) as ?count) { ` + results.query + 'LIMIT ' + this.pageSize * 10 + ` }`).then((res) => {
         this.totalSize = res.results.bindings[0].count.value;
@@ -122,7 +123,7 @@ export class PlacesTableComponent implements OnInit {
         this.resultsCountEvent.emit(this.totalSize);
         this.searchQueryFinishedEvent.emit(true);
       })
-      this.locationEvent.emit(this.locations);
+      this.locationEvent.emit(this.places);
     });
   }
 }

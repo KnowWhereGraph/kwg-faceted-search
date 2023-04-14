@@ -480,7 +480,7 @@ export class QueryService {
       entityRawValues.push(row.entity.value);
       formattedResults.push({
         'place': row.entity.value,
-        'place_name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
+        'name': (typeof row.quantifiedName === 'undefined') ? row.label.value : row.quantifiedName.value,
         'place_type': row.type.value,
         'place_type_name': row.typeLabel.value,
       })
