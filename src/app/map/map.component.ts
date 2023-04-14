@@ -123,6 +123,26 @@ export class MapComponent implements OnInit {
       `
     }
 
+    /**
+     * Creates the HTML for the popup that appears on
+     * the map markers for hazards
+     * @param name: The name of the hazard
+     * @param hazardType The type of hazard
+     * @param startDate The start of the hazard event
+     * @param endDate The end of the hazard event
+     * @returns The HTML for the popup
+     */
+    function getHazardPopup(name, hazardType, startDate, endDate) {
+      return `
+      <span><b>Name:</b> ${name}</span>
+      <br>
+      <span><b>Type:</b> ${hazardType}</span>
+      <br>
+      <span><b>Start Data:</b> ${startDate}</span>
+      <br>
+      <span><b>End Date:</b> ${endDate}</span>
+      `
+    }
   /**
    * Called on each map marker; used to set popup properties
    * 
@@ -134,8 +154,10 @@ export class MapComponent implements OnInit {
     let content = ''
     if (feature.properties.type === "place") {
       content = getPlacePopup(feature.properties.name, feature.properties.place_type);
-    } else if (content === 'people') {
+    } else if (feature.properties.type === 'people') {
       content = getPersonPopup(feature.properties.name, feature.properties.affiliation, feature.properties.expertise, feature.properties.phone, feature.properties.email, feature.properties.homepage);
+    } else if (feature.properties.type === 'hazard') {
+      content = getHazardPopup(feature.properties.name, feature.properties.hazard_type, feature.properties.startDate, feature.properties.endDate);
     }
     layer.bindPopup(content);
   } 
@@ -159,7 +181,6 @@ export class MapComponent implements OnInit {
    * @param records coordinates for points
    */
   public displayClustersForTab(tabName: string, records: Array<JSON>) {
-
     // If the map has already been initialized, clear it for repainting
     this.markerCluster.clearLayers();
     let wkt_reader = new wkt.Wkt();
@@ -179,7 +200,6 @@ export class MapComponent implements OnInit {
       }
       wkt_representation['properties'] = {}
       wkt_representation['properties']['name'] = record['name']
-
       // Get information for the popup based on the tab
       if (tabName == "people") {
         wkt_representation["properties"]["type"] = "people"
@@ -193,10 +213,28 @@ export class MapComponent implements OnInit {
         wkt_representation["properties"]["type"] = "place"
         wkt_representation["properties"]["name"] = record["name"];
         wkt_representation["properties"]["place_type"] = record["type"];
+      } else if (tabName == "hazard") {
+        wkt_representation["properties"]["type"] = "hazard"
+        wkt_representation["properties"]["name"] = record["name"];
+        wkt_representation["properties"]["hazard_type"] = Array();
+        // Get a unique set of types
+        let hazard_types = new Set();
+        record["type"].forEach(type_element => {
+          hazard_types.add(type_element[1])
+        });
+        wkt_representation["properties"]["hazard_type"] = [...hazard_types];
+        wkt_representation["properties"]["startDate"] = record["startDate"];
+        wkt_representation["properties"]["endDate"] = record["endDate"];
       }
       this.addFeature(wkt_representation);
     });
     this.map.addLayer(this.markerCluster);
+    try {
+      this.map.fitBounds(this.markerCluster.getBounds());
+    } catch (error) {
+      // Sometimes if there aren't any valid geometries on the map, this throws
+      // Leave it silent because it should be okay
+   }
   }
 
   /**
