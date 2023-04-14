@@ -40,9 +40,7 @@ export class HazardsTableComponent implements OnInit {
   @Output() searchQueryStartedEvent = new EventEmitter<boolean>();
   // Triggered on paginations. It tells the search component to trigger a table refresh (sending the facet data)
   @Output() paginationEvent = new EventEmitter<void>();
-  // Event that sends the locations of hazards from a query to the parent component. This
-  // is used in the map display
-  locations: Array<string> = [];
+  // Event for sending hazard information to the map
   @Output() locationEvent = new EventEmitter();
   // Used to trigger the error modal
   @Output() errorModal = new EventEmitter<void>();
@@ -124,7 +122,6 @@ export class HazardsTableComponent implements OnInit {
       }
       // Once the hazards have been retrieved, attempt to get the associated properties
       let hazardUris: Array<string> = [];
-      this.locations = [];
       // Once the initial list of hazards is retrieved, create a list of URIs and get additional information about them
       results.record.forEach(row => {
         let entityUri = row['hazard'];
@@ -189,9 +186,6 @@ export class HazardsTableComponent implements OnInit {
               wkt: record.wkt
             }
             this.hazards.push(new_record);
-            if (record.wkt) {
-              this.locations.push(record.wkt);
-            }
           });
           this.hazardsDataSource = new MatTableDataSource(this.hazards);
           this.searchQueryFinishedEvent.emit(true);
