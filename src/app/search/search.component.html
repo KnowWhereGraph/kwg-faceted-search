@@ -1,67 +1,108 @@
 <div class="search-body">
   <!-- The left hand facets -->
-  <app-facets #appfacets class="facets" [selectedTabIndex]="selectedTabIndex"
-    (facetChangedEvent)="changeFacets($event)"></app-facets>
+  <app-facets
+    #appfacets
+    class="facets"
+    [selectedTabIndex]="selectedTabIndex"
+    (facetChangedEvent)="changeFacets($event)"
+  ></app-facets>
   <div class="results-body">
     <!-- The number of results from the last query -->
     <ng-container *ngIf="isCounting && isSearching">
-      <p class="results-count">Searching <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
+      <p class="results-count">
+        Searching
+        <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
       </p>
     </ng-container>
 
     <ng-container *ngIf="!isCounting && isSearching">
-      <p class="results-count">Searching <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
+      <p class="results-count">
+        Searching
+        <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
       </p>
     </ng-container>
 
     <ng-container *ngIf="isCounting && !isSearching">
-      <p class="results-count">Counting Results <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
+      <p class="results-count">
+        Counting Results
+        <mat-spinner class="count-spinner" [diameter]="30"></mat-spinner>
       </p>
     </ng-container>
 
     <ng-container *ngIf="!isCounting && !isSearching">
-      <p class="results-count" *ngIf="totalSize!=0">At Least {{totalSize}} Results</p>
-      <p class="results-count" *ngIf="totalSize==0">0 Results</p>
+      <p class="results-count" *ngIf="totalSize !== 0">
+        At Least {{ totalSize }} Results
+      </p>
+      <p class="results-count" *ngIf="totalSize === 0">0 Results</p>
     </ng-container>
 
     <!-- The 'Place', 'Hazard', 'People' tab groups -->
-    <mat-tab-group class="tab-group" [(selectedIndex)]="selectedTabIndex"
-      (selectedTabChange)="appfacets.clearFacets(); onTabChanged($event);">
+    <mat-tab-group
+      class="tab-group"
+      [(selectedIndex)]="selectedTabIndex"
+      (selectedTabChange)="appfacets.clearFacets(); onTabChanged($event)"
+    >
       <mat-tab class="place-tab-body">
         <ng-template mat-tab-label>
-          <img class="table-head-img" src="../../assets/images/svgs/place.svg">
+          <img
+            class="table-head-img"
+            src="../../assets/images/svgs/place.svg"
+          />
           <span>Place</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-places-table #placesTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()"
-            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
-            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getPlaceLocationEvent($event)">
+          <app-places-table
+            #placesTable
+            (paginationEvent)="recievedPagination()"
+            (errorModal)="openErrorModal()"
+            (resultsCountEvent)="changeResultsCount($event)"
+            (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()"
+            (locationEvent)="getPlaceLocationEvent($event)"
+          >
           </app-places-table>
         </ng-template>
       </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <img class="table-head-img" src="../../assets/images/svgs/hazard.svg">
+          <img
+            class="table-head-img"
+            src="../../assets/images/svgs/hazard.svg"
+          />
           <span>Hazard</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-hazards-table #hazardsTable (paginationEvent)="recievedPagination()" (errorModal)="openErrorModal()"
-            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
-            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getHazardLocationEvent($event)">
-            </app-hazards-table>
+          <app-hazards-table
+            #hazardsTable
+            (paginationEvent)="recievedPagination()"
+            (errorModal)="openErrorModal()"
+            (resultsCountEvent)="changeResultsCount($event)"
+            (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()"
+            (locationEvent)="getHazardLocationEvent($event)"
+          >
+          </app-hazards-table>
         </ng-template>
       </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <img class="table-head-img" src="../../assets/images/svgs/people.svg">
+          <img
+            class="table-head-img"
+            src="../../assets/images/svgs/people.svg"
+          />
           <span>Person</span>
         </ng-template>
         <ng-template matTabContent>
-          <app-people-table #peopleTable (paginationEvent)="recievedPagination()"
-            (resultsCountEvent)="changeResultsCount($event)" (searchQueryFinishedEvent)="searchQueryFinished()"
-            (searchQueryStartedEvent)="searchQueryStarted()" (locationEvent)="getPeopleLocationEvent($event)">
+          <app-people-table
+            #peopleTable
+            (paginationEvent)="recievedPagination()"
+            (resultsCountEvent)="changeResultsCount($event)"
+            (searchQueryFinishedEvent)="searchQueryFinished()"
+            (searchQueryStartedEvent)="searchQueryStarted()"
+            (locationEvent)="getPeopleLocationEvent($event)"
+          >
           </app-people-table>
         </ng-template>
       </mat-tab>
@@ -70,6 +111,6 @@
 
   <!-- The map -->
   <div class="map-container">
-    <app-map #mapChild [locations]='returnedLocations'></app-map>
+    <app-map #mapChild [locations]="returnedLocations"></app-map>
   </div>
 </div>
