@@ -1,76 +1,124 @@
 <div class="search-box">
   <form class="search-form">
     <label class="sr-only" for="keyword">Search by keyword</label>
-    <input class="search-input" type="text" id="keyword" name="keyword" [(ngModel)]="keyword"
-      placeholder="Search by keyword" (keyup.enter)="facetChanged($event)">
-    <input class="search-submit" type="submit" value="Search" (click)="facetChanged($event)">
+    <input
+      class="search-input"
+      type="text"
+      id="keyword"
+      name="keyword"
+      [(ngModel)]="keyword"
+      placeholder="Search by keyword"
+      (keyup.enter)="facetChanged($event)"
+    />
+    <input
+      class="search-submit"
+      type="submit"
+      value="Search"
+      (click)="facetChanged($event)"
+    />
   </form>
 </div>
 
 <!-- Place Facets -->
-<div *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1" class="place-facets">
+<div
+  *ngIf="selectedTabIndex === 0 || selectedTabIndex === 1"
+  class="place-facets"
+>
   <h3 class="facet-head">Place</h3>
   <div class="facet">
     <span class="search-header">Feature Type</span>
     <div class="scrollable-facet">
-      <tree-root class="facet-tree" #gnisTree [nodes]="gnisClassesDisplay" (stateChange)="gnisFacetChange($event)"
-        [options]="gnisOptions">
+      <tree-root
+        class="facet-tree"
+        #gnisTree
+        [nodes]="gnisClassesDisplay"
+        (stateChange)="gnisFacetChange($event)"
+        [options]="gnisOptions"
+      >
       </tree-root>
     </div>
   </div>
   <!-- Only show the administrative regions on the Place tab-->
   <div *ngIf="selectedTabIndex === 0">
     <div class="facet admin-regions">
-      <span class="search-header">
-        Administrative Regions
-      </span>
-      <input class="facet-input" autocomplete="true" type="text" placeholder="Find an Administrative Region..."
-        [ngbTypeahead]="searchAdminRegions" [(ngModel)]="adminRegion" (keyup.enter)="facetChanged($event)">
+      <span class="search-header"> Administrative Regions </span>
+      <input
+        class="facet-input"
+        autocomplete="true"
+        type="text"
+        placeholder="Find an Administrative Region..."
+        [ngbTypeahead]="searchAdminRegions"
+        [(ngModel)]="adminRegion"
+        (keyup.enter)="facetChanged($event)"
+      />
     </div>
   </div>
 
   <div class="facet" *ngIf="selectedTabIndex === 1">
-    <span class="search-header">
-      Location
-    </span>
+    <span class="search-header"> Location </span>
     <!-- Only show the US Places nested checkbox facet on the Hazards tab -->
     <div class="scrollable-facet">
-      <tree-root class="facet-tree tree" #adminTree [nodes]="administrativeRegionsDisplay"
-        (stateChange)="adminFacetChange($event)" [options]="adminRegionOptions">
+      <tree-root
+        class="facet-tree tree"
+        #adminTree
+        [nodes]="administrativeRegionsDisplay"
+        (stateChange)="adminFacetChange($event)"
+        [options]="adminRegionOptions"
+      >
       </tree-root>
     </div>
   </div>
 
   <div class="facet">
-    <span class="search-header">
-      Zip Code
-    </span>
-    <input id="typeahead-basic" type="text" class="facet-input" placeholder="Find a Zip Code..." [(ngModel)]="zipCode"
-      (keyup.enter)="facetChanged($event)" [ngbTypeahead]="searchZIPCodes">
+    <span class="search-header"> Zip Code </span>
+    <input
+      id="typeahead-basic"
+      type="text"
+      class="facet-input"
+      placeholder="Find a Zip Code..."
+      [(ngModel)]="zipCode"
+      (keyup.enter)="facetChanged($event)"
+      [ngbTypeahead]="searchZIPCodes"
+    />
   </div>
 
   <div class="facet">
-    <span class="search-header">
-      FIPS Code
-    </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a FIPS Code..." [(ngModel)]="fipsCode"
-      (keyup.enter)="facetChanged($event)" [ngbTypeahead]="searchFIPSCodes">
+    <span class="search-header"> FIPS Code </span>
+    <input
+      class="facet-input"
+      autocomplete="true"
+      type="text"
+      placeholder="Find a FIPS Code..."
+      [(ngModel)]="fipsCode"
+      (keyup.enter)="facetChanged($event)"
+      [ngbTypeahead]="searchFIPSCodes"
+    />
   </div>
 
   <div class="facet">
-    <span class="search-header">
-      US Climate Division
-    </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a US Climate Division..."
-      [ngbTypeahead]="searchClimateDivision" [(ngModel)]="climateDivision" (keyup.enter)="facetChanged($event)">
+    <span class="search-header"> US Climate Division </span>
+    <input
+      class="facet-input"
+      autocomplete="true"
+      type="text"
+      placeholder="Find a US Climate Division..."
+      [ngbTypeahead]="searchClimateDivision"
+      [(ngModel)]="climateDivision"
+      (keyup.enter)="facetChanged($event)"
+    />
   </div>
 
   <div class="facet">
-    <span class="search-header">
-      National Weather Zone
-    </span>
-    <input class="facet-input" autocomplete="true" type="text" placeholder="Find a National Weather Zone..."
-      [ngbTypeahead]="searchNWZones" [(ngModel)]="nationalWeatherZone" (keyup.enter)="facetChanged($event)">
+    <span class="search-header"> National Weather Zone </span>
+    <input
+      class="facet-input"
+      autocomplete="true"
+      type="text"
+      placeholder="Find a National Weather Zone..."
+      [ngbTypeahead]="searchNWZones"
+      [(ngModel)]="nationalWeatherZone"
+      (keyup.enter)="facetChanged($event)"
+    />
   </div>
 </div>
 
@@ -78,116 +126,229 @@
 <div *ngIf="selectedTabIndex === 1" class="hazard-facets">
   <h3 class="facet-head">Hazard</h3>
   <div class="facet">
-    <span class="search-header">
-      Start Date
-    </span>
+    <span class="search-header"> Start Date </span>
     <mat-form-field appearance="fill" class="date-picker-container">
       <mat-label>Select a date</mat-label>
-      <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (keyup.enter)="facetChanged($event)"
-        (dateChange)="dateChanged('', $event)">
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [(ngModel)]="startDate"
+        (keyup.enter)="facetChanged($event)"
+        (dateChange)="dateChanged('', $event)"
+      />
       <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startPicker"
+      ></mat-datepicker-toggle>
       <mat-datepicker #startPicker></mat-datepicker>
     </mat-form-field>
   </div>
   <div class="facet">
-    <span class="search-header">
-      End Date
-    </span>
+    <span class="search-header"> End Date </span>
     <mat-form-field appearance="fill" class="date-picker-container">
       <mat-label>Select a date</mat-label>
-      <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (keyup.enter)="facetChanged($event)"
-        (dateChange)="dateChanged('', $event)">
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [(ngModel)]="endDate"
+        (keyup.enter)="facetChanged($event)"
+        (dateChange)="dateChanged('', $event)"
+      />
       <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="endPicker"
+      ></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
   </div>
   <span class="search-header">Hazard Type(s)</span>
   <div class="hazard-types">
-    <tree-root class="facet-tree hazard-tree" #hazardTree [nodes]="hazardClassesDisplay"
-      (stateChange)="hazardFacetChanged($event)" [options]="hazardOptions"> </tree-root>
+    <tree-root
+      class="facet-tree hazard-tree"
+      #hazardTree
+      [nodes]="hazardClassesDisplay"
+      (stateChange)="hazardFacetChanged($event)"
+      [options]="hazardOptions"
+    >
+    </tree-root>
   </div>
   <!--(click)="onEvent($event)"-->
   <div class="facet observation-collection">
-    <section class="conditional-facets" *ngIf="showEarthquakeOC == true">
+    <section class="conditional-facets" *ngIf="showEarthquakeOC === true">
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (min)</span>
-        <input class="facet-input" type="number" [(ngModel)]="magnitudeMin" min="0"
-          placeholder="Enter minimum magnitude..." (keyup.enter)="facetChanged($event)">
+        <input
+          class="facet-input"
+          type="number"
+          [(ngModel)]="magnitudeMin"
+          min="0"
+          placeholder="Enter minimum magnitude..."
+          (keyup.enter)="facetChanged($event)"
+        />
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Magnitude (max)</span>
-        <input class="facet-input" type="number" max="8" placeholder="Enter maximum magnitude..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="magnitudeMax">
+        <input
+          class="facet-input"
+          type="number"
+          max="8"
+          placeholder="Enter maximum magnitude..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="magnitudeMax"
+        />
       </div>
       <div class="facet">
         <span class="search-header">Earthquake: Depth (min)</span>
-        <input class="facet-input" type="number" placeholder="Enter minimum depth..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="quakeDepthMin">
+        <input
+          class="facet-input"
+          type="number"
+          placeholder="Enter minimum depth..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="quakeDepthMin"
+        />
       </div>
 
       <div class="facet">
         <span class="search-header">Earthquake: Depth (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum depth..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="quakeDepthMax">
+        <input
+          class="facet-input"
+          type="number"
+          placeholder="Enter maximum depth..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="quakeDepthMax"
+        />
       </div>
     </section>
-    <section class="conditional-facets" *ngIf="showMTBFireOC == true">
+    <section class="conditional-facets" *ngIf="showMTBFireOC === true">
       <!-- Fire Cause -->
       <div class="facet">
-        <span class="search-header">MTBS Fire: Number of Acres Burned (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum acres burned ..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="acresBurnedMin">
+        <span class="search-header"
+          >MTBS Fire: Number of Acres Burned (min)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="0"
+          placeholder="Enter minimum acres burned ..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="acresBurnedMin"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">MTBS Fire: Number of Acres Burned (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum acres burned ..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="acresBurnedMax">
+        <span class="search-header"
+          >MTBS Fire: Number of Acres Burned (max)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="0"
+          placeholder="Enter maximum acres burned ..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="acresBurnedMax"
+        />
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter minimum mean dNBR.."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="meanDnbrMin">
+        <input
+          class="facet-input"
+          type="number"
+          min="-9999"
+          placeholder="Enter minimum mean dNBR.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="meanDnbrMin"
+        />
       </div>
       <div class="facet">
         <span class="search-header">MTBS Fire: Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999" placeholder="Enter maximum mean dNBR.."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="meanDnbrMax">
+        <input
+          class="facet-input"
+          type="number"
+          min="-9999"
+          placeholder="Enter maximum mean dNBR.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="meanDnbrMax"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (min)</span>
-        <input class="facet-input" type="number" min="-9999"
-          placeholder="Enter minimum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)"
-          [(ngModel)]="sDMeanDnbrMin">
+        <span class="search-header"
+          >MTBS Fire: Standard Deviation of Mean dNBR (min)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="-9999"
+          placeholder="Enter minimum standard deviation of mean dNBR.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="sDMeanDnbrMin"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">MTBS Fire: Standard Deviation of Mean dNBR (max)</span>
-        <input class="facet-input" type="number" min="-9999"
-          placeholder="Enter maximum standard deviation of mean dNBR.." (keyup.enter)="facetChanged($event)"
-          [(ngModel)]="sDMeanDnbrMax">
+        <span class="search-header"
+          >MTBS Fire: Standard Deviation of Mean dNBR (max)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="-9999"
+          placeholder="Enter maximum standard deviation of mean dNBR.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="sDMeanDnbrMax"
+        />
       </div>
     </section>
-    <section class="conditional-facets" *ngIf="showNOAAOC == true">
+    <section class="conditional-facets" *ngIf="showNOAAOC === true">
       <div class="facet">
-        <span class="search-header">NOAA Hazard: Number of Direct Deaths (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct deaths.."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="numberDeathsMin">
+        <span class="search-header"
+          >NOAA Hazard: Number of Direct Deaths (min)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="0"
+          placeholder="Enter minimum direct deaths.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="numberDeathsMin"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">NOAA Hazard: Number of Direct Deaths (max)</span>
-        <input class="facet-input" type="number" placeholder="Enter maximum direct deaths.."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="numberDeathsMax">
+        <span class="search-header"
+          >NOAA Hazard: Number of Direct Deaths (max)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          placeholder="Enter maximum direct deaths.."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="numberDeathsMax"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (min)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter minimum direct injured number..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="numberInjuredMin">
+        <span class="search-header"
+          >NOAA Hazard: Number of Direct Injured Cases (min)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="0"
+          placeholder="Enter minimum direct injured number..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="numberInjuredMin"
+        />
       </div>
       <div class="facet">
-        <span class="search-header">NOAA Hazard: Number of Direct Injured Cases (max)</span>
-        <input class="facet-input" type="number" min="0" placeholder="Enter maximum direct injured number..."
-          (keyup.enter)="facetChanged($event)" [(ngModel)]="numberInjuredMax">
+        <span class="search-header"
+          >NOAA Hazard: Number of Direct Injured Cases (max)</span
+        >
+        <input
+          class="facet-input"
+          type="number"
+          min="0"
+          placeholder="Enter maximum direct injured number..."
+          (keyup.enter)="facetChanged($event)"
+          [(ngModel)]="numberInjuredMax"
+        />
       </div>
     </section>
   </div>
@@ -199,8 +360,13 @@
   <div class="facet">
     <span class="search-header">Expert Topic(s)</span>
     <div class="expert-types">
-      <tree-root class="expert-types" #expertTree [nodes]="expertClassesDisplay"
-        (stateChange)="expertFacetChange($event)" [options]="expertOptions"></tree-root>
+      <tree-root
+        class="expert-types"
+        #expertTree
+        [nodes]="expertClassesDisplay"
+        (stateChange)="expertFacetChange($event)"
+        [options]="expertOptions"
+      ></tree-root>
     </div>
   </div>
 </div>

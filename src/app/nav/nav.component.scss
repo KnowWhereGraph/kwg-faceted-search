@@ -1,8 +1,7 @@
-@import "../../variables.scss";
+@import '../../variables.scss';
 
 .nav {
   margin-bottom: 0;
-  ;
 }
 
 .header {
@@ -46,7 +45,7 @@
   }
 
   .left a img {
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     width: 170px;
 
     &:hover {
@@ -54,7 +53,6 @@
     }
   }
 }
-
 
 /* Mobile Menu */
 
@@ -76,7 +74,7 @@
     z-index: 4;
     -webkit-user-select: none;
     user-select: none;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
   }
 
   #menuToggle:hover {
@@ -103,7 +101,8 @@
     border-radius: 3px;
     z-index: 1;
     transform-origin: 5px 0px;
-    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), opacity 0.55s ease;
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+      background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
   }
 
   #menuToggle span:first-child {
@@ -114,17 +113,17 @@
     transform-origin: 0% 100%;
   }
 
-  #menuToggle input:checked~span {
+  #menuToggle input:checked ~ span {
     opacity: 1;
     transform: rotate(45deg) translate(-3px, -1px);
   }
 
-  #menuToggle input:checked~span:nth-last-child(3) {
+  #menuToggle input:checked ~ span:nth-last-child(3) {
     opacity: 0;
     transform: rotate(0deg) scale(0.2, 0.2);
   }
 
-  #menuToggle input:checked~span:nth-last-child(2) {
+  #menuToggle input:checked ~ span:nth-last-child(2) {
     transform: rotate(-45deg) translate(0, -1px);
   }
 
@@ -143,7 +142,7 @@
     top: -40px;
     transform-origin: 0% 0%;
     transform: translate(100%, 0);
-    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
   }
 
   header ul li {
@@ -156,7 +155,7 @@
     padding: 10px 0;
   }
 
-  #menuToggle input:checked~ul {
+  #menuToggle input:checked ~ ul {
     transform: none;
   }
 
@@ -218,7 +217,7 @@
     position: relative;
     z-index: 2;
     margin-top: 20px;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &:hover {
       color: var(--accent);
@@ -270,7 +269,7 @@
       }
 
       .nav-item .item:hover {
-        color: #2FB9CF;
+        color: #2fb9cf;
         padding-bottom: 7.5px;
         border-bottom: solid 2px;
       }

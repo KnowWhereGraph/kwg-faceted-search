@@ -1,8 +1,8 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material/tabs';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import { ErrorModalComponent } from '../error-modal/error-modal.component';
+import { ActivatedRoute, Router } from '@angular/router'
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
+import { MatTabChangeEvent } from '@angular/material/tabs'
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
+import { ErrorModalComponent } from '../error-modal/error-modal.component'
 
 /**
  * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
@@ -11,62 +11,62 @@ import { ErrorModalComponent } from '../error-modal/error-modal.component';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
   // Tracks the active tab
-  selectedTabIndex: number = 0;
+  selectedTabIndex: number = 0
   // Tracks whether the counting query has finished
-  isCounting: boolean;;
+  isCounting: boolean
   // Tracks whether the searching query has finished
-  isSearching: boolean;;
+  isSearching: boolean
   // The number of results that the user wants to see in the table
-  public pageSize: number = 20;
+  public pageSize: number = 20
   // The current table page that the user is on
-  public currentPage: number = 0;
+  public currentPage: number = 0
   // The number of results
-  public totalSize: number = 0;
+  public totalSize: number = 0
   // State of all of the facet values
-  facetState = {};
+  facetState = {}
 
   // Reference to the map component
   @ViewChild('mapChild')
-  public mapChild: any;
+  public mapChild: any
   // Reference to the places tab
   @ViewChild('placesTable')
-  public placesTable: any;
+  public placesTable: any
   // Reference to the hazards table
   @ViewChild('hazardsTable')
-  public hazardsTable: any;
+  public hazardsTable: any
   // Reference people table
   @ViewChild('peopleTable')
-  public peopleTable: any;
+  public peopleTable: any
   // Reference to the facets component
   @ViewChild('appfacets')
-  public appfacets: any;
+  public appfacets: any
 
   /**
    * Called when a facet changes
-   * 
+   *
    * @param selectedFacets: object JSON object of the facet state
    */
   changeFacets(selectedFacets: object) {
-    this.facetState = selectedFacets;
+    this.facetState = selectedFacets
     // Let the table know that it needs to update. First find out which table is active
     switch (this.selectedTabIndex) {
       case 0:
-        this.placesTable.populateTable(selectedFacets);
-        break;
+        this.placesTable.populateTable(selectedFacets)
+        break
       case 1:
-        this.hazardsTable.populateTable(selectedFacets);
-        break;
+        this.hazardsTable.populateTable(selectedFacets)
+        break
       case 2:
-        this.peopleTable.populateTable(selectedFacets);
-        break;
+        this.peopleTable.populateTable(selectedFacets)
+        break
     }
   }
   // variable to hold the data from the place/hazard/people component.
-  public returnedLocations: any;
+  public returnedLocations: any
 
   /**
    * Create a new search component
@@ -75,10 +75,15 @@ export class SearchComponent implements OnInit {
    * @param route: The activated route for this page
    * @param router: The global router
    */
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private errorModal: MatDialog) {
-    this.totalSize = 0;
-    this.isCounting = true;
-    this.isSearching = true;
+  constructor(
+    private cd: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router,
+    private errorModal: MatDialog
+  ) {
+    this.totalSize = 0
+    this.isCounting = true
+    this.isSearching = true
   }
 
   /**
@@ -87,23 +92,23 @@ export class SearchComponent implements OnInit {
    * @param newCount The number of results that will be displayed
    */
   changeResultsCount(newCount: number) {
-    this.totalSize = newCount;
-    this.isCounting = false;
+    this.totalSize = newCount
+    this.isCounting = false
   }
 
   /**
    * Called when a pagination event is triggered.
    */
   recievedPagination() {
-    this.changeFacets(this.appfacets.selectedFacets);
+    this.changeFacets(this.appfacets.selectedFacets)
   }
 
   /**
    * Event handler to set the searching state
-   * 
+   *
    */
   searchQueryStarted() {
-    this.isSearching = true;
+    this.isSearching = true
   }
 
   /**
@@ -111,7 +116,7 @@ export class SearchComponent implements OnInit {
    * search query finishes
    */
   searchQueryFinished() {
-    this.isSearching = false;
+    this.isSearching = false
   }
 
   /**
@@ -120,25 +125,24 @@ export class SearchComponent implements OnInit {
    * @param tabChangeEvent The event for the tab change
    */
   onTabChanged(tabChangeEvent: MatTabChangeEvent) {
-    let clickedIndex = tabChangeEvent.index;
+    let clickedIndex = tabChangeEvent.index
     // When the tab changes the child component runs the counting and search queries
     // Update the corresponding state variables to reflect this
-    this.isCounting = true;
-    this.isSearching = true;
+    this.isCounting = true
+    this.isSearching = true
 
-    let clickedTabName = "place";
+    let clickedTabName = 'place'
     switch (clickedIndex) {
       case 0:
-        clickedTabName = "place";
+        clickedTabName = 'place'
         break
       case 1:
-        clickedTabName = "hazard";
+        clickedTabName = 'hazard'
         break
       case 2:
-        clickedTabName = "people";
+        clickedTabName = 'people'
     }
     //const queryParams = { tab: clickedTabName };
-
   }
 
   /**
@@ -147,18 +151,18 @@ export class SearchComponent implements OnInit {
    */
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
-    let tab = this.route.snapshot.queryParamMap.get('tab');
+    let tab = this.route.snapshot.queryParamMap.get('tab')
 
     switch (tab) {
-      case "place":
-        this.selectedTabIndex = Number(0);
-        break;
-      case "hazard":
-        this.selectedTabIndex = Number(1);
-        break;
-      case "person":
-        this.selectedTabIndex = Number(2);
-        break;
+      case 'place':
+        this.selectedTabIndex = Number(0)
+        break
+      case 'hazard':
+        this.selectedTabIndex = Number(1)
+        break
+      case 'person':
+        this.selectedTabIndex = Number(2)
+        break
     }
   }
 
@@ -166,7 +170,7 @@ export class SearchComponent implements OnInit {
    * Once the view is ready, wait for any state changes.
    */
   ngAfterViewInit(): void {
-    this.cd.detectChanges();
+    this.cd.detectChanges()
   }
 
   /**
@@ -175,9 +179,9 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getPlaceLocationEvent(values) {
-    this.returnedLocations = values;
+    this.returnedLocations = values
     // We don't display place locations; uncomment this when we support it
-    this.mapChild.displayClustersForTab("place", values)
+    this.mapChild.displayClustersForTab('place', values)
   }
 
   /**
@@ -186,8 +190,8 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getHazardLocationEvent(values) {
-    this.returnedLocations = values;
-    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
+    this.returnedLocations = values
+    this.mapChild.displayClustersForTab('hazard', this.returnedLocations)
   }
 
   /**
@@ -196,17 +200,17 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getPeopleLocationEvent(values) {
-    this.returnedLocations = values;
-    this.mapChild.displayClustersForTab("people", values)
+    this.returnedLocations = values
+    this.mapChild.displayClustersForTab('people', values)
   }
 
   /**
    * Opens the error modal dialog
    */
   openErrorModal() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '300px';
-    dialogConfig.height = '200px';
-    this.errorModal.open(ErrorModalComponent, dialogConfig);
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.width = '300px'
+    dialogConfig.height = '200px'
+    this.errorModal.open(ErrorModalComponent, dialogConfig)
   }
 }

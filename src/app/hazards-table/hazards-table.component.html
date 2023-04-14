@@ -1,60 +1,84 @@
 <div class="table-container">
-  <mat-paginator class="paginator" #paginator [pageSize]="pageSize" [pageSizeOptions]="[20, 50, 100]"
-    [showFirstLastButtons]="true" [length]="totalSize" [pageIndex]="currentPage">
+  <mat-paginator
+    class="paginator"
+    #paginator
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[20, 50, 100]"
+    [showFirstLastButtons]="true"
+    [length]="totalSize"
+    [pageIndex]="currentPage"
+  >
   </mat-paginator>
   <mat-table [dataSource]="hazards" class="search-table">
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Name </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header">
+        Name
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.entityUri" target="_blank">{{row.name}}</a>
+          <a [href]="row.entityUri" target="_blank">{{ row.name }}</a>
         </span>
       </mat-cell>
     </ng-container>
 
     <!-- Type Column -->
     <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Type </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header">
+        Type
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a *ngFor="let typeData of row.type; let isLast=last" [href]="typeData[0]"
-            target="_blank">{{typeData[1]}}{{isLast ? '' : ', '}}</a>
+          <a
+            *ngFor="let typeData of row.type; let isLast = last"
+            [href]="typeData[0]"
+            target="_blank"
+            >{{ typeData[1] }}{{ isLast ? '' : ', ' }}</a
+          >
         </span>
       </mat-cell>
     </ng-container>
 
     <!-- Place Column -->
     <ng-container matColumnDef="place">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Place </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header">
+        Place
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.placeUri" target="_blank">{{row.place}}</a>
+          <a [href]="row.placeUri" target="_blank">{{ row.place }}</a>
         </span>
       </mat-cell>
     </ng-container>
 
     <!-- Start Date Column -->
     <ng-container matColumnDef="startDate" class="date-column">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> Start Date </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header">
+        Start Date
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.startDateUri" target="_blank">{{row.startDate}}</a>
+          <a [href]="row.startDateUri" target="_blank">{{ row.startDate }}</a>
         </span>
       </mat-cell>
     </ng-container>
 
     <!-- End Date Column -->
     <ng-container matColumnDef="endDate">
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header"> End Date </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="hazard-header">
+        End Date
+      </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <span class="overflow-cell">
-          <a [href]="row.endDateUri" target="_blank">{{row.endDate}}</a>
+          <a [href]="row.endDateUri" target="_blank">{{ row.endDate }}</a>
         </span>
       </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="hazardColumns"></mat-header-row>
-    <mat-row class="results-row" *matRowDef="let row; columns: hazardColumns;"></mat-row>
+    <mat-row
+      class="results-row"
+      *matRowDef="let row; columns: hazardColumns"
+    ></mat-row>
   </mat-table>
 </div>
