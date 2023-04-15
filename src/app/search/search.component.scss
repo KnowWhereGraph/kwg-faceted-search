@@ -1,16 +1,16 @@
-@import "../../variables.scss";
+@import '../../variables.scss';
 
 // Styling for the container that holds the facets, table, and map
 .search-body {
   display: flex;
-  background-color: #CFCFD5;
+  background-color: #cfcfd5;
 }
 
 .facets {
   // Use padding so that the background color is included in the spacing
   padding-left: 2rem;
   padding-right: 2rem;
-  background: #D8D8DD;
+  background: #d8d8dd;
   // Don't let the facet selection area expand past 15% of available space
   min-width: 15%;
   max-width: 15%;

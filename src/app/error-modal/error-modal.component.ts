@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {MatDialogRef} from "@angular/material/dialog";
+import { Component, OnInit } from '@angular/core'
+import { MatDialogRef } from '@angular/material/dialog'
 
 @Component({
   selector: 'app-error-modal',
   templateUrl: './error-modal.component.html',
-  styleUrls: ['./error-modal.component.scss']
+  styleUrls: ['./error-modal.component.scss'],
 })
 export class ErrorModalComponent implements OnInit {
-
   constructor(public dialogRef: MatDialogRef<ErrorModalComponent>) {}
 
   ngOnInit(): void {}
@@ -15,7 +14,7 @@ export class ErrorModalComponent implements OnInit {
   /**
    * Closes the modal
    */
-     close() {
-      this.dialogRef.close();
-    }
+  close() {
+    this.dialogRef.close()
+  }
 }
