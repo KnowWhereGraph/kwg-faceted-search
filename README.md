@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Knowledge Explorer
 
 The Knowledge Explorer is an AngularJS webapp designed to give an overview of the information stored in the backing graph database.
@@ -27,7 +28,14 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 >>>>>>> 230b87cf (update my repo)
 =======
 >>>>>>> 92c43531 (Add Apache 2 license)
+=======
+>>>>>>> 1c30124f (Remove old src and update readme)
 # Faceted Search
+
+
+![License](https://img.shields.io/github/license/knowwheregraph/kwg-faceted-search.svg)
+![Licensse](https://img.shields.io/github/issues/knowwheregraph/kwg-faceted-search.svg)
+
 
 The search interface for KnowWhereGraph.
 >>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
@@ -94,6 +102,19 @@ npm run build --configuration=stage
 cp -r dist/faceted-search/* /var/www/html
 ```
 
+## Versioning
+
+The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
+
+## Contributing
+
+Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates. The project uses [prettier](https://prettier.io/) for code formatting, with line widths set to 120 characters.
+
+Before creating pull requests, lint the project with
+
+`ng lint`
+
+
 ## Troubleshooting
 
 ### The GNIS/Hazard/Location Tree Facets Aren't Working
@@ -127,6 +148,7 @@ The UI lets the user know what's happening with their query (running or counting
 1. Problem with the query
 1. The events aren't firing where/when they need to
 1. The search component isn't parsing the events properly
+<<<<<<< HEAD
 
 ## Testing
 
@@ -240,3 +262,5 @@ npm start
 The Knowledge Explorer is licensed under Apache 2. Code contributions are welcome; contributors should create branches under `stko-kwg` and create pull requests to merge into it.
 >>>>>>> 310a3110 (Add Apache 2 license)
 >>>>>>> 92c43531 (Add Apache 2 license)
+=======
+>>>>>>> 1c30124f (Remove old src and update readme)
