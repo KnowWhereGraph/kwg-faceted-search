@@ -42,11 +42,7 @@ import { ErrorModalComponent } from './error-modal/error-modal.component'
     HazardsTableComponent,
     PeopleTableComponent,
     MapComponent,
-<<<<<<< HEAD
-
-=======
     ErrorModalComponent,
->>>>>>> 04ee827b (Add an error modal)
   ],
   imports: [
     BrowserModule,

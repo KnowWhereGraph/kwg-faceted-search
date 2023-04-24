@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Component, OnInit, Input } from '@angular/core';
-=======
-import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
->>>>>>> 8d13fa9f (Sending expertise topic facet selection from FacetsComponent to SearchComponent)
-=======
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-<<<<<<< HEAD
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-import { FormControl } from '@angular/forms';
-=======
-import { UntypedFormControl } from '@angular/forms';
->>>>>>> f7974cf7 (Upgrade to Angular 14)
-import { ActivatedRoute, Params, Router } from '@angular/router';
-=======
 import {
   Component,
   OnInit,
@@ -25,7 +8,6 @@ import {
 } from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
 import { ActivatedRoute, Params, Router } from '@angular/router'
->>>>>>> 421c4d2f (Add a code formatter & linter)
 import { QueryService } from '../services/query.service'
 import {
   ITreeOptions,
@@ -42,17 +24,12 @@ import {
   map,
 } from 'rxjs/operators'
 
-<<<<<<< HEAD
 /**
  * Component for the facet panel. This component is responsible for handling the display
  * and event handling of facet selections. When facets are selected, the component
  * fires an event containing a data structure of facet selections for other components
  * to process.
  */
-=======
-
-
->>>>>>> 51bce0fa (Sending facet selection from searchComponent to PeopleTableComponent and update people-table)
 @Component({
   selector: 'app-facets',
   templateUrl: './facets.component.html',

@@ -22,51 +22,10 @@ import * as turf from 'turf'
   styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements OnInit {
-<<<<<<< HEAD
-
-  private map: any;
-  @Input() locations: any;
-<<<<<<< HEAD
-  createMarkerCluster = L.markerClusterGroup();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  // markers: L.Marker[] = [];
-
->>>>>>> b845fbe8 (recenter the map)
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
-=======
-  markers: L.Marker[] = [];
-
-  /**
-   * An empty constructor; the map is initialized after the view is ready.
-   */
-  constructor() { }
-
-  /**
-   * An empty ngOnInit to satisfy the constraints from OnInit.
-   */
-  ngOnInit(): void { }
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-
-  /**
-=======
-=======
-  markerCluster = L.markerClusterGroup();
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-  markers: L.Marker[] = [];
-=======
   private map: any
   @Input() locations: any
   markerCluster = L.markerClusterGroup()
   markers: L.Marker[] = []
->>>>>>> 421c4d2f (Add a code formatter & linter)
 
   /**
    * An empty constructor; the map is initialized after the view is ready.
@@ -79,111 +38,15 @@ export class MapComponent implements OnInit {
   ngOnInit(): void {}
 
   /**
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
    * Once the view is ready, initialize the map and show the data clusters.
    */
   ngAfterViewInit(): void {
-<<<<<<< HEAD
-    this.initMap();
-    this.showClusters();
-  }
-
-  /**
-   * Creates a new map instance centered at a point.
-   */
-  private initMap(): void {
-    this.map = L.map('map', {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      center: [25.79611, -96.86278],
-      zoom: 5
-    });
-
-    // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //   maxZoom: 18,
-    //   minZoom: 3,
-    //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // });
-
-    // const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    //         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    //         maxZoom: 18,
-    //         id: 'mapbox/streets-v11',
-    //         tileSize: 512,
-    //         zoomOffset: -1,
-    //         accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
-    //     });
-    const tiles = L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
-      tileSize: 512,
-      zoomOffset: -1,
-      minZoom: 1,
-      attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
-      crossOrigin: true
-    });
-<<<<<<< HEAD
-=======
-      center: [-37.8208292333, 175.2214374833],
-      zoom: 5
-    });
-=======
-      center: [-37.8208292333, 175.2214374833],
-      zoom: 5
-    });
-
-    // The tile layer from mapbox definition
-<<<<<<< HEAD
-    const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-<<<<<<< HEAD
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
-        });
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
-=======
-    const tiles = L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
->>>>>>> f94feaa9 (Remove unused code)
-=======
     this.map = L.map('map', {
       center: [36.895, -95.036667],
       zoom: 4,
     })
 
     // The tile layer from mapbox definition
-<<<<<<< HEAD
-    L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ', {
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      maxZoom: 18,
-      id: 'mapbox/streets-v11',
-      tileSize: 512,
-      zoomOffset: -1,
-      accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
-<<<<<<< HEAD
-    });
->>>>>>> 093c3e3c (Format all source fileS)
-
-    // The tile layer from mapbox definition
-    const tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg'
-        });
-=======
->>>>>>> b845fbe8 (recenter the map)
-
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-    tiles.addTo(this.map);
-=======
-    }).addTo(this.map);
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-=======
     L.tileLayer(
       'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=zS24k9i8nVWbUmI9ngCZ',
       {
@@ -197,52 +60,15 @@ export class MapComponent implements OnInit {
           'pk.eyJ1IjoidHJ1Y2hhbiIsImEiOiJjazZqaGJwdWwwYnJkM21vYnl1cDMwbGplIn0.--s7U90M9eJARzPGTGyQjg',
       }
     ).addTo(this.map)
->>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   /**
    * Plots a feature on the map. A long function because it contains several methods
    * that need to be within this function's scope.
    *
    * @param feature The feature being plotted on the map
    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 9f3ef866 (uncomment console; jsdoc format)
-  private showClusters(locations){
-=======
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-  /**
-   * Creates the cluster icons on the map.
-   */
-  private showClusters() {
-<<<<<<< HEAD
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-=======
-  private showClusters(locations){
->>>>>>> b845fbe8 (recenter the map)
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
-  private showPoint(feature){
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
-  private showPoint(feature) {
->>>>>>> 1420d57c (Format code)
-=======
-  private showGeometry(feature) {
->>>>>>> f94feaa9 (Remove unused code)
-=======
   private addFeature(feature) {
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
     const icon = L.icon({
       iconSize: [25, 41],
       iconAnchor: [10, 41],
@@ -252,29 +78,6 @@ export class MapComponent implements OnInit {
       shadowUrl: '../../assets/images/map/marker-shadow.png',
     })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    let locations = [[-37.8210922667, 175.2209316333],
-    [-37.8210819833, 175.2213903167],
-    [-37.8210881833, 175.2215004833],
-    [-37.8211946833, 175.2213655333],
-    [-37.8209458667, 175.2214051333],
-    [-37.8208292333, 175.2214374833],
-    [-37.8325816, 175.2238798667],
-    [-37.8315855167, 175.2279767]];
-
-    for (let i = 0; i < locations.length; i++) {
-      let marker = L.marker([locations[i][0], locations[i][1]], { icon });
-      this.createMarkerCluster.addLayer(marker);
-    }
-    this.map.addLayer(this.createMarkerCluster);
-<<<<<<< HEAD
-=======
-    function onEachFeature(feature, layer) {
-      layer.bindPopup(feature.properties.ATT1);
-=======
-=======
     /**
      * Returns the HTML used in the popup
      *
@@ -286,10 +89,6 @@ export class MapComponent implements OnInit {
      * @param homepage Their website
      * @returns A string of HTML with inline styling
      */
-<<<<<<< HEAD
->>>>>>> 942f9746 (Add support for plotting geometries as points on the 'Place' tab)
-    function getPersonPopup(name: string, affiliation: string, expertise: [[string, string]], phone: string, email: string, homepage: string) {
-=======
     function getPersonPopup(
       name: string,
       affiliation: string,
@@ -298,7 +97,6 @@ export class MapComponent implements OnInit {
       email: string,
       homepage: string
     ) {
->>>>>>> 421c4d2f (Add a code formatter & linter)
       // Use Array to sort & handle concatenating the expert topics
       let expertTopics: Array<string> = []
       expertise.forEach((topic) => {
@@ -318,22 +116,10 @@ export class MapComponent implements OnInit {
       <span><b>Expertise:</b> ${topicString}</span>
       <br>
       ${email.length ? email_row : ''}
-<<<<<<< HEAD
-      ${homepage.length ? homepage_row : ''}`
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-=======
       ${homepage.length ? homepage_row : ''}
       ${phone.length ? phone_row : ''}`
->>>>>>> 4458e805 (Clear when viewing 'Place' tab and re-order card)
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
- 
-=======
 
->>>>>>> 421c4d2f (Add a code formatter & linter)
     /**
      * Creates the popup for elements on the 'Place' tab
      * @param name The name of the place
@@ -347,7 +133,6 @@ export class MapComponent implements OnInit {
       <span><b>Type:</b> ${place_type}</span>
       `
     }
->>>>>>> 942f9746 (Add support for plotting geometries as points on the 'Place' tab)
 
     /**
      * Creates the HTML for the popup that appears on
@@ -442,48 +227,6 @@ export class MapComponent implements OnInit {
       wkt_representation['properties'] = {}
       wkt_representation['properties']['name'] = record['name']
       // Get information for the popup based on the tab
-<<<<<<< HEAD
-      if (tabName == "people") {
-        wkt_representation["properties"]["type"] = "people"
-          wkt_representation["properties"]["affiliation"] = record["affiliation"],
-          wkt_representation["properties"]["expertise"] = record["expertise"],
-          wkt_representation["properties"]["place"] = record["place"]
-          wkt_representation["properties"]["email"] = record["email"]
-          wkt_representation["properties"]["phone"] = record["phone"]
-          wkt_representation["properties"]["homepage"] = record["homepage"]
-<<<<<<< HEAD
-      } else if (tabName == "hazard") {
-
-      }
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-    if(coordinates.length){
-      this.showClusters(coordinates);
-    }
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
-=======
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-      if (wkt_representation['type'] != "Point") {
-        // Then it's a 2d geometry
-      } else {
-        // Add it as a point
-        this.addFeature(wkt_representation);
-=======
-      } else if (tabName == "place") {
-        wkt_representation["properties"]["type"] = "place"
-        wkt_representation["properties"]["name"] = record["name"];
-        wkt_representation["properties"]["place_type"] = record["type"];
-<<<<<<< HEAD
->>>>>>> 942f9746 (Add support for plotting geometries as points on the 'Place' tab)
-=======
-      } else if (tabName == "hazard") {
-        wkt_representation["properties"]["type"] = "hazard"
-        wkt_representation["properties"]["name"] = record["name"];
-        wkt_representation["properties"]["hazard_type"] = Array();
-=======
       if (tabName == 'people') {
         wkt_representation['properties']['type'] = 'people'
         ;(wkt_representation['properties']['affiliation'] =
@@ -501,29 +244,10 @@ export class MapComponent implements OnInit {
         wkt_representation['properties']['type'] = 'hazard'
         wkt_representation['properties']['name'] = record['name']
         wkt_representation['properties']['hazard_type'] = Array()
->>>>>>> 421c4d2f (Add a code formatter & linter)
         // Get a unique set of types
         let hazard_types = new Set()
         record['type'].forEach((type_element) => {
           hazard_types.add(type_element[1])
-<<<<<<< HEAD
-        });
-        wkt_representation["properties"]["hazard_type"] = [...hazard_types];
-        wkt_representation["properties"]["startDate"] = record["startDate"];
-        wkt_representation["properties"]["endDate"] = record["endDate"];
->>>>>>> 8a3571d1 (Add support for showign hazards on the map)
-      }
-      this.addFeature(wkt_representation);
-    });
-<<<<<<< HEAD
-    this.map.addLayer(this.createMarkerCluster);
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
-    this.map.addLayer(this.markerCluster);
-<<<<<<< HEAD
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-=======
-=======
         })
         wkt_representation['properties']['hazard_type'] = [...hazard_types]
         wkt_representation['properties']['startDate'] = record['startDate']
@@ -532,53 +256,13 @@ export class MapComponent implements OnInit {
       this.addFeature(wkt_representation)
     })
     this.map.addLayer(this.markerCluster)
->>>>>>> 421c4d2f (Add a code formatter & linter)
     try {
       this.map.fitBounds(this.markerCluster.getBounds())
     } catch (error) {
       // Sometimes if there aren't any valid geometries on the map, this throws
       // Leave it silent because it should be okay
-<<<<<<< HEAD
-   }
->>>>>>> 8a3571d1 (Add support for showign hazards on the map)
-=======
-    }
->>>>>>> 421c4d2f (Add a code formatter & linter)
-  }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  this.map.addLayer(this.createMarkerCluster);
-  }
-
-  public displayClustersForTab(tabName, locations){
-    // clear all the clusters
-    var coordinates: number[][] = [];
-    this.createMarkerCluster.clearLayers();
-    // display the clusters
-    if (tabName == "place"){
-      coordinates = [];
-    } else{
-      for (var loc of locations){
-        var split_text = loc.split(" ");
-        var coord: number[] = [];
-        var coordX = parseFloat(split_text[1].split("(")[1]);
-        var coordY = parseFloat(split_text[2].split(")")[0]);
-        coord.push(coordY);
-        coord.push(coordX);
-        coordinates.push(coord);
-      }
-    }
-
-    if(coordinates.length){
-      this.showClusters(coordinates);
     }
   }
-=======
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-=======
->>>>>>> 19451625 (merge the change)
-=======
 
   /**
    * Determines whether a wkt string is describing a point or not
@@ -592,5 +276,4 @@ export class MapComponent implements OnInit {
     }
     return false
   }
->>>>>>> 942f9746 (Add support for plotting geometries as points on the 'Place' tab)
 }

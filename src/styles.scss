@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-@import "variables.scss";
-=======
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
 @import 'variables.scss';
->>>>>>> 421c4d2f (Add a code formatter & linter)
 
 // HTML styles used across all scss sheets
 .html {
@@ -96,7 +92,6 @@ body {
   margin: 0 auto;
 }
 
-<<<<<<< HEAD
 .overflow-cell {
   overflow: auto;
   a {
@@ -107,12 +102,6 @@ body {
     color: orange;
   }
 }
-<<<<<<< HEAD
-=======
-/* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
->>>>>>> 9313649f (Add autocompletion to the facets)
-=======
 
 .node-content-wrapper:hover {
   box-shadow: none;
@@ -133,4 +122,3 @@ mat-form-field-flex {
   width: 229px !important;
   height: 300px !important;
 }
->>>>>>> 245963fb (Disable facet highlighting and make sure that all facets have events triggering)

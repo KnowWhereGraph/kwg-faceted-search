@@ -18,27 +18,5 @@ export class NavComponent implements OnInit {
   /**
    * An empty ngOnInit to satisfy the constraints from OnInit.
    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-  ngOnInit(): void {
-  }
-<<<<<<< HEAD
-
-
-  /**
-   * An event handler that gets triggered when the tab changes
-   *
-   * @param tabChangeEvent The event for the tab change
-   */
-   onTabChanged(tabChangeEvent: MatTabChangeEvent) {
-    let clickedIndex = tabChangeEvent.index;
-  }
-=======
-  ngOnInit(): void { }
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
   ngOnInit(): void {}
->>>>>>> 421c4d2f (Add a code formatter & linter)
 }

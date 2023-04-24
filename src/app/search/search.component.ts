@@ -25,13 +25,7 @@ export class SearchComponent implements OnInit {
   // The current table page that the user is on
   public currentPage: number = 0
   // The number of results
-<<<<<<< HEAD
-  public totalSize: number = 0;
-<<<<<<< HEAD
-=======
-=======
   public totalSize: number = 0
->>>>>>> 421c4d2f (Add a code formatter & linter)
   // State of all of the facet values
   facetState = {}
 
@@ -49,12 +43,7 @@ export class SearchComponent implements OnInit {
   public peopleTable: any
   // Reference to the facets component
   @ViewChild('appfacets')
-<<<<<<< HEAD
-  public appfacets: any;
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
   public appfacets: any
->>>>>>> 421c4d2f (Add a code formatter & linter)
 
   /**
    * Called when a facet changes
@@ -86,23 +75,6 @@ export class SearchComponent implements OnInit {
    * @param route: The activated route for this page
    * @param router: The global router
    */
-<<<<<<< HEAD
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private errorModal: MatDialog) {
-    this.totalSize = 0;
-    this.isCounting = true;
-    this.isSearching = true;
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-    // this.testValue = 0;
-=======
->>>>>>> 38f7329d (Add the current tab to the query parameters and navigate to the correct tab based on them)
-=======
->>>>>>> c829d74e (merge change)
-=======
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-=======
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
@@ -112,7 +84,6 @@ export class SearchComponent implements OnInit {
     this.totalSize = 0
     this.isCounting = true
     this.isSearching = true
->>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 
   /**
@@ -207,35 +178,10 @@ export class SearchComponent implements OnInit {
    *
    * @param values The locations in the event
    */
-<<<<<<< HEAD
-  getPlaceLocationEvent (values){
-<<<<<<< HEAD
->>>>>>> 8520741e (Update the documentation for the code and restructure the Readme)
-=======
->>>>>>> 19451625 (merge the change)
-=======
   getPlaceLocationEvent(values) {
-<<<<<<< HEAD
->>>>>>> 093c3e3c (Format all source fileS)
-    this.returnedLocations = values;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    this.mapChild.displayClustersForTab("place", values)
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
-    // We don't display place locations; uncomment this when we support it
-<<<<<<< HEAD
-    //this.mapChild.displayClustersForTab("place", values)
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
-    this.mapChild.displayClustersForTab("place", values)
->>>>>>> 4458e805 (Clear when viewing 'Place' tab and re-order card)
-=======
     this.returnedLocations = values
     // We don't display place locations; uncomment this when we support it
     this.mapChild.displayClustersForTab('place', values)
->>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 
   /**
@@ -244,24 +190,8 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getHazardLocationEvent(values) {
-<<<<<<< HEAD
-    this.returnedLocations = values;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-=======
-    //this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
-    this.mapChild.displayClustersForTab("hazard", this.returnedLocations)
->>>>>>> f94feaa9 (Remove unused code)
-=======
     this.returnedLocations = values
     this.mapChild.displayClustersForTab('hazard', this.returnedLocations)
->>>>>>> 421c4d2f (Add a code formatter & linter)
   }
 
   /**
@@ -270,41 +200,9 @@ export class SearchComponent implements OnInit {
    * @param values The locations in the event
    */
   getPeopleLocationEvent(values) {
-<<<<<<< HEAD
-    this.returnedLocations = values;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    this.mapChild.displayClustersForTab("people", values)
-=======
-    //this.mapChild.displayClustersForTab("people", values)
->>>>>>> e749fcb5 (Refactor query triggering events & partially add places to the map)
-=======
-    this.mapChild.displayClustersForTab("people", values)
->>>>>>> d9b27ca1 (Add the map for the 'Persons' tab)
-=======
     this.returnedLocations = values
     this.mapChild.displayClustersForTab('people', values)
->>>>>>> 421c4d2f (Add a code formatter & linter)
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-<<<<<<< HEAD
-  getLocationsFromComponent(values){
-    this.returnedLocations = values;
-=======
->>>>>>> 4b4b2ec2 (Revert "1. migrate changes from previous branch to the current one; 2. display markers and clusters on the map according to different tabs selected")
-  }
-<<<<<<< HEAD
->>>>>>> 19451625 (merge the change)
-=======
-  // getLocationsFromComponent(values){
-  //   this.returnedLocations = values;
-  // }
->>>>>>> 9f3ef866 (uncomment console; jsdoc format)
-=======
 
   /**
    * Opens the error modal dialog
@@ -315,12 +213,4 @@ export class SearchComponent implements OnInit {
     dialogConfig.height = '200px'
     this.errorModal.open(ErrorModalComponent, dialogConfig)
   }
->>>>>>> 04ee827b (Add an error modal)
 }
-=======
-
-
-
-
-}
->>>>>>> 2faa7dda (Configure SearchComponent for testing its communication with FacetsComponent during expertise topic selection)

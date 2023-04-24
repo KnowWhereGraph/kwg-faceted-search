@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-dr-app/node_modules
-dr-app/package-lock.json
-.DS_Store
-.idea/
-=======
-=======
->>>>>>> 230b87cf (update my repo)
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # Compiled output
@@ -50,13 +41,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-<<<<<<< HEAD
->>>>>>> 0b1c11c0 (Initial project commit with most of the basic components)
-=======
-=======
-dr-app/node_modules
-dr-app/package-lock.json
-.DS_Store
-.idea/
->>>>>>> 0bf31404 (update my repo)
->>>>>>> 230b87cf (update my repo)

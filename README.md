@@ -1,10 +1,5 @@
 # Faceted Search
 
-
-![License](https://img.shields.io/github/license/knowwheregraph/kwg-faceted-search.svg)
-![Licensse](https://img.shields.io/github/issues/knowwheregraph/kwg-faceted-search.svg)
-
-
 The search interface for KnowWhereGraph.
 
 ## Building and Deploying
@@ -69,19 +64,6 @@ npm run build --configuration=stage
 cp -r dist/faceted-search/* /var/www/html
 ```
 
-## Versioning
-
-The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
-
-## Contributing
-
-Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates. The project uses [prettier](https://prettier.io/) for code formatting, with line widths set to 120 characters.
-
-Before creating pull requests, lint the project with
-
-`ng lint`
-
-
 ## Troubleshooting
 
 ### The GNIS/Hazard/Location Tree Facets Aren't Working
@@ -115,3 +97,43 @@ The UI lets the user know what's happening with their query (running or counting
 1. Problem with the query
 1. The events aren't firing where/when they need to
 1. The search component isn't parsing the events properly
+
+## Testing
+
+Between releases, the project should go through a testing phase. A few key workflows are given below.
+
+### Autocomplete Facets
+
+The autocomplete facets should suggest the closest match to what you have typed into the facet. These include
+
+1. Administrative Regions
+1. Zip Codes
+1. FIPS Codes
+1. Climate Divisions
+1. National Weather Zones
+
+In each case, type the beginning of a value and make sure that the _closest_ match is suggested.
+
+### Dynamic Facets
+
+Make sure that the GNIS, Location, Expert, and Hazard Type tree selection facets expand properly. Also make sure that the query results look accurate.
+
+### Table Links
+
+Each result shown in the table is a clickable link that brings you to phhuzz.link. Confirm that, in each table view, the links are correct and bring you to the appropriate page.
+
+### Table Pagination
+
+Make sure that the table can correctly be navigated through by changing the number of results per page and then by changing the page.
+
+## Versioning
+
+The Faceted Search follows versioning conventions from [Semantic Versioning](https://semver.org/).
+
+## Contributing
+
+Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates. The project uses [prettier](https://prettier.io/) for code formatting, with line widths set to 120 characters.
+
+Before creating pull requests, lint the project with
+
+`ng lint`
