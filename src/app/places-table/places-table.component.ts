@@ -77,7 +77,7 @@ export class PlacesTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize
-      this.offset = event.pageIndex *this.pageSize
+      this.offset = event.pageIndex * this.pageSize
       this.paginationEvent.emit()
     })
   }
