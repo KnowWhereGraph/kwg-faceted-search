@@ -66,6 +66,7 @@ export class PlacesTableComponent implements OnInit {
     this.placesDataSource = new MatTableDataSource(this.places)
     this.populateTable()
     this.totalSize = 0
+    // Emit an event signaling that counting has stopped, and include the results count
     this.resultsCountEvent.emit(this.totalSize)
   }
 
@@ -76,7 +77,7 @@ export class PlacesTableComponent implements OnInit {
   ngAfterViewInit() {
     this.paginator.page.subscribe((event) => {
       this.pageSize = event.pageSize
-      this.offset = event.pageIndex * this.pageSize
+      this.offset = event.pageIndex *this.pageSize
       this.paginationEvent.emit()
     })
   }
