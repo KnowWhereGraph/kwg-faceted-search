@@ -39,18 +39,14 @@ There are three types of deployments:
 
 #### Locally (Development Mode)
 
-When working on the faceted-search, use the traditional `ng serve`. Visit the site locally at http://localhost:4200.
-
-#### Docker + NGINX
-
-To run the full NGINX and Angular stack, run the docker container created from the included Dockerfile.
+When working on the faceted-search, run the following
 
 ```bash
-docker build -t faceted-search .
-docker run -d -p 8080:80 faceted-search
+npm run cache-prod
+ng serve
 ```
 
-Visit http://localhost:8080 for the deployment.
+Visit the site at http://localhost:4200
 
 #### Staging & Production Servers
 
@@ -134,6 +130,4 @@ The Faceted Search follows versioning conventions from [Semantic Versioning](htt
 
 Contributions as issues and pull requests are welcome. New features should be made as pull requests into the `develop` branch and attached to an issue. The pull request should detail what was done, how it can be tested, and any relevant documentation updates. The project uses [prettier](https://prettier.io/) for code formatting, with line widths set to 120 characters.
 
-Before creating pull requests, lint the project with
-
-`ng lint`
+Before creating pull requests, prettify your code changes with [prettier](https://prettier.io/).
