@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { SubscriptionLoggable } from 'rxjs/internal/testing/SubscriptionLoggable';
 import { QueryService } from '../services/query.service'
@@ -18,9 +18,11 @@ export class BrowseComponent implements OnInit {
   node_name: string = '';
   // The full path to the node (eg stko-kwg.ucsb.edu/lod/resource/1234)
   full_node_id: string = '';
+  // Event that sends the locations of people from a query to the parent component
+  @Output() locationEvent = new EventEmitter();
   large: boolean = true;
   // The fully qualified URI of predicates that should appear at the top of the page
-  preferred_order: Array <string> = [
+  preferred_predicate_order: Array <string> = [
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
     "http://www.w3.org/2000/01/rdf-schema#label",
     "http://www.opengis.net/ont/geosparql#hasDefaultGeometry"
@@ -46,7 +48,6 @@ export class BrowseComponent implements OnInit {
    * @returns Whether the 
    */
     private sortRelations(name1: string, name2: string) {
-      console.log("sortRelations: ", name1, name2)
       name1 = name1.toUpperCase();
       name2 = name2.toUpperCase();
       return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0;
@@ -64,32 +65,46 @@ export class BrowseComponent implements OnInit {
         let parsedResponse = this.queryService.getResults(response);
         parsedResponse.forEach(predicate => {
           if (this.hide_list.includes(predicate.predicate.value)) {
-            return
+            return;
           }
           // Loop over each predicate and get the first 100 relations
           let outbounds: Array<{name: string, link: string, isPredicate: boolean, localURI: string}> = []
           this.queryService.getOutboundObjects(this.full_node_id, predicate.predicate.value).subscribe({
             next: response => {
               let parsedObjects = this.queryService.getResults(response);
+              let location: string | undefined = undefined;
               parsedObjects.forEach(obj => {
                 // Get the path of the object, relative to browse?id=
                 let localURI = ''
                 // If the response doesn't have a label-but is a literal, use the literal as the label
                 if (obj.label == undefined) {
                   if (obj.object.type == 'literal') {
-                    outbounds.push({'name': obj.object.value, 'link': '', 'isPredicate': true, 'localURI': localURI})
+                    outbounds.push({'name': obj.object.value, 'link': '', 'isPredicate': true, 'localURI': localURI});
+                  } else if (obj.object.type == 'uri') {
+                    // If it's a URI, shorten it with a prefix
+                    localURI = this.getExternalKWGPath(obj.object.value)
+                    outbounds.push({'name': this.getExternalPrefix(obj.object.value), 'link': obj.object.value, 'isPredicate': false, 'localURI': localURI});
                   }
-                  console.warn("No label for ", obj)
                 } else {
-                // Otherwise use the given 'label' predicate
-                let found = outbounds.findIndex((outbound_record) => { return outbound_record.link == obj.object.value });
-                if(found < 0) {
-                  localURI = this.getExternalKWGPath(obj.object.value)
-                  outbounds.push({'name': obj.label.value, 'link': obj.object.value, 'isPredicate': false, 'localURI': localURI})
+                  // Otherwise use the given 'label' predicate
+                  let found = outbounds.findIndex((outbound_record) => { return outbound_record.link == obj.object.value });
+                  if(found < 0) {
+                    localURI = this.getExternalKWGPath(obj.object.value)
+                    outbounds.push({'name': obj.label.value, 'link': obj.object.value, 'isPredicate': false, 'localURI': localURI});
+                  }
                 }
-                }
-                this.rows.push({'predicate': predicate.predicate.value, 'object': obj})
+
+              // Check to see if the geometry can be sent to the map
+              if(predicate.predicate.value === "http://www.opengis.net/ont/geosparql#hasGeometry" || predicate.predicate.value === "http://www.opengis.net/ont/geosparql#hasDefaultGeometry") {
+                console.log("Got Geometry", predicate);
+                console.log(obj.object.value)
+                console.log(obj.object.value)
+                console.log(obj.object.value)
+                console.log(obj.object.value)
+                location = obj.object.value
+              }
               });
+              this.locationEvent.emit(location);
             }
           });
           let name = this.getPredicateName(predicate.predicate)
