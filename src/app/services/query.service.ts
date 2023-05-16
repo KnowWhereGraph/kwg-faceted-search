@@ -430,7 +430,7 @@ export class QueryService {
 
     if (placesFacets['keyword'] && placesFacets['keyword'] != '') {
       placeQuery += `
-      ?search a elastic-index:kwg_fs_index;
+      ?search a elastic-index:kwg_manhattan_fs_index;
       elastic:query "${placesFacets['keyword']}";
       elastic:entities ?entity.
       ?entity elastic:score ?score.
@@ -659,7 +659,7 @@ export class QueryService {
     //Keyword search
     if (hazardFacets['keyword'] && hazardFacets['keyword'] != '') {
       hazardQuery += `
-        ?search a elastic-index:kwg_fs_index;
+        ?search a elastic-index:kwg_manhattan_fs_index;
         elastic:query "${hazardFacets['keyword']}";
         elastic:entities ?entity.
         ?entity elastic:score ?score.
@@ -871,7 +871,7 @@ export class QueryService {
     }
     let keyword_query = ``
     if (keyword != '') {
-      keyword_query = `?search a elastic-index:kwg_fs_index;
+      keyword_query = `?search a elastic-index:kwg_manhattan_fs_index;
       elastic:query "${keyword}";
       elastic:entities ?entity.
       ?entity elastic:score ?score.`
