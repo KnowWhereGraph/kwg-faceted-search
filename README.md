@@ -25,7 +25,7 @@ or
 
 When building choose between the configurations specified in with the `--configuration` flag. The `production` flag should be used for production builds and `stage` for staging.
 
-`ng build --configuration <production/stage>`
+`ng build --configuration=<production/stage>`
 
 This command builds outputs the build in the `dist/` folder.
 

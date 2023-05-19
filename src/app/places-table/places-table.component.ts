@@ -106,11 +106,10 @@ export class PlacesTableComponent implements OnInit {
       .then((results: any) => {
         this.places = []
         // Check to see if the query failed
-        if (results === false) {
+        if (results.records === undefined) {
           this.totalSize = 0
           this.resultsCountEvent.emit(this.totalSize)
           this.searchQueryFinishedEvent.emit(true)
-          this.errorModal.emit()
           return
         }
         results.records.forEach((result) => {
