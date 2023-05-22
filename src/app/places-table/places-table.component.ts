@@ -66,6 +66,7 @@ export class PlacesTableComponent implements OnInit {
     this.placesDataSource = new MatTableDataSource(this.places)
     this.populateTable()
     this.totalSize = 0
+    // Emit an event signaling that counting has stopped, and include the results count
     this.resultsCountEvent.emit(this.totalSize)
   }
 
@@ -105,11 +106,10 @@ export class PlacesTableComponent implements OnInit {
       .then((results: any) => {
         this.places = []
         // Check to see if the query failed
-        if (results === false) {
+        if (results.records === undefined) {
           this.totalSize = 0
           this.resultsCountEvent.emit(this.totalSize)
           this.searchQueryFinishedEvent.emit(true)
-          this.errorModal.emit()
           return
         }
         results.records.forEach((result) => {
