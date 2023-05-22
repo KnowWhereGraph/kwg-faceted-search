@@ -48,18 +48,6 @@ ng serve
 
 Visit the site at http://localhost:4200
 
-#### Staging & Production Servers
-
-When deploying on the staging or production servers, first fetch the cache, then build the project, and finally copy the files to a location that is being served by NGINX.
-
-For example,
-
-```bash
-npm run cache-prod
-npm run build --configuration=stage
-cp -r dist/faceted-search/* /var/www/html
-```
-
 ## Troubleshooting
 
 ### The GNIS/Hazard/Location Tree Facets Aren't Working
