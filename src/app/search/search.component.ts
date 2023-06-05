@@ -3,9 +3,10 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
 import { MatTabChangeEvent } from '@angular/material/tabs'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
 import { ErrorModalComponent } from '../error-modal/error-modal.component'
+import { Location } from '@angular/common'
 
 /**
- * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
+ * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'Persons', 'Places' or 'Hazards).
  * Based on the tab clicked, it renders the appropriate table component.
  */
 @Component({
@@ -38,7 +39,7 @@ export class SearchComponent implements OnInit {
   // Reference to the hazards table
   @ViewChild('hazardsTable')
   public hazardsTable: any
-  // Reference people table
+  // Reference persons table
   @ViewChild('peopleTable')
   public peopleTable: any
   // Reference to the facets component
@@ -74,16 +75,20 @@ export class SearchComponent implements OnInit {
    * @param cd The change detector reference to catch events
    * @param route: The activated route for this page
    * @param router: The global router
+   * @param errorModal: A reference to the error modal dialog
+   * @param location: Angular's 'Location' object for this path
    */
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private errorModal: MatDialog
+    private errorModal: MatDialog,
+    private location: Location
   ) {
     this.totalSize = 0
     this.isCounting = true
     this.isSearching = true
+    this.location = location
   }
 
   /**
@@ -140,9 +145,10 @@ export class SearchComponent implements OnInit {
         clickedTabName = 'hazard'
         break
       case 2:
-        clickedTabName = 'people'
+        clickedTabName = 'person'
     }
-    //const queryParams = { tab: clickedTabName };
+    const queryParams = { tab: clickedTabName }
+    this.location.replaceState(`search?tab=${clickedTabName}`)
   }
 
   /**
