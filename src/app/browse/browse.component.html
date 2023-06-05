@@ -8,17 +8,17 @@
 
 <div class="outbound-relations">
   <table class="triples-table">
-    <tr class= "predicates-row" *ngFor="let row of outbound">
+    <tr class= "predicates-row" *ngFor="let outbound_info of outbound_relations">
         <td class="predicate-td">
-            <a *ngIf="row.predicate_label" class="pred-link" href="{{row.predicate_kwg_link}}" >{{row.predicate_label}}</a>
-            <a *ngIf="!row.predicate_label" class="pred-link" href="{{row.predicate_kwg_link}}" >{{row.predicate_name}}</a>
-            <a href="{{ row.predicate_link }}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a>
+            <a *ngIf="outbound_info.predicate_label" class="pred-link" href="{{outbound_info.predicate_kwg_link}}" >{{outbound_info.predicate_label}}</a>
+            <a *ngIf="!outbound_info.predicate_label" class="pred-link" href="{{outbound_info.predicate_kwg_link}}" >{{outbound_info.predicate_name}}</a>
+            <a href="{{ outbound_info.predicate_link }}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a>
         </td>
         <td class="object-td">
-            <tr class="object-tr" *ngFor="let obj of row.objects">
+            <tr class="object-tr" *ngFor="let outbound_relation of outbound_info.objects">
                 <td>
-                    <span *ngIf="obj.isPredicate" class="obj-literal">"{{obj.name}}"</span>
-                    <span *ngIf="!obj.isPredicate"><a class="obj-link" href="{{obj.localURI}}">{{obj.name}}</a><a href="{{obj.link}}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a></span>
+                    <span *ngIf="outbound_relation.isPredicate" class="obj-literal">"{{outbound_relation.name}}"<span>{{outbound_relation.dataType}}</span></span>
+                    <span *ngIf="!outbound_relation.isPredicate"><a class="obj-link" href="{{outbound_relation.localURI}}">{{outbound_relation.name}}</a><a href="{{outbound_relation.link}}"><mat-icon [inline]="true" class="browse-open-icon table">open_in_new</mat-icon></a></span>
                 </td>
             </tr>
         </td>

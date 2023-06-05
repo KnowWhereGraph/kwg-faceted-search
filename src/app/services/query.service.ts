@@ -937,7 +937,7 @@ export class QueryService {
    * @returns The SPARQL ResultsSet from the endpoint
    */
   getOutboundPredicates(uri: string) {
-    let query = `SELECT DISTINCT ?predicate ?label WHERE { <`+uri+`> ?predicate ?o. OPTIONAL {?predicate rdfs:label ?label.} } ORDER BY ASC(?label)`
+    let query = `SELECT DISTINCT ?predicate ?label WHERE { <`+uri+`> ?predicate ?o. OPTIONAL {?predicate rdfs:label ?label.} BIND(datatype(?object) AS ?data_type) } ORDER BY ASC(?label)`
     let headers = this.getRequestHeaders('KE_17');
     let body = this.getRequestBody(query, false);
     return this.http.post(this.endpoint, body, headers);
@@ -950,7 +950,7 @@ export class QueryService {
    * @param limit 
    */
   getOutboundObjects(uri: string, predicate: string, limit=100) {
-    let query = `SELECT DISTINCT ?object ?label WHERE { <`+uri+`> <`+predicate+`> ?object. OPTIONAL {?object rdfs:label ?label. }} ORDER BY ASC(?label)    `
+    let query = `SELECT DISTINCT ?object ?label ?data_type WHERE { <`+uri+`> <`+predicate+`> ?object. OPTIONAL {?object rdfs:label ?label. } BIND(datatype(?object) AS ?data_type)} ORDER BY ASC(?label)    `
     let headers = this.getRequestHeaders('KE_18');
     let body = this.getRequestBody(query, true);
     return this.http.post(this.endpoint, body, headers);

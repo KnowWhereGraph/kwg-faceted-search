@@ -29,12 +29,12 @@ export class BrowseComponent implements OnInit {
   hide_list = [
     "http://www.w3.org/2002/07/owl#sameAs"
   ]
-  public outbound: Array<{
+  public outbound_relations: Array<{
     predicate_name: string,
     predicate_label: string | undefined,
     predicate_link: string,
     predicate_kwg_link: string,
-    objects: Array<{name: string, link: string, isPredicate: boolean, localURI: string}
+    objects: Array<{name: string, link: string, isPredicate: boolean, localURI: string, dataType: string}
     >}> = []
   public rows: Array<{predicate: string, object: string}> = [];
 
@@ -67,17 +67,35 @@ export class BrowseComponent implements OnInit {
             return
           }
           // Loop over each predicate and get the first 100 relations
-          let outbounds: Array<{name: string, link: string, isPredicate: boolean, localURI: string}> = []
+          let outbounds: Array<{name: string, link: string, isPredicate: boolean, localURI: string, dataType: string}> = []
           this.queryService.getOutboundObjects(this.full_node_id, predicate.predicate.value).subscribe({
             next: response => {
               let parsedObjects = this.queryService.getResults(response);
               parsedObjects.forEach(obj => {
-                // Get the path of the object, relative to browse?id=
+                // The shortened path of http://localhost:4200/browse?id=<object here>
                 let localURI = ''
                 // If the response doesn't have a label-but is a literal, use the literal as the label
                 if (obj.label == undefined) {
                   if (obj.object.type == 'literal') {
-                    outbounds.push({'name': obj.object.value, 'link': '', 'isPredicate': true, 'localURI': localURI})
+                    outbounds.push(
+                      {
+                        'name': obj.object.value, 
+                        'link': '', 
+                        'isPredicate': true, 
+                        'localURI': localURI, 
+                        'dataType': obj.data_type.value
+                      }
+                      )
+                  } else {
+                    // Otherwise use the shortened URI
+                    outbounds.push(
+                      {
+                        'name': this.getExternalPrefix(obj.object.value),
+                        'link': obj.object.value, 'isPredicate': false,
+                        'localURI': this.getExternalKWGPath(obj.object.value),
+                        'dataType': ''
+                      }
+                      )
                   }
                   console.warn("No label for ", obj)
                 } else {
@@ -85,7 +103,16 @@ export class BrowseComponent implements OnInit {
                 let found = outbounds.findIndex((outbound_record) => { return outbound_record.link == obj.object.value });
                 if(found < 0) {
                   localURI = this.getExternalKWGPath(obj.object.value)
-                  outbounds.push({'name': obj.label.value, 'link': obj.object.value, 'isPredicate': false, 'localURI': localURI})
+                  outbounds.push(
+                    {
+                      'name': obj.label.value, 
+                      'link': obj.object.value, 
+                      'isPredicate': false, 
+                      'localURI': localURI,
+                      'dataType': ''
+                    }
+
+                      )
                 }
                 }
                 this.rows.push({'predicate': predicate.predicate.value, 'object': obj})
@@ -98,9 +125,9 @@ export class BrowseComponent implements OnInit {
             label = predicate.label.value;
           }
           // Check that this URI doesn't already exist
-          let found = this.outbound.findIndex((outbound_record) => { return outbound_record.predicate_link == predicate.predicate.value });
+          let found = this.outbound_relations.findIndex((outbound_record) => { return outbound_record.predicate_link == predicate.predicate.value });
           if (found < 0) {
-            this.outbound.push(
+            this.outbound_relations.push(
               {
                 'predicate_name': name,
                 'predicate_label': label,
@@ -111,13 +138,17 @@ export class BrowseComponent implements OnInit {
             )
           }
         });
-            this.outbound.sort((a,b) => this.sortRelations(a.predicate_link,b.predicate_link));
+            //this.outbound_relations.sort((a,b) => this.sortRelations(a.predicate_name,b.predicate_name));
       }
     });
   };
 
-
-
+  /**
+   * ...
+   * 
+   * @param predicate 
+   * @returns 
+   */
   private getPredicateName(predicate) {
     if ('label' in predicate) {
       return predicate.label.value;
@@ -128,6 +159,9 @@ export class BrowseComponent implements OnInit {
 
   /**
    * Gets the full path of a prefixed URI
+   * 
+   * @param uri 
+   * @returns 
    */
   private getFullNodePath(uri: string) {
     let prefix = uri.split(":")[0];

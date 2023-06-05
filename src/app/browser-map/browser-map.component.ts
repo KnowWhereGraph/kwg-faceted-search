@@ -17,6 +17,7 @@ import * as wkt from 'wicket'
 export class BrowserMap implements AfterViewInit {
 
   private map: any;
+  public showMap: boolean;
   @Input() locations: any;
 
   private initMap(): void {
@@ -33,10 +34,14 @@ export class BrowserMap implements AfterViewInit {
     tiles.addTo(this.map);
   }
 
-  constructor() { }
+  constructor() { 
+    this.showMap = false;
+  }
 
   ngAfterViewInit(): void {
-    this.initMap();
+    if (this.showMap) {
+      this.initMap()
+    }
   }
 
 }
