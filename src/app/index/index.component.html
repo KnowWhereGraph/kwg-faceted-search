@@ -1,51 +1,44 @@
-<section class="welcome-kwg">
+<section class="index-section welcome-kwg">
   <div class="blog card-section container">
     <h2>Welcome To The Knowledge Explorer</h2>
-    <p>
-      With billions of data points at your fingertips, charting a path to a
-      well-informed decision presents a navigational challenge. The Faceted
-      Search Interface is a portal for exploring the KnowWhereGraph, a knowledge
-      graph that integrates a wide range of environmental and human data.
-      Whether supporting a humanitarian response following a hurricane or
-      projecting supply-chain consequences of a wildfire, the Faceted Search
-      Interface helps a user target and refine their investigation by exposing
-      properties of the graph’s vast network of geographically referenced data.
-    </p>
-  </div>
-  <a
-    href="../../assets/docs/search-docs.pdf"
-    target="_blank"
-    class="button secondary"
-    >Step by Step Examples</a
-  >
-</section>
-<section class="explore">
-  <div class="container">
-    <h2>Start Exploring</h2>
-    <div class="container">
-      <div class="card-group-home columns-3">
-        <a href="/search?tab=place">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Place</p>
-            </div>
-          </div>
-        </a>
-        <a href="/search?tab=hazard">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Hazard</p>
-            </div>
-          </div>
-        </a>
-        <a href="/search?tab=person">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Person</p>
-            </div>
-          </div>
-        </a>
-      </div>
+      <div class="left-image">
+        <p>
+          With billions of data points at your fingertips, charting a path to a
+          well-informed decision presents a navigational challenge. The Faceted
+          Search Interface is a portal for exploring KnowWhereGraph.
+          Whether supporting a humanitarian response following a hurricane or
+          projecting supply-chain consequences of a wildfire, the Knowledge
+          Explorer helps navigate the graph’s vast network of geographically referenced data.
+        </p>
     </div>
   </div>
+</section>
+<section class="index-section explore">
+    <h2>Start Exploring</h2>
+    <mat-tab-group>
+      <ng-container *ngFor="let card of cards">
+        <mat-tab label={{card.title}}>
+          <div class="card-body">
+            {{card.description}}
+          </div>
+        </mat-tab>
+      </ng-container>
+      </mat-tab-group>
+</section>
+<section class="index-section welcome-kwg">
+  <a
+  href="../../assets/docs/search-docs.pdf"
+  target="_blank"
+  class="button secondary"
+  >Step by Step Examples</a
+  >
+</section>
+<section class=" index-section explore workbench">
+  <div class="workbench-rhs">
+  <h2>Advanced Exploration</h2>
+  KnowWhereGraph is backed by GraphDB and encourages advanced users to interact with the <a href="/workbench" >GraphDB Workbench</a>.
+</div>
+<div class="workbench-lhs">
+  <img src="../../assets/images/graph-view.png">
+</div>
 </section>
