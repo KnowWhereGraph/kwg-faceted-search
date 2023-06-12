@@ -1,6 +1,6 @@
 <section class="welcome-kwg">
   <div class="blog card-section container">
-    <h2>Welcome To The Knowledge Explorer</h2>
+    <h2 class="centered-header">Welcome To The Knowledge Explorer</h2>
     <p>
       With billions of data points at your fingertips, charting a path to a
       well-informed decision presents a navigational challenge. The Faceted
@@ -20,32 +20,16 @@
   >
 </section>
 <section class="explore">
-  <div class="container">
-    <h2>Start Exploring</h2>
-    <div class="container">
-      <div class="card-group-home columns-3">
-        <a href="/search?tab=place">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Place</p>
+  <h2 class="centered-header">Start Exploring</h2>
+    <div class="card-group-home columns-3">
+        <ng-container *ngFor="let card of cards">
+          <a class="card-link" href="/search?tab={{card.tab}}">
+            <div class="card-explore">
+              <div class="card-body">
+                <p class="card-title">{{card.name}}</p>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href="/search?tab=hazard">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Hazard</p>
-            </div>
-          </div>
-        </a>
-        <a href="/search?tab=person">
-          <div class="card-explore">
-            <div class="card-body">
-              <p class="card-title">Person</p>
-            </div>
-          </div>
-        </a>
+          </a>
+        </ng-container>
       </div>
-    </div>
-  </div>
 </section>

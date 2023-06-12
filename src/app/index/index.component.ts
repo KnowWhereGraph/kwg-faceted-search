@@ -10,6 +10,20 @@ import { Component, OnInit } from '@angular/core'
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
+  cards = [
+    {
+      "name": "Place",
+      "tab": "place"
+    },
+    {
+      "name": "Hazards",
+      "tab": "place"
+    },
+    {
+      "name": "Person",
+      "tab": "person"
+    },
+  ]
   /**
    * This component only contains markup and styling, hence an
    * empty constructor.
