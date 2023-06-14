@@ -275,4 +275,21 @@
       }
     }
   }
+
+  .nav-display {
+    .breadcrumb {
+      position: absolute;
+      // Aligns under the logo, left justified
+      left: 0rem;
+      top: 7rem;
+      opacity: 50%;
+    }
+    .pagename {
+      position: absolute;
+      // Aligns under the logo, left justified
+      left: 0rem;
+      top: 10rem;
+      font-size: x-large;
+    }
+  }
 }
