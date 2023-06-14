@@ -95,16 +95,14 @@ export class SearchComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private errorModal: MatDialog,
-    private navInfoService: NavInfoService
+    private navInfoService: NavInfoService,
     private location: Location
-
   ) {
     this.totalSize = 0
     this.isCounting = true
     this.isSearching = true
     this.navInfoService = navInfoService
     this.location = location
-
   }
 
   /**
@@ -171,7 +169,6 @@ export class SearchComponent implements OnInit {
 
     const queryParams = { tab: clickedTabName }
     this.location.replaceState(`search?tab=${clickedTabName}`)
-
   }
 
   /**
