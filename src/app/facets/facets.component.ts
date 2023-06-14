@@ -439,10 +439,16 @@ export class FacetsComponent implements OnInit {
 
   /**
    * Handles the event when the state of the GNIS tree changes
+   *
+   * @param $event: The event fired from the dropdown on a state change
    */
   gnisFacetChange($event) {
     // Check to see if any nodes were selected.
     let node_ids = this.getSelectedNodes(this.gnisTree.treeModel, false)
+    // If there aren't any focused nodes, then return early to avoid a table refresh
+    if (!$event.focusedNodeId) {
+      return
+    }
     let nodes: Array<any> = []
     node_ids.forEach((node) => {
       nodes.push(this.gnisTree.treeModel.getNodeById(node[0]))

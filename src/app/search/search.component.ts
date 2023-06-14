@@ -12,9 +12,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
 import { ErrorModalComponent } from '../error-modal/error-modal.component'
 import { NavEvent } from '../nav/nav.component'
 import { NavInfoService } from '../services/nav.service'
+import { Location } from '@angular/common'
 
 /**
- * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
+ * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'Persons', 'Places' or 'Hazards).
  * Based on the tab clicked, it renders the appropriate table component.
  */
 @Component({
@@ -47,7 +48,7 @@ export class SearchComponent implements OnInit {
   // Reference to the hazards table
   @ViewChild('hazardsTable')
   public hazardsTable: any
-  // Reference people table
+  // Reference persons table
   @ViewChild('peopleTable')
   public peopleTable: any
   // Reference to the facets component
@@ -86,6 +87,8 @@ export class SearchComponent implements OnInit {
    * @param route: The activated route for this page
    * @param router: The global router
    * @param navInfoService: Service for sending information to the nav component
+   * @param errorModal: A reference to the error modal dialog
+   * @param location: Angular's 'Location' object for this path
    */
   constructor(
     private cd: ChangeDetectorRef,
@@ -93,11 +96,15 @@ export class SearchComponent implements OnInit {
     private router: Router,
     private errorModal: MatDialog,
     private navInfoService: NavInfoService
+    private location: Location
+
   ) {
     this.totalSize = 0
     this.isCounting = true
     this.isSearching = true
     this.navInfoService = navInfoService
+    this.location = location
+
   }
 
   /**
@@ -156,10 +163,15 @@ export class SearchComponent implements OnInit {
       case 2:
         clickedTabName = 'person'
     }
+
     this.navInfoService.onNavChanged.next({
       fullPath: `search/${clickedTabName}`,
       relativePath: this.capitalizeFirstLetter(clickedTabName),
     })
+
+    const queryParams = { tab: clickedTabName }
+    this.location.replaceState(`search?tab=${clickedTabName}`)
+
   }
 
   /**
