@@ -1,6 +1,6 @@
-// Downloads and processes the cache files
-// Used for network communication
-const axios = require('axios').default
+// This script generates the cache files used by the Faceted Search. It runs a
+// series of SPARQL queries to construct the CSV files.
+
 // Used to write the cache to files
 const fs = require('fs')
 let baseAddress = process.argv.slice(2)[0]
@@ -14,11 +14,13 @@ let endpoint = `${process.argv.slice(2)[1]}/graphdb/repositories/KWG`
 sparqlRequest = async function (query) {
   var bodyFormData = new URLSearchParams()
   bodyFormData.append('query', query)
-  return axios.post(endpoint, bodyFormData, {
+  return fetch(endpoint, {
+    method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/sparql-results+json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
+    body: new URLSearchParams({ query: query }),
   })
 }
 
@@ -41,15 +43,17 @@ async function fetchCache(query, fileName, data = []) {
   let offset_query = query + ` OFFSET ${count}`
   try {
     let results = await sparqlRequest(offset_query)
-    results.data.results.bindings.forEach((res) => {
+    results = await results.json()
+    results.results.bindings.forEach((res) => {
       data.push([res.subject.value, res.value.value])
     })
 
     // If there are a non-zero number of records, ask for more
-    if (results.data.results.bindings.length) {
+    if (results.results.bindings.length) {
       // Wait for fetchCache to complete, otherwise a promise will be pushed
       try {
-        data.push(await fetchCache(query, fileName, data))
+        let res = await fetchCache(query, fileName, data)
+        data.push(res)
       } catch (err) {
         console.error('Error fetching more cache results!', err)
       }
@@ -83,7 +87,8 @@ async function fetchAdministrativeCache(query, fileName, data = []) {
   let offset_query = query + ` OFFSET ${count}`
   try {
     let results = await sparqlRequest(offset_query)
-    results.data.results.bindings.forEach((res) => {
+    results = await results.json()
+    results.results.bindings.forEach((res) => {
       // Check if the top level node has already been added
       let has_top_level = false
       data.forEach((data_record) => {
@@ -111,7 +116,7 @@ async function fetchAdministrativeCache(query, fileName, data = []) {
       data.push([res.county.value, res.county_label.value])
     })
     // If there are a non-zero number of records, ask for more
-    if (results.data.results.bindings.length) {
+    if (results.results.bindings.length) {
       // Wait for fetchAdministrativeCache to complete, otherwise a promise will be pushed
       try {
         data.push(await fetchAdministrativeCache(query, fileName, data))
