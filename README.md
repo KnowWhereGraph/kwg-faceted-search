@@ -34,7 +34,6 @@ There are three types of deployments:
 
 1. Local: Normal development mode, run locally
 2. Docker: Deploying with docker using nginx
-3. Server: Deployments on a server, using nginx
 
 #### Locally (Development Mode)
 When working on the faceted-search, use the traditional `ng serve`. Visit the site locally at http://localhost:4200.
@@ -48,17 +47,6 @@ docker run -d -p 8080:80 faceted-search
 ```
 
 Visit http://localhost:8080 for the deployment.
-
-#### Staging & Production Servers
-When deploying on the staging or production servers, first fetch the cache, then build the project, and finally copy the files to a location that is being served by NGINX.
-
-For example,
-
-```bash
-npm run cache-prod
-npm run build --configuration=stage
-cp -r dist/faceted-search/* /var/www/html
-```
 
 ## Troubleshooting
 
