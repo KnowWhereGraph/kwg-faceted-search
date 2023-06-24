@@ -149,7 +149,7 @@ fetchCache(fipsQuery, 'src/assets/data/fips_cache.csv')
 // Download the ZIP codes cache
 let zipCodeQuery = `PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
 SELECT DISTINCT ?subject ?value WHERE {
-  ?subject a kwg-ont:ZipCodeArea.
+  ?subject a kwg-ont:zipCodeArea.
   ?subject rdfs:label ?label .
   BIND(REPLACE(STR(?label),"zip code ","") AS ?value)
 } ORDER BY ASC(?value)`

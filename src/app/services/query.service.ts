@@ -525,7 +525,7 @@ export class QueryService {
               placesFacets['zipCode'] +
               `> }
             ?type rdfs:label ?typeLabel.
-            values ?type {kwg-ont:ZipCodeArea}
+            values ?type {kwg-ont:zipCodeArea}
           }`
           )
         }
@@ -579,7 +579,7 @@ export class QueryService {
           {
             ?entity kwg-ont:quantifiedName ?quantifiedName.
           }
-          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
+          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:zipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
           ?type rdfs:label ?typeLabel
         }`
       }
