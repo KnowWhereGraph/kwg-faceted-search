@@ -1,11 +1,21 @@
 import { ActivatedRoute, Router } from '@angular/router'
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ViewChild,
+  Output,
+  EventEmitter,
+} from '@angular/core'
 import { MatTabChangeEvent } from '@angular/material/tabs'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
 import { ErrorModalComponent } from '../error-modal/error-modal.component'
+import { NavEvent } from '../nav/nav.component'
+import { NavInfoService } from '../services/nav.service'
+import { Location } from '@angular/common'
 
 /**
- * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'People', 'Places' or 'Hazards).
+ * A component that represents the main search page. It controls the logic for handling tab switching (ie clicking 'Persons', 'Places' or 'Hazards).
  * Based on the tab clicked, it renders the appropriate table component.
  */
 @Component({
@@ -38,12 +48,14 @@ export class SearchComponent implements OnInit {
   // Reference to the hazards table
   @ViewChild('hazardsTable')
   public hazardsTable: any
-  // Reference people table
+  // Reference persons table
   @ViewChild('peopleTable')
   public peopleTable: any
   // Reference to the facets component
   @ViewChild('appfacets')
   public appfacets: any
+  // Event that emitted to the parent component, to tell the navigation component to update
+  @Output() navChange = new EventEmitter<NavEvent>()
 
   /**
    * Called when a facet changes
@@ -74,16 +86,23 @@ export class SearchComponent implements OnInit {
    * @param cd The change detector reference to catch events
    * @param route: The activated route for this page
    * @param router: The global router
+   * @param navInfoService: Service for sending information to the nav component
+   * @param errorModal: A reference to the error modal dialog
+   * @param location: Angular's 'Location' object for this path
    */
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
-    private errorModal: MatDialog
+    private errorModal: MatDialog,
+    private navInfoService: NavInfoService,
+    private location: Location
   ) {
     this.totalSize = 0
     this.isCounting = true
     this.isSearching = true
+    this.navInfoService = navInfoService
+    this.location = location
   }
 
   /**
@@ -140,18 +159,33 @@ export class SearchComponent implements OnInit {
         clickedTabName = 'hazard'
         break
       case 2:
-        clickedTabName = 'people'
+        clickedTabName = 'person'
     }
-    //const queryParams = { tab: clickedTabName };
+
+    this.navInfoService.onNavChanged.next({
+      fullPath: `search/${clickedTabName}`,
+      relativePath: this.capitalizeFirstLetter(clickedTabName),
+    })
+
+    const queryParams = { tab: clickedTabName }
+    this.location.replaceState(`search?tab=${clickedTabName}`)
   }
 
   /**
    * When the initialization is ready, check to see if a particular tab should be
-   * navigated to.
+   * navigated to and update the nav.
    */
   ngOnInit(): void {
     // Check to see if a particular tab should be loaded
     let tab = this.route.snapshot.queryParamMap.get('tab')
+    if (!tab) {
+      console.error('Failed to get the tab contents')
+      return
+    }
+    this.navInfoService.onNavChanged.next({
+      fullPath: `search/${tab}`,
+      relativePath: this.capitalizeFirstLetter(tab),
+    })
 
     switch (tab) {
       case 'place':
@@ -212,5 +246,14 @@ export class SearchComponent implements OnInit {
     dialogConfig.width = '300px'
     dialogConfig.height = '200px'
     this.errorModal.open(ErrorModalComponent, dialogConfig)
+  }
+
+  /**
+   * Makes the first letter in a prase upper cased
+   * @param phrase: The phrase being capitalized
+   * @returns 'phrase' but with the first letter of the first word upper cased
+   */
+  capitalizeFirstLetter(phrase: string) {
+    return phrase.charAt(0).toUpperCase() + phrase.slice(1)
   }
 }
