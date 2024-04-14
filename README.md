@@ -25,9 +25,29 @@ or
 
 When building choose between the configurations specified in with the `--configuration` flag. The `production` flag should be used for production builds and `stage` for staging.
 
-`ng build --configuration=<production/stage>`
+`ng build --configuration <production/stage/local>`
 
 This command builds outputs the build in the `dist/` folder.
+
+Building inside a Docker container is also supported for automation and to avoid any system dependencies. See the sections below for each environment.
+
+#### Production
+
+```bash
+docker-compose docker-compose.production.yml -f up
+```
+
+#### Stage
+
+```bash
+docker-compose docker-compose.stage.yml -f up
+```
+
+#### Local
+
+```bash
+docker-compose docker-compose.local.yml -f up
+```
 
 ### Deploying
 
@@ -35,18 +55,10 @@ There are three types of deployments:
 
 1. Local: Normal development mode, run locally
 2. Docker: Deploying with docker using nginx
-3. Server: Deployments on a server, using nginx
 
 #### Locally (Development Mode)
 
-When working on the faceted-search, run the following
-
-```bash
-npm run cache-prod
-ng serve
-```
-
-Visit the site at http://localhost:4200
+When working on the faceted-search, use the traditional `ng serve`. Visit the site locally at http://localhost:4200.
 
 ## Troubleshooting
 
