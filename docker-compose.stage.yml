@@ -1,0 +1,6 @@
+services:
+  faceted-search:
+    build: '.'
+    volumes:
+      - ./dist/:/app/dist/
+    entrypoint: ["ng","build","--configuration=stage"]
