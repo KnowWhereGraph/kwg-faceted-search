@@ -5,7 +5,7 @@
 const fs = require('fs')
 let baseAddress = process.argv.slice(2)[0]
 let endpoint = `${process.argv.slice(2)[1]}/graphdb/repositories/KWG`
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 /**
  * Sends a SPARQL request
  * @param {string} query: The SPARQL query string
@@ -43,6 +43,7 @@ async function fetchCache(query, fileName, data = []) {
   let offset_query = query + ` OFFSET ${count}`
   try {
     let results = await sparqlRequest(offset_query)
+    console.log(results)
     results = await results.json()
     results.results.bindings.forEach((res) => {
       data.push([res.subject.value, res.value.value])
@@ -142,6 +143,7 @@ async function fetchAdministrativeCache(query, fileName, data = []) {
 let fipsQuery = `PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
 SELECT DISTINCT ?subject ?value WHERE {
 ?subject kwg-ont:hasFIPS ?value .
+?subject a kwg-ont:AdministrativeRegion_2 .
 } ORDER BY ASC(?value)`
 console.log('Getting FIPS')
 fetchCache(fipsQuery, 'src/assets/data/fips_cache.csv')
@@ -161,7 +163,7 @@ let nwzQuery = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?subject ?value where {
-        ?subject rdf:type kwg-ont:NWZone;
+        ?subject rdf:type kwg-ont:NationalWeatherZone;
                 rdfs:label ?value.
 } ORDER BY ASC(?value)`
 console.log('Getting NWZ')
@@ -171,9 +173,9 @@ fetchCache(nwzQuery, 'src/assets/data/nwz_cache.csv')
 let climateDivisionQuery = `PREFIX kwg-ont: <http://stko-kwg.geog.ucsb.edu/lod/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?subject ?value {
-	?subject rdf:type kwg-ont:USClimateDivision;
+	?subject rdf:type kwg-ont:ClimateDivision;
 	rdfs:label ?label.
-  BIND(REPLACE(STR(?label),"US Climate Division with ID ","") AS ?value) .
+  BIND(REPLACE(STR(?label),"Climate Division from NOAA with ID ","") AS ?value) .
 }`
 console.log('Getting Climate Divisions')
 fetchCache(climateDivisionQuery, 'src/assets/data/climate_division_cache.csv')
@@ -184,14 +186,14 @@ PREFIX kwgr: <http://stko-kwg.geog.ucsb.edu/lod/resource/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?county ?county_label ?state ?state_label ?usa ?usa_label WHERE {
-  ?county rdf:type kwg-ont:AdministrativeRegion_3 .
+  ?county rdf:type kwg-ont:AdministrativeRegion_2 .
   ?county kwg-ont:sfWithin ?state .
   ?state kwg-ont:sfWithin ?usa.
-  values ?usa {kwgr:Earth.North_America.United_States.USA}
+  values ?usa {kwgr:administrativeRegion.USA}
   ?county rdfs:label ?county_label .
   ?state rdfs:label ?state_label .
   ?usa rdfs:label ?usa_label .
-} ORDER BY ?usa_label ?state_label ?county_label`
+} LIMIT 50 `
 console.log('Getting Administrative Regions')
 fetchAdministrativeCache(
   adminRegionQuery,
