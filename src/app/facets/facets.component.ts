@@ -644,8 +644,10 @@ export class FacetsComponent implements OnInit {
         let responseRows: Array<string> = response.split(/[\n]+/)
         let formatted: Array<string> = []
         responseRows.forEach((row) => {
-          formatted.push(row.split(',')[1])
-          this.adminRegionRecords.set(row.split(',')[1], row.split(',')[0])
+          let splitName = row.split(',')
+          let fullyQualifiedName = `${splitName[1]}, ${splitName[2]}`
+          formatted.push(fullyQualifiedName)
+          this.adminRegionRecords.set(fullyQualifiedName, splitName[0])
         })
         // Remove the last empty line
         formatted.pop()
