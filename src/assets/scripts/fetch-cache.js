@@ -5,7 +5,7 @@
 const fs = require('fs')
 let baseAddress = process.argv.slice(2)[0]
 let endpoint = `${process.argv.slice(2)[1]}/graphdb/repositories/KWG`
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 /**
  * Sends a SPARQL request
  * @param {string} query: The SPARQL query string
@@ -195,4 +195,7 @@ SELECT ?county ?county_label ?state ?state_label ?usa ?usa_label WHERE {
   ?usa rdfs:label ?usa_label .
 } LIMIT 50 `
 console.log('Getting Administrative Regions')
-fetchAdministrativeCache(adminRegionQuery,'src/assets/data/admin_region_cache.csv')
+fetchAdministrativeCache(
+  adminRegionQuery,
+  'src/assets/data/admin_region_cache.csv'
+)
