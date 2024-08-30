@@ -564,7 +564,7 @@ export class QueryService {
               placesFacets['nationalWeatherZone'] +
               `> }
             ?type rdfs:label ?typeLabel.
-            values ?type {kwg-ont:NWZone}
+            values ?type {kwg-ont:NationalWeatherZone}
           }`
           )
         }
@@ -579,7 +579,7 @@ export class QueryService {
           {
             ?entity kwg-ont:quantifiedName ?quantifiedName.
           }
-          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NWZone}
+          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NationalWeatherZone}
           ?type rdfs:label ?typeLabel
         }`
       }
