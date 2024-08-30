@@ -6,8 +6,6 @@ const fs = require('fs')
 let baseAddress = process.argv.slice(2)[0]
 let endpoint = `${process.argv.slice(2)[1]}/graphdb/repositories/KWG`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-console.log("BASE ADDRESS")
-console.log(baseAddress)
 /**
  * Sends a SPARQL request
  * @param {string} query: The SPARQL query string
@@ -95,7 +93,6 @@ async function fetchAdministrativeCache(query, fileName, data = []) {
       // Check if the top level node has already been added
       let has_top_level = false
       data.forEach((data_record) => {
-        console.log(data_record)
         if (data_record[0] == res.usa.value) {
           has_top_level = true
           return
