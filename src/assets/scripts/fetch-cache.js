@@ -153,7 +153,7 @@ let zipCodeQuery = `PREFIX kwg-ont: <${baseAddress}/lod/ontology/>
 SELECT DISTINCT ?subject ?value WHERE {
   ?subject a kwg-ont:ZipCodeArea.
   ?subject rdfs:label ?label .
-  BIND(REPLACE(STR(?label),"zip code ","") AS ?value)
+  BIND(REPLACE(STR(?label),"Zip code tabulation area with zipcode ","") AS ?value)
 } ORDER BY ASC(?value)`
 console.log('Getting ZIP Code')
 fetchCache(zipCodeQuery, 'src/assets/data/zipcode_cache.csv')
