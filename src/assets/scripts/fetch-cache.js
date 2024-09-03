@@ -43,7 +43,6 @@ async function fetchCache(query, fileName, data = []) {
   let offset_query = query + ` OFFSET ${count}`
   try {
     let results = await sparqlRequest(offset_query)
-    console.log(results)
     results = await results.json()
     results.results.bindings.forEach((res) => {
       data.push([res.subject.value, res.value.value])
