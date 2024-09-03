@@ -538,7 +538,7 @@ export class QueryService {
               placesFacets['fipsCode'] +
               `> }
             ?type rdfs:label ?typeLabel.
-            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:USClimateDivision}
+            values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ClimateDivision}
           }`
           )
         }
@@ -550,7 +550,7 @@ export class QueryService {
             values ?entity { <` +
               placesFacets['climateDivision'] +
               `> }
-            values ?type {kwg-ont:USClimateDivision}
+            values ?type {kwg-ont:ClimateDivision}
             ?type rdfs:label ?typeLabel
           }`
           )
@@ -579,7 +579,7 @@ export class QueryService {
           {
             ?entity kwg-ont:quantifiedName ?quantifiedName.
           }
-          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:USClimateDivision kwg-ont:NationalWeatherZone}
+          values ?type {kwg-ont:AdministrativeRegion_2 kwg-ont:AdministrativeRegion_3 kwg-ont:ZipCodeArea kwg-ont:ClimateDivision kwg-ont:NationalWeatherZone}
           ?type rdfs:label ?typeLabel
         }`
       }

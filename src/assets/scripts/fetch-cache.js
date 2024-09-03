@@ -174,7 +174,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?subject ?value {
 	?subject rdf:type kwg-ont:ClimateDivision;
 	rdfs:label ?label.
-  BIND(REPLACE(STR(?label),"Climate Division from NOAA with ID ","") AS ?value) .
+  BIND(REPLACE(STR(?label),"Climate Division from NOAA with ID ", "") AS ?label_repl) .
+  BIND(REPLACE(STR(?label_repl),"US ", "") AS ?value) .
 }`
 console.log('Getting Climate Divisions')
 fetchCache(climateDivisionQuery, 'src/assets/data/climate_division_cache.csv')
@@ -192,7 +193,7 @@ SELECT ?county ?county_label ?state ?state_label ?usa ?usa_label WHERE {
   ?county rdfs:label ?county_label .
   ?state rdfs:label ?state_label .
   ?usa rdfs:label ?usa_label .
-} LIMIT 50 `
+} LIMIT 100 `
 console.log('Getting Administrative Regions')
 fetchAdministrativeCache(
   adminRegionQuery,
