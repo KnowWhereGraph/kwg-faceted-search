@@ -469,7 +469,7 @@ export class QueryService {
       ) {
         placeQuery += `
           ?entity kwg-ont:sfWithin ?s2cell.
-          ?s2cell rdf:type kwg-ont:KWGCellLevel13;
+          ?s2cell rdf:type kwg-ont:S2Cell_Level13;
             kwg-ont:spatialRelation ?placesConnectedToS2.
           ?placesConnectedToS2 kwg-ont:sfWithin ?superPlacesConnectedToS2.
           `
@@ -713,7 +713,7 @@ export class QueryService {
 
       placeSearchQuery += `
             ?entity kwg-ont:sfWithin ?s2Cell .
-            ?s2Cell rdf:type kwg-ont:KWGCellLevel13;
+            ?s2Cell rdf:type kwg-ont:S2Cell_Level13;
                     kwg-ont:spatialRelation ?gnisEntity.
             ?gnisEntity kwg-ont:sfWithin ?s2cellGNIS;
                         rdf:type ?gnisPlaceType.
@@ -724,7 +724,7 @@ export class QueryService {
           .map((uri) => `<${uri}>`)
           .join(' ')
         placeSearchQuery += `
-                ?s2cellGNIS rdf:type kwg-ont:KWGCellLevel13 .
+                ?s2cellGNIS rdf:type kwg-ont:S2Cell_Level13 .
                 values ?placesConnectedToS2 { ${placeEntitiesConnected} }
                 ?s2cellGNIS kwg-ont:spatialRelation ?placesConnectedToS2.
             `
@@ -735,7 +735,7 @@ export class QueryService {
         .join(' ')
       placeSearchQuery += `
             ?entity kwg-ont:spatialRelation ?s2Cell .
-            ?s2Cell rdf:type kwg-ont:KWGCellLevel13 .
+            ?s2Cell rdf:type kwg-ont:S2Cell_Level13 .
             values ?placesConnectedToS2 { ${placeEntitiesConnected} }
             ?s2Cell kwg-ont:spatialRelation+ ?placesConnectedToS2.
         `
