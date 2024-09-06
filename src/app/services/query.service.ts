@@ -61,7 +61,7 @@ export class QueryService {
     d_form.append('query', this.prefixes + query)
     let d_res: any = await fetch(this.endpoint, {
       method: 'POST',
-      mode: "cors",
+      mode: 'cors',
       headers: {
         Accept: 'application/sparql-results+json',
         'X-Request-Id': query_id,
