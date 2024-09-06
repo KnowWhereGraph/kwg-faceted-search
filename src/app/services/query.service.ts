@@ -33,6 +33,7 @@ export class QueryService {
       'http://www.ontotext.com/connectors/elasticsearch/instance#',
     iospress: 'http://ld.iospress.nl/rdf/ontology/',
     usgs: 'http://gnis-ld.org/lod/usgs/ontology/',
+    deo: 'http://knowwheregraph/ontology/deo/',
   }
   // A string representation of the prefixes
   prefixesCombined: string = ''
@@ -69,7 +70,6 @@ export class QueryService {
     }).catch((error) => {
       console.error('There was an error while running a query: ', error)
     })
-
     // Status codes need to be manually checked here
     if (d_res.status !== 200) {
       console.warn('There was an error running the query', query, d_res)
@@ -286,12 +286,10 @@ export class QueryService {
    * @returns A portion of a SPARQL query
    */
   getHazardsQueryBody() {
-    let query = `?entity rdf:type ?type;
+    let query = `?entity rdf:type deo:Hazard;
     rdfs:label ?label;
     kwg-ont:hasImpact|sosa:isFeatureOfInterestOf ?observationCollection.
-    ?type rdfs:subClassOf ?superClass;
       rdfs:label ?typeLabel.
-    values ?superClass {kwg-ont:Hazard kwg-ont:Fire}
   `
     return query
   }
@@ -424,7 +422,7 @@ export class QueryService {
    * @param offset The results offset
    * @returns A string of SPARQL without the SELECT predicate
    */
-  async getPlaces(placesFacets, limit, offset) {
+  async getPlaces(placesFacets, limit: number, offset: number) {
     let formattedResults: Array<any> = []
     let placeQuery = `SELECT DISTINCT ?entity ?label ?quantifiedName ?type ?typeLabel where {`
 
@@ -712,11 +710,11 @@ export class QueryService {
         .join(' ')
 
       placeSearchQuery += `
+              ?gnis_entity a ?gnisPlaceType;
+    			geo:hasGeometry ?gnisGeo;
+    			kwg-ont:sfWithin ?s2Cell.
             ?entity kwg-ont:sfWithin ?s2Cell .
             ?s2Cell rdf:type kwg-ont:S2Cell_Level13;
-                    kwg-ont:spatialRelation ?gnisEntity.
-            ?gnisEntity kwg-ont:sfWithin ?s2cellGNIS;
-                        rdf:type ?gnisPlaceType.
             values ?gnisPlaceType {${gnisTypeArray}}
         `
       if (placeEntities.length > 0) {
@@ -800,17 +798,17 @@ export class QueryService {
 
     //Build the full query
     hazardQuery += `
-        ?entity rdf:type ?type;
+       ?entity rdf:type ?type ;
                 rdfs:label ?label;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
         optional
         {
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
-        ?type rdfs:subClassOf kwg-ont:Hazard.
-        ?entity kwg-ont:sfWithin ?place.
+
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
+        
         ${typeQuery}
         ${placeSearchQuery}
         ${dateQuery}
@@ -822,7 +820,6 @@ export class QueryService {
     if (hazardFacets['keyword'] && hazardFacets['keyword'] != '') {
       hazardQuery += ` ORDER BY desc(?score)`
     }
-
     let queryResults: Response | boolean = await this.query(
       hazardQuery + ` LIMIT ` + limit + ` OFFSET ` + offset
     )
@@ -993,7 +990,7 @@ export class QueryService {
    */
   getTopLevelAdministrativeRegions() {
     let query = `select ?country ?country_label where {
-        values ?country {kwgr:Earth.North_America.United_States.USA}
+        values ?country {kwgr:administrativeRegion.USA}
         ?country rdfs:label ?country_label .
       }`
     let headers = this.getRequestHeaders('KE_08')
@@ -1008,8 +1005,8 @@ export class QueryService {
    */
   getStateAdministrativeRegions() {
     let query = `SELECT DISTINCT ?state ?state_label where {
-        ?state kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA .
-    	?state a kwg-ont:AdministrativeRegion_2 .
+        ?state kwg-ont:sfWithin kwgr:administrativeRegion.USA .
+    	?state a kwg-ont:AdministrativeRegion_1 .
         ?state rdfs:label ?state_label .
     } ORDER BY ?state_label`
     let headers = this.getRequestHeaders('KE_09')
@@ -1029,7 +1026,7 @@ export class QueryService {
         ?county kwg-ont:sfWithin <` +
       stateURI +
       `> .
-    	  ?county a kwg-ont:AdministrativeRegion_3 .
+    	  ?county a kwg-ont:AdministrativeRegion_2 .
         ?county rdfs:label ?county_label .
         } ORDER BY ?state_label`
     let headers = this.getRequestHeaders('KE_10')
@@ -1053,7 +1050,7 @@ export class QueryService {
    */
   getTopLevelHazards() {
     let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
-        ?hazard rdfs:subClassOf kwg-ont:Hazard .
+        ?hazard rdfs:subClassOf deo:Hazard .
         ?hazard rdfs:label ?hazard_label .
         OPTIONAL {
           ?child rdfs:subClassOf ?hazard .
