@@ -61,7 +61,7 @@ export class QueryService {
     d_form.append('query', this.prefixes + query)
     let d_res: any = await fetch(this.endpoint, {
       method: 'POST',
-      mode: 'cors',
+      mode: "cors",
       headers: {
         Accept: 'application/sparql-results+json',
         'X-Request-Id': query_id,
@@ -70,7 +70,6 @@ export class QueryService {
     }).catch((error) => {
       console.error('There was an error while running a query: ', error)
     })
-
     // Status codes need to be manually checked here
     if (d_res.status !== 200) {
       console.warn('There was an error running the query', query, d_res)
@@ -423,7 +422,7 @@ export class QueryService {
    * @param offset The results offset
    * @returns A string of SPARQL without the SELECT predicate
    */
-  async getPlaces(placesFacets, limit, offset) {
+  async getPlaces(placesFacets, limit: number, offset: number) {
     let formattedResults: Array<any> = []
     let placeQuery = `SELECT DISTINCT ?entity ?label ?quantifiedName ?type ?typeLabel where {`
 
@@ -799,14 +798,14 @@ export class QueryService {
 
     //Build the full query
     hazardQuery += `
-       ?entity rdf:type deo:Hazard ;
+       ?entity rdf:type ?type ;
                 rdfs:label ?label;
                 kwg-ont:hasTemporalScope|sosa:isFeatureOfInterestOf/sosa:phenomenonTime ?time.
         optional
         {
             ?entity geo:hasGeometry/geo:asWKT ?wkt.
         }
-        ?entity kwg-ont:sfWithin ?place.
+
         ?time time:inXSDDateTime|time:inXSDDate ?startTimeLabel;
               time:inXSDDateTime|time:inXSDDate ?endTimeLabel.
         
@@ -1051,7 +1050,7 @@ export class QueryService {
    */
   getTopLevelHazards() {
     let query = `SELECT DISTINCT ?hazard ?hazard_label (COUNT(DISTINCT ?child) as ?count) where {
-        ?hazard rdfs:subClassOf kwg-ont:Hazard .
+        ?hazard rdfs:subClassOf deo:Hazard .
         ?hazard rdfs:label ?hazard_label .
         OPTIONAL {
           ?child rdfs:subClassOf ?hazard .
