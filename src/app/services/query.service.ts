@@ -991,7 +991,7 @@ export class QueryService {
    */
   getTopLevelAdministrativeRegions() {
     let query = `select ?country ?country_label where {
-        values ?country {kwgr:Earth.North_America.United_States.USA}
+        values ?country {kwgr:administrativeRegion.USA}
         ?country rdfs:label ?country_label .
       }`
     let headers = this.getRequestHeaders('KE_08')
@@ -1006,8 +1006,8 @@ export class QueryService {
    */
   getStateAdministrativeRegions() {
     let query = `SELECT DISTINCT ?state ?state_label where {
-        ?state kwg-ont:sfWithin kwgr:Earth.North_America.United_States.USA .
-    	?state a kwg-ont:AdministrativeRegion_2 .
+        ?state kwg-ont:sfWithin kwgr:administrativeRegion.USA .
+    	?state a kwg-ont:AdministrativeRegion_1 .
         ?state rdfs:label ?state_label .
     } ORDER BY ?state_label`
     let headers = this.getRequestHeaders('KE_09')
@@ -1027,7 +1027,7 @@ export class QueryService {
         ?county kwg-ont:sfWithin <` +
       stateURI +
       `> .
-    	  ?county a kwg-ont:AdministrativeRegion_3 .
+    	  ?county a kwg-ont:AdministrativeRegion_2 .
         ?county rdfs:label ?county_label .
         } ORDER BY ?state_label`
     let headers = this.getRequestHeaders('KE_10')
