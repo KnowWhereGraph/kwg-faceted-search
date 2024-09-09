@@ -116,9 +116,15 @@ export class PlacesTableComponent implements OnInit {
         results.records.forEach((result) => {
           let record = {
             name: result['name'],
-            nameUri: result['place'].replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
+            nameUri: result['place'].replace(
+              'http://stko-kwg.geog.ucsb.edu',
+              environment.baseAddress
+            ),
             type: result['place_type_name'],
-            typeUri: result['place_type'].replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
+            typeUri: result['place_type'].replace(
+              'http://stko-kwg.geog.ucsb.edu',
+              environment.baseAddress
+            ),
           }
           if (result['wkt']) {
             record['wkt'] = result['wkt']

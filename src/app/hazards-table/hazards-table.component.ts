@@ -225,10 +225,16 @@ export class HazardsTableComponent implements OnInit {
                 })
                 let new_record = {
                   name: record.name,
-                  entityUri: record.entityUri.replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
+                  entityUri: record.entityUri.replace(
+                    'http://stko-kwg.geog.ucsb.edu',
+                    environment.baseAddress
+                  ),
                   type: types,
                   place: record.placeName,
-                  placeUri: record.place.replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
+                  placeUri: record.place.replace(
+                    'http://stko-kwg.geog.ucsb.edu',
+                    environment.baseAddress
+                  ),
                   startDateUri: record.startDate,
                   startDate: record.startDateName,
                   endDateUri: record.endDate,
