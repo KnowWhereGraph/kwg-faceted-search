@@ -10,6 +10,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table'
 import { QueryService } from '../services/query.service'
+import { environment } from '../../environments/environment'
 
 /**
  * Component that represents a table of Hazards. This is the component that
@@ -224,10 +225,10 @@ export class HazardsTableComponent implements OnInit {
                 })
                 let new_record = {
                   name: record.name,
-                  entityUri: record.entityUri,
+                  entityUri: record.entityUri.replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
                   type: types,
                   place: record.placeName,
-                  placeUri: record.place,
+                  placeUri: record.place.replace("http://stko-kwg.geog.ucsb.edu", environment.baseAddress),
                   startDateUri: record.startDate,
                   startDate: record.startDateName,
                   endDateUri: record.endDate,
