@@ -9,6 +9,7 @@ import {
 import { MatTableDataSource } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator'
 import { QueryService } from '../services/query.service'
+import { environment } from '../../environments/environment'
 
 /**
  * Component for the places table. This component is responsible for representing the
@@ -115,9 +116,15 @@ export class PlacesTableComponent implements OnInit {
         results.records.forEach((result) => {
           let record = {
             name: result['name'],
-            nameUri: result['place'],
+            nameUri: result['place'].replace(
+              'http://stko-kwg.geog.ucsb.edu',
+              environment.baseAddress
+            ),
             type: result['place_type_name'],
-            typeUri: result['place_type'],
+            typeUri: result['place_type'].replace(
+              'http://stko-kwg.geog.ucsb.edu',
+              environment.baseAddress
+            ),
           }
           if (result['wkt']) {
             record['wkt'] = result['wkt']

@@ -102,7 +102,7 @@
               "browserTarget": "faceted-search:build:production"
             },
             "stage": {
-              "browserTarget": "faceted-search:build:production"
+              "browserTarget": "faceted-search:build:stage"
             }
           },
           "defaultConfiguration": "production"
